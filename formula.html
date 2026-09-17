@@ -1,0 +1,135 @@
+<meta name="robots" content="noindex,nofollow">
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>점수 수식</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"><style>
+:root{--bg:#eef1f5;--surface:#fff;--sunk:#e4e8ee;--ink:#151c26;--ink2:#4a5666;--ink3:#7b8797;--line:#d5dbe3;--accent:#1d4f8f;--good:#1f8a5b;--ok:#2a6fbf;--warn:#b7791f;--crit:#c0392b;--goodbg:#e2f3ea;--okbg:#e3ecf8;--warnbg:#f8eedb;--critbg:#f9e3e0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1318;--surface:#171c23;--sunk:#1f2630;--ink:#e9edf2;--ink2:#aeb8c4;--ink3:#8b97a3;--line:#2b343f;--accent:#7fb0ff;--good:#3ec585;--ok:#6fa7ee;--warn:#e0a83a;--crit:#f0705f;--goodbg:#173327;--okbg:#182a42;--warnbg:#3a2d12;--critbg:#3f1c18}}
+:root[data-theme="dark"]{--bg:#0f1318;--surface:#171c23;--sunk:#1f2630;--ink:#e9edf2;--ink2:#aeb8c4;--ink3:#8b97a3;--line:#2b343f;--accent:#7fb0ff;--good:#3ec585;--ok:#6fa7ee;--warn:#e0a83a;--crit:#f0705f;--goodbg:#173327;--okbg:#182a42;--warnbg:#3a2d12;--critbg:#3f1c18}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans KR","Noto Sans KR",system-ui,"Malgun Gothic",sans-serif;font-size:16px;line-height:1.65;padding:0 16px 80px}
+.wrap{max-width:1040px;margin:0 auto}
+nav.top{display:flex;flex-wrap:wrap;gap:6px;padding:14px 0 6px;font-size:.9rem}
+nav.top a{padding:6px 12px;border:1px solid var(--line);background:var(--surface);color:var(--accent);text-decoration:none;font-weight:500}
+nav.top a.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+h1{font-size:1.9rem;line-height:1.25;margin:18px 0 6px;letter-spacing:-.01em}
+.lead{color:var(--ink2);font-size:1.05rem;max-width:70ch;margin:0 0 22px}
+h2{font-size:1.3rem;margin:44px 0 10px;padding-top:14px;border-top:2px solid var(--line)}
+h3{font-size:1.05rem;margin:24px 0 6px}
+p{margin:8px 0;max-width:80ch}
+.toc{background:var(--surface);border:1px solid var(--line);padding:12px 18px;font-size:.92rem;columns:2;column-gap:32px}
+.toc a{color:var(--accent);text-decoration:none;display:block;padding:2px 0}
+@media (max-width:640px){.toc{columns:1}}
+.tw{overflow-x:auto;background:var(--surface);border:1px solid var(--line);margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:.9rem;font-variant-numeric:tabular-nums}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+thead th{font-weight:600;color:var(--ink2);font-size:.82rem;background:var(--sunk);white-space:nowrap}
+td.n,th.n{text-align:right;font-family:"IBM Plex Mono",monospace;white-space:nowrap}
+tbody th{font-weight:600;white-space:nowrap}
+.f{font-family:"IBM Plex Mono",monospace;background:var(--surface);border:1px solid var(--line);padding:12px 16px;font-size:.95rem;margin:10px 0;overflow-x:auto;white-space:pre}
+code{font-family:"IBM Plex Mono",monospace;font-size:.88em;background:var(--sunk);padding:0 5px}
+.box{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);padding:12px 18px;margin:14px 0}
+.box.good{border-left-color:var(--good)}.box.warn{border-left-color:var(--warn)}.box.crit{border-left-color:var(--crit)}
+.b{display:inline-block;font-size:.78rem;font-weight:600;padding:1px 8px;border-radius:3px;white-space:nowrap}
+.b.good{color:var(--good);background:var(--goodbg)}.b.ok{color:var(--ok);background:var(--okbg)}.b.warn{color:var(--warn);background:var(--warnbg)}.b.crit{color:var(--crit);background:var(--critbg)}
+.b.g{color:var(--ink2);background:var(--sunk)}
+ul,ol{max-width:80ch}li{margin:4px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:700px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);padding:14px 18px}
+.card h3{margin-top:0}
+.big{font-size:2rem;font-weight:700;font-family:"IBM Plex Mono",monospace;line-height:1}
+.foot{font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--ink3);margin-top:40px}
+small.src{color:var(--ink3);font-size:.8rem}
+</style></head>
+<body><div class="wrap"><nav class="top"><a href="index.html">대시보드</a><a href="guide.html">설명서</a><a href="formula.html" class=on>수식</a><a href="sources.html">출처·검증</a><a href="watch.html">점수판 상세</a><a href="map.html">지도</a><a href="fomo.html">FOMO</a></nav>
+<h1>수식 — 점수가 나오는 과정 전부</h1>
+<p class="lead">모든 점수는 <b>계단표</b>다. 입력값이 어느 구간에 들어가면 그 구간의 점수를 받는다. 계단의 경계와 점수는 회귀로 맞춘 게 아니라 과거 검증표(2014~2024 실현 수익)의 구간별 결과를 순서대로 옮겨 손으로 정한 것이다. 코드 원본: <code>property_score.py</code> · <code>liquidity.py</code> · <code>longscore.py</code>.</p>
+<div class="toc"><a href="#total">1. 2년 종합</a><a href="#timing">2. 타이밍 점수 (0~100)</a><a href="#penalty">3. 감점 (공급·대출·금리)</a><a href="#liq">4. 환금성 (0~100)</a><a href="#long">5. 5년 보유 (0~100)</a><a href="#example">6. 실계산 예시</a><a href="#band">7. 가격대·확률·순이익 (참고용)</a></div>
+
+<h2 id="total">1. 2년 종합</h2>
+<div class="f">2년 종합 = round( 타이밍 × 0.75 + 환금성 × 0.25 )
+타이밍   = max( 0, round( 지역 국면 + 호가갭 + 매물소진 + 단지 전세가율 + 속도 + 감점 ) )      ← 45+15+15+15+10 = 100 만점, 감점은 음수
+판정     = 70+ 사기 좋음 / 55~69 조건부 / 40~54 기다림 / 40 미만 사지 말 것 (타이밍 점수 기준)
+          단, 주간 경보(서울 또는 해당 지역) ≥ 2 이면 판정 상한 = 기다림</div>
+
+<h2 id="timing">2. 타이밍 점수 (0~100)</h2>
+<h3>2-1. 지역 국면 (45점) — 구 단위</h3>
+<p>세 지표 각각을 '과거 이 구간에서 24개월 뒤 플러스였던 비율(%)'로 바꾸고, 셋의 평균에 0.45를 곱한다. 확률표는 경기 2007~2024 월별 신호 → 24개월 수익(<code>data/fomo/signal_test.txt</code>)에서 왔다.</p>
+<div class="f">지역 국면 = ( P_거래 + P_전세가율 + P_지수 ) ÷ 3 × 0.45</div>
+<div class="grid2">
+<div><div class="tw"><table><thead><tr><th>구 거래량 YoY</th><th class=n>P_거래 (%)</th></tr></thead><tbody><tr><th>−40% 미만</th><td class=n>15</td></tr><tr><th>−40 ~ −20</th><td class=n>26</td></tr><tr><th>−20 ~ 0</th><td class=n>66</td></tr><tr><th>0 ~ +20</th><td class=n>71</td></tr><tr><th>+20 ~ +50</th><td class=n>68</td></tr><tr><th>+50 이상</th><td class=n>93</td></tr></tbody></table></div></div>
+<div><div class="tw"><table><thead><tr><th>구 전세가율(KB)</th><th class=n>P_전세가율 (%)</th></tr></thead><tbody><tr><th>55% 미만</th><td class=n>8</td></tr><tr><th>55 ~ 60</th><td class=n>56</td></tr><tr><th>60 ~ 65</th><td class=n>69</td></tr><tr><th>65 ~ 70</th><td class=n>58</td></tr><tr><th>70 ~ 75</th><td class=n>100</td></tr><tr><th>75 이상</th><td class=n>100</td></tr></tbody></table></div></div>
+</div>
+<div class="tw"><table><thead><tr><th>구 지수 YoY(KB)</th><th class=n>P_지수 (%)</th></tr></thead><tbody><tr><th>−5% 미만</th><td class=n>57</td></tr><tr><th>−5 ~ 0</th><td class=n>45</td></tr><tr><th>0 ~ +5</th><td class=n>73</td></tr><tr><th>+5 ~ +10</th><td class=n>91</td></tr><tr><th>+10 ~ +15</th><td class=n>60</td></tr><tr><th>+15 이상</th><td class=n>24 (과열)</td></tr></tbody></table></div>
+<h3>2-2. 호가 갭 (15점) — 단지</h3>
+<div class="f">갭 = 호가 하위 25%(Q1) ÷ 최근 3개월 실거래 중위</div>
+<div class="tw"><table><thead><tr><th>갭</th><th class=n>점수</th></tr></thead><tbody><tr><th>100% 이하</th><td class=n>15</td></tr><tr><th>100 ~ 105</th><td class=n>12</td></tr><tr><th>105 ~ 110</th><td class=n>8</td></tr><tr><th>110 ~ 120</th><td class=n>4</td></tr><tr><th>120% 초과</th><td class=n>0</td></tr><tr><th>호가 없음</th><td class=n>0</td></tr></tbody></table></div>
+<h3>2-3. 매물 소진 (15점) — 단지</h3>
+<div class="f">소진 개월 = 현재 매물 건수 ÷ max( 최근 3개월 거래 ÷ 3, 0.34 )</div>
+<div class="tw"><table><thead><tr><th>소진 개월</th><th class=n>점수</th></tr></thead><tbody><tr><th>3개월 미만</th><td class=n>15</td></tr><tr><th>3 ~ 6</th><td class=n>11</td></tr><tr><th>6 ~ 12</th><td class=n>6</td></tr><tr><th>12 ~ 24</th><td class=n>2</td></tr><tr><th>24개월 이상</th><td class=n>0</td></tr></tbody></table></div>
+<h3>2-4. 단지 전세가율 (15점)</h3>
+<div class="f">전세가율 = 최근 6개월 전세 실거래 중위 ÷ 최근 3개월 매매 실거래 중위   (전세 실거래 없으면 전세 호가 중위, 페이지에 '전세호가'로 표시)</div>
+<div class="tw"><table><thead><tr><th>단지 전세가율</th><th class=n>점수</th></tr></thead><tbody><tr><th>70% 이상</th><td class=n>15</td></tr><tr><th>65 ~ 70</th><td class=n>12</td></tr><tr><th>60 ~ 65</th><td class=n>9</td></tr><tr><th>55 ~ 60</th><td class=n>6</td></tr><tr><th>50 ~ 55</th><td class=n>3</td></tr><tr><th>50% 미만</th><td class=n>0</td></tr><tr><th>자료 없음</th><td class=n>0</td></tr></tbody></table></div>
+<h3>2-5. 속도 (10점) — 단지</h3>
+<div class="f">12개월 속도 = 최근 3개월 실거래 중위 ÷ 10~15개월 전 실거래 중위 − 1
+선반영 급등 = (12개월 속도 − 구 지수 YoY) > 15%p  → 속도 점수 7(중립) + ⚡ 표시</div>
+<div class="tw"><table><thead><tr><th>12개월 속도</th><th class=n>점수</th></tr></thead><tbody><tr><th>0% 미만(하락)</th><td class=n>7</td></tr><tr><th>0 ~ +8</th><td class=n>10</td></tr><tr><th>+8 ~ +15</th><td class=n>6</td></tr><tr><th>+15% 이상</th><td class=n>2</td></tr><tr><th>자료 없음 / 선반영 급등</th><td class=n>7</td></tr></tbody></table></div>
+
+<h2 id="penalty">3. 감점 (공급·대출·금리)</h2>
+<p>세 신호는 점수에 평균으로 섞으면 효과가 희석돼서(검증 결과) <b>감점</b>으로 넣었다. 조건이 아니면 0이다.</p>
+<div class="grid2">
+<div><div class="tw"><table><thead><tr><th>향후 2년 입주율 (구)</th><th class=n>감점</th></tr></thead><tbody><tr><th>3% 미만</th><td class=n>0</td></tr><tr><th>3 ~ 5</th><td class=n>−6</td></tr><tr><th>5 ~ 8</th><td class=n>−9</td></tr><tr><th>8% 이상</th><td class=n>−12</td></tr></tbody></table></div><small class="src">근거: 경기 구 단위 순위상관 −0.235. 3% 미만 24개월 중앙 +14.6%·손실 2% vs 3% 이상 +5.9%·손실 14%.</small></div>
+<div><div class="tw"><table><thead><tr><th>경기 주택대출 3개월 증가율(연율)</th><th class=n>감점</th></tr></thead><tbody><tr><th>0 ~ 2% (정체)</th><td class=n>−6</td></tr><tr><th>2 ~ 4% (미지근)</th><td class=n>−3</td></tr><tr><th>그 외 (확장 또는 수축)</th><td class=n>0</td></tr></tbody></table></div><small class="src">근거: 대출 증가율은 KB 지수를 3~9개월 선행. 0~2% 구간 24개월 중앙 −1%·손실 28%, 2~4% +5%·손실 15%.</small></div>
+</div>
+<div class="tw"><table><thead><tr><th>기준금리 12개월 변화</th><th class=n>감점</th></tr></thead><tbody><tr><th>+1.0%p 이상 (급등)</th><td class=n>−6</td></tr><tr><th>그 외</th><td class=n>0</td></tr></tbody></table></div>
+<small class="src">근거: 2014~2024 백테스트에서 +1%p 이상 구간(2022 인상기) 경기 24개월 중앙 +1.2%·손실 27%, 0~1%p 구간은 +14.9%·손실 11%로 해롭지 않음. 2026-09 현재 +0.5%p라 감점 0, 한 번 더 오르면 발동.</small>
+
+<h2 id="liq">4. 환금성 (0~100)</h2>
+<p>'팔고 싶을 때 팔리나'. 2년 종합의 25%, 5년 보유의 10점으로 들어간다.</p>
+<div class="f">환금성 = 회전율 + 세대수 + 침체기 거래 유지 + 역 접근      ← 30+25+20+25</div>
+<div class="grid2">
+<div><div class="tw"><table><thead><tr><th>회전율 (12개월 거래 ÷ 세대)</th><th class=n>점수</th></tr></thead><tbody><tr><th>6% 이상</th><td class=n>30</td></tr><tr><th>4 ~ 6</th><td class=n>24</td></tr><tr><th>2 ~ 4</th><td class=n>15</td></tr><tr><th>1 ~ 2</th><td class=n>8</td></tr><tr><th>1% 미만</th><td class=n>0</td></tr></tbody></table></div></div>
+<div><div class="tw"><table><thead><tr><th>세대수</th><th class=n>점수</th></tr></thead><tbody><tr><th>1,000 이상</th><td class=n>25</td></tr><tr><th>500 ~ 999</th><td class=n>20</td></tr><tr><th>300 ~ 499</th><td class=n>14</td></tr><tr><th>150 ~ 299</th><td class=n>7</td></tr><tr><th>150 미만</th><td class=n>0</td></tr></tbody></table></div></div>
+<div><div class="tw"><table><thead><tr><th>침체기 유지 (2022.7~23.6 거래 ÷ 2021 거래)</th><th class=n>점수</th></tr></thead><tbody><tr><th>50% 이상</th><td class=n>20</td></tr><tr><th>30 ~ 50</th><td class=n>14</td></tr><tr><th>15 ~ 30</th><td class=n>8</td></tr><tr><th>15% 미만</th><td class=n>2</td></tr><tr><th>2021 거래 없음</th><td class=n>8</td></tr></tbody></table></div></div>
+<div><div class="tw"><table><thead><tr><th>역 접근 (도보 km)</th><th class=n>점수</th></tr></thead><tbody><tr><th>급행역 1.0km 이내</th><td class=n>25</td></tr><tr><th>급행역 2.0km 이내</th><td class=n>18</td></tr><tr><th>아무역 1.0km 이내</th><td class=n>12</td></tr><tr><th>아무역 2.0km 이내</th><td class=n>6</td></tr><tr><th>그 밖</th><td class=n>0</td></tr><tr><th>거리 자료 없음</th><td class=n>8</td></tr></tbody></table></div></div>
+</div>
+<p>급행역 = 신분당선·GTX·급행 정차역 등 등급 1~2. 도보거리는 네이버 지도 도보 길찾기 실측(3,380단지), 없으면 좌표 직선 × 1.3.</p>
+
+<h2 id="long">5. 5년 보유 (0~100)</h2>
+<div class="f">5년 보유 = 역 도보 + 향후 2년 입주율 + 재건축 사업성 + 학원 + 환금 + 단지 전세가율 + 지역 국면      ← 25+25+15+10+10+5+10</div>
+<div class="grid2">
+<div><div class="tw"><table><thead><tr><th>역 도보 km (급행역이 1km 안이면 그 거리)</th><th class=n>점수</th></tr></thead><tbody><tr><th>0.5km 미만</th><td class=n>25</td></tr><tr><th>0.5 ~ 1.0</th><td class=n>20</td></tr><tr><th>1.0 ~ 1.5</th><td class=n>13</td></tr><tr><th>1.5 ~ 2.0</th><td class=n>8</td></tr><tr><th>2.0 ~ 3.0</th><td class=n>4</td></tr><tr><th>3.0km 이상</th><td class=n>0</td></tr><tr><th>자료 없음</th><td class=n>8</td></tr></tbody></table></div><small class="src">60개월 구대비: 0.5km 미만 +5.5%p, 0.5~1 +2.6, 1.5~3 −1.7~−2.7.</small></div>
+<div><div class="tw"><table><thead><tr><th>향후 2년 입주율 (구)</th><th class=n>점수</th></tr></thead><tbody><tr><th>1% 미만</th><td class=n>25</td></tr><tr><th>1 ~ 2</th><td class=n>22</td></tr><tr><th>2 ~ 3</th><td class=n>18</td></tr><tr><th>3 ~ 5</th><td class=n>10</td></tr><tr><th>5 ~ 8</th><td class=n>8</td></tr><tr><th>8% 이상</th><td class=n>0</td></tr><tr><th>자료 없음</th><td class=n>12</td></tr></tbody></table></div><small class="src">60개월 절대: 1% 미만 +53%, 2~3% +40%, 8% 이상 가장 낮음. 구 단위 순위상관 +0.40.</small></div>
+</div>
+<h3>재건축 사업성 (15점) = 연식 × 용적률 × 최고층</h3>
+<p>'오래됐다'만으로는 점수를 주지 않는다. 25년 이상이면서 <b>용적률이 낮고 층수가 낮아야</b> 사업성이 있다고 본다.</p>
+<div class="tw"><table><thead><tr><th>연식</th><th>용적률</th><th>최고층</th><th class=n>점수</th><th>근거(60개월 구대비)</th></tr></thead><tbody><tr><th>10년 미만</th><td>-</td><td>-</td><td class=n>5</td><td>−2.0%p</td></tr><tr><th>10 ~ 20년</th><td>-</td><td>-</td><td class=n>7</td><td>−1.3 ~ 0.0%p</td></tr><tr><th>20 ~ 25년</th><td>-</td><td>-</td><td class=n>8</td><td>+2.0%p (용적률 무관)</td></tr><tr><th>25년 이상</th><td>자료 없음</td><td>-</td><td class=n>9 (30년+ 10)</td><td>보수적</td></tr><tr><th>25년 이상</th><td>250% 초과</td><td>-</td><td class=n>6</td><td>−0.2%p, 하위 10%는 −25%p</td></tr><tr><th>25년 이상</th><td>200 ~ 250%</td><td>-</td><td class=n>9</td><td>+1.5%p</td></tr><tr><th>25년 이상</th><td>200% 이하</td><td>16층 이상</td><td class=n>8</td><td>+0.3%p (고층이라 사업성 없음)</td></tr><tr><th>25년 이상</th><td>150 ~ 200%</td><td>15층 이하</td><td class=n>12 (30년+ 13)</td><td>+4.3%p</td></tr><tr><th>25년 이상</th><td>150% 이하</td><td>15층 이하</td><td class=n>15</td><td>+13.2%p</td></tr></tbody></table></div>
+<p>네이버에 '재건축' 유형으로 표기된 단지는 앞페이지 한 줄에 '재건축 추진'으로만 표시하고 점수는 주지 않는다(진행 단지는 이미 선반영이라 검증할 표본이 없음).</p>
+<div class="grid2">
+<div><div class="tw"><table><thead><tr><th>1km 학습형 학원 수</th><th class=n>점수</th></tr></thead><tbody><tr><th>5개 미만</th><td class=n>0</td></tr><tr><th>5 ~ 15</th><td class=n>2</td></tr><tr><th>15 ~ 30</th><td class=n>4</td></tr><tr><th>30 ~ 60</th><td class=n>6</td></tr><tr><th>60 ~ 100</th><td class=n>8</td></tr><tr><th>100개 이상</th><td class=n>10</td></tr><tr><th>자료 없음</th><td class=n>4</td></tr></tbody></table></div><small class="src">60개월 원금 이하: 100개+ 4% vs 5~15개 22%. 학습형 = 입시·검정·보습, 보통교과, 국제화, 외국어, 종합.</small></div>
+<div><div class="tw"><table><thead><tr><th>단지 전세가율</th><th class=n>점수</th></tr></thead><tbody><tr><th>55% 미만</th><td class=n>0</td></tr><tr><th>55 ~ 60</th><td class=n>2</td></tr><tr><th>60 ~ 65</th><td class=n>3</td></tr><tr><th>65 ~ 70</th><td class=n>4</td></tr><tr><th>70% 이상</th><td class=n>5</td></tr><tr><th>자료 없음</th><td class=n>2</td></tr></tbody></table></div></div>
+</div>
+<div class="f">환금 10점  = round( 환금성 ÷ 10 )
+국면 10점  = round( 지역 국면(0~45) ÷ 4.5 )</div>
+<h2 id="example">6. 실계산 예시 — 팰루시드 59 (2026-09-17)</h2>
+<p>앞페이지의 숫자가 실제로 어떻게 나왔는지 관심 물건 하나로 따라가 본다. 값은 오늘 자료다.</p>
+<h3>2년 타이밍</h3><div class="tw"><table><thead><tr><th>항목</th><th>입력값 → 계산</th><th class=n>점수</th></tr></thead><tbody><tr><th>지역 국면 45</th><td>거래 YoY +65% → 93 · 전세가율 60% → 56 · 지수 YoY +10.2% → 60 ⇒ (93+56+60)÷3×0.45</td><td class=n>31.4</td></tr><tr><th>호가갭 15</th><td>호가 Q1 8.70억 ÷ 실거래 7.99억 = 109%</td><td class=n>8</td></tr><tr><th>매물소진 15</th><td>매물 24건 ÷ (3개월 거래 24건÷3) = 3.0개월</td><td class=n>11</td></tr><tr><th>단지 전세가율 15</th><td>56% (전세호가)</td><td class=n>6</td></tr><tr><th>속도 10</th><td>12개월 +9%</td><td class=n>6</td></tr><tr><th>감점: 입주율</th><td>0.3%</td><td class=n>0</td></tr><tr><th>감점: 대출</th><td>3M 연율 +2.4%</td><td class=n>-3</td></tr><tr><th>감점: 기준금리</th><td>12M +0.50%p</td><td class=n>0</td></tr><tr><th><b>타이밍 합</b></th><td>max(0, round(31.4+8+11+6+6-3))</td><td class=n><b>59</b></td></tr></tbody></table></div>
+<h3>환금성</h3><div class="tw"><table><thead><tr><th>항목</th><th>입력값</th><th class=n>점수</th></tr></thead><tbody><tr><th>회전율 30</th><td>23.1%</td><td class=n>30</td></tr><tr><th>세대수 25</th><td>2,178</td><td class=n>25</td></tr><tr><th>침체기 유지 20</th><td>자료 없음(8)</td><td class=n>8</td></tr><tr><th>역 접근 25</th><td>급행 5.5km · 아무역 0.4km</td><td class=n>12</td></tr><tr><th><b>환금성</b></th><td>합</td><td class=n><b>75</b></td></tr></tbody></table></div>
+<div class="f">2년 종합 = round(59 × 0.75 + 75 × 0.25) = <b>63</b>   → 판정: 기다림(주간 경보: 서울 매수우위·거래절벽 — 점수 59점이지만 이번 주는 살 신호 아님)</div>
+<h3>5년 보유</h3><div class="tw"><table><thead><tr><th>항목</th><th>입력값</th><th class=n>점수</th></tr></thead><tbody><tr><th>역 도보 25</th><td>0.4km</td><td class=n>25</td></tr><tr><th>입주율 25</th><td>0.3%</td><td class=n>25</td></tr><tr><th>재건축 사업성 15</th><td>0년차 · 용적률 229% · 최고 15층</td><td class=n>5</td></tr><tr><th>학원 10</th><td>1km 37개</td><td class=n>6</td></tr><tr><th>환금 10</th><td>환금성 75 ÷ 10</td><td class=n>8</td></tr><tr><th>전세가율 5</th><td>56%</td><td class=n>2</td></tr><tr><th>국면 10</th><td>지역 국면 31.4 ÷ 4.5</td><td class=n>7</td></tr><tr><th><b>5년 보유</b></th><td>합</td><td class=n><b>78</b></td></tr></tbody></table></div>
+
+<h2 id="band">7. 가격대·확률·순이익 (참고용, 검증 미통과)</h2>
+<div class="box warn">이 셋은 페이지에 있지만 검증에서 FAIL이다. 방향 감각용으로만 보고 숫자를 믿지 말 것.</div>
+<h3>12/24개월 가격대</h3>
+<div class="f">드리프트 μ = clamp( 구 13주 변화 × 4, −10%, +25% ) × 0.5     (연율화의 절반, 평균회귀)   구 지수 YoY > 15%면 μ ≤ 0
+적체 = 소진 12개월 초과 또는 갭 115% 초과
+상단 = 적체면 min(호가 Q1, 실거래×(1+μ)) / 아니면 max(호가 Q1, 실거래×(1+μ)×1.03)
+중심 = 실거래 × (1 + μ × (적체면 0.4))      서울 정점형이면 μ 절반, 2년차는 낙폭의 35% 되돌림
+하단 = 실거래 × (1 + 낙폭 × min(1, t/2)),  낙폭 = 단지 2021→23 실측(없으면 구 중앙값), −30% ~ −5%로 제한
+      단 전세가 ÷ 0.72 가 더 높으면 그 값(전세가율 72% 바닥)  ← 이 가정이 밴드를 5%p로 좁혀 12개월 적중 27%</div>
+<h3>상승/정체/조정 확률</h3>
+<div class="f">P+ = (P_거래 + P_전세가율 + P_지수) ÷ 300  − 0.15(갭>115%) − 0.10(소진>12) + 0.08(소진<4) − 0.10(구 YoY>15) ± 0.05(전세가율 65+/55−),  0.08~0.90으로 제한
+상승 = P+ × 0.6 / 정체 = P+ × 0.4 + (1−P+) × 0.4 / 조정 = (1−P+) × 0.6</div>
+<h3>2년 뒤 남는 돈 (money.py)</h3>
+<div class="f">대출 = min( 가격 × LTV, 6억 )   LTV = 비규제 70% / 서울·규제지역(10.15 대책) 40%
+비용 = 대출 × 주담대 금리 4.36%(KB 최신) × 2년 + 취득세 + 중개비 0.4%
+순이익 = 가격 × 수익률 − 비용,   수익률 = 과거 검증의 점수 구간별 24개월 실현 분포(중앙 / 하위 25%)</div>
+<p class="foot">생성 2026-09-17 · py build_guide.py · 점수 규칙 원본: property_score.py · liquidity.py · longscore.py · supply.py · ecos.py · rates.py · pulse.py</p></div></body></html>

@@ -1,0 +1,88 @@
+<meta name="robots" content="noindex,nofollow">
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>데이터 출처·검증</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"><style>
+:root{--bg:#eef1f5;--surface:#fff;--sunk:#e4e8ee;--ink:#151c26;--ink2:#4a5666;--ink3:#7b8797;--line:#d5dbe3;--accent:#1d4f8f;--good:#1f8a5b;--ok:#2a6fbf;--warn:#b7791f;--crit:#c0392b;--goodbg:#e2f3ea;--okbg:#e3ecf8;--warnbg:#f8eedb;--critbg:#f9e3e0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1318;--surface:#171c23;--sunk:#1f2630;--ink:#e9edf2;--ink2:#aeb8c4;--ink3:#8b97a3;--line:#2b343f;--accent:#7fb0ff;--good:#3ec585;--ok:#6fa7ee;--warn:#e0a83a;--crit:#f0705f;--goodbg:#173327;--okbg:#182a42;--warnbg:#3a2d12;--critbg:#3f1c18}}
+:root[data-theme="dark"]{--bg:#0f1318;--surface:#171c23;--sunk:#1f2630;--ink:#e9edf2;--ink2:#aeb8c4;--ink3:#8b97a3;--line:#2b343f;--accent:#7fb0ff;--good:#3ec585;--ok:#6fa7ee;--warn:#e0a83a;--crit:#f0705f;--goodbg:#173327;--okbg:#182a42;--warnbg:#3a2d12;--critbg:#3f1c18}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans KR","Noto Sans KR",system-ui,"Malgun Gothic",sans-serif;font-size:16px;line-height:1.65;padding:0 16px 80px}
+.wrap{max-width:1040px;margin:0 auto}
+nav.top{display:flex;flex-wrap:wrap;gap:6px;padding:14px 0 6px;font-size:.9rem}
+nav.top a{padding:6px 12px;border:1px solid var(--line);background:var(--surface);color:var(--accent);text-decoration:none;font-weight:500}
+nav.top a.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+h1{font-size:1.9rem;line-height:1.25;margin:18px 0 6px;letter-spacing:-.01em}
+.lead{color:var(--ink2);font-size:1.05rem;max-width:70ch;margin:0 0 22px}
+h2{font-size:1.3rem;margin:44px 0 10px;padding-top:14px;border-top:2px solid var(--line)}
+h3{font-size:1.05rem;margin:24px 0 6px}
+p{margin:8px 0;max-width:80ch}
+.toc{background:var(--surface);border:1px solid var(--line);padding:12px 18px;font-size:.92rem;columns:2;column-gap:32px}
+.toc a{color:var(--accent);text-decoration:none;display:block;padding:2px 0}
+@media (max-width:640px){.toc{columns:1}}
+.tw{overflow-x:auto;background:var(--surface);border:1px solid var(--line);margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:.9rem;font-variant-numeric:tabular-nums}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+thead th{font-weight:600;color:var(--ink2);font-size:.82rem;background:var(--sunk);white-space:nowrap}
+td.n,th.n{text-align:right;font-family:"IBM Plex Mono",monospace;white-space:nowrap}
+tbody th{font-weight:600;white-space:nowrap}
+.f{font-family:"IBM Plex Mono",monospace;background:var(--surface);border:1px solid var(--line);padding:12px 16px;font-size:.95rem;margin:10px 0;overflow-x:auto;white-space:pre}
+code{font-family:"IBM Plex Mono",monospace;font-size:.88em;background:var(--sunk);padding:0 5px}
+.box{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);padding:12px 18px;margin:14px 0}
+.box.good{border-left-color:var(--good)}.box.warn{border-left-color:var(--warn)}.box.crit{border-left-color:var(--crit)}
+.b{display:inline-block;font-size:.78rem;font-weight:600;padding:1px 8px;border-radius:3px;white-space:nowrap}
+.b.good{color:var(--good);background:var(--goodbg)}.b.ok{color:var(--ok);background:var(--okbg)}.b.warn{color:var(--warn);background:var(--warnbg)}.b.crit{color:var(--crit);background:var(--critbg)}
+.b.g{color:var(--ink2);background:var(--sunk)}
+ul,ol{max-width:80ch}li{margin:4px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:700px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);padding:14px 18px}
+.card h3{margin-top:0}
+.big{font-size:2rem;font-weight:700;font-family:"IBM Plex Mono",monospace;line-height:1}
+.foot{font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--ink3);margin-top:40px}
+small.src{color:var(--ink3);font-size:.8rem}
+</style></head>
+<body><div class="wrap"><nav class="top"><a href="index.html">대시보드</a><a href="guide.html">설명서</a><a href="formula.html">수식</a><a href="sources.html" class=on>출처·검증</a><a href="watch.html">점수판 상세</a><a href="map.html">지도</a><a href="fomo.html">FOMO</a></nav>
+<h1>데이터 출처와 검증</h1>
+<p class="lead">어디서 온 숫자인지, 공식 자료인지, 얼마나 자주 갱신되는지, 그리고 이 점수가 과거에 얼마나 맞았는지.</p>
+<div class="toc"><a href="#src">1. 출처 목록과 공식 여부</a><a href="#refresh">2. 갱신 주기와 파이프라인</a><a href="#bt">3. 과거 검증(백테스트)이란</a><a href="#tests">4. 2년 점수 8가지 검사 결과</a><a href="#long">5. 5년 점수 검증</a><a href="#regime">6. 상승장의 끝 검증</a><a href="#limits">7. 한계와 미검증 항목</a><a href="#fwd">8. 앞으로 검증</a></div>
+
+<h2 id="src">1. 출처 목록과 공식 여부</h2>
+<div class="tw"><table><thead><tr><th>출처</th><th>성격</th><th>무엇을 가져오나</th><th>기간·범위</th><th>쓰이는 곳</th><th>한계</th></tr></thead><tbody><tr><th>국토교통부 실거래가 공개시스템 (rt.molit.go.kr)</th><td><span class="b good">공식(정부)</span></td><td>아파트 매매·전월세 실거래 전량 CSV(계약일, 금액, 면적, 층, 해제·직거래·등기 여부)</td><td>서울·경기 매매 2006~, 전월세 2011~</td><td>구 거래량 YoY, 백테스트 원장, 회전율, 침체기 유지율, 거래절벽 경보</td><td>신고 지연(계약 후 30일)으로 최근 한 달은 적게 잡힘. 일 100회 다운로드 제한</td></tr><tr><th>KB부동산 데이터허브 (data.kbland.kr)</th><td><span class="b good">국가승인통계(민간 작성)</span></td><td>매매·전세 가격지수(월간·주간), 전세가율, 매수우위지수, 주담대 금리(HAI)</td><td>지수 1986~, 전세가율 1998~, 시군구 단위</td><td>구 지수 YoY·13주, 구 전세가율, 주간 경보, 순이익 금리, 상승장의 끝 검증</td><td>표본 호가 기반 지수라 실거래보다 매끄럽고 늦음</td></tr><tr><th>한국은행 ECOS</th><td><span class="b good">공식(중앙은행)</span></td><td>예금은행 지역별 가계대출·주택관련대출 잔액(151Y003), 기준금리</td><td>2006.12~, 서울·경기·전국</td><td>대출 감점, 금리 감점, 상승장의 끝 검증</td><td>발표 시차 약 1개월. 무료 sample 키라 10건씩 페이지 조회</td></tr><tr><th>국토교통부 통계누리 (미분양)</th><td><span class="b good">공식(정부)</span></td><td>시군구별 미분양 주택 수</td><td>2005~, 월</td><td>FOMO 리포트, 지역 국면표, 상승장의 끝 검증</td><td>-</td></tr><tr><th>경기데이터드림 (data.gg.go.kr)</th><td><span class="b good">공식(경기도)</span></td><td>학원·교습소 34,012건(좌표, 교습 과정)</td><td>경기도 전역, 현재 등록분</td><td>5년 점수 학원 10점</td><td>경기도만. 서울 단지는 자료 없음(4점 중립). 학업성취·특목고 진학률은 2018 갱신 중단이라 미사용</td></tr><tr><th>네이버부동산 (내부 API)</th><td><span class="b warn">민간</span></td><td>현재 매물 호가·건수·인하 표시, 단지 정보(세대·준공·용적률·최고층·좌표), 실거래(국토부 재배포)</td><td>현재 시점 + 실거래 2년</td><td>호가갭, 매물소진, 단지 전세가율, 경보(호가인하·매물급증), 사업성(용적률·층수), 입주 물량 집계</td><td>호가는 집주인 희망가. 매물 시계열은 2026-09부터 직접 쌓는 중</td></tr><tr><th>OpenStreetMap Overpass + 네이버 지도 길찾기</th><td><span class="b ok">오픈데이터 + 민간</span></td><td>역 좌표·노선·구 경계, 단지→역 도보거리</td><td>서울·경기 역 전체, 단지 3,380</td><td>역 접근(환금), 역 도보(5년), 지도</td><td>OSM 역 노드가 지하라 보정 필요. 도보 없는 단지는 직선×1.3</td></tr><tr><th>입주 물량 (자체 가공)</th><td><span class="b warn">가공</span></td><td>네이버 단지 인덱스의 준공연도·세대를 구별로 합산 → 향후 2년 입주율</td><td>100세대+ 아파트, 분양 단지 입주예정 포함</td><td>입주율 감점(2년), 입주율 25점(5년)</td><td>2027~28은 네이버 등록 분양분만 잡혀 <b>과소</b>. 철거된 단지는 빠져 1990년대 과소</td></tr></tbody></table></div>
+<p>키·로그인이 필요한 자료는 하나도 안 쓴다. 아실(매물 증감·입주 물량)·부동산원 R-ONE·KOSIS는 로그인/키 벽이라 제외했다.</p>
+
+<h2 id="refresh">2. 갱신 주기와 파이프라인</h2>
+<div class="tw"><table><thead><tr><th>언제</th><th>무엇</th><th>결과</th></tr></thead><tbody><tr><th>매일 06:30 (집 PC 작업 스케줄러)</th><td>KB → 국토부(올해 매매) → 집계 → FOMO → 주간 맥박 → 점수판 → 순이익 → 대시보드 → 발행</td><td>이 사이트 전체 갱신(반영 1~2분)</td></tr><tr><th>매주 월요일</th><td>서울·경기 전 단지 매물 수 스냅샷 + 좌표 + 지도</td><td>매물 증감 경보, 매물 시계열</td></tr><tr><th>매월 1일</th><td>오늘 점수·가격대 스냅샷 저장</td><td>3개월 뒤 실거래와 대조(앞으로 검증)</td></tr><tr><th>규칙 바꿀 때</th><td>백테스트 → 8검사 → 5년 검증 재실행</td><td>출처·검증 페이지 숫자 갱신</td></tr></tbody></table></div>
+<p>점수 규칙 자체(계단표)는 자동으로 바뀌지 않는다. 사람이 바꾸고 검증을 다시 돌린 날짜가 각 검증 파일 머리에 적힌다.</p>
+
+<h2 id="bt">3. 과거 검증(백테스트)이란</h2>
+<p>2014년 1월부터 2024년 8월까지 <b>분기마다</b> 서울·경기 모든 단지×면적대(그 분기 거래 60건 이상인 구)를 그 시점 자료만으로 채점하고, 12·24·36·60개월 뒤 실거래와 비교했다. 표본 115,075건. 호가·매물은 과거 이력이 없어 중립값으로 고정했다(그래서 그 30점은 미검증).</p>
+<p>'맞았다'의 기준은 두 가지다. ① <b>순위상관(IC)</b>: 같은 분기에 산 것들 안에서 점수 순위와 수익 순위가 같이 가나. ② <b>판정별 손실률</b>: '사기 좋음'이라 한 것이 24개월 뒤 −10% 아래로 간 비율이 '보류'보다 낮나.</p>
+
+<h2 id="tests">4. 2년 점수 8가지 검사 결과 (2026-09-17)</h2>
+<p>1 OOS <span class="b good">PASS</span> · 2 베이스라인 <span class="b crit">FAIL</span> · 3 판정 <span class="b warn">WARN</span> · 4 보정 <span class="b crit">FAIL</span> · 5 가격대 <span class="b crit">FAIL</span> · 6 안정성 <span class="b good">PASS</span> · 7 신뢰구간 <span class="b good">PASS</span> · 8 앞으로 <span class="b good">PASS</span></p>
+<div class="tw"><table><thead><tr><th>검사</th><th>묻는 것</th><th>결과</th><th>뜻</th></tr></thead><tbody><tr><th>1 OOS</th><td>표를 과거 자료로만 만들어 그 뒤에 적용해도 맞나</td><td>경기 순위상관 in-sample +0.198 → 워크포워드 +0.149, 양의 분기 89%</td><td>PASS. 미래를 미리 본 효과를 빼도 방향은 유지</td></tr><tr><th>2 베이스라인</th><td>지표 하나보다 나은가</td><td>구 거래량 YoY 하나 +0.265 > 점수 +0.149</td><td>FAIL. 점수의 힘은 대부분 거래량에서 온다</td></tr><tr><th>3 판정</th><td>매수판정이 보류판정보다 덜 잃나</td><td>매수판정 손실 9% vs 보류 25%, 놓친 상승 37%</td><td>WARN. 손실 회피는 되지만 보류가 놓치는 상승도 많음</td></tr><tr><th>4 확률 보정</th><td>P(상승) 숫자가 실현과 맞나</td><td>예측 75~90% → 실현 61~74%, 기울기 0.64</td><td>FAIL. 과신. 확률 숫자는 믿지 말 것</td></tr><tr><th>5 가격대</th><td>12/24개월 가격대 안에 실거래가 들어오나</td><td>12개월 적중 27% (전세 72% 바닥 가정을 빼면 44%)</td><td>FAIL. 밴드가 너무 좁음</td></tr><tr><th>6 안정성</th><td>시기를 넷으로 갈라도 방향이 같나</td><td>2014~16 +0.18 / 17~19 +0.19 / 20~21 +0.03 / 22~24 +0.15</td><td>PASS. 2020~21 급등기만 약함</td></tr><tr><th>7 신뢰구간</th><td>우연일 가능성</td><td>분기 부트스트랩 95% 구간 +0.11 ~ +0.19</td><td>PASS. 하한이 0 위</td></tr><tr><th>8 앞으로</th><td>미래 대조 절차가 돌아가나</td><td>스냅샷·매물 시계열 시작됨</td><td>PASS</td></tr></tbody></table></div>
+<div class="box"><b>결론</b>: 2년 점수는 '이 구를 지금 사도 되나'(손실 회피)에만 쓴다. 같은 구 안 단지 고르기·확률·가격대는 쓰지 않는다. 서울은 2014~24가 한 방향 상승장이라 구분력 검사가 원래 안 된다.</div>
+
+<h2 id="long">5. 5년 점수 검증</h2>
+<div class="tw"><table><thead><tr><th>보유 기간</th><th>5년 점수 순위상관</th><th>2년 종합 순위상관</th></tr></thead><tbody><tr><th>12개월</th><td>+0.189 (양 88%)</td><td>+0.189 (91%)</td></tr><tr><th>24개월</th><td>+0.233 (88%)</td><td>+0.183 (98%)</td></tr><tr><th>36개월</th><td>+0.250 (98%)</td><td>+0.153 (88%)</td></tr><tr><th>60개월</th><td><b>+0.355 (100%)</b></td><td>+0.140 (81%)</td></tr></tbody></table></div>
+<div class="tw"><table><thead><tr><th>5년 점수 구간</th><th class=n>표본</th><th class=n>60개월 중앙</th><th class=n>원금 이하</th><th class=n>−10% 이하</th></tr></thead><tbody><tr><th>70 이상</th><td class=n>3,391</td><td class=n>+51.9%</td><td class=n>3%</td><td class=n>0%</td></tr><tr><th>60~69</th><td class=n>4,501</td><td class=n>+44.4%</td><td class=n>4%</td><td class=n>1%</td></tr><tr><th>50~59</th><td class=n>8,670</td><td class=n>+42.7%</td><td class=n>7%</td><td class=n>2%</td></tr><tr><th>40~49</th><td class=n>23,567</td><td class=n>+29.9%</td><td class=n>9%</td><td class=n>4%</td></tr><tr><th>40 미만</th><td class=n>9,133</td><td class=n>+21.0%</td><td class=n>20%</td><td class=n>10%</td></tr></tbody></table></div>
+<p>시기를 반으로 갈라도 +0.39(2014~17 매수) / +0.32(2018~21 매수)로 유지된다. 2년 종합은 뒤 절반에서 0.00으로 무너진다. 즉 5년을 들고 갈 물건은 국면이 아니라 입지로 골라야 한다. 요인별 60개월 순위상관: 역 +0.19 · 사업성 +0.21 · 학원 +0.18 · 환금 +0.12 · 입주율 +0.10 · 전세가율 +0.07 · 국면 +0.07.</p>
+
+<h2 id="regime">6. 상승장의 끝 검증</h2>
+<p>'공급 과잉·거시 충격·금리 급등이 없으면 하락장은 안 온다'는 주장을 KB 지수 1986~2026의 하락 에피소드(고점 대비 −5% 이상)로 대조했다.</p>
+<div class="tw"><table><thead><tr><th>에피소드</th><th>낙폭·기간</th><th>주범</th><th>근거</th></tr></thead><tbody><tr><th>서울 1991~98</th><td>−26.5%, 91개월</td><td>공급</td><td>고점 뒤 3년 입주/재고 41% (1기 신도시)</td></tr><tr><th>서울 2010~13</th><td>−9.1%, 43개월</td><td>공급</td><td>보금자리 + 2기 신도시 입주</td></tr><tr><th>경기 2008~13</th><td>−10.1%, 60개월</td><td>공급 + 금융위기</td><td>미분양 22,455</td></tr><tr><th>서울·경기 2022~24</th><td>−10.4% / −14.5%</td><td>금리</td><td>기준금리 0.5 → 3.5, 22~25개월</td></tr></tbody></table></div>
+<p>주장은 대체로 맞다. 단 <b>경기는 2022 고점을 아직 못 넘었다(91%)</b>. '2년 만에 반등'은 서울 얘기다. 점수판에는 기준금리 12개월 +1%p 이상 감점으로 반영했다.</p>
+
+<h2 id="limits">7. 한계와 미검증 항목</h2>
+<ul>
+<li><b>호가갭·매물소진 30점은 미검증.</b> 과거 매물 이력이 없어 백테스트에서 중립 고정. 2026-09부터 매달 매물을 쌓아 가장 빠른 판정은 2028-09.</li>
+<li><b>환금성 '침체기 유지' 20점</b>은 2022~23 거래를 쓰므로 그 이전 시점 백테스트에선 미래 정보다. 검증 불가.</li>
+<li><b>재건축 사업성</b>은 용적률·층수 구간별 60개월 실현으로 계단을 만들었지만, 네이버 '재건축' 표기 단지의 추가 효과는 표본이 없어 점수에 없음.</li>
+<li><b>입주 물량은 과소</b>(2027~28 분양 미등록분·철거 단지 누락). 실제 공급 부담은 표시보다 클 수 있다.</li>
+<li><b>학원 자료는 경기도만.</b> 서울 단지는 중립 4점.</li>
+<li><b>확률·가격대·순이익 숫자는 참고용.</b> 4·5번 검사 FAIL.</li>
+<li><b>서울은 검증 불가.</b> 2014~24 한 방향 상승장.</li>
+<li>점수는 개인 조건(대출 한도·자기자본)을 모른다. 자기자본 수익률은 '2년 뒤 남는 돈' 표에서만 대략 본다.</li>
+</ul>
+
+<h2 id="fwd">8. 앞으로 검증</h2>
+<p>과거 검증은 규칙을 되돌려 본 것이고, 진짜 시험은 <b>오늘 낸 점수·가격대를 저장해 두고 실제 실거래가 찍히면 대조</b>하는 것이다. 매월 1일 스냅샷을 저장하고 3·12·24개월 뒤 대조한다. 결과는 대시보드 맨 아래 '앞으로 검증' 접힘에 쌓인다. 첫 3개월 대조 2026-12-15, 첫 24개월 대조 2028-09-15.</p>
+<p class="foot">생성 2026-09-17 · py build_guide.py · 점수 규칙 원본: property_score.py · liquidity.py · longscore.py · supply.py · ecos.py · rates.py · pulse.py</p></div></body></html>
