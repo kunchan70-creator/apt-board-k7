@@ -1,45 +1,94 @@
-<meta name="robots" content="noindex,nofollow">
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>데이터 출처·검증</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"><style>
-:root{--bg:#eef1f5;--surface:#fff;--sunk:#e4e8ee;--ink:#151c26;--ink2:#4a5666;--ink3:#7b8797;--line:#d5dbe3;--accent:#1d4f8f;--good:#1f8a5b;--ok:#2a6fbf;--warn:#b7791f;--crit:#c0392b;--goodbg:#e2f3ea;--okbg:#e3ecf8;--warnbg:#f8eedb;--critbg:#f9e3e0}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1318;--surface:#171c23;--sunk:#1f2630;--ink:#e9edf2;--ink2:#aeb8c4;--ink3:#8b97a3;--line:#2b343f;--accent:#7fb0ff;--good:#3ec585;--ok:#6fa7ee;--warn:#e0a83a;--crit:#f0705f;--goodbg:#173327;--okbg:#182a42;--warnbg:#3a2d12;--critbg:#3f1c18}}
-:root[data-theme="dark"]{--bg:#0f1318;--surface:#171c23;--sunk:#1f2630;--ink:#e9edf2;--ink2:#aeb8c4;--ink3:#8b97a3;--line:#2b343f;--accent:#7fb0ff;--good:#3ec585;--ok:#6fa7ee;--warn:#e0a83a;--crit:#f0705f;--goodbg:#173327;--okbg:#182a42;--warnbg:#3a2d12;--critbg:#3f1c18}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans KR","Noto Sans KR",system-ui,"Malgun Gothic",sans-serif;font-size:16px;line-height:1.65;padding:0 16px 80px}
-.wrap{max-width:1040px;margin:0 auto}
-nav.top{display:flex;flex-wrap:wrap;gap:6px;padding:14px 0 6px;font-size:.9rem}
-nav.top a{padding:6px 12px;border:1px solid var(--line);background:var(--surface);color:var(--accent);text-decoration:none;font-weight:500}
-nav.top a.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-h1{font-size:1.9rem;line-height:1.25;margin:18px 0 6px;letter-spacing:-.01em}
-.lead{color:var(--ink2);font-size:1.05rem;max-width:70ch;margin:0 0 22px}
-h2{font-size:1.3rem;margin:44px 0 10px;padding-top:14px;border-top:2px solid var(--line)}
-h3{font-size:1.05rem;margin:24px 0 6px}
-p{margin:8px 0;max-width:80ch}
-.toc{background:var(--surface);border:1px solid var(--line);padding:12px 18px;font-size:.92rem;columns:2;column-gap:32px}
-.toc a{color:var(--accent);text-decoration:none;display:block;padding:2px 0}
-@media (max-width:640px){.toc{columns:1}}
-.tw{overflow-x:auto;background:var(--surface);border:1px solid var(--line);margin:10px 0}
-table{border-collapse:collapse;width:100%;font-size:.9rem;font-variant-numeric:tabular-nums}
-th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
-thead th{font-weight:600;color:var(--ink2);font-size:.82rem;background:var(--sunk);white-space:nowrap}
-td.n,th.n{text-align:right;font-family:"IBM Plex Mono",monospace;white-space:nowrap}
-tbody th{font-weight:600;white-space:nowrap}
-.f{font-family:"IBM Plex Mono",monospace;background:var(--surface);border:1px solid var(--line);padding:12px 16px;font-size:.95rem;margin:10px 0;overflow-x:auto;white-space:pre}
-code{font-family:"IBM Plex Mono",monospace;font-size:.88em;background:var(--sunk);padding:0 5px}
-.box{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);padding:12px 18px;margin:14px 0}
-.box.good{border-left-color:var(--good)}.box.warn{border-left-color:var(--warn)}.box.crit{border-left-color:var(--crit)}
-.b{display:inline-block;font-size:.78rem;font-weight:600;padding:1px 8px;border-radius:3px;white-space:nowrap}
-.b.good{color:var(--good);background:var(--goodbg)}.b.ok{color:var(--ok);background:var(--okbg)}.b.warn{color:var(--warn);background:var(--warnbg)}.b.crit{color:var(--crit);background:var(--critbg)}
-.b.g{color:var(--ink2);background:var(--sunk)}
-ul,ol{max-width:80ch}li{margin:4px 0}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:700px){.grid2{grid-template-columns:1fr}}
-.card{background:var(--surface);border:1px solid var(--line);padding:14px 18px}
-.card h3{margin-top:0}
-.big{font-size:2rem;font-weight:700;font-family:"IBM Plex Mono",monospace;line-height:1}
-.foot{font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--ink3);margin-top:40px}
-small.src{color:var(--ink3);font-size:.8rem}
-</style></head>
-<body><div class="wrap"><nav class="top"><a href="index.html">대시보드</a><a href="guide.html">설명서</a><a href="formula.html">수식</a><a href="sources.html" class=on>출처·검증</a><a href="watch.html">점수판 상세</a><a href="map.html">지도</a><a href="fomo.html">FOMO</a></nav>
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark"><meta name="robots" content="noindex,nofollow">
+<title>데이터 출처·검증</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{
+ --bg:#f2f4f6;--surface:#fff;--surface2:#f9fafb;--ink:#191f28;--ink2:#4e5968;--ink3:#8b95a1;--line:#e5e8eb;--line2:#f2f4f6;
+ --blue:#3182f6;--blue-bg:#e8f3ff;--red:#f04452;--red-bg:#fee;--green:#00a660;--green-bg:#e5f7ee;--amber:#f59e0b;--amber-bg:#fff5e5;
+ --r:18px;--r2:12px;--shadow:0 1px 3px rgba(0,0,0,.04)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+ --bg:#111417;--surface:#191c20;--surface2:#212529;--ink:#eaedf0;--ink2:#a7b0ba;--ink3:#7b848e;--line:#2a2f35;--line2:#212529;
+ --blue:#4d95ff;--blue-bg:#13294a;--red:#ff6b77;--red-bg:#3a1a1e;--green:#2ecc82;--green-bg:#10301f;--amber:#ffb340;--amber-bg:#3a2a10;--shadow:none}}
+:root[data-theme="dark"]{--bg:#111417;--surface:#191c20;--surface2:#212529;--ink:#eaedf0;--ink2:#a7b0ba;--ink3:#7b848e;--line:#2a2f35;--line2:#212529;--blue:#4d95ff;--blue-bg:#13294a;--red:#ff6b77;--red-bg:#3a1a1e;--green:#2ecc82;--green-bg:#10301f;--amber:#ffb340;--amber-bg:#3a2a10;--shadow:none}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.5;letter-spacing:-.01em;
+ font-family:Pretendard,"Pretendard Variable",-apple-system,BlinkMacSystemFont,system-ui,"Noto Sans KR","Malgun Gothic",sans-serif;
+ padding:0 16px 96px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto}
+a{color:var(--blue);text-decoration:none}
+.top{display:flex;align-items:center;justify-content:space-between;padding:18px 2px 10px;gap:12px}
+.top .brand{font-size:1.05rem;font-weight:700}
+.top .date{font-size:.8rem;color:var(--ink3);font-variant-numeric:tabular-nums}
+nav.tabs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 14px;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{flex:0 0 auto;padding:7px 14px;border-radius:999px;background:var(--surface);color:var(--ink2);font-size:.88rem;font-weight:600;border:1px solid var(--line)}
+nav.tabs a.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.card{background:var(--surface);border-radius:var(--r);padding:20px;margin-bottom:12px;box-shadow:var(--shadow)}
+.card.tight{padding:14px 16px}
+h1{font-size:1.6rem;font-weight:800;line-height:1.3;margin:0 0 6px;letter-spacing:-.02em;text-wrap:balance}
+h2{font-size:1.15rem;font-weight:700;margin:28px 0 10px;letter-spacing:-.02em}
+h2:first-child{margin-top:0}
+h3{font-size:1rem;font-weight:700;margin:20px 0 6px}
+p{margin:6px 0;color:var(--ink2)}
+.sub{color:var(--ink3);font-size:.88rem}
+.big{font-size:2.4rem;font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;padding:3px 9px;border-radius:7px;font-size:.76rem;font-weight:700;white-space:nowrap}
+.tag.blue{background:var(--blue-bg);color:var(--blue)}.tag.red{background:var(--red-bg);color:var(--red)}
+.tag.green{background:var(--green-bg);color:var(--green)}.tag.amber{background:var(--amber-bg);color:var(--amber)}
+.tag.gray{background:var(--surface2);color:var(--ink3)}
+.seg{display:flex;background:var(--surface2);border-radius:12px;padding:4px;gap:4px;margin-bottom:12px}
+.seg button{flex:1;padding:11px 8px;border:0;border-radius:9px;background:transparent;color:var(--ink3);font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.chips button{padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink2);font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit}
+.chips button.on{background:var(--blue-bg);border-color:var(--blue);color:var(--blue)}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line2);font-size:.92rem}
+.kv:last-child{border-bottom:0}
+.kv .k{color:var(--ink3)}.kv .v{font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.bar{height:7px;border-radius:99px;background:var(--line2);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--blue)}
+.num{font-variant-numeric:tabular-nums}
+.pos{color:var(--green)}.neg{color:var(--red)}
+.tw{overflow-x:auto;margin:10px -4px}
+table{border-collapse:collapse;width:100%;font-size:.88rem;font-variant-numeric:tabular-nums}
+th,td{padding:10px 8px;text-align:right;border-bottom:1px solid var(--line2);white-space:nowrap}
+th{font-size:.78rem;font-weight:600;color:var(--ink3);background:var(--surface)}
+th:first-child,td:first-child{text-align:left}
+tbody td:first-child{font-weight:600}
+.note{font-size:.82rem;color:var(--ink3);line-height:1.55;margin:10px 0 0}
+.foot{text-align:center;color:var(--ink3);font-size:.78rem;padding:28px 0 0}
+details{border-top:1px solid var(--line2)}
+details summary{cursor:pointer;padding:13px 0;font-weight:600;font-size:.95rem;list-style:none;display:flex;justify-content:space-between}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:"＋";color:var(--ink3);font-weight:400}
+details[open] summary::after{content:"－"}
+.btn{display:block;width:100%;text-align:center;padding:15px;border-radius:14px;background:var(--blue);color:#fff;font-weight:700;font-size:.98rem;border:0;cursor:pointer;font-family:inherit}
+.btn.ghost{background:var(--surface2);color:var(--ink2)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:480px){.grid2{grid-template-columns:1fr}h1{font-size:1.4rem}.big{font-size:2rem}}
+/* 긴 글 페이지(설명서·수식·출처)용 */
+.lead{font-size:1.02rem;color:var(--ink2);margin:0 0 20px}
+.toc{background:var(--surface2);border-radius:var(--r2);padding:12px 16px;margin:16px 0;columns:2;column-gap:24px;font-size:.9rem}
+.toc a{display:block;padding:3px 0}
+@media (max-width:560px){.toc{columns:1}}
+.box{background:var(--surface2);border-radius:var(--r2);border-left:4px solid var(--blue);padding:13px 16px;margin:14px 0;font-size:.93rem}
+.box.good{border-left-color:var(--green)}.box.warn{border-left-color:var(--amber)}.box.crit{border-left-color:var(--red)}
+.f{background:var(--surface2);border-radius:var(--r2);padding:14px 16px;margin:12px 0;overflow-x:auto;white-space:pre;
+ font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-size:.86rem;line-height:1.7;color:var(--ink)}
+code{background:var(--surface2);border-radius:5px;padding:1px 5px;font-size:.88em;font-family:"SFMono-Regular",Consolas,Menlo,monospace}
+.b{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.78rem;font-weight:700;white-space:nowrap;background:var(--surface2);color:var(--ink2)}
+.b.good{background:var(--green-bg);color:var(--green)}.b.ok{background:var(--blue-bg);color:var(--blue)}
+.b.warn{background:var(--amber-bg);color:var(--amber)}.b.crit{background:var(--red-bg);color:var(--red)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+small.src{display:block;color:var(--ink3);font-size:.8rem;margin-top:4px;line-height:1.5}
+.card h2:first-child,.card h1:first-child{margin-top:0}
+ul.plain{padding-left:18px}
+</style></head><body><div class="wrap">
+<div class="top"><span class="brand">수원 아파트 점수판</span><span class="date">2026.09.18</span></div>
+<nav class="tabs"><a href="index.html">점수</a><a href="evidence.html">검증</a><a href="market.html">시장</a><a href="guide.html">설명서</a><a href="formula.html">수식</a><a href="sources.html" class=on>출처</a><a href="watch.html">상세</a><a href="map.html">지도</a></nav>
+<div class="card">
 <h1>데이터 출처와 검증</h1>
 <p class="lead">어디서 온 숫자인지, 공식 자료인지, 얼마나 자주 갱신되는지, 그리고 이 점수가 과거에 얼마나 맞았는지.</p>
 <div class="toc"><a href="#src">1. 출처 목록과 공식 여부</a><a href="#refresh">2. 갱신 주기와 파이프라인</a><a href="#bt">3. 과거 검증(백테스트)이란</a><a href="#tests">4. 2년 점수 8가지 검사 결과</a><a href="#long">5. 5년 점수 검증</a><a href="#regime">6. 상승장의 끝 검증</a><a href="#limits">7. 한계와 미검증 항목</a><a href="#fwd">8. 앞으로 검증</a></div>
@@ -85,4 +134,6 @@ small.src{color:var(--ink3);font-size:.8rem}
 
 <h2 id="fwd">8. 앞으로 검증</h2>
 <p>과거 검증은 규칙을 되돌려 본 것이고, 진짜 시험은 <b>오늘 낸 점수·가격대를 저장해 두고 실제 실거래가 찍히면 대조</b>하는 것이다. 매월 1일 스냅샷을 저장하고 3·12·24개월 뒤 대조한다. 결과는 대시보드 맨 아래 '앞으로 검증' 접힘에 쌓인다. 첫 3개월 대조 2026-12-15, 첫 24개월 대조 2028-09-15.</p>
-<p class="foot">생성 2026-09-18 · py build_guide.py · 점수 규칙 원본: property_score.py · liquidity.py · longscore.py · supply.py · ecos.py · rates.py · pulse.py</p></div></body></html>
+</div>
+<p class="foot">공개 데이터로 매일 자동 계산 · 투자 권유 아님</p>
+</div></body></html>

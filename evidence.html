@@ -1,0 +1,351 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark"><meta name="robots" content="noindex,nofollow">
+<title>점수 검증</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{
+ --bg:#f2f4f6;--surface:#fff;--surface2:#f9fafb;--ink:#191f28;--ink2:#4e5968;--ink3:#8b95a1;--line:#e5e8eb;--line2:#f2f4f6;
+ --blue:#3182f6;--blue-bg:#e8f3ff;--red:#f04452;--red-bg:#fee;--green:#00a660;--green-bg:#e5f7ee;--amber:#f59e0b;--amber-bg:#fff5e5;
+ --r:18px;--r2:12px;--shadow:0 1px 3px rgba(0,0,0,.04)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+ --bg:#111417;--surface:#191c20;--surface2:#212529;--ink:#eaedf0;--ink2:#a7b0ba;--ink3:#7b848e;--line:#2a2f35;--line2:#212529;
+ --blue:#4d95ff;--blue-bg:#13294a;--red:#ff6b77;--red-bg:#3a1a1e;--green:#2ecc82;--green-bg:#10301f;--amber:#ffb340;--amber-bg:#3a2a10;--shadow:none}}
+:root[data-theme="dark"]{--bg:#111417;--surface:#191c20;--surface2:#212529;--ink:#eaedf0;--ink2:#a7b0ba;--ink3:#7b848e;--line:#2a2f35;--line2:#212529;--blue:#4d95ff;--blue-bg:#13294a;--red:#ff6b77;--red-bg:#3a1a1e;--green:#2ecc82;--green-bg:#10301f;--amber:#ffb340;--amber-bg:#3a2a10;--shadow:none}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.5;letter-spacing:-.01em;
+ font-family:Pretendard,"Pretendard Variable",-apple-system,BlinkMacSystemFont,system-ui,"Noto Sans KR","Malgun Gothic",sans-serif;
+ padding:0 16px 96px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto}
+a{color:var(--blue);text-decoration:none}
+.top{display:flex;align-items:center;justify-content:space-between;padding:18px 2px 10px;gap:12px}
+.top .brand{font-size:1.05rem;font-weight:700}
+.top .date{font-size:.8rem;color:var(--ink3);font-variant-numeric:tabular-nums}
+nav.tabs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 14px;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{flex:0 0 auto;padding:7px 14px;border-radius:999px;background:var(--surface);color:var(--ink2);font-size:.88rem;font-weight:600;border:1px solid var(--line)}
+nav.tabs a.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.card{background:var(--surface);border-radius:var(--r);padding:20px;margin-bottom:12px;box-shadow:var(--shadow)}
+.card.tight{padding:14px 16px}
+h1{font-size:1.6rem;font-weight:800;line-height:1.3;margin:0 0 6px;letter-spacing:-.02em;text-wrap:balance}
+h2{font-size:1.15rem;font-weight:700;margin:28px 0 10px;letter-spacing:-.02em}
+h2:first-child{margin-top:0}
+h3{font-size:1rem;font-weight:700;margin:20px 0 6px}
+p{margin:6px 0;color:var(--ink2)}
+.sub{color:var(--ink3);font-size:.88rem}
+.big{font-size:2.4rem;font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;padding:3px 9px;border-radius:7px;font-size:.76rem;font-weight:700;white-space:nowrap}
+.tag.blue{background:var(--blue-bg);color:var(--blue)}.tag.red{background:var(--red-bg);color:var(--red)}
+.tag.green{background:var(--green-bg);color:var(--green)}.tag.amber{background:var(--amber-bg);color:var(--amber)}
+.tag.gray{background:var(--surface2);color:var(--ink3)}
+.seg{display:flex;background:var(--surface2);border-radius:12px;padding:4px;gap:4px;margin-bottom:12px}
+.seg button{flex:1;padding:11px 8px;border:0;border-radius:9px;background:transparent;color:var(--ink3);font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.chips button{padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink2);font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit}
+.chips button.on{background:var(--blue-bg);border-color:var(--blue);color:var(--blue)}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line2);font-size:.92rem}
+.kv:last-child{border-bottom:0}
+.kv .k{color:var(--ink3)}.kv .v{font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.bar{height:7px;border-radius:99px;background:var(--line2);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--blue)}
+.num{font-variant-numeric:tabular-nums}
+.pos{color:var(--green)}.neg{color:var(--red)}
+.tw{overflow-x:auto;margin:10px -4px}
+table{border-collapse:collapse;width:100%;font-size:.88rem;font-variant-numeric:tabular-nums}
+th,td{padding:10px 8px;text-align:right;border-bottom:1px solid var(--line2);white-space:nowrap}
+th{font-size:.78rem;font-weight:600;color:var(--ink3);background:var(--surface)}
+th:first-child,td:first-child{text-align:left}
+tbody td:first-child{font-weight:600}
+.note{font-size:.82rem;color:var(--ink3);line-height:1.55;margin:10px 0 0}
+.foot{text-align:center;color:var(--ink3);font-size:.78rem;padding:28px 0 0}
+details{border-top:1px solid var(--line2)}
+details summary{cursor:pointer;padding:13px 0;font-weight:600;font-size:.95rem;list-style:none;display:flex;justify-content:space-between}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:"＋";color:var(--ink3);font-weight:400}
+details[open] summary::after{content:"－"}
+.btn{display:block;width:100%;text-align:center;padding:15px;border-radius:14px;background:var(--blue);color:#fff;font-weight:700;font-size:.98rem;border:0;cursor:pointer;font-family:inherit}
+.btn.ghost{background:var(--surface2);color:var(--ink2)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:480px){.grid2{grid-template-columns:1fr}h1{font-size:1.4rem}.big{font-size:2rem}}
+/* 긴 글 페이지(설명서·수식·출처)용 */
+.lead{font-size:1.02rem;color:var(--ink2);margin:0 0 20px}
+.toc{background:var(--surface2);border-radius:var(--r2);padding:12px 16px;margin:16px 0;columns:2;column-gap:24px;font-size:.9rem}
+.toc a{display:block;padding:3px 0}
+@media (max-width:560px){.toc{columns:1}}
+.box{background:var(--surface2);border-radius:var(--r2);border-left:4px solid var(--blue);padding:13px 16px;margin:14px 0;font-size:.93rem}
+.box.good{border-left-color:var(--green)}.box.warn{border-left-color:var(--amber)}.box.crit{border-left-color:var(--red)}
+.f{background:var(--surface2);border-radius:var(--r2);padding:14px 16px;margin:12px 0;overflow-x:auto;white-space:pre;
+ font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-size:.86rem;line-height:1.7;color:var(--ink)}
+code{background:var(--surface2);border-radius:5px;padding:1px 5px;font-size:.88em;font-family:"SFMono-Regular",Consolas,Menlo,monospace}
+.b{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.78rem;font-weight:700;white-space:nowrap;background:var(--surface2);color:var(--ink2)}
+.b.good{background:var(--green-bg);color:var(--green)}.b.ok{background:var(--blue-bg);color:var(--blue)}
+.b.warn{background:var(--amber-bg);color:var(--amber)}.b.crit{background:var(--red-bg);color:var(--red)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+small.src{display:block;color:var(--ink3);font-size:.8rem;margin-top:4px;line-height:1.5}
+.card h2:first-child,.card h1:first-child{margin-top:0}
+ul.plain{padding-left:18px}
+</style></head><body><div class="wrap">
+<div class="top"><span class="brand">수원 아파트 점수판</span><span class="date">2026.09.18</span></div>
+<nav class="tabs"><a href="index.html">점수</a><a href="evidence.html" class=on>검증</a><a href="market.html">시장</a><a href="guide.html">설명서</a><a href="formula.html">수식</a><a href="sources.html">출처</a><a href="watch.html">상세</a><a href="map.html">지도</a></nav>
+<div class="card">
+<h1>과거에 이 점수를 받았던 아파트는<br>실제로 어떻게 됐을까요?</h1>
+<p>2014년 1월부터 2024년 7월까지, 경기도 아파트를 <b>그 시점에 알 수 있던 자료만으로</b> 채점했습니다. 그리고 실제 실거래가 어떻게 움직였는지 맞춰봤어요. 표본 81,642건.</p>
+<p class="note">미래를 미리 본 효과를 빼려고, 점수를 매길 때 쓰는 확률표도 그 시점까지의 자료로만 다시 만들어 적용했습니다. 자료는 전부 국토교통부 실거래가와 KB 지수입니다.</p></div>
+
+<div class="card">
+<h2 style="margin-top:0">2년 점수 → 2년 뒤 실제 수익</h2>
+<div style="padding:14px 0;border-bottom:1px solid var(--line2)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+ <span><span class="tag red">0~39점</span> <span class="sub">4,426건</span></span>
+ <span class="num" style="font-size:1.35rem;font-weight:800" class2="">-5%</span></div>
+<div class="bar" style="margin:9px 0 7px"><i style="width:40%;background:var(--red)"></i></div>
+<div class="sub">2년 뒤 <b style="color:var(--ink)">40%</b>가 플러스 · <b style="color:var(--ink)">41%</b>는 −10% 이상 손실 · 중간 절반 -17% ~ 8%</div></div><div style="padding:14px 0;border-bottom:1px solid var(--line2)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+ <span><span class="tag amber">40~54점</span> <span class="sub">23,989건</span></span>
+ <span class="num" style="font-size:1.35rem;font-weight:800" class2="">+6%</span></div>
+<div class="bar" style="margin:9px 0 7px"><i style="width:67%;background:var(--amber)"></i></div>
+<div class="sub">2년 뒤 <b style="color:var(--ink)">67%</b>가 플러스 · <b style="color:var(--ink)">15%</b>는 −10% 이상 손실 · 중간 절반 -4% ~ 19%</div></div><div style="padding:14px 0;border-bottom:1px solid var(--line2)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+ <span><span class="tag blue">55~69점</span> <span class="sub">45,514건</span></span>
+ <span class="num" style="font-size:1.35rem;font-weight:800" class2="">+11%</span></div>
+<div class="bar" style="margin:9px 0 7px"><i style="width:79%;background:var(--blue)"></i></div>
+<div class="sub">2년 뒤 <b style="color:var(--ink)">79%</b>가 플러스 · <b style="color:var(--ink)">5%</b>는 −10% 이상 손실 · 중간 절반 2% ~ 26%</div></div><div style="padding:14px 0;border-bottom:1px solid var(--line2)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+ <span><span class="tag green">70~100점</span> <span class="sub">7,713건</span></span>
+ <span class="num" style="font-size:1.35rem;font-weight:800" class2="">+14%</span></div>
+<div class="bar" style="margin:9px 0 7px"><i style="width:90%;background:var(--green)"></i></div>
+<div class="sub">2년 뒤 <b style="color:var(--ink)">90%</b>가 플러스 · <b style="color:var(--ink)">1%</b>는 −10% 이상 손실 · 중간 절반 6% ~ 26%</div></div>
+<p class="note">막대는 플러스로 끝난 비율. 점수가 높을수록 손실이 줄어드는 게 이 점수판의 핵심입니다. 반대로 '얼마나 많이 오르나'는 잘 못 맞힙니다.</p></div>
+
+<div class="card">
+<h2 style="margin-top:0">5년 점수 → 5년 뒤 실제 수익</h2>
+<div style="padding:14px 0;border-bottom:1px solid var(--line2)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+ <span><span class="tag red">0~39점</span> <span class="sub">9,125건</span></span>
+ <span class="num" style="font-size:1.35rem;font-weight:800" class2="">+21%</span></div>
+<div class="bar" style="margin:9px 0 7px"><i style="width:80%;background:var(--red)"></i></div>
+<div class="sub">5년 뒤 <b style="color:var(--ink)">80%</b>가 플러스 · <b style="color:var(--ink)">10%</b>는 −10% 이상 손실 · 중간 절반 3% ~ 42%</div></div><div style="padding:14px 0;border-bottom:1px solid var(--line2)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+ <span><span class="tag amber">40~49점</span> <span class="sub">23,538건</span></span>
+ <span class="num" style="font-size:1.35rem;font-weight:800" class2="">+30%</span></div>
+<div class="bar" style="margin:9px 0 7px"><i style="width:91%;background:var(--amber)"></i></div>
+<div class="sub">5년 뒤 <b style="color:var(--ink)">91%</b>가 플러스 · <b style="color:var(--ink)">4%</b>는 −10% 이상 손실 · 중간 절반 13% ~ 50%</div></div><div style="padding:14px 0;border-bottom:1px solid var(--line2)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+ <span><span class="tag amber">50~59점</span> <span class="sub">8,664건</span></span>
+ <span class="num" style="font-size:1.35rem;font-weight:800" class2="">+43%</span></div>
+<div class="bar" style="margin:9px 0 7px"><i style="width:92%;background:var(--amber)"></i></div>
+<div class="sub">5년 뒤 <b style="color:var(--ink)">92%</b>가 플러스 · <b style="color:var(--ink)">2%</b>는 −10% 이상 손실 · 중간 절반 20% ~ 65%</div></div><div style="padding:14px 0;border-bottom:1px solid var(--line2)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+ <span><span class="tag blue">60~69점</span> <span class="sub">4,530건</span></span>
+ <span class="num" style="font-size:1.35rem;font-weight:800" class2="">+44%</span></div>
+<div class="bar" style="margin:9px 0 7px"><i style="width:96%;background:var(--blue)"></i></div>
+<div class="sub">5년 뒤 <b style="color:var(--ink)">96%</b>가 플러스 · <b style="color:var(--ink)">1%</b>는 −10% 이상 손실 · 중간 절반 26% ~ 65%</div></div><div style="padding:14px 0;border-bottom:1px solid var(--line2)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+ <span><span class="tag green">70~100점</span> <span class="sub">3,405건</span></span>
+ <span class="num" style="font-size:1.35rem;font-weight:800" class2="">+52%</span></div>
+<div class="bar" style="margin:9px 0 7px"><i style="width:97%;background:var(--green)"></i></div>
+<div class="sub">5년 뒤 <b style="color:var(--ink)">97%</b>가 플러스 · <b style="color:var(--ink)">0%</b>는 −10% 이상 손실 · 중간 절반 36% ~ 74%</div></div>
+<p class="note">5년을 들고 있으면 경기도 아파트는 대부분 올랐습니다. 차이는 <b>얼마나</b>와 <b>원금 이하로 내려갈 확률</b>이에요. 5년 점수 70점 이상은 원금 이하가 3%, 40점 미만은 20%였습니다.</p></div>
+
+<div class="card">
+<h2 style="margin-top:0">오래 들고 있을수록 벌어집니다</h2>
+<div class="tw"><table><thead><tr><th>보유 기간</th><th>2년 점수 70+</th><th>2년 점수 40−</th><th>5년 점수 70+</th><th>5년 점수 40−</th></tr></thead><tbody>
+<tr><td>1년</td><td class="num">+7%</td><td class="num">+0%</td><td class="num">+8%</td><td class="num">+3%</td></tr><tr><td>2년</td><td class="num">+14%</td><td class="num">-1%</td><td class="num">+19%</td><td class="num">+6%</td></tr><tr><td>3년</td><td class="num">+22%</td><td class="num">-0%</td><td class="num">+29%</td><td class="num">+9%</td></tr><tr><td>5년</td><td class="num">+44%</td><td class="num">+14%</td><td class="num">+52%</td><td class="num">+24%</td></tr>
+</tbody></table></div>
+<p class="note">각 칸은 그 점수대 물건들의 실현 수익 중앙값. 2년 점수는 2년 안에서 잘 갈라지고, 5년 점수는 시간이 갈수록 벌어집니다.</p></div>
+
+<div class="card">
+<h2 style="margin-top:0">실제 단지로 보기</h2>
+<p class="sub">맞은 사례만 고르면 광고가 됩니다. 틀린 사례도 같이 놓았어요. 단지명·시점·가격 그대로라서 국토부 실거래로 직접 확인할 수 있습니다.</p>
+<h3>점수대로 간 경우</h3><div class="card tight" style="margin-bottom:10px;border-left:4px solid var(--green)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">권선구 수원아이파크시티7단지 59㎡</span>
+ <span class="tag green">맞음</span></div>
+<div class="kv"><span class="k">2019.01에 샀다면 점수</span><span class="v">74점</span></div>
+<div class="kv"><span class="k">그때 실거래</span><span class="v">3.65억</span></div>
+<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">5.20억 <span class="pos">(+42%)</span></span></div>
+<div class="note">2년 점수 높았고 올랐다</div></div><div class="card tight" style="margin-bottom:10px;border-left:4px solid var(--green)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">영통구 황골마을주공1 59㎡</span>
+ <span class="tag green">맞음</span></div>
+<div class="kv"><span class="k">2014.07에 샀다면 점수</span><span class="v">73점</span></div>
+<div class="kv"><span class="k">그때 실거래</span><span class="v">2.10억</span></div>
+<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">2.40억 <span class="pos">(+14%)</span></span></div>
+<div class="note">2년 점수 높았고 올랐다</div></div><div class="card tight" style="margin-bottom:10px;border-left:4px solid var(--green)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">영통구 삼성1 59㎡</span>
+ <span class="tag green">맞음</span></div>
+<div class="kv"><span class="k">2014.04에 샀다면 점수</span><span class="v">71점</span></div>
+<div class="kv"><span class="k">그때 실거래</span><span class="v">1.75억</span></div>
+<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">2.04억 <span class="pos">(+17%)</span></span></div>
+<div class="note">2년 점수 높았고 올랐다</div></div><div class="card tight" style="margin-bottom:10px;border-left:4px solid var(--green)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">권선구 현대 59㎡</span>
+ <span class="tag green">맞음</span></div>
+<div class="kv"><span class="k">2021.07에 샀다면 점수</span><span class="v">37점</span></div>
+<div class="kv"><span class="k">그때 실거래</span><span class="v">4.00억</span></div>
+<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">3.25억 <span class="neg">(-19%)</span></span></div>
+<div class="note">2년 점수 낮았고 잃었다</div></div><div class="card tight" style="margin-bottom:10px;border-left:4px solid var(--green)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">장안구 수원 SK SKY VIEW 59㎡</span>
+ <span class="tag green">맞음</span></div>
+<div class="kv"><span class="k">2021.07에 샀다면 점수</span><span class="v">27점</span></div>
+<div class="kv"><span class="k">그때 실거래</span><span class="v">6.60억</span></div>
+<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">5.81억 <span class="neg">(-12%)</span></span></div>
+<div class="note">2년 점수 낮았고 잃었다</div></div><div class="card tight" style="margin-bottom:10px;border-left:4px solid var(--green)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">팔달구 월드메르디앙 84㎡</span>
+ <span class="tag green">맞음</span></div>
+<div class="kv"><span class="k">2021.07에 샀다면 점수</span><span class="v">29점</span></div>
+<div class="kv"><span class="k">그때 실거래</span><span class="v">6.85억</span></div>
+<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">5.75억 <span class="neg">(-16%)</span></span></div>
+<div class="note">2년 점수 낮았고 잃었다</div></div><div class="card tight" style="margin-bottom:10px;border-left:4px solid var(--green)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">영통구 벽적골롯데 59㎡</span>
+ <span class="tag green">맞음</span></div>
+<div class="kv"><span class="k">2019.04에 샀다면 점수</span><span class="v">80점</span></div>
+<div class="kv"><span class="k">그때 실거래</span><span class="v">2.74억</span></div>
+<div class="kv"><span class="k">5년 뒤 실거래</span><span class="v">4.40억 <span class="pos">(+61%)</span></span></div>
+<div class="note">5년 점수 높았고 5년 뒤</div></div><div class="card tight" style="margin-bottom:10px;border-left:4px solid var(--green)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">영통구 영통SKVIEW 84㎡</span>
+ <span class="tag green">맞음</span></div>
+<div class="kv"><span class="k">2019.07에 샀다면 점수</span><span class="v">77점</span></div>
+<div class="kv"><span class="k">그때 실거래</span><span class="v">5.60억</span></div>
+<div class="kv"><span class="k">5년 뒤 실거래</span><span class="v">8.24억 <span class="pos">(+47%)</span></span></div>
+<div class="note">5년 점수 높았고 5년 뒤</div></div><div class="card tight" style="margin-bottom:10px;border-left:4px solid var(--green)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">장안구 천천삼성래미안 59㎡</span>
+ <span class="tag green">맞음</span></div>
+<div class="kv"><span class="k">2018.07에 샀다면 점수</span><span class="v">80점</span></div>
+<div class="kv"><span class="k">그때 실거래</span><span class="v">2.75억</span></div>
+<div class="kv"><span class="k">5년 뒤 실거래</span><span class="v">3.95억 <span class="pos">(+44%)</span></span></div>
+<div class="note">5년 점수 높았고 5년 뒤</div></div>
+<h3>점수가 틀린 경우</h3><div class="card tight" style="margin-bottom:10px;border-left:4px solid var(--red)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">고양시 일산동구 중산마을11(현대) 84㎡</span>
+ <span class="tag red">틀림</span></div>
+<div class="kv"><span class="k">2017.07에 샀다면 점수</span><span class="v">72점</span></div>
+<div class="kv"><span class="k">그때 실거래</span><span class="v">2.75억</span></div>
+<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">2.43억 <span class="neg">(-12%)</span></span></div>
+<div class="note">2년 점수 높았는데 잃었다</div></div><div class="card tight" style="margin-bottom:10px;border-left:4px solid var(--red)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">양주시 성우아파트아침의미소 59㎡</span>
+ <span class="tag red">틀림</span></div>
+<div class="kv"><span class="k">2017.01에 샀다면 점수</span><span class="v">70점</span></div>
+<div class="kv"><span class="k">그때 실거래</span><span class="v">1.51억</span></div>
+<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">1.35억 <span class="neg">(-11%)</span></span></div>
+<div class="note">2년 점수 높았는데 잃었다</div></div><div class="card tight" style="margin-bottom:10px;border-left:4px solid var(--red)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">고양시 일산서구 탄현마을(삼익) 59㎡</span>
+ <span class="tag red">틀림</span></div>
+<div class="kv"><span class="k">2017.07에 샀다면 점수</span><span class="v">72점</span></div>
+<div class="kv"><span class="k">그때 실거래</span><span class="v">2.29억</span></div>
+<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">1.95억 <span class="neg">(-15%)</span></span></div>
+<div class="note">2년 점수 높았는데 잃었다</div></div><div class="card tight" style="margin-bottom:10px;border-left:4px solid var(--red)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">영통구 매탄주공5 74㎡</span>
+ <span class="tag red">틀림</span></div>
+<div class="kv"><span class="k">2014.01에 샀다면 점수</span><span class="v">42점</span></div>
+<div class="kv"><span class="k">그때 실거래</span><span class="v">3.20억</span></div>
+<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">3.80억 <span class="pos">(+19%)</span></span></div>
+<div class="note">2년 점수 낮았는데 올랐다</div></div><div class="card tight" style="margin-bottom:10px;border-left:4px solid var(--red)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">팔달구 우만주공2단지 49㎡</span>
+ <span class="tag red">틀림</span></div>
+<div class="kv"><span class="k">2018.01에 샀다면 점수</span><span class="v">43점</span></div>
+<div class="kv"><span class="k">그때 실거래</span><span class="v">2.38억</span></div>
+<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">4.37억 <span class="pos">(+83%)</span></span></div>
+<div class="note">2년 점수 낮았는데 올랐다</div></div><div class="card tight" style="margin-bottom:10px;border-left:4px solid var(--red)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">팔달구 우만주공1단지 49㎡</span>
+ <span class="tag red">틀림</span></div>
+<div class="kv"><span class="k">2014.07에 샀다면 점수</span><span class="v">43점</span></div>
+<div class="kv"><span class="k">그때 실거래</span><span class="v">1.56억</span></div>
+<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">2.04억 <span class="pos">(+31%)</span></span></div>
+<div class="note">2년 점수 낮았는데 올랐다</div></div><div class="card tight" style="margin-bottom:10px;border-left:4px solid var(--red)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">영통구 벽산(1053-2) 84㎡</span>
+ <span class="tag red">틀림</span></div>
+<div class="kv"><span class="k">2015.07에 샀다면 점수</span><span class="v">42점</span></div>
+<div class="kv"><span class="k">그때 실거래</span><span class="v">3.33억</span></div>
+<div class="kv"><span class="k">5년 뒤 실거래</span><span class="v">5.00억 <span class="pos">(+50%)</span></span></div>
+<div class="note">5년 점수 낮았는데 5년 뒤</div></div><div class="card tight" style="margin-bottom:10px;border-left:4px solid var(--red)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">팔달구 우만주공4단지 49㎡</span>
+ <span class="tag red">틀림</span></div>
+<div class="kv"><span class="k">2019.10에 샀다면 점수</span><span class="v">41점</span></div>
+<div class="kv"><span class="k">그때 실거래</span><span class="v">2.09억</span></div>
+<div class="kv"><span class="k">5년 뒤 실거래</span><span class="v">4.00억 <span class="pos">(+91%)</span></span></div>
+<div class="note">5년 점수 낮았는데 5년 뒤</div></div><div class="card tight" style="margin-bottom:10px;border-left:4px solid var(--red)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">권선구 한라비발디1단지 84㎡</span>
+ <span class="tag red">틀림</span></div>
+<div class="kv"><span class="k">2020.01에 샀다면 점수</span><span class="v">37점</span></div>
+<div class="kv"><span class="k">그때 실거래</span><span class="v">2.65억</span></div>
+<div class="kv"><span class="k">5년 뒤 실거래</span><span class="v">3.73억 <span class="pos">(+41%)</span></span></div>
+<div class="note">5년 점수 낮았는데 5년 뒤</div></div>
+<p class="note">70점 이상을 받고도 2년 뒤 −10% 아래로 간 사례는 전체 7,713건 중 0.7%였습니다(수원만 보면 0건). 드물지만 없지는 않습니다.</p></div>
+
+<div class="card">
+<h2 style="margin-top:0">해마다 통했나</h2>
+<div class="tw"><table><thead><tr><th>산 해</th><th>70점+ 건수</th><th>70점+ 2년 뒤</th><th>55점− 2년 뒤</th><th>차이</th></tr></thead><tbody><tr><td>2014</td><td class="num">1,045</td>
+<td class="num pos">+14%</td>
+<td class="num pos">+11%</td>
+<td class="num">+2%p</td></tr><tr><td>2015</td><td class="num">2,094</td>
+<td class="num pos">+10%</td>
+<td class="num pos">+8%</td>
+<td class="num">+1%p</td></tr><tr><td>2016</td><td class="num">1,570</td>
+<td class="num pos">+12%</td>
+<td class="num pos">+1%</td>
+<td class="num">+11%p</td></tr><tr><td>2017</td><td class="num">1,095</td>
+<td class="num pos">+12%</td>
+<td class="num neg">-5%</td>
+<td class="num">+16%p</td></tr><tr><td>2018</td><td class="num">767</td>
+<td class="num pos">+24%</td>
+<td class="num pos">+11%</td>
+<td class="num">+13%p</td></tr><tr><td>2019</td><td class="num">384</td>
+<td class="num pos">+60%</td>
+<td class="num pos">+58%</td>
+<td class="num">+2%p</td></tr><tr><td>2020</td><td class="num">605</td>
+<td class="num pos">+55%</td>
+<td class="num pos">+49%</td>
+<td class="num">+6%p</td></tr><tr><td>2021</td><td class="num">95</td>
+<td class="num pos">+16%</td>
+<td class="num neg">-14%</td>
+<td class="num">+29%p</td></tr><tr><td>2022</td><td class="num">0</td>
+<td class="num neg">-</td>
+<td class="num neg">-17%</td>
+<td class="num">-</td></tr><tr><td>2023</td><td class="num">0</td>
+<td class="num neg">-</td>
+<td class="num pos">+5%</td>
+<td class="num">-</td></tr><tr><td>2024</td><td class="num">58</td>
+<td class="num pos">+7%</td>
+<td class="num pos">+3%</td>
+<td class="num">+4%p</td></tr></tbody></table></div>
+<p class="note">2020~2021년처럼 전부 오르던 때는 점수 차이가 줄어듭니다. 점수가 가장 잘 듣는 때는 시장이 갈라질 때예요.</p></div>
+
+<div class="card">
+<h2 style="margin-top:0">직접 확인해 보세요</h2>
+<p class="sub">위 사례의 단지명과 시점을 그대로 넣으면 같은 숫자가 나옵니다. 저희가 쓰는 원본과 같은 자료예요.</p>
+<div class="kv"><span class="k">실거래가 전량 (매매·전월세)</span><span class="v"><a href="https://rt.molit.go.kr/" target="_blank" rel="noopener">국토교통부 →</a></span></div>
+<div class="kv"><span class="k">가격지수·전세가율·매수우위</span><span class="v"><a href="https://data.kbland.kr/" target="_blank" rel="noopener">KB 데이터허브 →</a></span></div>
+<div class="kv"><span class="k">가계대출·기준금리</span><span class="v"><a href="https://ecos.bok.or.kr/" target="_blank" rel="noopener">한국은행 ECOS →</a></span></div>
+<div class="kv"><span class="k">미분양</span><span class="v"><a href="https://stat.molit.go.kr/" target="_blank" rel="noopener">국토부 통계누리 →</a></span></div>
+<div class="kv"><span class="k">학원 위치</span><span class="v"><a href="https://data.gg.go.kr/" target="_blank" rel="noopener">경기데이터드림 →</a></span></div>
+<div class="kv"><span class="k">현재 매물·호가·단지 정보</span><span class="v"><a href="https://new.land.naver.com/" target="_blank" rel="noopener">네이버부동산 →</a></span></div>
+<p class="note">전부 로그인이나 유료 키 없이 볼 수 있는 자료만 씁니다. 계산식은 <a href="formula.html">수식</a>, 자료별 한계는 <a href="sources.html">출처</a>에 적어두었습니다.</p></div>
+
+<div class="card">
+<h2 style="margin-top:0">못 맞히는 것</h2>
+<p>믿을 만한 범위를 넘겨 쓰지 않으려고, 검증에서 떨어진 항목을 그대로 적습니다.</p>
+<div class="kv"><span class="k">같은 구 안에서 어느 단지가 더 오를지</span><span class="v">2년 점수로는 못 맞힘</span></div>
+<div class="kv"><span class="k">상승 확률 숫자</span><span class="v">과신(75~90% → 실제 61~74%)</span></div>
+<div class="kv"><span class="k">12개월 가격 범위</span><span class="v">적중 27%</span></div>
+<div class="kv"><span class="k">서울 아파트</span><span class="v">검증 불가(10년 내내 상승장)</span></div>
+<div class="kv"><span class="k">호가 갭·매물 소진 30점</span><span class="v">과거 매물 자료가 없어 미검증</span></div>
+<p class="note">2년 점수의 힘은 상당 부분 '그 구의 거래량이 늘고 있나' 하나에서 옵니다(순위상관 +0.27 vs 점수 +0.15). 점수는 그 위에 손실 가능성을 조금 더 좁혀주는 역할입니다. 매수 판정의 2년 뒤 −10% 손실은 9%, 보류 판정은 25%였습니다.</p>
+<a class="btn ghost" style="margin-top:12px" href="sources.html">검사 8가지 결과 전부 보기</a></div>
+<p class="foot">공개 데이터로 매일 자동 계산 · 투자 권유 아님</p>
+</div></body></html>
