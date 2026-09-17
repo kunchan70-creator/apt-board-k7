@@ -59,6 +59,7 @@ ul.plain{padding-left:18px;max-width:80ch}
   <span><b>축 선택·가중치</b></span>
   <label><input type="checkbox" id="ax_score" checked> 타이밍 <input type="number" id="w_score" value="75" min="0" max="100" step="5"></label>
   <label><input type="checkbox" id="ax_liq" checked> 환금성 <input type="number" id="w_liq" value="25" min="0" max="100" step="5"></label>
+  <label><input type="checkbox" id="ax_long5"> 5년 보유 <input type="number" id="w_long5" value="0" min="0" max="100" step="5"></label>
   <span class="sum" id="wsum"></span>
   <label>세대수 <select id="f_hh"><option value="0">전체</option><option value="300">300+</option><option value="500">500+</option><option value="1000">1,000+ 대단지</option><option value="1500">1,500+</option><option value="2000">2,000+</option></select></label>
   <label>역 거리 <select id="f_st"><option value="0">전체</option><option value="ex1">급행역 도보 1km</option><option value="ex2">급행역 2km</option><option value="any1">아무 역 1km</option><option value="any2">아무 역 2km</option></select></label>
@@ -268,6 +269,37 @@ ul.plain{padding-left:18px;max-width:80ch}
     [    3,    5) n= 3501  60M 절대   31.0%  (구 단위 변수)   원금이하  12%
     [    5,    8) n= 3925  60M 절대   44.9%  (구 단위 변수)   원금이하  11%
     [    8,   99) n= 9823  60M 절대   30.6%  (구 단위 변수)   원금이하  17%</pre>
+<h3 id="long5">5년 보유 점수 (역 25 · 입주율 25 · 연식 15 · 학원 10 · 환금 10 · 전세가율 5 · 국면 10)</h3>
+<p>위 5년 검증에서 살아남은 요인만으로 만든 점수다. 카드의 "5년"이 이것이고, 위 축 선택에서 <b>5년 보유</b>에 가중치를 주면 종합 순위에 섞인다(기본 0). 2014~2021년 매수분 4.9만 건에서 60개월 순위상관 <b>+0.38</b>(매 분기 100% 양)이고, 시기를 반으로 갈라도 +0.41 / +0.35로 유지된다(같은 구간 기존 종합은 +0.28 / 0.00). 70점 이상은 5년 중앙 +51%·원금손실 3%, 40점 미만은 +19%·21%. 구간 경계는 실측 표를 손으로 옮긴 계단이라 표본 안 값이며, 회귀 적합은 아니다.</p>
+<pre class="mono" style="white-space:pre-wrap;font-size:.76rem;background:var(--surface);border:1px solid var(--line);padding:10px;overflow-x:auto">5년 점수 검증 (경기, 단지×면적대 분기 매수). 표본 24M 81,642 / 60M 49,262
+
+## 순위상관(같은 분기 안) — 5년 점수 vs 기존 종합(2년용)
+                           12M           24M           36M           60M
+  5년 점수           +0.191( 93%)  +0.239( 98%)  +0.262(100%)  +0.379(100%)
+  기존 종합           +0.189( 91%)  +0.183( 98%)  +0.153( 88%)  +0.140( 81%)
+  기존 타이밍          +0.173( 84%)  +0.171( 79%)  +0.154( 82%)  +0.097( 66%)
+  시기 분할(60M): 2014~2017 매수 / 2018~2021 매수
+    2014~2017: 5년 점수 +0.405(100%)  기존 종합 +0.280(100%)
+    2018~2021: 5년 점수 +0.352(100%)  기존 종합 -0.000(62%)
+
+## 5년 점수 구간 → 60M 실현 (2014~2021 매수)
+    [  0, 40) n=  7065  24M 중앙    5.5%  |  60M 중앙   19.3%  Q1    2.6  Q3   40.1  원금이하  21%  −10%↓  10%
+    [ 40, 50) n= 19552  24M 중앙   10.1%  |  60M 중앙   27.8%  Q1   10.8  Q3   47.8  원금이하  11%  −10%↓   5%
+    [ 50, 60) n= 13193  24M 중앙   13.0%  |  60M 중앙   37.8%  Q1   19.1  Q3   60.2  원금이하   7%  −10%↓   2%
+    [ 60, 70) n=  5040  24M 중앙   14.9%  |  60M 중앙   45.1%  Q1   24.4  Q3   66.7  원금이하   5%  −10%↓   1%
+    [ 70,101) n=  4412  24M 중앙   17.7%  |  60M 중앙   50.9%  Q1   35.3  Q3   72.0  원금이하   3%  −10%↓   1%
+
+## 부분점수별 60M 순위상관
+    station   +0.191 (97%)
+    supply    +0.096 (66%)
+    age       +0.217 (100%)
+    hagwon    +0.180 (94%)
+    liq       +0.122 (84%)
+    jr        +0.067 (78%)
+    region    +0.073 (81%)
+
+## 같은 구·시점 안에서 5년 점수 상위 1/3 vs 하위 1/3 (2년 점수는 여기서 차이 0이었음)
+    상위 n=15,186 60M 구대비 중앙 +2.5%p   하위 n=15,186 -1.9%p</pre>
 <h3 id="hagwon">학군(학원 밀집)은 들어가 있나</h3>
 <p>경기데이터드림 학원·교습소 34,012건 좌표로 단지 반경 1km 안 학습형 학원 수를 만들어 대조했다. 학원 많은 곳이 더 오른 건 대부분 "좋은 구" 효과이고, <b>같은 구 안에서는 2년 효과 0, 5년 +0.06</b>으로 작다. 대신 5년 원금손실률이 100개 이상 4% vs 5~15개 22%로 방어력은 뚜렷하다. 평촌 학원가는 2023~24년 매수분에서 구 대비 +5~7%p 앞섰다(최근 2년만).</p>
 <pre class="mono" style="white-space:pre-wrap;font-size:.76rem;background:var(--surface);border:1px solid var(--line);padding:10px;overflow-x:auto">학군 대리변수 검증 (경기, 반경 1km 학습형 학원 수). 표본 34,698  학원 수 분포: 중앙 68, 상위10% 189
@@ -717,6 +749,17 @@ ul.plain{padding-left:18px;max-width:80ch}
     "src": "도보실측"
    },
    "hh": 2178,
+   "long5": 78,
+   "long_parts": {
+    "station": 25,
+    "supply": 25,
+    "age": 5,
+    "hagwon": 6,
+    "liq": 8,
+    "jr": 2,
+    "region": 7
+   },
+   "h1000": 37,
    "parts": {
     "region": 31.4,
     "gap": 8,
@@ -839,6 +882,17 @@ ul.plain{padding-left:18px;max-width:80ch}
     "src": "도보실측"
    },
    "hh": 3603,
+   "long5": 71,
+   "long_parts": {
+    "station": 20,
+    "supply": 25,
+    "age": 5,
+    "hagwon": 6,
+    "liq": 8,
+    "jr": 0,
+    "region": 7
+   },
+   "h1000": 31,
    "parts": {
     "region": 31.4,
     "gap": 12,
@@ -961,6 +1015,17 @@ ul.plain{padding-left:18px;max-width:80ch}
     "src": "도보실측"
    },
    "hh": 1314,
+   "long5": 84,
+   "long_parts": {
+    "station": 20,
+    "supply": 25,
+    "age": 15,
+    "hagwon": 8,
+    "liq": 9,
+    "jr": 0,
+    "region": 7
+   },
+   "h1000": 64,
    "parts": {
     "region": 31.4,
     "gap": 4,
@@ -1083,6 +1148,17 @@ ul.plain{padding-left:18px;max-width:80ch}
     "src": "도보실측"
    },
    "hh": 332,
+   "long5": 84,
+   "long_parts": {
+    "station": 20,
+    "supply": 25,
+    "age": 15,
+    "hagwon": 10,
+    "liq": 7,
+    "jr": 0,
+    "region": 7
+   },
+   "h1000": 108,
    "parts": {
     "region": 31.4,
     "gap": 8,
@@ -1205,6 +1281,17 @@ ul.plain{padding-left:18px;max-width:80ch}
     "src": "도보실측"
    },
    "hh": 312,
+   "long5": 74,
+   "long_parts": {
+    "station": 13,
+    "supply": 25,
+    "age": 13,
+    "hagwon": 10,
+    "liq": 6,
+    "jr": 0,
+    "region": 7
+   },
+   "h1000": 139,
    "parts": {
     "region": 31.4,
     "gap": 4,
@@ -1327,6 +1414,17 @@ ul.plain{padding-left:18px;max-width:80ch}
     "src": "도보실측"
    },
    "hh": 676,
+   "long5": 69,
+   "long_parts": {
+    "station": 8,
+    "supply": 25,
+    "age": 15,
+    "hagwon": 8,
+    "liq": 6,
+    "jr": 0,
+    "region": 7
+   },
+   "h1000": 61,
    "parts": {
     "region": 31.4,
     "gap": 0,
@@ -1449,6 +1547,17 @@ ul.plain{padding-left:18px;max-width:80ch}
     "src": "도보실측"
    },
    "hh": 458,
+   "long5": 74,
+   "long_parts": {
+    "station": 13,
+    "supply": 25,
+    "age": 15,
+    "hagwon": 6,
+    "liq": 6,
+    "jr": 2,
+    "region": 7
+   },
+   "h1000": 46,
    "parts": {
     "region": 31.4,
     "gap": 0,
@@ -1571,6 +1680,17 @@ ul.plain{padding-left:18px;max-width:80ch}
     "src": "도보실측"
    },
    "hh": 1680,
+   "long5": 72,
+   "long_parts": {
+    "station": 13,
+    "supply": 25,
+    "age": 15,
+    "hagwon": 6,
+    "liq": 6,
+    "jr": 0,
+    "region": 7
+   },
+   "h1000": 58,
    "parts": {
     "region": 31.4,
     "gap": 8,
@@ -1693,6 +1813,17 @@ ul.plain{padding-left:18px;max-width:80ch}
     "src": "도보실측"
    },
    "hh": 1265,
+   "long5": 86,
+   "long_parts": {
+    "station": 20,
+    "supply": 25,
+    "age": 15,
+    "hagwon": 10,
+    "liq": 9,
+    "jr": 0,
+    "region": 7
+   },
+   "h1000": 158,
    "parts": {
     "region": 29.6,
     "gap": 8,
@@ -1815,6 +1946,17 @@ ul.plain{padding-left:18px;max-width:80ch}
     "src": "도보실측"
    },
    "hh": 351,
+   "long5": 77,
+   "long_parts": {
+    "station": 20,
+    "supply": 25,
+    "age": 6,
+    "hagwon": 10,
+    "liq": 6,
+    "jr": 3,
+    "region": 7
+   },
+   "h1000": 140,
    "parts": {
     "region": 29.6,
     "gap": 4,
@@ -1937,6 +2079,17 @@ ul.plain{padding-left:18px;max-width:80ch}
     "src": "도보실측"
    },
    "hh": 1552,
+   "long5": 57,
+   "long_parts": {
+    "station": 0,
+    "supply": 25,
+    "age": 7,
+    "hagwon": 10,
+    "liq": 8,
+    "jr": 0,
+    "region": 7
+   },
+   "h1000": 124,
    "parts": {
     "region": 31.4,
     "gap": 8,
@@ -2059,6 +2212,17 @@ ul.plain{padding-left:18px;max-width:80ch}
     "src": "직선추정"
    },
    "hh": 1314,
+   "long5": 74,
+   "long_parts": {
+    "station": 20,
+    "supply": 18,
+    "age": 15,
+    "hagwon": 8,
+    "liq": 8,
+    "jr": 0,
+    "region": 5
+   },
+   "h1000": 67,
    "parts": {
     "region": 22.2,
     "gap": 12,
@@ -2180,6 +2344,17 @@ ul.plain{padding-left:18px;max-width:80ch}
     "src": "도보실측"
    },
    "hh": 1094,
+   "long5": 83,
+   "long_parts": {
+    "station": 20,
+    "supply": 25,
+    "age": 13,
+    "hagwon": 6,
+    "liq": 9,
+    "jr": 2,
+    "region": 8
+   },
+   "h1000": 31,
    "parts": {
     "region": 36.3,
     "gap": 12,
@@ -2302,6 +2477,17 @@ ul.plain{padding-left:18px;max-width:80ch}
     "src": "도보실측"
    },
    "hh": 1094,
+   "long5": 83,
+   "long_parts": {
+    "station": 20,
+    "supply": 25,
+    "age": 13,
+    "hagwon": 6,
+    "liq": 9,
+    "jr": 2,
+    "region": 8
+   },
+   "h1000": 31,
    "parts": {
     "region": 36.3,
     "gap": 8,
@@ -161937,10 +162123,10 @@ document.getElementById('meta').textContent=`생성 ${D.generated} · 호가·�
 const items=D.items;
 const cols=[['label','단지',v=>v],['total','종합',v=>v==null?'-':`<span class="score" style="--sc:${sc(v)}">${v}</span>`],['score','타이밍',v=>v],['liq','환금성',v=>v],['hh','세대',v=>v??'-'],['age','연식',v=>v==null?'-':v+'년'],['pre_run','선반영',v=>v?'⚡':''],['stkm','급행/아무역 km',v=>v],['p0','실거래 3M(억)',eok],['ask_q1','호가Q1',eok],['gap_q1','갭',v=>v?Math.round(v*100)+'%':'-'],['n_ask','매물',v=>v],['moi','소진(월)',v=>v?v.toFixed(1):'-'],['jr','전세율',v=>v?Math.round(v)+'%':'-'],['speed12','12M',v=>v==null?'-':(v>0?'+':'')+Math.round(v)+'%'],['vs_peak','고점비',v=>v?Math.round(v)+'%':'-'],['drawdown','22~23낙폭',v=>v==null?'-':Math.round(v)+'%'],['b12','12M 하/중/상',v=>v],['b24','24M 하/중/상',v=>v],['pr','상승/정체/조정',v=>v],['verdict','판정',v=>v]];
 items.forEach(r=>{r.age=r.built?2026-r.built:null;r.stkm=`${r.liq_raw.express_km==null?'-':r.liq_raw.express_km.toFixed(1)} / ${r.liq_raw.any_km==null?'-':r.liq_raw.any_km.toFixed(1)}`;r.b12=`${eok(r.bands['12'].low)} / ${eok(r.bands['12'].mid)} / ${eok(r.bands['12'].top)}`;r.b24=`${eok(r.bands['24'].low)} / ${eok(r.bands['24'].mid)} / ${eok(r.bands['24'].top)}`;r.pr=`${Math.round(r.prob.up*100)} / ${Math.round(r.prob.flat*100)} / ${Math.round(r.prob.down*100)}%`;});
-const AX=['score','liq'];
+const AX=['score','liq','long5'];
 function weights(){const w={};let s=0;AX.forEach(a=>{const on=document.getElementById('ax_'+a).checked;const v=on?Math.max(0,+document.getElementById('w_'+a).value||0):0;w[a]=v;s+=v;});document.getElementById('wsum').textContent=s?`합 ${s} → 정규화`:'축을 하나 이상 선택';return s?Object.fromEntries(AX.map(a=>[a,w[a]/s])):null;}
 function applyTotal(list){const w=weights();const hh=+document.getElementById('f_hh').value;const pc=+document.getElementById('f_price').value;list.forEach(r=>{r.total=w?Math.round(AX.reduce((acc,a)=>acc+(r[a]??0)*w[a],0)):null;const stf=document.getElementById('f_st').value;const pre=document.getElementById('f_pre').checked;const ex=r.liq_raw?r.liq_raw.express_km:null,an=r.liq_raw?r.liq_raw.any_km:null;const stok=!stf||(stf==='ex1'&&ex!=null&&ex<=1)||(stf==='ex2'&&ex!=null&&ex<=2)||(stf==='any1'&&an!=null&&an<=1)||(stf==='any2'&&an!=null&&an<=2);r.hide=(hh&&(r.hh==null||r.hh<hh))||(pc&&r.p0>pc)||!stok||(pre&&r.pre_run);});}
-function persist(){try{localStorage.setItem('watch_ctl',JSON.stringify(Object.fromEntries(['ax_score','ax_liq','w_score','w_liq','f_hh','f_price','f_st','f_pre'].map(id=>{const e=document.getElementById(id);return [id,e.type==='checkbox'?e.checked:e.value];}))));}catch(e){}}
+function persist(){try{localStorage.setItem('watch_ctl',JSON.stringify(Object.fromEntries(['ax_score','ax_liq','ax_long5','w_score','w_liq','w_long5','f_hh','f_price','f_st','f_pre'].map(id=>{const e=document.getElementById(id);return [id,e.type==='checkbox'?e.checked:e.value];}))));}catch(e){}}
 function restore(){try{const s=JSON.parse(localStorage.getItem('watch_ctl')||'null');if(!s)return;Object.entries(s).forEach(([id,v])=>{const e=document.getElementById(id);if(!e)return;if(e.type==='checkbox')e.checked=!!v;else e.value=v;});}catch(e){}}
 let sk='total',asc=false;
 function tab(){ applyTotal(items);items.sort((a,b)=>{const x=a[sk],y=b[sk];if(x==null)return 1;if(y==null)return -1;return (x<y?-1:x>y?1:0)*(asc?1:-1);});
@@ -161970,10 +162156,11 @@ function interp(r){
  else if(r.jr!=null&&r.jr>=60) t+=`전세가율 ${Math.round(r.jr)}%라 하단 근처에서 실수요가 받친다. `;
  t+=`<b>투자자 관점:</b> `+(r.score>=70?'매수. 남은 상승이 위험을 덮는다.':r.score>=55?`실거래 ${eok(r.p0)}억 이하 매물만. 그 위는 위험 대비 기대가 얇다.`:r.score>=40?`정체 확률 ${Math.round(r.prob.flat*100)}%가 최대 시나리오. 급할 것 없고, ${eok(Math.round((b24.low+r.p0)/2))}억 근처 실거래가 나오면 그때가 자리.`:`보류. 매물 ${r.n_ask}건이 소화되기 전엔 가격이 못 오른다.`);
  return t;}
-function cards(){ applyTotal(items); document.getElementById('cards').innerHTML=[...items].filter(r=>!r.hide).sort((a,b)=>(b.total??-1)-(a.total??-1)).map(r=>`<div class="card"><h3><span>${r.label} <span class="v">${r.sgg} · 전용 ${r.excl}㎡</span></span><span><span class="v">타이밍 ${r.score} · 환금 ${r.liq}${r.pre_run?' · ⚡선반영 +'+Math.round(r.excess12)+'%p':''}</span> <span class="score" style="--sc:${sc(r.total??0)}">${r.total??'-'}</span></span></h3>
+function cards(){ applyTotal(items); document.getElementById('cards').innerHTML=[...items].filter(r=>!r.hide).sort((a,b)=>(b.total??-1)-(a.total??-1)).map(r=>`<div class="card"><h3><span>${r.label} <span class="v">${r.sgg} · 전용 ${r.excl}㎡</span></span><span><span class="v">타이밍 ${r.score} · 환금 ${r.liq} · 5년 ${r.long5??'-'}${r.pre_run?' · ⚡선반영 +'+Math.round(r.excess12)+'%p':''}</span> <span class="score" style="--sc:${sc(r.total??0)}">${r.total??'-'}</span></span></h3>
 <div class="kp"><span>실거래 3M<b>${eok(r.p0)}억 <small>(${r.n3}건)</small></b></span><span>호가 Q1 / 중간<b>${eok(r.ask_q1)} / ${eok(r.ask_med)}</b></span><span>매물·소진<b>${r.n_ask}건 · ${r.moi?r.moi.toFixed(1):'-'}개월</b></span><span>전세가율<b>${r.jr?Math.round(r.jr)+'%':'-'} <small>${r.jsrc}</small></b></span>
 <span>12M / 3M<b>${r.speed12==null?'-':(r.speed12>0?'+':'')+Math.round(r.speed12)+'%'} / ${r.speed3==null?'-':(r.speed3>0?'+':'')+Math.round(r.speed3)+'%'}</b></span><span>2021 고점비<b>${r.vs_peak?Math.round(r.vs_peak)+'%':'-'}</b></span><span>22~23 낙폭<b>${r.drawdown==null?'구 중앙값 '+Math.round(r.dd*100)+'%':Math.round(r.drawdown)+'%'}</b></span><span>타이밍 구성<b><small>지역${r.parts.region} 갭${r.parts.gap} 소진${r.parts.moi} 전세${r.parts.jr} 속도${r.parts.speed}</small></b></span></div>
 <div class="kp"><span>환금성<b>${r.liq} <small>/100</small></b></span><span>회전율·세대<b>${r.liq_raw.turnover==null?'-':r.liq_raw.turnover.toFixed(1)+'%'} · ${r.hh??'-'}</b></span><span>침체기 거래 유지<b>${r.liq_raw.keep==null?'-':Math.round(r.liq_raw.keep)+'%'}</b></span></div>
+<div class="kp"><span>5년 보유 점수<b>${r.long5??'-'} <small>/100 · 역${r.long_parts?r.long_parts.station:'-'} 공급${r.long_parts?r.long_parts.supply:'-'} 연식${r.long_parts?r.long_parts.age:'-'} 학원${r.long_parts?r.long_parts.hagwon:'-'} 환금${r.long_parts?r.long_parts.liq:'-'} 전세${r.long_parts?r.long_parts.jr:'-'} 국면${r.long_parts?r.long_parts.region:'-'}</small></b></span><span>1km 학원<b>${r.h1000??'-'}</b></span></div>
 <div class="kp"><span>급행역 / 아무역<b>${r.liq_raw.express_km==null?'-':r.liq_raw.express_km.toFixed(1)+'km'} / ${r.liq_raw.any_km==null?'-':r.liq_raw.any_km.toFixed(1)+'km'} <small>${r.liq_raw.src||''}</small></b></span></div>
 <div class="band">${bandSvg(r)}</div>
 <div class="prob"><i style="width:${r.prob.up*100}%;background:var(--up)"></i><i style="width:${r.prob.flat*100}%;background:var(--mid)"></i><i style="width:${r.prob.down*100}%;background:var(--low)"></i></div>
@@ -161993,7 +162180,7 @@ const SEL_ITEMS=JSON.parse(document.getElementById('scan_sel_d').textContent).it
 function recompute(){ tab(); cards(); scanTab('scan_sel', SEL_ITEMS); scanTab('scan_all', ALL_ITEMS); persist(); }
 restore(); recompute();
 document.querySelectorAll('#ctl input, #ctl select').forEach(e=>e.addEventListener('change',recompute));
-document.getElementById('reset').addEventListener('click',()=>{[['w_score',75],['w_liq',25]].forEach(([id,v])=>document.getElementById(id).value=v);AX.forEach(a=>document.getElementById('ax_'+a).checked=true);document.getElementById('f_hh').value='0';document.getElementById('f_price').value='0';document.getElementById('f_st').value='0';document.getElementById('f_pre').checked=false;recompute();});
+document.getElementById('reset').addEventListener('click',()=>{[['w_score',75],['w_liq',25],['w_long5',0]].forEach(([id,v])=>document.getElementById(id).value=v);AX.forEach(a=>document.getElementById('ax_'+a).checked=(a!=='long5'));document.getElementById('f_hh').value='0';document.getElementById('f_price').value='0';document.getElementById('f_st').value='0';document.getElementById('f_pre').checked=false;recompute();});
 
 (function(){
  const BT=JSON.parse(document.getElementById('bt_d').textContent||'null'); const el=document.getElementById('bt');
