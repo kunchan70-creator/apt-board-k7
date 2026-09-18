@@ -89,182 +89,297 @@ ul.plain{padding-left:18px}
 <div class="top"><span class="brand">수원 아파트 점수판</span><span class="date">2026.09.18</span></div>
 <nav class="tabs"><a href="index.html">점수</a><a href="evidence.html" class=on>검증</a><a href="market.html">시장</a><a href="guide.html">설명서</a><a href="formula.html">수식</a><a href="sources.html">출처</a><a href="watch.html">상세</a><a href="map.html">지도</a></nav>
 <div class="card">
-<h1>이 점수, 얼마나 맞나요?</h1>
-<p>2014년 1월부터 2024년 7월까지 경기도 아파트를 <b>그 시점에 알 수 있던 자료만으로</b> 채점하고, 실제 실거래와 맞춰봤습니다. 표본 81,642건.</p>
-<p class="note">미래를 미리 본 효과를 빼려고, 점수에 쓰는 확률표도 그 시점까지의 자료로만 다시 만들어 적용했습니다.</p></div>
+<h1>점수가 높은 집을 샀다면<br>실제로 어떻게 됐을까요?</h1>
+<p>2014년부터 2024년까지, 경기도 아파트 81,642건을 <b>그때 알 수 있던 자료만으로</b> 채점해 두고 실제 실거래와 맞춰봤습니다.</p>
+<p class="note">아래 모든 숫자는 <b>8.6억짜리 아파트를 대출 6억 받아 현금 2.6억으로 샀다</b>고 놓고 계산했습니다. 이자와 세금은 뺐습니다.</p></div>
 
 <div class="card">
-<h2 style="margin-top:0">먼저, 부동산은 그냥 오릅니다</h2>
-<p>점수를 아예 보지 않고 아무거나 샀다면 결과가 이랬습니다.</p>
-<div class="grid2" style="margin-top:12px">
-<div style="background:var(--surface2);border-radius:var(--r2);padding:16px"><div class="sub">2년 들고 있었다면</div>
-<div class="big" style="margin:6px 0">74%</div><div class="sub">가 플러스 · 중앙 +9.4% · −10% 이상 손실 9%</div></div>
-<div style="background:var(--surface2);border-radius:var(--r2);padding:16px"><div class="sub">5년 들고 있었다면</div>
-<div class="big" style="margin:6px 0">90%</div><div class="sub">가 플러스 · 중앙 +33.4% · −10% 이상 손실 4%</div></div></div>
-<p class="note">그래서 "이 점수가 맞혔다"는 자랑은 대부분 이 기저율입니다. 점수는 <b>이 위에 얼마를 더하느냐</b>로만 평가해야 합니다.</p></div>
+<h2 style="margin-top:0">2년 뒤, 얼마가 남았나</h2>
+<div class="tw"><table><thead><tr><th>그때 점수</th><th>보통</th><th>잘 풀렸을 때</th><th>안 풀렸을 때</th></tr></thead><tbody><tr><td><span class="tag green">70점 이상</span></td>
+<td class="num" style="font-weight:700;color:var(--green)">+1.21억</td>
+<td class="num">+2.24억</td><td class="num" style="color:var(--green)">+0.52억</td></tr><tr><td><span class="tag blue">55~69점</span></td>
+<td class="num" style="font-weight:700;color:var(--green)">+0.95억</td>
+<td class="num">+2.28억</td><td class="num" style="color:var(--green)">+0.16억</td></tr><tr><td><span class="tag amber">40~54점</span></td>
+<td class="num" style="font-weight:700;color:var(--green)">+0.56억</td>
+<td class="num">+1.62억</td><td class="num" style="color:var(--red)">-0.32억</td></tr><tr><td><span class="tag red">40점 미만</span></td>
+<td class="num" style="font-weight:700;color:var(--red)">-0.43억</td>
+<td class="num">+0.71억</td><td class="num" style="color:var(--red)">-1.45억</td></tr></tbody></table></div>
+<p style="margin-top:14px">70점짜리를 샀으면 2년 뒤 보통 <b>+1.21억</b>, 40점짜리를 샀으면 <b>-0.43억</b>이었습니다.</p>
+<p>잘 풀렸을 때는 55점이나 70점이나 비슷합니다. 크게 오르는 건 점수가 아니라 시장이 정합니다. 점수가 갈라놓는 건 <b>안 풀렸을 때</b>입니다. 나쁜 쪽 4분의 1만 모아 보면 70점은 +0.52억, 40점 미만은 -1.45억입니다. 현금 2.6억을 넣었는데 1.45억이 사라지는 자리였다는 뜻입니다.</p></div>
 
 <div class="card">
-<h2 style="margin-top:0">정직하게: 정확도로는 집니다</h2>
-<p>55점을 기준으로 사라/사지 마라를 갈랐을 때, 2년 뒤 방향을 맞힌 비율입니다.</p>
-<div class="grid2" style="margin-top:12px">
-<div style="background:var(--red-bg);border-radius:var(--r2);padding:16px"><div class="sub" style="color:var(--red);font-weight:700">이 점수판</div>
-<div class="big" style="color:var(--red);margin:6px 0">66%</div><div class="sub">정확도</div></div>
-<div style="background:var(--surface2);border-radius:var(--r2);padding:16px"><div class="sub" style="font-weight:700">"다 사라"고만 말하기</div>
-<div class="big" style="margin:6px 0">74%</div><div class="sub">정확도</div></div></div>
-<p style="margin-top:14px">아무 생각 없이 전부 사라고 하는 쪽이 정확도가 더 높습니다. 숨길 일이 아니라 <b>당연한 결과</b>입니다. 10개 중 7~8개가 오르는 시장에서 "다 사라"는 자동으로 74%를 먹고 들어갑니다. 대신 그 말은 크게 잃는 자리를 <b>단 한 번도</b> 피해주지 못합니다.</p>
-<p>그래서 맞은 횟수가 아니라 <b>세 가지</b>를 봐야 합니다. ① 순서를 제대로 매기나 ② 문턱을 어디 두느냐의 문제인가 ③ 따라 했을 때 결과 분포가 좋아지나.</p></div>
+<h2 style="margin-top:0">5년 뒤, 얼마가 남았나</h2>
+<div class="tw"><table><thead><tr><th>그때 5년 점수</th><th>보통</th><th>잘 풀렸을 때</th><th>안 풀렸을 때</th></tr></thead><tbody><tr><td><span class="tag green">70점 이상</span></td>
+<td class="num" style="font-weight:700;color:var(--green)">+4.47억</td>
+<td class="num">+6.32억</td><td class="num" style="color:var(--green)">+3.13억</td></tr><tr><td><span class="tag blue">60~69점</span></td>
+<td class="num" style="font-weight:700;color:var(--green)">+3.81억</td>
+<td class="num">+5.62억</td><td class="num" style="color:var(--green)">+2.19억</td></tr><tr><td><span class="tag amber">50~59점</span></td>
+<td class="num" style="font-weight:700;color:var(--green)">+3.68억</td>
+<td class="num">+5.59억</td><td class="num" style="color:var(--green)">+1.69억</td></tr><tr><td><span class="tag amber">40~49점</span></td>
+<td class="num" style="font-weight:700;color:var(--green)">+2.57억</td>
+<td class="num">+4.30억</td><td class="num" style="color:var(--green)">+1.12억</td></tr><tr><td><span class="tag red">40점 미만</span></td>
+<td class="num" style="font-weight:700;color:var(--green)">+1.80억</td>
+<td class="num">+3.57억</td><td class="num" style="color:var(--green)">+0.28억</td></tr></tbody></table></div>
+<p style="margin-top:14px">5년은 거의 다 오릅니다. 그래서 차이가 <b>얼마나</b>에서 납니다. 70점은 보통 +4.47억, 40점 미만은 +1.80억. 안 풀렸을 때로 비교해도 +3.13억 대 +0.28억입니다.</p></div>
 
 <div class="card">
-<h2 style="margin-top:0">① 순서는 제대로 매깁니다</h2>
-<p class="sub">AUC = 오른 것이 안 오른 것보다 점수가 높을 확률. 0.5면 동전 던지기, 문턱과 무관한 순수 판별력입니다.</p>
-<div style="margin-top:14px">
-<div class="kv"><span class="k">2년 점수 → 2년 뒤 <b>−10% 손실을 피함</b></span><span class="v" style="color:var(--green)">0.78</span></div>
-<div class="kv"><span class="k">2년 점수 → 2년 뒤 오름</span><span class="v">0.66</span></div>
-<div class="kv"><span class="k">5년 점수 → 5년 뒤 오름</span><span class="v">0.66</span></div>
-<div class="kv"><span class="k">5년 점수 → 5년 뒤 +20% 이상</span><span class="v">0.64</span></div></div>
-<p class="note">'오를까'를 맞히는 힘(0.66)보다 <b>'크게 잃을 자리를 피하는 힘'(0.78)이 뚜렷하게 셉니다.</b> 점수의 본체가 무엇인지 그대로 보여주는 숫자입니다.</p></div>
+<h2 style="margin-top:0">제대로 오를 확률</h2>
+<p class="sub">조금 오른 건 세금·중개비로 사라집니다. <b>2년 안에 10% 넘게</b> 오른 비율로 봤습니다.</p>
+<div style="margin:12px 0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+<span><span class="tag green">70점 이상</span></span>
+<span class="num" style="font-size:1.25rem;font-weight:800">63%</span></div>
+<div class="bar"><i style="width:63%;background:var(--green)"></i></div></div><div style="margin:12px 0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+<span><span class="tag blue">55~69점</span></span>
+<span class="num" style="font-size:1.25rem;font-weight:800">53%</span></div>
+<div class="bar"><i style="width:53%;background:var(--blue)"></i></div></div><div style="margin:12px 0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+<span><span class="tag amber">40~54점</span></span>
+<span class="num" style="font-size:1.25rem;font-weight:800">41%</span></div>
+<div class="bar"><i style="width:41%;background:var(--amber)"></i></div></div><div style="margin:12px 0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+<span><span class="tag red">40점 미만</span></span>
+<span class="num" style="font-size:1.25rem;font-weight:800">23%</span></div>
+<div class="bar"><i style="width:23%;background:var(--red)"></i></div></div>
+<p class="note">70점 이상은 63%, 40점 미만은 23%. 거의 세 배 차이입니다. 20% 넘게 오른 비율로 봐도 35% 대 10%입니다.</p>
+<h3 style="margin-top:22px">5년이면 더 벌어집니다</h3>
+<p class="sub">5년 안에 30% 넘게 오른 비율.</p>
+<div style="margin:12px 0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+<span><span class="tag green">70점 이상</span></span>
+<span class="num" style="font-size:1.25rem;font-weight:800">83%</span></div>
+<div class="bar"><i style="width:83%;background:var(--green)"></i></div></div><div style="margin:12px 0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+<span><span class="tag blue">60~69점</span></span>
+<span class="num" style="font-size:1.25rem;font-weight:800">70%</span></div>
+<div class="bar"><i style="width:70%;background:var(--blue)"></i></div></div><div style="margin:12px 0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+<span><span class="tag amber">50~59점</span></span>
+<span class="num" style="font-size:1.25rem;font-weight:800">64%</span></div>
+<div class="bar"><i style="width:64%;background:var(--amber)"></i></div></div><div style="margin:12px 0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+<span><span class="tag amber">40~49점</span></span>
+<span class="num" style="font-size:1.25rem;font-weight:800">50%</span></div>
+<div class="bar"><i style="width:50%;background:var(--amber)"></i></div></div><div style="margin:12px 0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+<span><span class="tag red">40점 미만</span></span>
+<span class="num" style="font-size:1.25rem;font-weight:800">38%</span></div>
+<div class="bar"><i style="width:38%;background:var(--red)"></i></div></div>
+<p class="note">5년 점수 70점 이상은 83%, 40점 미만은 38%. 50% 넘게 오른 비율도 53% 대 18%입니다.</p></div>
 
 <div class="card">
-<h2 style="margin-top:0">② 문턱을 어디 두느냐의 문제입니다</h2>
-<p class="sub">몇 점부터 사라고 할지만 바꿔서 같은 점수로 다시 계산한 표입니다.</p>
-<div class="tw"><table><thead><tr><th>기준</th><th>매수 비율</th><th>정확도</th><th>매수 적중</th><th>매수 −10%↓</th><th>놓친 상승</th></tr></thead><tbody><tr><td>30점</td><td class="num">99%</td>
-<td class="num" style="font-weight:700;color:var(--green)">75%</td>
+<h2 style="margin-top:0">크게 잃을 확률</h2>
+<p class="sub">2년 안에 10% 넘게 <b>떨어진</b> 비율. 대출을 6억 끼었다면 내 돈의 3분의 1이 날아가는 구간입니다.</p>
+<div style="margin:12px 0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+<span><span class="tag green">70점 이상</span></span>
+<span class="num" style="font-size:1.25rem;font-weight:800">1%</span></div>
+<div class="bar"><i style="width:1%;background:var(--green)"></i></div></div><div style="margin:12px 0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+<span><span class="tag blue">55~69점</span></span>
+<span class="num" style="font-size:1.25rem;font-weight:800">5%</span></div>
+<div class="bar"><i style="width:5%;background:var(--blue)"></i></div></div><div style="margin:12px 0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+<span><span class="tag amber">40~54점</span></span>
+<span class="num" style="font-size:1.25rem;font-weight:800">15%</span></div>
+<div class="bar"><i style="width:15%;background:var(--amber)"></i></div></div><div style="margin:12px 0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+<span><span class="tag red">40점 미만</span></span>
+<span class="num" style="font-size:1.25rem;font-weight:800">41%</span></div>
+<div class="bar"><i style="width:41%;background:var(--red)"></i></div></div>
+<p class="note">여기가 이 점수판이 가장 잘하는 일입니다. 70점 이상은 1%, 40점 미만은 41%. 전체 평균은 9%입니다.</p></div>
+
+<div class="card">
+<h2 style="margin-top:0">그런데, 그냥 사도 오릅니다</h2>
+<p>점수를 아예 안 보고 아무거나 샀어도 <b>2년 뒤 74%, 5년 뒤 90%가 올랐습니다.</b> 지난 10년 경기도가 그런 시장이었습니다.</p>
+<p>그래서 "맞혔다"는 말은 대부분 이 덕입니다. 실제로 55점을 기준으로 사라/사지 마라를 갈라 방향만 맞혀보면 <b>이 점수판은 66%, 그냥 "다 사라"고만 하면 74%</b>입니다. 맞히기 시합으로는 집니다.</p>
+<div class="box">숨길 일이 아닙니다. 10개 중 7개가 오르는 시장에서 "다 사라"는 자동으로 74%를 먹고 들어갑니다. 대신 그 말은 <b>크게 잃는 자리를 한 번도 피해주지 못합니다.</b></div></div>
+
+<div class="card">
+<h2 style="margin-top:0">그래도 쓸모가 있는 이유</h2>
+<h3>하나. 기준을 낮추면 맞히기도 이깁니다</h3>
+<p>사라고 하는 기준을 55점에서 <b>40점으로 내리면 정확도 76%</b>로 "다 사라"(74%)를 넘습니다. 그런데 그렇게 하면 크게 잃는 경우가 4%에서 7%로 늘어납니다. 이 점수판은 일부러 맞히기를 포기하고 안전을 택한 쪽입니다.</p>
+<h3>둘. 기다리는 게 실제로 이득이었습니다</h3>
+<p>점수가 낮을 때 그냥 사는 것과, 그 동네 점수가 올라올 때까지 기다렸다 사는 것을 916번 비교했습니다. <b>기다리는 동안 값이 오른 것까지 손해로 쳤는데도</b> 기다린 쪽이 나았습니다.</p>
+<div class="kv"><span class="k">그때 바로 샀다면</span><span class="v">2년 뒤 +3.2%</span></div>
+<div class="kv"><span class="k">기다렸다 샀다면</span><span class="v pos">2년 뒤 +10.2%</span></div>
+<div class="kv"><span class="k">평균 기다린 기간</span><span class="v">11개월</span></div>
+<h3>셋. 고점에서는 점수가 알아서 내려갔습니다</h3>
+<div class="tw"><table><thead><tr><th>산 시기</th><th>평균 점수</th><th>70점+ 건수</th><th>2년 뒤</th></tr></thead><tbody><tr><td>2021.1~3월</td><td class="num">58.4</td><td class="num">53</td>
+<td class="num pos">+1%</td></tr><tr><td>2021.4~6월</td><td class="num">52.7</td><td class="num">34</td>
+<td class="num neg">-7%</td></tr><tr><td>2021.7~9월</td><td class="num">43.7</td><td class="num">6</td>
+<td class="num neg">-14%</td></tr><tr><td>2021.10~12월</td><td class="num">45.7</td><td class="num">2</td>
+<td class="num neg">-20%</td></tr><tr><td>2022.1~3월</td><td class="num">41.4</td><td class="num">0</td>
+<td class="num neg">-20%</td></tr><tr><td>2022.4~6월</td><td class="num">39.6</td><td class="num">0</td>
+<td class="num neg">-18%</td></tr><tr><td>2022.7~9월</td><td class="num">38.2</td><td class="num">0</td>
+<td class="num neg">-16%</td></tr><tr><td>2022.10~12월</td><td class="num">39.9</td><td class="num">0</td>
+<td class="num neg">-5%</td></tr></tbody></table></div>
+<p class="note">하락을 예언한 게 아닙니다. 거래가 줄고 매물이 쌓이니 점수가 따라 내려갔고, 결과적으로 고점 매수를 막았습니다. '사기 좋음'이 53건에서 0건이 되는 데 6개월 걸렸습니다.</p>
+<details style="margin-top:16px"><summary>더 자세한 검증 숫자</summary><div style="padding-bottom:14px">
+<p class="note">둘 중 오른 쪽을 골라내는 능력(AUC, 0.5면 동전 던지기): 크게 잃을 자리 피하기 <b>0.78</b> · 2년 뒤 오를까 0.66 · 5년 뒤 오를까 0.66. 오를지 맞히는 힘보다 잃을 자리를 피하는 힘이 셉니다.</p>
+<div class="tw"><table><thead><tr><th>사라는 기준</th><th>살 물건</th><th>정확도</th><th>매수 −10%↓</th><th>놓친 상승</th></tr></thead><tbody><tr><td>30점</td><td class="num">99%</td>
 <td class="num">75%</td><td class="num">9%</td><td class="num">0%</td></tr><tr><td>40점</td><td class="num">95%</td>
-<td class="num" style="font-weight:700;color:var(--green)">76%</td>
 <td class="num">76%</td><td class="num">7%</td><td class="num">2%</td></tr><tr><td>45점</td><td class="num">89%</td>
-<td class="num" style="font-weight:700;color:var(--green)">75%</td>
-<td class="num">78%</td><td class="num">6%</td><td class="num">5%</td></tr><tr><td>50점</td><td class="num">80%</td>
-<td class="num" style="font-weight:700;color:var(--ink2)">72%</td>
-<td class="num">79%</td><td class="num">5%</td><td class="num">11%</td></tr><tr style="background:var(--blue-bg)"><td>55점</td><td class="num">65%</td>
-<td class="num" style="font-weight:700;color:var(--ink2)">66%</td>
-<td class="num">81%</td><td class="num">4%</td><td class="num">22%</td></tr><tr><td>60점</td><td class="num">46%</td>
-<td class="num" style="font-weight:700;color:var(--ink2)">56%</td>
-<td class="num">83%</td><td class="num">3%</td><td class="num">36%</td></tr><tr><td>65점</td><td class="num">25%</td>
-<td class="num" style="font-weight:700;color:var(--ink2)">44%</td>
-<td class="num">86%</td><td class="num">2%</td><td class="num">53%</td></tr><tr><td>70점</td><td class="num">9%</td>
-<td class="num" style="font-weight:700;color:var(--ink2)">33%</td>
-<td class="num">90%</td><td class="num">1%</td><td class="num">66%</td></tr></tbody></table></div>
-<p><b>40점을 기준으로 삼으면 정확도 76%로 "다 사라"(74%)를 넘습니다.</b> 그런데 이 점수판은 일부러 55점을 씁니다. 기준을 올릴수록 정확도는 떨어지지만 매수한 것 중 −10% 손실은 9% → 4% → 1%로 계속 줄어듭니다.</p>
-<p class="note">즉 정확도를 일부러 팔아서 손실 확률을 산 구조입니다. 대가는 '놓친 상승' 22%. 집을 여러 채 굴린다면 40점 기준이 맞고, 한 채를 대출 끼고 산다면 55점 기준이 맞습니다.</p></div>
-
-<div class="card">
-<h2 style="margin-top:0">③ 따라 하면 결과가 좋아집니다</h2>
-<p class="sub">전략별로 2년 뒤 실제 가격 결과. 같은 10년, 같은 물건들입니다.</p>
-<div class="tw"><table><thead><tr><th>전략</th><th>살 물건</th><th>중앙</th><th>하위 25%</th><th>플러스</th><th>−10%↓</th></tr></thead><tbody><tr style="background:var(--surface2)"><td>무조건 매수</td><td class="num">100%</td>
-<td class="num">+9.4%</td><td class="num">+0.0%</td><td class="num">74%</td><td class="num">9%</td></tr><tr><td>40점 이상</td><td class="num">95%</td>
-<td class="num">+10.0%</td><td class="num">+0.8%</td><td class="num">76%</td><td class="num">7%</td></tr><tr><td>55점 이상</td><td class="num">65%</td>
-<td class="num">+11.6%</td><td class="num">+2.5%</td><td class="num">81%</td><td class="num">4%</td></tr><tr><td>70점 이상</td><td class="num">9%</td>
-<td class="num">+14.1%</td><td class="num">+6.1%</td><td class="num">90%</td><td class="num">1%</td></tr></tbody></table></div>
-<p style="margin-top:14px">점수를 볼수록 <b>중앙값이 오르고 하위 25%가 개선되고 손실이 줄어듭니다.</b> 대신 살 수 있는 물건이 줄어듭니다.</p>
-<h3>대출을 끼면 차이가 3배로 커집니다</h3>
-<p class="sub">8.6억 주택을 대출 6억, 현금 2.6억으로 샀다고 할 때(레버리지 3.31배). 가격 −10%는 내 돈 −33%입니다.</p>
-<div class="tw"><table><thead><tr><th>전략</th><th>내 돈 기준 중앙</th><th>하위 25%</th><th>원금 30% 이상 날릴 확률</th></tr></thead><tbody><tr style="background:var(--surface2)"><td>무조건 매수</td>
-<td class="num">+31%</td><td class="num">+0%</td><td class="num">10%</td></tr><tr><td>40점 이상</td>
-<td class="num">+33%</td><td class="num">+2%</td><td class="num">8%</td></tr><tr><td>55점 이상</td>
-<td class="num">+38%</td><td class="num">+8%</td><td class="num">5%</td></tr><tr><td>70점 이상</td>
-<td class="num">+47%</td><td class="num">+20%</td><td class="num">1%</td></tr></tbody></table></div>
-<p class="note">이자·취득세는 뺀 단순 계산입니다. 한 채를 대출로 사는 사람에게 "10번 중 1번은 원금의 3분의 1이 날아간다"와 "100번 중 1번"의 차이는 정확도 8%p와 바꿀 만합니다.</p>
-<h3>'기다림'은 실제로 이득이었습니다</h3>
-<p>점수가 55점 미만이던 구에서 <b>그냥 그때 사는 것</b>과 <b>그 구 점수가 55점을 넘을 때까지 기다렸다 사는 것</b>을 비교했습니다. 기다리는 동안 값이 오른 것까지 손해로 계산했습니다.</p>
-<div class="kv"><span class="k">그때 바로 샀다면 (2년 뒤)</span><span class="v">+3.2%</span></div>
-<div class="kv"><span class="k">기다렸다 샀다면 (대기 중 가격 상승 반영)</span><span class="v pos">+10.2%</span></div>
-<div class="kv"><span class="k">평균 대기 기간</span><span class="v">11개월</span></div>
-<p class="note">916쌍 비교. 방향 맞히기로는 '기다림'이 67% 틀렸지만, 돈으로 따지면 기다린 쪽이 나았습니다.</p></div>
+<td class="num">75%</td><td class="num">6%</td><td class="num">5%</td></tr><tr><td>50점</td><td class="num">80%</td>
+<td class="num">72%</td><td class="num">5%</td><td class="num">11%</td></tr><tr style="background:var(--blue-bg)"><td>55점</td><td class="num">65%</td>
+<td class="num">66%</td><td class="num">4%</td><td class="num">22%</td></tr><tr><td>60점</td><td class="num">46%</td>
+<td class="num">56%</td><td class="num">3%</td><td class="num">36%</td></tr><tr><td>65점</td><td class="num">25%</td>
+<td class="num">44%</td><td class="num">2%</td><td class="num">53%</td></tr><tr><td>70점</td><td class="num">9%</td>
+<td class="num">33%</td><td class="num">1%</td><td class="num">66%</td></tr></tbody></table></div>
+<p class="note">내 돈 기준(대출 6억, 현금 2.6억. 가격 −10%가 내 돈 −33%)</p>
+<div class="tw"><table><thead><tr><th>전략</th><th>2년 뒤 중앙</th><th>안 풀렸을 때</th><th>원금 30%↑ 손실</th></tr></thead><tbody><tr><td>무조건 매수</td><td class="num">+31%</td><td class="num">+0%</td><td class="num">10%</td></tr><tr><td>40점 이상</td><td class="num">+33%</td><td class="num">+2%</td><td class="num">8%</td></tr><tr><td>55점 이상</td><td class="num">+38%</td><td class="num">+8%</td><td class="num">5%</td></tr><tr><td>70점 이상</td><td class="num">+47%</td><td class="num">+20%</td><td class="num">1%</td></tr></tbody></table></div>
+</div></details></div>
 
 <div class="card" style="border-left:5px solid var(--blue)">
-<h2 style="margin-top:0">그래서 이 점수는</h2>
-<p style="font-size:1.05rem;color:var(--ink)"><b>"오를까?"를 맞히는 기계가 아닙니다. "지금 여기서 사면 크게 잃을 자리인가?"를 거르는 기계입니다.</b></p>
-<p>오를지 맞히는 일은 원래 잘 안 됩니다. 시장이 오르는 해에는 뭘 사도 오르고, 꺾이는 해에는 뭘 사도 내립니다. 대신 '지금은 위험한 자리'는 거래량·전세가율·매물·호가로 꽤 보입니다. 이 점수판은 그쪽에 걸었습니다.</p>
-<p class="note">그러니 70점을 봤다고 "오른다"로 읽지 말고 "여기서 사면 크게 잃을 확률이 1%로 평균(9%)보다 낮다"로 읽는 게 정확합니다.</p></div>
+<h2 style="margin-top:0">한 줄로 정리하면</h2>
+<p style="font-size:1.06rem;color:var(--ink)"><b>"오를까?"를 맞히는 점수가 아니라, "여기서 사면 크게 잃을 자리인가?"를 거르는 점수입니다.</b></p>
+<p>70점을 보고 "오른다"로 읽지 마세요. <b>"2년 안에 10% 넘게 오를 확률 63%, 크게 잃을 확률 1%"</b>로 읽는 게 맞습니다.</p></div>
 
 <div class="card">
-<h2 style="margin-top:0">판정별로 얼마나 틀렸나</h2>
-<div class="tw"><table><thead><tr><th>판정</th><th>건수</th><th>맞음</th><th>틀림</th><th>기저 대비</th></tr></thead><tbody><tr><td>사기 좋음</td><td class="num">7,713</td><td class="num pos">90%</td>
-<td class="num neg">10%</td><td class="num">+16%p</td></tr><tr><td>조건부</td><td class="num">45,514</td><td class="num pos">79%</td>
-<td class="num neg">21%</td><td class="num">+5%p</td></tr><tr><td>기다림</td><td class="num">23,989</td><td class="num pos">33%</td>
-<td class="num neg">67%</td><td class="num">+7%p</td></tr><tr><td>사지 말 것</td><td class="num">4,426</td><td class="num pos">60%</td>
-<td class="num neg">40%</td><td class="num">+34%p</td></tr></tbody></table></div>
-<p class="note">'맞음'의 뜻은 사라고 한 것은 2년 뒤 올랐고, 사지 말라고 한 것은 내렸다는 것입니다. <b>가장 많이 틀리는 건 '기다림'</b>입니다. 기다리라고 한 것의 67%가 올랐습니다. 다만 그 구간은 −10% 손실도 15%로 평균보다 높습니다. 덜 오르면서 더 위험한 구간이라는 뜻입니다.</p></div>
+<h2 style="margin-top:0">틀린 경우도 많습니다</h2>
+<div class="kv"><span class="k">'사지 말 것'이었는데 2년 뒤 오른 비율</span><span class="v">40%</span></div>
+<div class="kv"><span class="k">그중 10% 넘게 오른 비율</span><span class="v">23%</span></div>
+<div class="kv"><span class="k">'기다림'이었는데 오른 비율</span><span class="v">67%</span></div>
+<div class="kv"><span class="k">5년 점수 40점 미만인데 5년 뒤 오른 비율</span><span class="v">80%</span></div>
+<div class="kv"><span class="k">70점인데 2년 뒤 10% 넘게 잃은 비율</span><span class="v">1%</span></div>
+<p class="note">이 점수판을 쓰면 <b>확실히 기회를 놓칩니다.</b> 55점 기준으로 걸렀을 때 놓친 상승이 22%입니다. 놓친 기회와 피한 손실 중 무엇이 큰지는 대출을 얼마나 끼는지, 몇 년을 버틸 수 있는지가 정합니다.</p></div>
 
 <div class="card">
-<h2 style="margin-top:0">틀렸는데도 오른 경우</h2>
-<p>부동산은 점수가 나빠도 오릅니다. 그 비율을 그대로 적습니다.</p>
-<div class="kv"><span class="k">'사지 말 것'(40점 미만) 중 2년 뒤 오른 비율</span><span class="v">40%</span></div>
-<div class="kv"><span class="k">그중 +10% 이상 오른 비율</span><span class="v">23%</span></div>
-<div class="kv"><span class="k">'기다림'(40~54점) 중 2년 뒤 오른 비율</span><span class="v">67%</span></div>
-<div class="kv"><span class="k">그중 +10% 이상 오른 비율</span><span class="v">41%</span></div>
-<div class="kv"><span class="k">5년 점수 40점 미만 중 5년 뒤 오른 비율</span><span class="v">80%</span></div>
-<div class="kv"><span class="k">그중 +20% 이상 오른 비율</span><span class="v">51%</span></div>
-<p class="note">낮은 점수를 걸러도 그중 절반 이상은 오릅니다. 이 점수판을 쓰면 <b>확실히 기회를 놓칩니다.</b> 놓친 기회와 피한 손실 중 무엇이 더 큰지는 대출 비율과 버틸 기간이 정합니다.</p></div>
+<h2 style="margin-top:0">실제 단지로 보기</h2>
+<p class="sub">맞은 것만 고르면 광고가 됩니다. 틀린 것도 같이 놓았습니다. 단지명·시점·가격 그대로라서 국토부에서 직접 확인할 수 있습니다.</p>
+<h3>점수대로 간 경우</h3><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--green)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">권선구 수원아이파크시티7단지 59㎡</span>
+ <span class="tag green">맞음</span></div>
+<div class="kv"><span class="k">2019.01 그때 2년 점수</span><span class="v">74점</span></div>
+<div class="kv"><span class="k">그때 값</span><span class="v">3.65억</span></div>
+<div class="kv"><span class="k">2년 뒤 값</span><span class="v">5.20억 <span class="pos">(+42%)</span></span></div>
+<div class="note" style="margin-top:6px">2년 점수 높았고 올랐다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--green)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">영통구 황골마을주공1 59㎡</span>
+ <span class="tag green">맞음</span></div>
+<div class="kv"><span class="k">2014.07 그때 2년 점수</span><span class="v">73점</span></div>
+<div class="kv"><span class="k">그때 값</span><span class="v">2.10억</span></div>
+<div class="kv"><span class="k">2년 뒤 값</span><span class="v">2.40억 <span class="pos">(+14%)</span></span></div>
+<div class="note" style="margin-top:6px">2년 점수 높았고 올랐다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--green)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">영통구 삼성1 59㎡</span>
+ <span class="tag green">맞음</span></div>
+<div class="kv"><span class="k">2014.04 그때 2년 점수</span><span class="v">71점</span></div>
+<div class="kv"><span class="k">그때 값</span><span class="v">1.75억</span></div>
+<div class="kv"><span class="k">2년 뒤 값</span><span class="v">2.04억 <span class="pos">(+17%)</span></span></div>
+<div class="note" style="margin-top:6px">2년 점수 높았고 올랐다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--green)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">권선구 현대 59㎡</span>
+ <span class="tag green">맞음</span></div>
+<div class="kv"><span class="k">2021.07 그때 2년 점수</span><span class="v">37점</span></div>
+<div class="kv"><span class="k">그때 값</span><span class="v">4.00억</span></div>
+<div class="kv"><span class="k">2년 뒤 값</span><span class="v">3.25억 <span class="neg">(-19%)</span></span></div>
+<div class="note" style="margin-top:6px">2년 점수 낮았고 잃었다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--green)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">장안구 수원 SK SKY VIEW 59㎡</span>
+ <span class="tag green">맞음</span></div>
+<div class="kv"><span class="k">2021.07 그때 2년 점수</span><span class="v">27점</span></div>
+<div class="kv"><span class="k">그때 값</span><span class="v">6.60억</span></div>
+<div class="kv"><span class="k">2년 뒤 값</span><span class="v">5.81억 <span class="neg">(-12%)</span></span></div>
+<div class="note" style="margin-top:6px">2년 점수 낮았고 잃었다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--green)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">팔달구 월드메르디앙 84㎡</span>
+ <span class="tag green">맞음</span></div>
+<div class="kv"><span class="k">2021.07 그때 2년 점수</span><span class="v">29점</span></div>
+<div class="kv"><span class="k">그때 값</span><span class="v">6.85억</span></div>
+<div class="kv"><span class="k">2년 뒤 값</span><span class="v">5.75억 <span class="neg">(-16%)</span></span></div>
+<div class="note" style="margin-top:6px">2년 점수 낮았고 잃었다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--green)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">영통구 벽적골롯데 59㎡</span>
+ <span class="tag green">맞음</span></div>
+<div class="kv"><span class="k">2019.04 그때 5년 점수</span><span class="v">80점</span></div>
+<div class="kv"><span class="k">그때 값</span><span class="v">2.74억</span></div>
+<div class="kv"><span class="k">5년 뒤 값</span><span class="v">4.40억 <span class="pos">(+61%)</span></span></div>
+<div class="note" style="margin-top:6px">5년 점수 높았고 5년 뒤</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--green)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">영통구 영통SKVIEW 84㎡</span>
+ <span class="tag green">맞음</span></div>
+<div class="kv"><span class="k">2019.07 그때 5년 점수</span><span class="v">77점</span></div>
+<div class="kv"><span class="k">그때 값</span><span class="v">5.60억</span></div>
+<div class="kv"><span class="k">5년 뒤 값</span><span class="v">8.24억 <span class="pos">(+47%)</span></span></div>
+<div class="note" style="margin-top:6px">5년 점수 높았고 5년 뒤</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--green)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">장안구 천천삼성래미안 59㎡</span>
+ <span class="tag green">맞음</span></div>
+<div class="kv"><span class="k">2018.07 그때 5년 점수</span><span class="v">80점</span></div>
+<div class="kv"><span class="k">그때 값</span><span class="v">2.75억</span></div>
+<div class="kv"><span class="k">5년 뒤 값</span><span class="v">3.95억 <span class="pos">(+44%)</span></span></div>
+<div class="note" style="margin-top:6px">5년 점수 높았고 5년 뒤</div></div>
+<h3>점수가 틀린 경우</h3><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--red)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">고양시 일산동구 중산마을11(현대) 84㎡</span>
+ <span class="tag red">틀림</span></div>
+<div class="kv"><span class="k">2017.07 그때 2년 점수</span><span class="v">72점</span></div>
+<div class="kv"><span class="k">그때 값</span><span class="v">2.75억</span></div>
+<div class="kv"><span class="k">2년 뒤 값</span><span class="v">2.43억 <span class="neg">(-12%)</span></span></div>
+<div class="note" style="margin-top:6px">2년 점수 높았는데 잃었다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--red)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">양주시 성우아파트아침의미소 59㎡</span>
+ <span class="tag red">틀림</span></div>
+<div class="kv"><span class="k">2017.01 그때 2년 점수</span><span class="v">70점</span></div>
+<div class="kv"><span class="k">그때 값</span><span class="v">1.51억</span></div>
+<div class="kv"><span class="k">2년 뒤 값</span><span class="v">1.35억 <span class="neg">(-11%)</span></span></div>
+<div class="note" style="margin-top:6px">2년 점수 높았는데 잃었다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--red)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">고양시 일산서구 탄현마을(삼익) 59㎡</span>
+ <span class="tag red">틀림</span></div>
+<div class="kv"><span class="k">2017.07 그때 2년 점수</span><span class="v">72점</span></div>
+<div class="kv"><span class="k">그때 값</span><span class="v">2.29억</span></div>
+<div class="kv"><span class="k">2년 뒤 값</span><span class="v">1.95억 <span class="neg">(-15%)</span></span></div>
+<div class="note" style="margin-top:6px">2년 점수 높았는데 잃었다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--red)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">영통구 매탄주공5 74㎡</span>
+ <span class="tag red">틀림</span></div>
+<div class="kv"><span class="k">2014.01 그때 2년 점수</span><span class="v">42점</span></div>
+<div class="kv"><span class="k">그때 값</span><span class="v">3.20억</span></div>
+<div class="kv"><span class="k">2년 뒤 값</span><span class="v">3.80억 <span class="pos">(+19%)</span></span></div>
+<div class="note" style="margin-top:6px">2년 점수 낮았는데 올랐다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--red)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">팔달구 우만주공2단지 49㎡</span>
+ <span class="tag red">틀림</span></div>
+<div class="kv"><span class="k">2018.01 그때 2년 점수</span><span class="v">43점</span></div>
+<div class="kv"><span class="k">그때 값</span><span class="v">2.38억</span></div>
+<div class="kv"><span class="k">2년 뒤 값</span><span class="v">4.37억 <span class="pos">(+83%)</span></span></div>
+<div class="note" style="margin-top:6px">2년 점수 낮았는데 올랐다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--red)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">팔달구 우만주공1단지 49㎡</span>
+ <span class="tag red">틀림</span></div>
+<div class="kv"><span class="k">2014.07 그때 2년 점수</span><span class="v">43점</span></div>
+<div class="kv"><span class="k">그때 값</span><span class="v">1.56억</span></div>
+<div class="kv"><span class="k">2년 뒤 값</span><span class="v">2.04억 <span class="pos">(+31%)</span></span></div>
+<div class="note" style="margin-top:6px">2년 점수 낮았는데 올랐다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--red)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">영통구 벽산(1053-2) 84㎡</span>
+ <span class="tag red">틀림</span></div>
+<div class="kv"><span class="k">2015.07 그때 5년 점수</span><span class="v">42점</span></div>
+<div class="kv"><span class="k">그때 값</span><span class="v">3.33억</span></div>
+<div class="kv"><span class="k">5년 뒤 값</span><span class="v">5.00억 <span class="pos">(+50%)</span></span></div>
+<div class="note" style="margin-top:6px">5년 점수 낮았는데 5년 뒤</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--red)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">팔달구 우만주공4단지 49㎡</span>
+ <span class="tag red">틀림</span></div>
+<div class="kv"><span class="k">2019.10 그때 5년 점수</span><span class="v">41점</span></div>
+<div class="kv"><span class="k">그때 값</span><span class="v">2.09억</span></div>
+<div class="kv"><span class="k">5년 뒤 값</span><span class="v">4.00억 <span class="pos">(+91%)</span></span></div>
+<div class="note" style="margin-top:6px">5년 점수 낮았는데 5년 뒤</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--red)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+ <span style="font-weight:700">권선구 한라비발디1단지 84㎡</span>
+ <span class="tag red">틀림</span></div>
+<div class="kv"><span class="k">2020.01 그때 5년 점수</span><span class="v">37점</span></div>
+<div class="kv"><span class="k">그때 값</span><span class="v">2.65억</span></div>
+<div class="kv"><span class="k">5년 뒤 값</span><span class="v">3.73억 <span class="pos">(+41%)</span></span></div>
+<div class="note" style="margin-top:6px">5년 점수 낮았는데 5년 뒤</div></div></div>
 
 <div class="card">
-<h2 style="margin-top:0">2년 점수 → 2년 뒤 실제 수익</h2>
-<div style="padding:14px 0;border-bottom:1px solid var(--line2)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
- <span><span class="tag red">0~39점</span> <span class="sub">4,426건</span></span>
- <span class="num" style="font-size:1.35rem;font-weight:800">-5%</span></div>
-<div class="bar" style="margin:9px 0 7px"><i style="width:40%;background:var(--red)"></i></div>
-<div class="sub">2년 뒤 <b style="color:var(--ink)">40%</b>가 플러스 · <b style="color:var(--ink)">41%</b>는 −10% 이상 손실 · 중간 절반 -17% ~ 8%</div></div><div style="padding:14px 0;border-bottom:1px solid var(--line2)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
- <span><span class="tag amber">40~54점</span> <span class="sub">23,989건</span></span>
- <span class="num" style="font-size:1.35rem;font-weight:800">+6%</span></div>
-<div class="bar" style="margin:9px 0 7px"><i style="width:67%;background:var(--amber)"></i></div>
-<div class="sub">2년 뒤 <b style="color:var(--ink)">67%</b>가 플러스 · <b style="color:var(--ink)">15%</b>는 −10% 이상 손실 · 중간 절반 -4% ~ 19%</div></div><div style="padding:14px 0;border-bottom:1px solid var(--line2)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
- <span><span class="tag blue">55~69점</span> <span class="sub">45,514건</span></span>
- <span class="num" style="font-size:1.35rem;font-weight:800">+11%</span></div>
-<div class="bar" style="margin:9px 0 7px"><i style="width:79%;background:var(--blue)"></i></div>
-<div class="sub">2년 뒤 <b style="color:var(--ink)">79%</b>가 플러스 · <b style="color:var(--ink)">5%</b>는 −10% 이상 손실 · 중간 절반 2% ~ 26%</div></div><div style="padding:14px 0;border-bottom:1px solid var(--line2)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
- <span><span class="tag green">70~100점</span> <span class="sub">7,713건</span></span>
- <span class="num" style="font-size:1.35rem;font-weight:800">+14%</span></div>
-<div class="bar" style="margin:9px 0 7px"><i style="width:90%;background:var(--green)"></i></div>
-<div class="sub">2년 뒤 <b style="color:var(--ink)">90%</b>가 플러스 · <b style="color:var(--ink)">1%</b>는 −10% 이상 손실 · 중간 절반 6% ~ 26%</div></div></div>
-
-<div class="card">
-<h2 style="margin-top:0">5년 점수 → 5년 뒤 실제 수익</h2>
-<div style="padding:14px 0;border-bottom:1px solid var(--line2)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
- <span><span class="tag red">0~39점</span> <span class="sub">9,125건</span></span>
- <span class="num" style="font-size:1.35rem;font-weight:800">+21%</span></div>
-<div class="bar" style="margin:9px 0 7px"><i style="width:80%;background:var(--red)"></i></div>
-<div class="sub">5년 뒤 <b style="color:var(--ink)">80%</b>가 플러스 · <b style="color:var(--ink)">10%</b>는 −10% 이상 손실 · 중간 절반 3% ~ 42%</div></div><div style="padding:14px 0;border-bottom:1px solid var(--line2)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
- <span><span class="tag amber">40~49점</span> <span class="sub">23,538건</span></span>
- <span class="num" style="font-size:1.35rem;font-weight:800">+30%</span></div>
-<div class="bar" style="margin:9px 0 7px"><i style="width:91%;background:var(--amber)"></i></div>
-<div class="sub">5년 뒤 <b style="color:var(--ink)">91%</b>가 플러스 · <b style="color:var(--ink)">4%</b>는 −10% 이상 손실 · 중간 절반 13% ~ 50%</div></div><div style="padding:14px 0;border-bottom:1px solid var(--line2)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
- <span><span class="tag amber">50~59점</span> <span class="sub">8,664건</span></span>
- <span class="num" style="font-size:1.35rem;font-weight:800">+43%</span></div>
-<div class="bar" style="margin:9px 0 7px"><i style="width:92%;background:var(--amber)"></i></div>
-<div class="sub">5년 뒤 <b style="color:var(--ink)">92%</b>가 플러스 · <b style="color:var(--ink)">2%</b>는 −10% 이상 손실 · 중간 절반 20% ~ 65%</div></div><div style="padding:14px 0;border-bottom:1px solid var(--line2)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
- <span><span class="tag blue">60~69점</span> <span class="sub">4,530건</span></span>
- <span class="num" style="font-size:1.35rem;font-weight:800">+44%</span></div>
-<div class="bar" style="margin:9px 0 7px"><i style="width:96%;background:var(--blue)"></i></div>
-<div class="sub">5년 뒤 <b style="color:var(--ink)">96%</b>가 플러스 · <b style="color:var(--ink)">1%</b>는 −10% 이상 손실 · 중간 절반 26% ~ 65%</div></div><div style="padding:14px 0;border-bottom:1px solid var(--line2)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
- <span><span class="tag green">70~100점</span> <span class="sub">3,405건</span></span>
- <span class="num" style="font-size:1.35rem;font-weight:800">+52%</span></div>
-<div class="bar" style="margin:9px 0 7px"><i style="width:97%;background:var(--green)"></i></div>
-<div class="sub">5년 뒤 <b style="color:var(--ink)">97%</b>가 플러스 · <b style="color:var(--ink)">0%</b>는 −10% 이상 손실 · 중간 절반 36% ~ 74%</div></div>
-<div class="tw" style="margin-top:14px"><table><thead><tr><th>전략</th><th>살 물건</th><th>중앙</th><th>플러스</th><th>+20%↑</th><th>원금 이하</th></tr></thead><tbody><tr style="background:var(--surface2)"><td>무조건 매수</td><td class="num">100%</td>
-<td class="num">+33%</td><td class="num">90%</td><td class="num">67%</td><td class="num">10%</td></tr><tr><td>5년 50점 이상</td><td class="num">34%</td>
-<td class="num">+46%</td><td class="num">94%</td><td class="num">79%</td><td class="num">6%</td></tr><tr><td>5년 60점 이상</td><td class="num">16%</td>
-<td class="num">+48%</td><td class="num">96%</td><td class="num">84%</td><td class="num">4%</td></tr><tr><td>5년 70점 이상</td><td class="num">7%</td>
-<td class="num">+52%</td><td class="num">97%</td><td class="num">89%</td><td class="num">3%</td></tr></tbody></table></div>
-<p class="note">5년은 대부분 오르기 때문에 '플러스 확률'로는 차이가 잘 안 보입니다. 차이는 <b>얼마나</b>와 <b>원금 이하로 내려갈 확률</b>에 있습니다.</p></div>
-
-<div class="card">
-<h2 style="margin-top:0">오래 들고 있을수록 벌어집니다</h2>
-<div class="tw"><table><thead><tr><th>보유</th><th>2년 점수 70+</th><th>2년 점수 40−</th><th>5년 점수 70+</th><th>5년 점수 40−</th></tr></thead><tbody>
-<tr><td>1년</td><td class="num">+7%</td><td class="num">+0%</td><td class="num">+8%</td><td class="num">+3%</td></tr><tr><td>2년</td><td class="num">+14%</td><td class="num">-1%</td><td class="num">+19%</td><td class="num">+6%</td></tr><tr><td>3년</td><td class="num">+22%</td><td class="num">-0%</td><td class="num">+29%</td><td class="num">+9%</td></tr><tr><td>5년</td><td class="num">+44%</td><td class="num">+14%</td><td class="num">+52%</td><td class="num">+24%</td></tr>
-</tbody></table></div></div>
-
-<div class="card">
-<h2 style="margin-top:0">결국 시기가 지배합니다</h2>
-<p class="sub">그 해에 아무거나 샀을 때 2년 뒤 플러스였던 비율.</p>
+<h2 style="margin-top:0">결국 시기가 제일 큽니다</h2>
+<p class="sub">그 해에 아무거나 샀을 때 2년 뒤 오른 비율.</p>
 <div class="tw"><table><thead><tr><th>산 해</th><th>아무거나</th><th>70점+</th><th>55점−</th></tr></thead><tbody><tr><td>2014</td><td class="num" style="font-weight:700">96%</td>
 <td class="num">99%</td><td class="num">94%</td></tr><tr><td>2015</td><td class="num" style="font-weight:700">86%</td>
 <td class="num">90%</td><td class="num">86%</td></tr><tr><td>2016</td><td class="num" style="font-weight:700">70%</td>
@@ -277,173 +392,26 @@ ul.plain{padding-left:18px}
 <td class="num">-</td><td class="num">10%</td></tr><tr><td>2023</td><td class="num" style="font-weight:700">68%</td>
 <td class="num">-</td><td class="num">69%</td></tr><tr><td>2024</td><td class="num" style="font-weight:700">66%</td>
 <td class="num">60%</td><td class="num">58%</td></tr></tbody></table></div>
-<p class="note">2019년에 샀으면 99%가 올랐고 2022년에 샀으면 9%만 올랐습니다. <b>연도 사이의 차이가 점수 사이의 차이보다 큽니다.</b> 좋은 물건을 고르는 것보다 나쁜 시기를 피하는 게 먼저인 이유입니다.</p></div>
-
-<div class="card">
-<h2 style="margin-top:0">2021년 고점에서는 점수가 스스로 내려갔습니다</h2>
-<div class="tw"><table><thead><tr><th>매수 분기</th><th>평균 점수</th><th>70점+ 건수</th><th>2년 뒤 중앙</th><th>플러스</th></tr></thead><tbody><tr><td>2021.1~3월</td><td class="num">58.4</td><td class="num">53</td>
-<td class="num pos">+1.4%</td><td class="num">51%</td></tr><tr><td>2021.4~6월</td><td class="num">52.7</td><td class="num">34</td>
-<td class="num neg">-7.4%</td><td class="num">37%</td></tr><tr><td>2021.7~9월</td><td class="num">43.7</td><td class="num">6</td>
-<td class="num neg">-13.8%</td><td class="num">22%</td></tr><tr><td>2021.10~12월</td><td class="num">45.7</td><td class="num">2</td>
-<td class="num neg">-20.0%</td><td class="num">9%</td></tr><tr><td>2022.1~3월</td><td class="num">41.4</td><td class="num">0</td>
-<td class="num neg">-20.5%</td><td class="num">5%</td></tr><tr><td>2022.4~6월</td><td class="num">39.6</td><td class="num">0</td>
-<td class="num neg">-18.3%</td><td class="num">3%</td></tr><tr><td>2022.7~9월</td><td class="num">38.2</td><td class="num">0</td>
-<td class="num neg">-16.3%</td><td class="num">5%</td></tr><tr><td>2022.10~12월</td><td class="num">39.9</td><td class="num">0</td>
-<td class="num neg">-5.2%</td><td class="num">35%</td></tr></tbody></table></div>
-<p class="note">하락을 예언한 게 아닙니다. 거래량이 줄고 매물이 쌓이고 전세가율이 낮아지니 점수가 따라 내려갔고, 결과적으로 고점 매수를 막았습니다. '사기 좋음'이 53건에서 0건으로 사라지는 데 6개월 걸렸습니다.</p></div>
-
-<div class="card">
-<h2 style="margin-top:0">실제 단지로 보기</h2>
-<p class="sub">맞은 사례만 고르면 광고가 됩니다. 틀린 사례도 같이 놓았습니다. 단지명·시점·가격 그대로라서 국토부 실거래로 직접 확인할 수 있습니다.</p>
-<h3>점수대로 간 경우</h3><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--green)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
- <span style="font-weight:700">권선구 수원아이파크시티7단지 59㎡</span>
- <span class="tag green">맞음</span></div>
-<div class="kv"><span class="k">2019.01 매수 시점 2년 점수</span><span class="v">74점</span></div>
-<div class="kv"><span class="k">그때 실거래</span><span class="v">3.65억</span></div>
-<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">5.20억 <span class="pos">(+42%)</span></span></div>
-<div class="note" style="margin-top:6px">2년 점수 높았고 올랐다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--green)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
- <span style="font-weight:700">영통구 황골마을주공1 59㎡</span>
- <span class="tag green">맞음</span></div>
-<div class="kv"><span class="k">2014.07 매수 시점 2년 점수</span><span class="v">73점</span></div>
-<div class="kv"><span class="k">그때 실거래</span><span class="v">2.10억</span></div>
-<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">2.40억 <span class="pos">(+14%)</span></span></div>
-<div class="note" style="margin-top:6px">2년 점수 높았고 올랐다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--green)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
- <span style="font-weight:700">영통구 삼성1 59㎡</span>
- <span class="tag green">맞음</span></div>
-<div class="kv"><span class="k">2014.04 매수 시점 2년 점수</span><span class="v">71점</span></div>
-<div class="kv"><span class="k">그때 실거래</span><span class="v">1.75억</span></div>
-<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">2.04억 <span class="pos">(+17%)</span></span></div>
-<div class="note" style="margin-top:6px">2년 점수 높았고 올랐다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--green)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
- <span style="font-weight:700">권선구 현대 59㎡</span>
- <span class="tag green">맞음</span></div>
-<div class="kv"><span class="k">2021.07 매수 시점 2년 점수</span><span class="v">37점</span></div>
-<div class="kv"><span class="k">그때 실거래</span><span class="v">4.00억</span></div>
-<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">3.25억 <span class="neg">(-19%)</span></span></div>
-<div class="note" style="margin-top:6px">2년 점수 낮았고 잃었다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--green)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
- <span style="font-weight:700">장안구 수원 SK SKY VIEW 59㎡</span>
- <span class="tag green">맞음</span></div>
-<div class="kv"><span class="k">2021.07 매수 시점 2년 점수</span><span class="v">27점</span></div>
-<div class="kv"><span class="k">그때 실거래</span><span class="v">6.60억</span></div>
-<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">5.81억 <span class="neg">(-12%)</span></span></div>
-<div class="note" style="margin-top:6px">2년 점수 낮았고 잃었다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--green)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
- <span style="font-weight:700">팔달구 월드메르디앙 84㎡</span>
- <span class="tag green">맞음</span></div>
-<div class="kv"><span class="k">2021.07 매수 시점 2년 점수</span><span class="v">29점</span></div>
-<div class="kv"><span class="k">그때 실거래</span><span class="v">6.85억</span></div>
-<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">5.75억 <span class="neg">(-16%)</span></span></div>
-<div class="note" style="margin-top:6px">2년 점수 낮았고 잃었다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--green)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
- <span style="font-weight:700">영통구 벽적골롯데 59㎡</span>
- <span class="tag green">맞음</span></div>
-<div class="kv"><span class="k">2019.04 매수 시점 5년 점수</span><span class="v">80점</span></div>
-<div class="kv"><span class="k">그때 실거래</span><span class="v">2.74억</span></div>
-<div class="kv"><span class="k">5년 뒤 실거래</span><span class="v">4.40억 <span class="pos">(+61%)</span></span></div>
-<div class="note" style="margin-top:6px">5년 점수 높았고 5년 뒤</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--green)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
- <span style="font-weight:700">영통구 영통SKVIEW 84㎡</span>
- <span class="tag green">맞음</span></div>
-<div class="kv"><span class="k">2019.07 매수 시점 5년 점수</span><span class="v">77점</span></div>
-<div class="kv"><span class="k">그때 실거래</span><span class="v">5.60억</span></div>
-<div class="kv"><span class="k">5년 뒤 실거래</span><span class="v">8.24억 <span class="pos">(+47%)</span></span></div>
-<div class="note" style="margin-top:6px">5년 점수 높았고 5년 뒤</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--green)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
- <span style="font-weight:700">장안구 천천삼성래미안 59㎡</span>
- <span class="tag green">맞음</span></div>
-<div class="kv"><span class="k">2018.07 매수 시점 5년 점수</span><span class="v">80점</span></div>
-<div class="kv"><span class="k">그때 실거래</span><span class="v">2.75억</span></div>
-<div class="kv"><span class="k">5년 뒤 실거래</span><span class="v">3.95억 <span class="pos">(+44%)</span></span></div>
-<div class="note" style="margin-top:6px">5년 점수 높았고 5년 뒤</div></div>
-<h3>점수가 틀린 경우</h3><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--red)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
- <span style="font-weight:700">고양시 일산동구 중산마을11(현대) 84㎡</span>
- <span class="tag red">틀림</span></div>
-<div class="kv"><span class="k">2017.07 매수 시점 2년 점수</span><span class="v">72점</span></div>
-<div class="kv"><span class="k">그때 실거래</span><span class="v">2.75억</span></div>
-<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">2.43억 <span class="neg">(-12%)</span></span></div>
-<div class="note" style="margin-top:6px">2년 점수 높았는데 잃었다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--red)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
- <span style="font-weight:700">양주시 성우아파트아침의미소 59㎡</span>
- <span class="tag red">틀림</span></div>
-<div class="kv"><span class="k">2017.01 매수 시점 2년 점수</span><span class="v">70점</span></div>
-<div class="kv"><span class="k">그때 실거래</span><span class="v">1.51억</span></div>
-<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">1.35억 <span class="neg">(-11%)</span></span></div>
-<div class="note" style="margin-top:6px">2년 점수 높았는데 잃었다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--red)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
- <span style="font-weight:700">고양시 일산서구 탄현마을(삼익) 59㎡</span>
- <span class="tag red">틀림</span></div>
-<div class="kv"><span class="k">2017.07 매수 시점 2년 점수</span><span class="v">72점</span></div>
-<div class="kv"><span class="k">그때 실거래</span><span class="v">2.29억</span></div>
-<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">1.95억 <span class="neg">(-15%)</span></span></div>
-<div class="note" style="margin-top:6px">2년 점수 높았는데 잃었다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--red)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
- <span style="font-weight:700">영통구 매탄주공5 74㎡</span>
- <span class="tag red">틀림</span></div>
-<div class="kv"><span class="k">2014.01 매수 시점 2년 점수</span><span class="v">42점</span></div>
-<div class="kv"><span class="k">그때 실거래</span><span class="v">3.20억</span></div>
-<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">3.80억 <span class="pos">(+19%)</span></span></div>
-<div class="note" style="margin-top:6px">2년 점수 낮았는데 올랐다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--red)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
- <span style="font-weight:700">팔달구 우만주공2단지 49㎡</span>
- <span class="tag red">틀림</span></div>
-<div class="kv"><span class="k">2018.01 매수 시점 2년 점수</span><span class="v">43점</span></div>
-<div class="kv"><span class="k">그때 실거래</span><span class="v">2.38억</span></div>
-<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">4.37억 <span class="pos">(+83%)</span></span></div>
-<div class="note" style="margin-top:6px">2년 점수 낮았는데 올랐다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--red)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
- <span style="font-weight:700">팔달구 우만주공1단지 49㎡</span>
- <span class="tag red">틀림</span></div>
-<div class="kv"><span class="k">2014.07 매수 시점 2년 점수</span><span class="v">43점</span></div>
-<div class="kv"><span class="k">그때 실거래</span><span class="v">1.56억</span></div>
-<div class="kv"><span class="k">2년 뒤 실거래</span><span class="v">2.04억 <span class="pos">(+31%)</span></span></div>
-<div class="note" style="margin-top:6px">2년 점수 낮았는데 올랐다</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--red)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
- <span style="font-weight:700">영통구 벽산(1053-2) 84㎡</span>
- <span class="tag red">틀림</span></div>
-<div class="kv"><span class="k">2015.07 매수 시점 5년 점수</span><span class="v">42점</span></div>
-<div class="kv"><span class="k">그때 실거래</span><span class="v">3.33억</span></div>
-<div class="kv"><span class="k">5년 뒤 실거래</span><span class="v">5.00억 <span class="pos">(+50%)</span></span></div>
-<div class="note" style="margin-top:6px">5년 점수 낮았는데 5년 뒤</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--red)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
- <span style="font-weight:700">팔달구 우만주공4단지 49㎡</span>
- <span class="tag red">틀림</span></div>
-<div class="kv"><span class="k">2019.10 매수 시점 5년 점수</span><span class="v">41점</span></div>
-<div class="kv"><span class="k">그때 실거래</span><span class="v">2.09억</span></div>
-<div class="kv"><span class="k">5년 뒤 실거래</span><span class="v">4.00억 <span class="pos">(+91%)</span></span></div>
-<div class="note" style="margin-top:6px">5년 점수 낮았는데 5년 뒤</div></div><div style="background:var(--surface2);border-radius:var(--r2);padding:13px 15px;margin-bottom:9px;border-left:4px solid var(--red)">
-<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
- <span style="font-weight:700">권선구 한라비발디1단지 84㎡</span>
- <span class="tag red">틀림</span></div>
-<div class="kv"><span class="k">2020.01 매수 시점 5년 점수</span><span class="v">37점</span></div>
-<div class="kv"><span class="k">그때 실거래</span><span class="v">2.65억</span></div>
-<div class="kv"><span class="k">5년 뒤 실거래</span><span class="v">3.73억 <span class="pos">(+41%)</span></span></div>
-<div class="note" style="margin-top:6px">5년 점수 낮았는데 5년 뒤</div></div>
-<p class="note">70점 이상을 받고도 2년 뒤 −10% 아래로 간 사례는 7,713건 중 0.7%였습니다(수원만 보면 0건). 드물지만 없지는 않습니다.</p></div>
+<p class="note">2019년에 샀으면 99%가 올랐고 2022년에 샀으면 9%만 올랐습니다. <b>연도 사이 차이가 점수 사이 차이보다 큽니다.</b> 좋은 물건을 고르는 것보다 나쁜 시기를 피하는 게 먼저인 이유입니다.</p></div>
 
 <div class="card">
 <h2 style="margin-top:0">직접 확인해 보세요</h2>
 <p class="sub">위 사례의 단지명과 시점을 그대로 넣으면 같은 숫자가 나옵니다. 저희가 쓰는 원본과 같은 자료입니다.</p>
-<div class="kv"><span class="k">실거래가 전량 (매매·전월세)</span><span class="v"><a href="https://rt.molit.go.kr/" target="_blank" rel="noopener">국토교통부 →</a></span></div>
-<div class="kv"><span class="k">가격지수·전세가율·매수우위</span><span class="v"><a href="https://data.kbland.kr/" target="_blank" rel="noopener">KB 데이터허브 →</a></span></div>
-<div class="kv"><span class="k">가계대출·기준금리</span><span class="v"><a href="https://ecos.bok.or.kr/" target="_blank" rel="noopener">한국은행 ECOS →</a></span></div>
-<div class="kv"><span class="k">미분양</span><span class="v"><a href="https://stat.molit.go.kr/" target="_blank" rel="noopener">국토부 통계누리 →</a></span></div>
+<div class="kv"><span class="k">실거래가 전량</span><span class="v"><a href="https://rt.molit.go.kr/" target="_blank" rel="noopener">국토교통부 →</a></span></div>
+<div class="kv"><span class="k">가격지수·전세가율</span><span class="v"><a href="https://data.kbland.kr/" target="_blank" rel="noopener">KB 데이터허브 →</a></span></div>
+<div class="kv"><span class="k">가계대출·기준금리</span><span class="v"><a href="https://ecos.bok.or.kr/" target="_blank" rel="noopener">한국은행 →</a></span></div>
+<div class="kv"><span class="k">미분양</span><span class="v"><a href="https://stat.molit.go.kr/" target="_blank" rel="noopener">통계누리 →</a></span></div>
 <div class="kv"><span class="k">학원 위치</span><span class="v"><a href="https://data.gg.go.kr/" target="_blank" rel="noopener">경기데이터드림 →</a></span></div>
-<div class="kv"><span class="k">현재 매물·호가·단지 정보</span><span class="v"><a href="https://new.land.naver.com/" target="_blank" rel="noopener">네이버부동산 →</a></span></div>
-<p class="note">로그인이나 유료 키 없이 볼 수 있는 자료만 씁니다. 계산식은 <a href="formula.html">수식</a>, 자료별 한계는 <a href="sources.html">출처</a>에 있습니다.</p></div>
+<div class="kv"><span class="k">매물·호가</span><span class="v"><a href="https://new.land.naver.com/" target="_blank" rel="noopener">네이버부동산 →</a></span></div>
+<p class="note">로그인이나 유료 키 없이 볼 수 있는 자료만 씁니다. 계산식은 <a href="formula.html">수식</a>에 전부 적어두었습니다.</p></div>
 
 <div class="card">
-<h2 style="margin-top:0">못 맞히는 것</h2>
-<div class="kv"><span class="k">같은 구 안에서 어느 단지가 더 오를지</span><span class="v">2년 점수로는 못 맞힘</span></div>
-<div class="kv"><span class="k">상승 확률 숫자</span><span class="v">과신(75~90% → 실제 61~74%)</span></div>
+<h2 style="margin-top:0">이건 못 맞힙니다</h2>
+<div class="kv"><span class="k">같은 동네에서 어느 단지가 더 오를지</span><span class="v">2년 점수로는 못 맞힘</span></div>
+<div class="kv"><span class="k">상승 확률 숫자</span><span class="v">실제보다 후하게 나옴</span></div>
 <div class="kv"><span class="k">12개월 가격 범위</span><span class="v">적중 27%</span></div>
-<div class="kv"><span class="k">서울 아파트</span><span class="v">검증 불가(10년 내내 상승장)</span></div>
-<div class="kv"><span class="k">호가 갭·매물 소진 30점</span><span class="v">과거 매물 자료가 없어 미검증</span></div>
-<p class="note">2년 점수의 힘은 상당 부분 '그 구의 거래량이 늘고 있나' 하나에서 옵니다(같은 분기 안 순위상관 +0.27 vs 점수 +0.15). 점수는 그 위에 손실 가능성을 조금 더 좁혀주는 역할입니다.</p>
-<a class="btn ghost" style="margin-top:12px" href="sources.html">검사 8가지 결과 전부 보기</a></div>
+<div class="kv"><span class="k">서울 아파트</span><span class="v">10년 내내 올라서 검증 불가</span></div>
+<div class="kv"><span class="k">호가·매물 점수 30점</span><span class="v">과거 자료가 없어 미검증</span></div>
+<a class="btn ghost" style="margin-top:14px" href="sources.html">자료 출처와 검사 결과 전부 보기</a></div>
 <p class="foot">공개 데이터로 매일 자동 계산 · 투자 권유 아님</p>
 </div></body></html>
