@@ -86,7 +86,7 @@ small.src{display:block;color:var(--ink3);font-size:.8rem;margin-top:4px;line-he
 .card h2:first-child,.card h1:first-child{margin-top:0}
 ul.plain{padding-left:18px}
 </style></head><body><div class="wrap">
-<div class="top"><span class="brand">수원 아파트 점수판</span><span class="date">2026.09.19</span></div>
+<div class="top"><span class="brand">수원 아파트 점수판</span><span class="date">2026.09.20</span></div>
 <nav class="tabs"><a href="index.html">점수</a><a href="evidence.html">검증</a><a href="market.html">시장</a><a href="guide.html">설명서</a><a href="formula.html">수식</a><a href="sources.html" class=on>출처</a><a href="watch.html">상세</a><a href="map.html">지도</a></nav>
 <div class="card">
 <h1>데이터 출처와 검증</h1>
@@ -105,7 +105,7 @@ ul.plain{padding-left:18px}
 <p>2014년 1월부터 2024년 8월까지 <b>분기마다</b> 서울·경기 모든 단지×면적대(그 분기 거래 60건 이상인 구)를 그 시점 자료만으로 채점하고, 12·24·36·60개월 뒤 실거래와 비교했다. 표본 115,075건. 호가·매물은 과거 이력이 없어 중립값으로 고정했다(그래서 그 30점은 미검증).</p>
 <p>'맞았다'의 기준은 두 가지다. ① <b>순위상관(IC)</b>: 같은 분기에 산 것들 안에서 점수 순위와 수익 순위가 같이 가나. ② <b>판정별 손실률</b>: '사기 좋음'이라 한 것이 24개월 뒤 −10% 아래로 간 비율이 '보류'보다 낮나.</p>
 
-<h2 id="tests">4. 2년 점수 8가지 검사 결과 (2026-09-19)</h2>
+<h2 id="tests">4. 2년 점수 8가지 검사 결과 (2026-09-20)</h2>
 <p>1 OOS <span class="b good">PASS</span> · 2 베이스라인 <span class="b crit">FAIL</span> · 3 판정 <span class="b warn">WARN</span> · 4 보정 <span class="b crit">FAIL</span> · 5 가격대 <span class="b crit">FAIL</span> · 6 안정성 <span class="b good">PASS</span> · 7 신뢰구간 <span class="b good">PASS</span> · 8 앞으로 <span class="b good">PASS</span></p>
 <div class="tw"><table><thead><tr><th>검사</th><th>묻는 것</th><th>결과</th><th>뜻</th></tr></thead><tbody><tr><th>1 OOS</th><td>표를 과거 자료로만 만들어 그 뒤에 적용해도 맞나</td><td>경기 순위상관 in-sample +0.198 → 워크포워드 +0.149, 양의 분기 89%</td><td>PASS. 미래를 미리 본 효과를 빼도 방향은 유지</td></tr><tr><th>2 베이스라인</th><td>지표 하나보다 나은가</td><td>구 거래량 YoY 하나 +0.265 > 점수 +0.149</td><td>FAIL. 점수의 힘은 대부분 거래량에서 온다</td></tr><tr><th>3 판정</th><td>매수판정이 보류판정보다 덜 잃나</td><td>매수판정 손실 9% vs 보류 25%, 놓친 상승 37%</td><td>WARN. 손실 회피는 되지만 보류가 놓치는 상승도 많음</td></tr><tr><th>4 확률 보정</th><td>P(상승) 숫자가 실현과 맞나</td><td>예측 75~90% → 실현 61~74%, 기울기 0.64</td><td>FAIL. 과신. 확률 숫자는 믿지 말 것</td></tr><tr><th>5 가격대</th><td>12/24개월 가격대 안에 실거래가 들어오나</td><td>12개월 적중 27% (전세 72% 바닥 가정을 빼면 44%)</td><td>FAIL. 밴드가 너무 좁음</td></tr><tr><th>6 안정성</th><td>시기를 넷으로 갈라도 방향이 같나</td><td>2014~16 +0.18 / 17~19 +0.19 / 20~21 +0.03 / 22~24 +0.15</td><td>PASS. 2020~21 급등기만 약함</td></tr><tr><th>7 신뢰구간</th><td>우연일 가능성</td><td>분기 부트스트랩 95% 구간 +0.11 ~ +0.19</td><td>PASS. 하한이 0 위</td></tr><tr><th>8 앞으로</th><td>미래 대조 절차가 돌아가나</td><td>스냅샷·매물 시계열 시작됨</td><td>PASS</td></tr></tbody></table></div>
 <div class="box"><b>결론</b>: 2년 점수는 '이 구를 지금 사도 되나'(손실 회피)에만 쓴다. 같은 구 안 단지 고르기·확률·가격대는 쓰지 않는다. 서울은 2014~24가 한 방향 상승장이라 구분력 검사가 원래 안 된다.</div>
