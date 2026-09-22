@@ -86,7 +86,7 @@ small.src{display:block;color:var(--ink3);font-size:.8rem;margin-top:4px;line-he
 .card h2:first-child,.card h1:first-child{margin-top:0}
 ul.plain{padding-left:18px}
 </style></head><body><div class="wrap">
-<div class="top"><span class="brand">수원 아파트 점수판</span><span class="date">2026.09.22</span></div>
+<div class="top"><span class="brand">수원 아파트 점수판</span><span class="date">2026.09.23</span></div>
 <nav class="tabs"><a href="index.html">점수</a><a href="evidence.html">검증</a><a href="market.html">시장</a><a href="guide.html">설명서</a><a href="formula.html" class=on>수식</a><a href="sources.html">출처</a><a href="watch.html">상세</a><a href="map.html">지도</a></nav>
 <div class="card">
 <h1>수식 — 점수가 나오는 과정 전부</h1>
@@ -217,7 +217,7 @@ ul.plain{padding-left:18px}
 <p>같은 방법으로 시험했다가 <b>효과가 없어 넣지 않은</b> 후보들(2026-09-18, data/validate/missing_test.txt):</p>
 <div class="tw"><table><thead><tr><th>후보</th><th>결과</th><th>판정</th></tr></thead><tbody><tr><th>동(洞) 단위 위계 — 그 동 ㎡가 ÷ 구 ㎡가</th><td>구간별로는 5년 구대비 −1.9p(싼 동) vs +2.2p(비싼 동)로 보이지만, 점수에 넣으면 순위상관이 +0.356 → +0.344로 <b>떨어진다</b>. 단독 순위상관도 −0.045</td><td>미채택</td></tr><tr><th>브랜드(1군 건설사)</th><td>5년 구대비 1군 −1.2p vs 그 외 0.0p. 오히려 열위</td><td>미채택</td></tr><tr><th>반경 2km 입주 물량</th><td>구 단위 입주율이 이미 잡고 있어 추가 정보 없음(구대비 −0.2p)</td><td>미채택</td></tr><tr><th>노선 등급(급행·일반·경전철)</th><td>급행역 1km가 오히려 5년 구대비 −0.5p, 경전철이 +6.2p. 급행 프리미엄은 가격 수준에 선반영</td><td>미채택</td></tr><tr><th>면적대</th><td>2년은 49㎡ +1.4p ~ 134㎡ −1.4p로 차이가 있으나 5년은 전부 ±0.0~0.7p</td><td>미채택</td></tr></tbody></table></div>
 
-<h2 id="example">6. 실계산 예시 — 팰루시드 59 (2026-09-22)</h2>
+<h2 id="example">6. 실계산 예시 — 팰루시드 59 (2026-09-23)</h2>
 <p>앞페이지의 숫자가 실제로 어떻게 나왔는지 관심 물건 하나로 따라가 본다. 값은 오늘 자료다.</p>
 <h3>2년 타이밍</h3><div class="tw"><table><thead><tr><th>항목</th><th>입력값 → 계산</th><th class=n>점수</th></tr></thead><tbody><tr><th>지역 국면 45</th><td>거래 YoY +65% → 93 · 전세가율 60% → 56 · 지수 YoY +10.2% → 60 ⇒ (93+56+60)÷3×0.45</td><td class=n>31.4</td></tr><tr><th>호가갭 15</th><td>호가 Q1 8.70억 ÷ 실거래 7.99억 = 109%</td><td class=n>8</td></tr><tr><th>매물소진 15</th><td>매물 24건 ÷ (3개월 거래 24건÷3) = 3.0개월</td><td class=n>11</td></tr><tr><th>단지 전세가율 15</th><td>56% (전세호가)</td><td class=n>6</td></tr><tr><th>속도 10</th><td>12개월 +9%</td><td class=n>1</td></tr><tr><th>감점: 입주율</th><td>0.3%</td><td class=n>0</td></tr><tr><th>감점: 대출</th><td>3M 연율 +2.4%</td><td class=n>-3</td></tr><tr><th>감점: 기준금리</th><td>12M +0.50%p</td><td class=n>0</td></tr><tr><th><b>타이밍 합</b></th><td>max(0, round(31.4+8+11+6+1-3))</td><td class=n><b>54</b></td></tr></tbody></table></div>
 <h3>환금성</h3><div class="tw"><table><thead><tr><th>항목</th><th>입력값</th><th class=n>점수</th></tr></thead><tbody><tr><th>회전율 30</th><td>17.6%</td><td class=n>30</td></tr><tr><th>세대수 25</th><td>2,178</td><td class=n>25</td></tr><tr><th>침체기 유지 20</th><td>자료 없음(8)</td><td class=n>8</td></tr><tr><th>역 접근 25</th><td>급행 5.5km · 아무역 0.4km</td><td class=n>12</td></tr><tr><th><b>환금성</b></th><td>합</td><td class=n><b>75</b></td></tr></tbody></table></div>
