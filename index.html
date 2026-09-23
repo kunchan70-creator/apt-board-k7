@@ -313,7 +313,8 @@ function detail(r){
 // 한 줄(2026-09-23 사용자: "100점이 가장 좋은 결과, 그 안에 얼마 이득·들어가는 돈 대비 연 몇 %"):
 //   오른쪽 큰 숫자 = 객관 점수(v2quality, 시나리오와 별개). 초록 줄 = 보통 시나리오일 때 이득(금액)·들어가는 돈 대비 %·연 %, 나쁨 시나리오 금액.
 //   순서는 여전히 '보통과 나쁜 경우의 가운데'(혹하는 숫자만 보고 줄세우지 않음).
-function gain(r){const F=r.F||fin(r), base=CF.cash!=null?Math.max(1,F.own):(r.C+F.rp), g=F.p5, pct=g/base, yrs=r.T;
+function gain(r){const F=r.F||fin(r), base=CF.cash!=null?Math.max(1,CF.cash):(r.C+F.rp), g=F.p5,   // 이득에 남는 현금 예금이자가 들어 있으므로 분모도 가진 현금 전체(09-23: 현금 20억이면 집 7억만 분모로 잡아 연 10%로 부풀던 문제)
+ pct=g/base, yrs=r.T;
  return {g,pct,ann:Math.pow(Math.max(1e-6,1+pct),1/yrs)-1,base,yrs,bad:F.p1};}
 function row(r,lbl){
  const G=gain(r), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', yl=r.as?('입주('+G.yrs.toFixed(1)+'년) 보통 시나리오'):'5년 보통 시나리오';
@@ -321,7 +322,7 @@ function row(r,lbl){
  <span style="display:flex;gap:10px;align-items:center;min-width:0;flex:1"><span class="rank">${lbl}</span>
   <span style="min-width:0"><span style="display:block;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.n} ${r.b}㎡${r.bu?' <span class="tag red">분담금</span>':''}${r.rd?' <span class="tag amber">'+r.rd+'</span>':''}</span>
   <span style="display:block;font-weight:700;color:var(--${G.g>=0?'green':'red'});margin-top:2px">${yl} ${CF.useU?'':'시세차익 '}${sg(G.g)} <span style="font-weight:600">· ${CF.cash!=null?'내 돈':'들어가는 돈'} 대비 ${G.pct>=0?'+':''}${(G.pct*100).toFixed(0)}% (연 ${(G.ann*100).toFixed(1)}%)</span></span>
-  <span class="sub" style="display:block;font-weight:400">${r.gu} · ${CF.cash!=null?'내 돈 '+eok(G.base)+'억 · ':''}투입 ${eok(r.C+(r.F?r.F.rp:0))}억 · 나쁨 시나리오 ${sg(G.bad)}${r.dd!=null?` · 지난 하락기 ${Math.abs(r.dd)<0.5?'0':(r.dd>0?'+':'')+r.dd.toFixed(0)}%`:''}</span></span></span>
+  <span class="sub" style="display:block;font-weight:400">${r.gu} · ${CF.cash!=null?'내 돈 '+eok(G.base)+'억'+(r.F&&r.F.left>=1000?'(예금 '+eok(r.F.left)+'억)':'')+' · ':''}투입 ${eok(r.C+(r.F?r.F.rp:0))}억 · 나쁨 시나리오 ${sg(G.bad)}${r.dd!=null?` · 지난 하락기 ${Math.abs(r.dd)<0.5?'0':(r.dd>0?'+':'')+r.dd.toFixed(0)}%`:''}</span></span></span>
  <span style="flex:0 0 68px;display:flex;flex-direction:column;align-items:flex-end;gap:3px"><span class="num" style="font-size:1.5rem;font-weight:800;color:var(--${scol(r.sc)});line-height:1">${r.sc}</span><span style="font-size:.7rem;color:var(--ink3)">객관 점수</span><span class="tag ${GC[r.g]}">신뢰 ${r.g}</span></span></summary>${detail(r)}</details>`;}
 let N=10, V=[];
 const nz=x=>String(x).replace(/\s|아파트|\(|\)/g,'');
