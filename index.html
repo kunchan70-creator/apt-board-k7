@@ -130,7 +130,7 @@ const $=q=>document.querySelector(q), app=$('#app');
 const eok=v=>v==null?'-':(v/1e4).toFixed(2), pc=v=>v==null?'-':(v>0?'+':'')+v.toFixed(1)+'%', pp=v=>(v>0?'+':'')+v.toFixed(1)+'%p';
 const YEAR=new Date().getFullYear();
 // ---------------- 설정 저장 ----------------
-const DEF={done:false,regions:[],cash:DT.my.cash,maxc:DT.my.max_price,first:!!DT.my.first_home,loan:null,irate:null,inc:null,debt:null,yrs:30,repair:true,rpu:150,size:[],age:[],st:'',hh:0,trust:false};
+const DEF={done:false,regions:[],cash:DT.my.cash,maxc:DT.my.max_price,first:!!DT.my.first_home,loan:null,irate:null,inc:null,debt:null,yrs:30,repair:true,rpu:150,useU:true,size:[],age:[],st:'',hh:0,trust:false};
 function load(){try{return Object.assign({},DEF,JSON.parse(localStorage.getItem('v2cfg')||'{}'))}catch(e){return Object.assign({},DEF)}}
 function save(){try{localStorage.setItem('v2cfg',JSON.stringify(CF))}catch(e){}}
 let CF=load();
@@ -205,6 +205,7 @@ function setup(){
  <div class="inp"><input type="number" inputmode="numeric" step="5" placeholder="30" value="${CF.yrs||30}" oninput="CF.yrs=this.value===''?30:+this.value;count()"><b>년 만기</b></div>
  <div class="sec">대출 금리</div><div class="hint">기본값 = 한국은행 주택담보대출 평균 ${DT.rate.loan}%(${DT.rate.ym.slice(0,4)}.${DT.rate.ym.slice(4)} 신규). 예금은 ${DT.rate.dep}%(세후로 계산).</div>
  <div class="inp"><input type="number" inputmode="decimal" step="0.05" placeholder="${DT.rate.loan}" value="${CF.irate==null?'':CF.irate}" oninput="CF.irate=this.value===''?null:+this.value;count()"><b>%</b></div>
+ <div class="tg"><span><b>사는 가치를 수익에 넣기</b><br><span class="hint">그 집에 살면 아끼는 월세(전세 × 전환율)를 수익으로 셈해요. 끄면 5년 뒤 시세차익만으로 순위를 매겨요.</span></span><label class="sw"><input type="checkbox" ${CF.useU?'checked':''} onchange="CF.useU=this.checked;count()"><i></i></label></div>
  <div class="tg"><span><b>구축 수리비 넣기</b><br><span class="hint">20년 넘은 집은 올수리, 10~20년은 절반으로 계산해 투입금에 더해요. 이미 수리된 집을 살 거면 끄세요.</span></span><label class="sw"><input type="checkbox" ${CF.repair?'checked':''} onchange="CF.repair=this.checked;count()"><i></i></label></div>
  <div class="inp"><input type="number" inputmode="numeric" step="10" placeholder="150" value="${CF.rpu==null?'':CF.rpu}" oninput="CF.rpu=this.value===''?150:+this.value;count()"><b>만원/평(공급)</b></div>
  <div class="sec">총 투입금 상한 <span class="hint">(선택)</span></div>
@@ -240,7 +241,7 @@ const a=YEAR-r.y,f=a>=20?1:a>=10?0.5:0;return Math.round(r.b/0.75/3.3058*(CF.rpu
 function fin(r){   // 현금을 모르면 대출 없이(투입금 대비 효율만). 입주권(r.be)은 주택담보대출이 안 나와 대출 0
  const rp=repair(r), l=Math.max(r.ltv,CF.first?0.7:0), cap=r.be?0:Math.min(r.p*l,lcap(r.p),CF.loan==null?1e12:CF.loan,dsrMax()), up=r.p+r.fee+r.bu+rp, K=CF.cash;
  const L=K==null?0:Math.max(0,Math.min(up-K,cap)), own=up-L, i=(CF.irate==null?DT.rate.loan:CF.irate)/100, d=DT.rate.dep/100*0.846;
- const left=K==null?0:Math.max(0,K-own), it=L*i*r.T, di=left*d*r.T, f=v=>v+r.U-r.C-rp-it+di;
+ const left=K==null?0:Math.max(0,K-own), it=L*i*r.T, di=left*d*r.T, f=v=>v+(CF.useU?r.U:0)-r.C-rp-it+di;   // 사는 가치(아끼는 월세)는 설정으로 켜고 끔
  const p1=f(r.v1),p5=f(r.v5),p9=f(r.v9), an=v=>Math.pow(Math.max(1e-6,1+v/(r.C+rp)),1/r.T)-1;
  return {rp,L,own,left,it,di,i,ok:K==null||own<=K,p1,p5,p9,ce:K==null?(an(p1)+an(p5))/2:(p1+p5)/2};}
 function cash(r){return fin(r).own;}
@@ -300,7 +301,7 @@ function row(r,lbl){
  return `<details style="border-bottom:1px solid var(--line2)"><summary style="align-items:center;gap:10px">
  <span style="display:flex;gap:10px;align-items:center;min-width:0;flex:1"><span class="rank">${lbl}</span>
   <span style="min-width:0"><span style="display:block;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.n} ${r.b}㎡${r.bu?' <span class="tag red">분담금</span>':''}${r.rd?' <span class="tag amber">'+r.rd+'</span>':''}</span>
-  <span style="display:block;font-weight:700;color:var(--${G.g>=0?'green':'red'});margin-top:2px">${yl} ${sg(G.g)} <span style="font-weight:600">· ${CF.cash!=null?'내 돈':'들어가는 돈'} 대비 ${G.pct>=0?'+':''}${(G.pct*100).toFixed(0)}% (연 ${(G.ann*100).toFixed(1)}%)</span></span>
+  <span style="display:block;font-weight:700;color:var(--${G.g>=0?'green':'red'});margin-top:2px">${yl} ${CF.useU?'':'시세차익 '}${sg(G.g)} <span style="font-weight:600">· ${CF.cash!=null?'내 돈':'들어가는 돈'} 대비 ${G.pct>=0?'+':''}${(G.pct*100).toFixed(0)}% (연 ${(G.ann*100).toFixed(1)}%)</span></span>
   <span class="sub" style="display:block;font-weight:400">${r.gu} · ${CF.cash!=null?'내 돈 '+eok(G.base)+'억 · ':''}투입 ${eok(r.C+(r.F?r.F.rp:0))}억 · 나쁠 때 ${sg(G.bad)}${r.dd!=null?` · 지난 하락기 ${Math.abs(r.dd)<0.5?'0':(r.dd>0?'+':'')+r.dd.toFixed(0)}%`:''}</span></span></span>
  <span style="flex:0 0 68px;display:flex;flex-direction:column;align-items:flex-end;gap:3px"><span class="num" style="font-size:1.5rem;font-weight:800;color:var(--${scol(r.sc)});line-height:1">${r.sc}</span><span style="font-size:.7rem;color:var(--ink3)">객관 점수</span><span class="tag ${GC[r.g]}">신뢰 ${r.g}</span></span></summary>${detail(r)}</details>`;}
 let N=10, V=[];
@@ -320,7 +321,7 @@ function find(q){
  el.innerHTML=h+'<div style="height:14px"></div>';}
 function summaryChips(){
  const c=[]; c.push(CF.regions.length?(CF.regions.length<=3?CF.regions.map(short).join(' · '):CF.regions.slice(0,2).map(short).join(' · ')+` 외 ${CF.regions.length-2}곳`):'서울·경기 전체');
- if(CF.cash!=null)c.push('현금 '+eok(CF.cash)+'억'); if(CF.maxc!=null)c.push('투입 '+eok(CF.maxc)+'억 이하'); if(CF.first)c.push('생애최초'); if(CF.loan!=null)c.push('대출 '+eok(CF.loan)+'억까지'); if(CF.inc!=null)c.push('소득 '+eok(CF.inc)+'억·DSR'); if(CF.repair)c.push('수리비 평당 '+(CF.rpu||150)+'만');
+ if(CF.cash!=null)c.push('현금 '+eok(CF.cash)+'억'); if(CF.maxc!=null)c.push('투입 '+eok(CF.maxc)+'억 이하'); if(CF.first)c.push('생애최초'); if(CF.loan!=null)c.push('대출 '+eok(CF.loan)+'억까지'); if(CF.inc!=null)c.push('소득 '+eok(CF.inc)+'억·DSR'); if(CF.repair)c.push('수리비 평당 '+(CF.rpu||150)+'만'); c.push(CF.useU?'사는 가치 포함':'시세차익만');
  const SZ={s:'소형',m:'중형',l:'대형'},AG={n:'신축',m:'준신축',o:'구축'};
  if(CF.size.length)c.push(CF.size.map(x=>SZ[x]).join('·')); if(CF.age.length)c.push(CF.age.map(x=>AG[x]).join('·'));
  if(CF.st)c.push(CF.st==='a1'?'역 1km':'급행 2km'); if(CF.hh)c.push(CF.hh+'세대+'); if(CF.trust)c.push('거래 충분');
@@ -333,6 +334,7 @@ function result(){
  <div class="eyebrow">내 조건에 맞는 ${V.length.toLocaleString()}곳 중 — 모두에게 좋은 집이 아니라 내 돈·내 조건에서</div><div class="hq">5년 뒤 가장 많이 남을 Top ${Math.min(10,V.length)}</div>
  <div style="margin:6px 0 10px">${summaryChips()}</div>
  <p class="hint">왼쪽 번호 = <b>내 돈·내 조건으로 따진 순위</b>. 오른쪽 숫자 = 모든 아파트에 같은 기준으로 매긴 <b>객관 점수</b>(5~95, 100점짜리 집은 없어요). 객관 80점이어도 내 돈으로는 1등일 수 있어요. 초록 줄 = 보통일 때 ${CF.cash!=null?'내 돈':'들어가는 돈'}이 얼마나 불어나는지, 순서는 <b>나쁜 경우까지 함께</b> 따져 정했어요${CF.cash!=null?' — 대출이자(연 '+(CF.irate==null?DT.rate.loan:CF.irate)+'%)·남는 현금 예금이자'+(CF.repair?'·구축 수리비':'')+' 포함':''}.</p>
+ <div style="display:flex;gap:6px;margin:0 0 8px"><button class="btn ghost" style="padding:8px 12px;font-size:.88rem;${CF.useU?'':'border-color:var(--blue);color:var(--blue)'}" onclick="CF.useU=false;save();result()">시세차익만</button><button class="btn ghost" style="padding:8px 12px;font-size:.88rem;${CF.useU?'border-color:var(--blue);color:var(--blue)':''}" onclick="CF.useU=true;save();result()">사는 가치 포함</button></div>
  <input id="sq" type="search" placeholder="단지 이름으로 찾기 (조건 밖·순위 밖 단지도)" oninput="find(this.value)" style="width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit;margin:4px 0 8px">
  <div id="found"></div>
  <div id="list"></div><button class="btn ghost" id="more" style="margin-top:12px" onclick="N+=10;draw()">다음 10곳</button>
