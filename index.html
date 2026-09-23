@@ -322,7 +322,7 @@ function detail(r){
  h+=`<div style="font-weight:700;margin:16px 0 2px"><span style="color:var(--blue)">내 입장에서</span> · 내 돈으로 따지면${r.mr?' (내 순위 '+r.mr+'위)':''}</div>`+kv('대출(LTV '+Math.round(l*100)+'%·한도 '+eok(lcap(r.p))+'억'+(CF.inc!=null?'·DSR '+eok(dsrMax())+'억':'')+(CF.loan!=null?'·내 상한':'')+' 안에서 필요한 만큼)',eok(F.L)+'억')+kv('필요 현금',`<b>${eok(F.own)}억</b>`)
    +kv('대출이자 '+Math.round(r.T)+'년 ('+(F.i*100).toFixed(2)+'%, 원금 그대로 가정)','−'+eok(F.it)+'억')+(CF.cash!=null?kv('남는 현금 '+eok(F.left)+'억 예금이자(세후)','+'+eok(F.di)+'억'):'')
    +kv('보통 시나리오 순이익 (5년 합계)',eok(r.v5*F.mk)+'억(5년 뒤 값, 매도비 뺌'+(CF.my!=null&&yearOf(CF.my)?', '+yearOf(CF.my).lbl+' 매수처럼':'')+') − '+eok(r.C+F.rp)+'억(들어간 돈'+(F.rp?', 수리비 '+eok(F.rp)+'억 포함':'')+') − '+eok(F.it)+'억(이자)'+(CF.useU?' + '+eok(r.U)+'억(사는 가치)':'')+(F.di?' + '+eok(F.di)+'억(예금이자)':'')+' = <b>'+sg(F.p5)+'</b>')
-   +kv('순이익 시나리오 나쁨 / 보통 / 좋음 (5년 합계)',sg(F.p1)+' / '+sg(F.p5)+' / '+sg(F.p9));
+   +kv('순이익 시나리오 나쁨 / 보통 / 좋음 (5년 합계)',sg(F.p1)+' / '+sg(F.p5)+' / '+sg(F.p9))+vsTop(r);
  h+=`<div style="font-weight:700;margin:16px 0 2px">사기 전에 확인</div>`+DT.cku.map(x=>`<div class="sub" style="margin-top:6px">· <b>${x.title}</b> — ${x.ask}</div>`).join('');
  if(r.no)h+=`<div style="margin-top:12px"><a class="btn ghost" target="_blank" rel="noopener" href="https://new.land.naver.com/complexes/${r.no}">네이버부동산에서 확인 →</a></div>`;
  return h+'</div>';}
@@ -366,7 +366,7 @@ function result(){
  V=R.filter(ok); V.forEach(r=>r.F=fin(r)); N=10;
  V.sort((a,b)=>b.F.ce-a.F.ce);   // 현금을 넣으면 순이익 금액, 안 넣으면 (수리비까지 넣은) 투입금 대비 효율
  R.forEach(r=>r.mr=null); V.forEach((r,i)=>r.mr=i+1);
- const MR=V.slice(), M1=V[0], O1=V.slice().sort((a,b)=>b.sc-a.sc||b.F.ce-a.F.ce)[0];
+ const MR=V.slice(), M1=V[0], O1=V.slice().sort((a,b)=>b.sc-a.sc||b.F.ce-a.F.ce)[0]; TOP1=M1;
  if(CF.sort==='obj')V.sort((a,b)=>b.sc-a.sc||b.F.ce-a.F.ce);   // 객관 점수 순(09-23 사용자: 처음 온 사람은 높은 점수 집을 사려 한다)
  V.forEach((r,i)=>r.ms=i===0?100:Math.floor(99.999-i/Math.max(1,V.length-1)*100));   // 내 조건 안 점수: 1등 100
  app.innerHTML=`${DT.alert?`<div class="box warn" style="margin-top:0"><b>이번 주는 진입 신호가 아니에요</b><br><span class="sub">${DT.alert}. 순위는 그대로, 사는 시점만 미루세요. <a href="market.html">시장 보기</a></span></div>`:''}
@@ -389,9 +389,9 @@ function yearOf(k){const [y,h]=String(k).split('-').map(Number), C=((DT.ml||{}).
 function hbars(rows,max,col){
  return `<div class="chart" style="margin:12px 0 4px">`+rows.map(([k,v,t],i)=>`<div style="display:flex;align-items:center;gap:8px;margin:7px 0"><span style="flex:0 0 5.2em;font-size:.8rem;color:var(--ink2);text-align:right">${k}</span><span style="flex:1;height:20px;background:var(--line2);border-radius:6px;overflow:hidden"><i class="gx" style="display:block;height:100%;width:${Math.max(1.5,v/max*100)}%;background:var(--${col||'blue'});border-radius:6px;transform-origin:left;animation-delay:${i*120}ms"></i></span><b class="num fd" style="flex:0 0 auto;font-size:.82rem;animation-delay:${i*120+300}ms">${t}</b></div>`).join('')+`</div>`;}
 // 양쪽 막대(0 기준): [[이름, 값(+/−)]]
-function dbars(rows,unit){
+function dbars(rows,unit,dp){ dp=dp==null?1:dp;
  const m=Math.max(...rows.map(r=>Math.abs(r[1])))||1;
- return `<div class="chart" style="margin:12px 0 4px">`+rows.map(([k,v],i)=>`<div style="display:flex;align-items:center;gap:8px;margin:6px 0"><span style="flex:0 0 4.6em;font-size:.8rem;color:var(--ink2);text-align:right">${k}</span><span style="flex:1;display:flex;height:18px"><span style="flex:1;display:flex;justify-content:flex-end;border-right:1px solid var(--ink3)">${v<0?`<i class="gx" style="display:block;height:100%;width:${Math.abs(v)/m*100}%;background:var(--red);border-radius:5px 0 0 5px;transform-origin:right;animation-delay:${i*110}ms"></i>`:''}</span><span style="flex:1;display:flex">${v>0?`<i class="gx" style="display:block;height:100%;width:${v/m*100}%;background:var(--blue);border-radius:0 5px 5px 0;transform-origin:left;animation-delay:${i*110}ms"></i>`:''}</span></span><b class="num fd" style="flex:0 0 3.6em;font-size:.8rem;text-align:right;color:var(--${v>0?'blue':v<0?'red':'ink3'});animation-delay:${i*110+300}ms">${v>0?'+':''}${v.toFixed(1)}${unit}</b></div>`).join('')+`</div>`;}
+ return `<div class="chart" style="margin:12px 0 4px">`+rows.map(([k,v],i)=>`<div style="display:flex;align-items:center;gap:8px;margin:6px 0"><span style="flex:0 0 4.6em;font-size:.8rem;color:var(--ink2);text-align:right">${k}</span><span style="flex:1;display:flex;height:18px"><span style="flex:1;display:flex;justify-content:flex-end;border-right:1px solid var(--ink3)">${v<0?`<i class="gx" style="display:block;height:100%;width:${Math.abs(v)/m*100}%;background:var(--red);border-radius:5px 0 0 5px;transform-origin:right;animation-delay:${i*110}ms"></i>`:''}</span><span style="flex:1;display:flex">${v>0?`<i class="gx" style="display:block;height:100%;width:${v/m*100}%;background:var(--blue);border-radius:0 5px 5px 0;transform-origin:left;animation-delay:${i*110}ms"></i>`:''}</span></span><b class="num fd" style="flex:0 0 3.6em;font-size:.8rem;text-align:right;color:var(--${v>0?'blue':v<0?'red':'ink3'});animation-delay:${i*110+300}ms">${v>0?'+':v<0?'−':''}${Math.abs(v).toFixed(dp)}${unit}</b></div>`).join('')+`</div>`;}
 // 폭포(쌓아 가는 막대): 시작 0 → 더하고 빼서 합계
 function fall(rows){
  let acc=0; const pts=rows.map(([k,v])=>{const a=acc; acc+=v; return [k,v,a,acc];}), tot=acc, hi=Math.max(...pts.map(p=>Math.max(p[2],p[3])),tot), H=130, sc=H/hi;
@@ -403,6 +403,17 @@ function typical(){
  const md=a=>{a=a.filter(x=>isFinite(x)).sort((x,y)=>x-y);return a[a.length>>1]||0;}, P=50000;
  const g=md(R.filter(r=>!r.as).map(r=>(r.v5-r.p)/r.p)), u=md(R.filter(r=>!r.as).map(r=>r.U/r.p)), c=md(R.filter(r=>!r.as).map(r=>(r.C-r.p)/r.p));
  return [['시세차익<br>(보통)',g*P/1e4],['아끼는<br>월세',u*P/1e4],['세금·<br>비용',-c*P/1e4]];}
+// 순위를 정하는 값(현금을 넣었을 때 = 보통·나쁨 순이익의 평균)을 다섯 몫으로 나눈다: 집값 오르내림 + 사는 가치 − 이자 − 세금·비용 + 예금이자 (정확히 더해짐)
+function split5(r){const F=r.F||fin(r), up=((r.v5+r.v1)/2)*F.mk-r.p;
+ return {up, use:CF.useU?r.U:0, it:-F.it, cost:-(r.C-r.p+F.rp), dep:F.di};}
+const PN=[['up','집값 오르내림'],['use','사는 가치'],['it','대출이자'],['cost','세금·비용'],['dep','남는 현금 이자']];
+let TOP1=null;
+function vsTop(r){
+ if(!TOP1||r===TOP1||CF.cash==null)return '';
+ const a=split5(r), b=split5(TOP1), rows=PN.map(([k,l])=>[l,(a[k]-b[k])/1e4]).filter(x=>Math.abs(x[1])>=0.005), tot=rows.reduce((s,x)=>s+x[1],0);
+ return `<div style="font-weight:700;margin:14px 0 0">1위(${TOP1.n} ${TOP1.b}㎡)와 비교하면 <span class="${tot>=0?'pos':'neg'}">${tot>=0?'+':'−'}${Math.abs(tot).toFixed(2)}억</span></div>`
+  +`<div class="sub">순위를 정하는 값(보통·나쁨 시나리오 순이익의 평균)이 어디서 갈리나</div>`+dbars(rows,'억',2)
+  +`<p class="note">집값 오르내림 = 보통·나쁨 시나리오의 평균이라, 대출을 크게 끼면 나쁜 경우 손실도 커져 여기서 갈려요.</p>`;}
 // 막대: 매수 반기별 5년 뒤 실제(실거래 연쇄 지수). 진한 막대 = 5년 뒤 결과, 아래 연한 빨강 = 보유 중 가장 떨어졌던 깊이. 5년이 안 찬 반기는 연하게.
 function bars(sel,click){
  const C=((DT.ml||{}).coh)||[]; if(!C.length)return '';
@@ -454,10 +465,23 @@ function lens(MR){
 // 객관 점수 낮은 집이 1위일 때 설명(09-23 사용자: "40점짜리가 1위? 이게 현실이면 깨우치게, 아니면 절망이 아니란 걸 알려 줘라")
 function explain(M1,O1){
  if(!M1||!O1)return '';
+ const MJ=[],seen=new Set();for(const r of V.slice().sort((a,b)=>b.sc-a.sc)){if(seen.has(r.n))continue;seen.add(r.n);MJ.push(r);if(MJ.length>=5)break;}
+ const avg=f=>MJ.reduce((s,r)=>s+f(r),0)/MJ.length, b=split5(M1), mrank=Math.round(avg(r=>r.mr||0));
+ const rows=CF.cash==null?[]:PN.map(([k,l])=>[l,(avg(r=>split5(r)[k])-b[k])/1e4]).filter(x=>Math.abs(x[1])>=0.005);
+ const neg=rows.filter(x=>x[1]<0).sort((x,y)=>x[1]-y[1]).map(x=>x[0]), pos=rows.filter(x=>x[1]>0).map(x=>x[0]);
+ const ptv=nm=>avg(r=>{const q=r.pt.find(([k])=>S[k]===nm);return q?q[1]:0;}), gone=ptv('최근 2년 상대가격')+ptv('직전 5년 상대가격');
+ const jr=[avg(r=>r.jr||0),M1.jr||0], ln=[avg(r=>r.F.L)/1e4,M1.F.L/1e4];
  const sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', Y=DT.qreg||[];
  const win=Y.filter(x=>x[2]-x[1]>=10), lose=Y.filter(x=>x[2]-x[1]<=-5), yr=a=>{const y=a.map(x=>x[0]),o=[];for(let i=0;i<y.length;){let j=i;while(j+1<y.length&&y[j+1]===y[j]+1)j++;o.push(j>i?y[i]+'~'+String(y[j]).slice(2):String(y[i]));i=j+1;}return o.join('·');};
  if(M1===O1&&!Y.length)return '';
- let h=`<details class="box" style="margin:0 0 10px"><summary style="font-weight:700">왜 객관 점수와 내 순위가 다를까요?</summary><div style="padding-top:8px;font-size:.9rem;line-height:1.6">`
+ let h=`<details class="box" open style="margin:0 0 10px"><summary style="font-weight:700">지도에서 좋아 보이는 단지는 왜 뒤에 있나요?</summary><div style="padding-top:8px;font-size:.9rem;line-height:1.6">`
+  +(rows.length&&M1!==O1?`<p style="margin:0 0 4px">내 조건 안 객관 점수 상위 5곳(평균 내 순위 ${mrank}위)을 1위(${M1.n})와 비교하면 — 순위를 정하는 값 차이:</p>`+dbars(rows,'억',2)
+   +`<p style="margin:4px 0 8px">${(()=>{const D=Object.fromEntries(rows.map(x=>[x[0],x[1]])), w=[];
+     if((D['사는 가치']||0)<0)w.push(`전세가율이 낮아(평균 ${Math.round(jr[0])}% vs 1위 ${jr[1]}%) 사는 가치가 작고`);
+     if((D['대출이자']||0)<0)w.push(`같은 현금이면 대출이 커서(평균 ${ln[0].toFixed(1)}억 vs ${ln[1].toFixed(1)}억) 이자가 더 나가고`);
+     if((D['집값 오르내림']||0)<0)w.push(ln[0]-ln[1]>=0.3?'대출을 낀 만큼 나쁜 경우의 손실이 커지고':'이미 비싸서 보통·나쁨 시나리오의 오르는 몫 자체가 작고');
+     if((D['세금·비용']||0)<0)w.push('집값이 높아 취득세 등 세금·비용이 더 들어요');
+     return (pos.length?'좋은 입지는 <b>'+pos.join('·')+'</b> 쪽은 더 크지만, ':'')+(w.length?w.join(', ').replace(/고$/,'요')+'.':'')+(neg.length?' 그 합이 위 막대예요.':'');})()}${gone<-0.5?` 최근에 이미 구보다 많이 오른 몫(평균 ${gone.toFixed(1)}%p)도 과거엔 되돌려졌어요.`:''} 시장이 크게 오를 거라 보면 위 막대에서 2015~2017년 매수를 눌러 순서가 어떻게 바뀌는지 보세요.</p>`:'')
   +`<p style="margin:0 0 8px">객관 점수 = <b>지금</b> 비싼 값을 받는 조건(입지·역·연식·규모)이에요. 좋은 집은 그 값을 이미 치러야 해서, 같은 돈으로는 대출이 늘고(대출 금리 연 ${(CF.irate==null?DT.rate.loan:CF.irate)}%, 시장 가운데 상승 연 ${DT.level}% — 시장이 이보다 덜 오르면 빌린 돈이 손해) 면적이 줄거나 사는 가치(전세가율)가 작아져요. 그래서 '좋은 집'과 '내 돈으로 가장 남는 집'은 다를 수 있어요.</p>`;
  if(Y.length)h+=`<div style="font-weight:700;margin:8px 0 4px">과거엔 좋은 입지가 더 올랐나? (서울·경기, 5년 뒤 실제)</div>`
   +Y.map(x=>{const g=x[2]-x[1];return `<div style="display:flex;gap:8px;align-items:center;font-size:.8rem"><span style="width:3.4em">${x[0]}</span><span style="flex:1;display:flex;align-items:center"><i style="display:block;height:8px;border-radius:4px;background:var(--${g>=0?'blue':'red'});width:${Math.min(100,Math.abs(g)/1.2)}%"></i></span><span class="num" style="width:10.5em;text-align:right">하위 ${x[1]>0?'+':''}${x[1].toFixed(0)}% · 상위 ${x[2]>0?'+':''}${x[2].toFixed(0)}%</span></div>`;}).join('')
