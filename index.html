@@ -399,7 +399,11 @@ function result(){
 // 시장 해 선택(09-24 사용자): 방향은 모른다 → 기본은 과거 16번 전부 섞음. 막대를 누르면 '앞으로 5년이 그 해 매수처럼' — 그 해의 시장 상승률 + 그 해 좋은 입지 기울기를 함께 적용
 const AN=x=>(Math.pow(1+x/100,1/5)-1)*100;
 const SMED=(()=>{const a=(DT.qreg||[]).map(x=>x[3]).sort((x,y)=>x-y);return a.length?(a[(a.length-1)>>1]+a[a.length>>1])/2:0;})();
-function yearOf(k){const [y,h]=String(k).split('-').map(Number), C=((DT.ml||{}).coh||[]).find(x=>x[0]===y&&x[1]===h&&x[4]), Q=(DT.qreg||[]).find(x=>x[0]===y);return C?{y,h,lbl:y+'년 '+(h===1?'상':'하')+'반기',lv:C[2],mn:C[3],sl:Q?Q[3]:SMED}:null;}
+const GRP={dn:['내리면',x=>x<5],flat:['그대로면',x=>x>=5&&x<25],up:['오르면',x=>x>=25]};
+function grp(k){const C=((DT.ml||{}).coh||[]).filter(x=>x[4]&&GRP[k][1](x[2])), all=((DT.ml||{}).coh||[]).filter(x=>x[4]); if(!C.length)return null;
+ const lv=(Math.exp(C.reduce((a,x)=>a+Math.log(1+x[2]/100),0)/C.length)-1)*100, sl=C.reduce((a,x)=>{const q=(DT.qreg||[]).find(z=>z[0]===x[0]);return a+(q?q[3]:SMED);},0)/C.length;
+ return {k,lbl:GRP[k][0],lv,sl,n:C.length,N:all.length,mn:Math.min(...C.map(x=>x[3])),yrs:C.map(x=>x[0])};}
+function yearOf(k){if(GRP[k])return grp(k);const [y,h]=String(k).split('-').map(Number), C=((DT.ml||{}).coh||[]).find(x=>x[0]===y&&x[1]===h&&x[4]), Q=(DT.qreg||[]).find(x=>x[0]===y);return C?{y,h,lbl:y+'년 '+(h===1?'상':'하')+'반기',lv:C[2],mn:C[3],sl:Q?Q[3]:SMED}:null;}
 // 가로 막대(질문 그림 공용): [[이름, 값, 표시글]] — 값 비례 폭, 차례로 자란다
 function hbars(rows,max,col){
  return `<div class="chart" style="margin:12px 0 4px">`+rows.map(([k,v,t],i)=>`<div style="display:flex;align-items:center;gap:8px;margin:7px 0"><span style="flex:0 0 5.2em;font-size:.8rem;color:var(--ink2);text-align:right">${k}</span><span style="flex:1;height:20px;background:var(--line2);border-radius:6px;overflow:hidden"><i class="gx" style="display:block;height:100%;width:${Math.max(1.5,v/max*100)}%;background:var(--${col||'blue'});border-radius:6px;transform-origin:left;animation-delay:${i*120}ms"></i></span><b class="num fd" style="flex:0 0 auto;font-size:.82rem;animation-delay:${i*120+300}ms">${t}</b></div>`).join('')+`</div>`;}
@@ -462,9 +466,16 @@ function line(){
   +`<text x="0" y="${H+15}" font-size="10" fill="var(--ink3)">${Math.floor(x0/4)}</text><text x="${W}" y="${H+14}" font-size="9" text-anchor="end" fill="var(--ink3)" font-size="10">${Math.floor(x1/4)}</text></svg>`
   +`</div><div class="cap">서울·경기 아파트 실거래 지수(같은 단지끼리 이어 붙임, 2006년 = 100) — 지금 ${Math.round(now[1])}</div>`;}
 function mkt(){
- const Y=CF.my!=null?yearOf(CF.my):null;
- return `<details class="fold"${Y?' open':''}><summary><span>시장: ${Y?`<span style="color:var(--blue)">${Y.lbl} 매수처럼 (5년 ${Y.lv>0?'+':''}${Y.lv.toFixed(0)}%)</span>`:`과거 전부 섞음 <span class="sub" style="font-weight:400">(오를지 내릴지 몰라서)</span>`}</span></summary><div>`
-  +`<div class="sub">막대를 누르면 '앞으로 5년이 그때처럼 흘러가면'으로 다시 줄 세워요.${Y?` <button class="linkbtn" style="padding:0" onclick="CF.my=null;save();result()">섞음으로 돌아가기</button>`:''}</div>`+bars(CF.my,true)+`</div></details>`;}
+ const Y=CF.my!=null?yearOf(CF.my):null, G=['dn','flat','up'].map(grp), key=CF.my==null?'mix':(GRP[CF.my]?CF.my:'yr');
+ const pct=g=>g?Math.round(g.n/g.N*100)+'%':'';
+ const B=(k,t,sub)=>`<button class="${key===k?'on':''}" onclick="CF.my=${k==='mix'?'null':`'${k}'`};save();result()">${t}<span style="display:block;font-size:.66rem;font-weight:500;opacity:.8">${sub}</span></button>`;
+ const cap=key==='mix'?`시장이 어느 쪽일지 몰라서 과거를 그대로 섞어요 — 내린 적 ${pct(G[0])}, 제자리 ${pct(G[1])}, 오른 적 ${pct(G[2])}.`
+  :key==='yr'?`앞으로 5년이 <b>${Y.lbl} 매수처럼</b> — 시장 5년 ${Y.lv>0?'+':''}${Y.lv.toFixed(0)}%.`
+  :`과거 ${Y.N}번 중 ${Y.n}번(${pct(Y)})이 이랬어요 — 시장 5년 평균 ${Y.lv>0?'+':''}${Y.lv.toFixed(0)}%, 좋은 입지는 ${Y.sl-SMED>0.03?'<b>더</b>':Y.sl-SMED<-0.03?'<b>덜</b>':'비슷하게'} 올랐어요.`;
+ return `<div class="sub" style="margin:10px 0 0;font-weight:700;color:var(--ink2)">앞으로 5년 시장이…</div>`
+  +`<div class="seg" style="margin-top:4px">${B('mix','확률대로','과거 전부')}${B('dn','내리면',pct(G[0]))}${B('flat','그대로면',pct(G[1]))}${B('up','오르면',pct(G[2]))}</div>`
+  +`<div class="cap" style="margin:4px 2px 0">${cap}${DT.alert?'':' 이번 주 진입 경고는 없어요.'}</div>`
+  +`<details class="fold"${key==='yr'?' open':''}><summary><span style="font-weight:600;font-size:.86rem">과거 그래프 보기 <span class="sub" style="font-weight:400">(막대를 누르면 그때처럼)</span></span></summary><div>${bars(key==='yr'?CF.my:null,true)}</div></details>`;}
 // 객관 점수 낮은 집이 1위일 때 설명(09-23 사용자: "40점짜리가 1위? 이게 현실이면 깨우치게, 아니면 절망이 아니란 걸 알려 줘라")
 function explain(M1){
  if(!M1||CF.cash==null||lensKey()==='obj')return '';
