@@ -130,7 +130,7 @@ const $=q=>document.querySelector(q), app=$('#app');
 const eok=v=>v==null?'-':(v/1e4).toFixed(2), pc=v=>v==null?'-':(v>0?'+':'')+v.toFixed(1)+'%', pp=v=>(v>0?'+':'')+v.toFixed(1)+'%p';
 const YEAR=new Date().getFullYear();
 // ---------------- 설정 저장 ----------------
-const DEF={done:false,sort:'money',mg:null,regions:[],cash:DT.my.cash,maxc:DT.my.max_price,first:!!DT.my.first_home,loan:null,irate:null,inc:null,debt:null,yrs:30,repair:true,rpu:150,useU:true,size:[],age:[],st:'',hh:0,trust:false};
+const DEF={done:false,sort:'money',my:null,regions:[],cash:DT.my.cash,maxc:DT.my.max_price,first:!!DT.my.first_home,loan:null,irate:null,inc:null,debt:null,yrs:30,repair:true,rpu:150,useU:true,size:[],age:[],st:'',hh:0,trust:false};
 function load(){try{return Object.assign({},DEF,JSON.parse(localStorage.getItem('v2cfg')||'{}'))}catch(e){return Object.assign({},DEF)}}
 function save(){try{localStorage.setItem('v2cfg',JSON.stringify(CF))}catch(e){}}
 let CF=load();
@@ -138,14 +138,14 @@ let CF=load();
 const q5=DT.q5||[], Q_TOP=q5[4]||{}, Q_BOT=q5[0]||{};   // top·bottom은 window 예약 이름이라 쓰면 스크립트가 죽는다
 function nAff(K){return R.filter(r=>r.p+r.fee+r.bu+repair(r)-Math.min(r.p*r.ltv,lcap(r.p))<=K).length;}
 const QS=[
+ {q:'앞으로 5년, 서울·경기 집값은<br>오를까요, 내릴까요?',o:['오를 것 같아요','내릴 것 같아요','모르겠어요'],yes:2,
+  f:`과거 16번, 그 해에 사서 5년 뒤 실제로 이랬어요.${bars(null,false)}지금 우리가 느끼는 '집값은 오른다'는 2013~2017년에 산 사람들의 기억이에요. 2008~2010년에 산 사람은 5년 뒤 손해였어요. <b>저희도 방향은 못 맞혀요.</b> 그래서 모든 계산은 이 16번을 전부 놓고 하고, 결과 화면에서 '그 해처럼 흘러가면'을 눌러 볼 수 있어요.`},
  {q:'10억 하던 아파트가 15억이 됐어요.<br>그걸 못 산 걸 후회해야 할까요?',o:['네, 그때 샀어야 했어요','내가 살 수 없던 집이면 상관없어요'],yes:1,
   f:`서울·경기에서 현금으로 살 수 있는 아파트는 1억이면<span class="n">${nAff(10000).toLocaleString()}곳</span>2억이면 ${nAff(20000).toLocaleString()}곳, 3억이면 ${nAff(30000).toLocaleString()}곳이에요(대출 한도 안, 구축 수리비 포함). 못 사는 집의 상승은 내 선택지가 아니에요. 저희는 <b>살 수 있는 집들끼리</b>만 비교해요.`},
  {q:'같은 동네, 비슷한 가격의 아파트라도<br>5년 뒤 남는 돈은 다를까요?',o:['다를 것 같아요','비슷할 것 같아요'],yes:0,
   f:`같은 구·같은 시기에 산 아파트끼리만 비교해도<span class="n">${DT.ter?DT.ter.toFixed(1):'-'}%p</span>저희 5년 시나리오 순위 상위 1/3이 하위 1/3보다 실제 5년 총수익이 이만큼 높았어요. 동네보다 <b>그 동네 안의 어느 단지냐</b>가 갈라요.`},
  {q:'새로 지은 아파트가<br>앞으로도 더 많이 오를까요?',o:['네, 새 집이 더 오르죠','꼭 그렇진 않아요'],yes:1,
   f:`같은 구·같은 시기에 산 집끼리 비교하면, 5년 안 된 신축은 평균보다<span class="n">${Math.abs(DT.age[0]).toFixed(1)}%p 덜</span>올랐고, 30년 넘은 구축은 ${Math.abs(DT.age[1]).toFixed(1)}%p 더 올랐어요. 새 집의 좋은 점은 <b>이미 가격에 들어 있어요.</b> 그래서 저희는 '좋은 집'이 아니라 <b>가격 대비 더 남는 집</b>을 찾아요.`},
- {q:'앞으로 5년 집값이 얼마나 오를지<br>누가 맞힐 수 있을까요?',o:['전문가라면 맞혀요','아무도 못 맞혀요'],yes:1,
-  f:`언제 샀느냐에 따라 서울·경기 5년 상승률이<span class="n">${DT.lvmin}% ~ +${DT.lvmax}%</span>까지 달랐어요. 저희도 이건 못 맞혀요. 대신 <b>어디가 더 나은지</b>는 맞았어요 — 5년 시나리오 순위 상위 20%는 원금을 잃은 경우가 ${Q_TOP.loss}%였어요.`},
  {q:'그 집에 사는 동안 누리는 가치도<br>수익일까요?',o:['네, 그만큼 월세를 안 내니까요','아니요, 시세차익만 수익이에요'],yes:0,
   f:`남의 집에 살면 매년 전세금의 약<span class="n">${(DT.conv['경기도']||5).toFixed(1)}%</span>를 비용으로 내는 셈이에요(실제 월세 계약으로 계산). 집을 사면 그만큼을 아껴요. 저희는 이 <b>사는 가치까지</b> 5년 수익에 넣어요.`}];
 let qi=0;
@@ -241,10 +241,10 @@ const a=YEAR-r.y,f=a>=20?1:a>=10?0.5:0;return Math.round(r.b/0.75/3.3058*(CF.rpu
 function fin(r){   // 현금을 모르면 대출 없이(투입금 대비 효율만). 입주권(r.be)은 주택담보대출이 안 나와 대출 0
  const rp=repair(r), l=Math.max(r.ltv,CF.first?0.7:0), cap=r.be?0:Math.min(r.p*l,lcap(r.p),CF.loan==null?1e12:CF.loan,dsrMax()), up=r.p+r.fee+r.bu+rp, K=CF.cash;
  const L=K==null?0:Math.max(0,Math.min(up-K,cap)), own=up-L, i=(CF.irate==null?DT.rate.loan:CF.irate)/100, d=DT.rate.dep/100*0.846;
- const mk=CF.mg==null?1:Math.pow((1+CF.mg/100)/(1+DT.level/100),r.T);   // 시장 전체 상승률 가정(09-24 사용자: '고작 그 정도?') — 기본은 과거 장기 평균
+ const Y=CF.my!=null?yearOf(CF.my):null, mk=Y?Math.pow((1+AN(Y.lv)/100)/(1+DT.level/100),r.T)*(r.qc!=null&&!r.as?Math.exp((Y.sl-SMED)*r.qc):1):1;   // 시장 해 선택: 그해 시장 상승률 + 그해 좋은 입지 기울기(기본 = 16번 섞음)
  const left=K==null?0:Math.max(0,K-own), it=L*i*r.T, di=left*d*r.T, f=v=>v*mk+(CF.useU?r.U:0)-r.C-rp-it+di;   // 사는 가치(아끼는 월세)는 설정으로 켜고 끔
  const p1=f(r.v1),p5=f(r.v5),p9=f(r.v9), an=v=>Math.pow(Math.max(1e-6,1+v/(r.C+rp)),1/r.T)-1;
- return {rp,L,own,left,it,di,i,ok:K==null||own<=K,p1,p5,p9,ce:K==null?(an(p1)+an(p5))/2:(p1+p5)/2};}
+ return {rp,L,own,left,it,di,i,mk,ok:K==null||own<=K,p1,p5,p9,ce:K==null?(an(p1)+an(p5))/2:(p1+p5)/2};}
 function cash(r){return fin(r).own;}
 function ok(r){
  if(CF.regions.length&&!CF.regions.includes(r.gu))return false;
@@ -310,7 +310,7 @@ function detail(r){
  const l=Math.max(r.ltv,CF.first?0.7:0), F=fin(r), sg=v=>(v>=0?'+':'')+eok(v)+'억';
  h+=`<div style="font-weight:700;margin:16px 0 2px"><span style="color:var(--blue)">내 입장에서</span> · 내 돈으로 따지면${r.mr?' (내 순위 '+r.mr+'위)':''}</div>`+kv('대출(LTV '+Math.round(l*100)+'%·한도 '+eok(lcap(r.p))+'억'+(CF.inc!=null?'·DSR '+eok(dsrMax())+'억':'')+(CF.loan!=null?'·내 상한':'')+' 안에서 필요한 만큼)',eok(F.L)+'억')+kv('필요 현금',`<b>${eok(F.own)}억</b>`)
    +kv('대출이자 '+Math.round(r.T)+'년 ('+(F.i*100).toFixed(2)+'%, 원금 그대로 가정)','−'+eok(F.it)+'억')+(CF.cash!=null?kv('남는 현금 '+eok(F.left)+'억 예금이자(세후)','+'+eok(F.di)+'억'):'')
-   +kv('보통 시나리오 순이익 (5년 합계)',eok(r.v5*(CF.mg==null?1:Math.pow((1+CF.mg/100)/(1+DT.level/100),r.T)))+'억(5년 뒤 값, 매도비 뺌) − '+eok(r.C+F.rp)+'억(들어간 돈'+(F.rp?', 수리비 '+eok(F.rp)+'억 포함':'')+') − '+eok(F.it)+'억(이자)'+(CF.useU?' + '+eok(r.U)+'억(사는 가치)':'')+(F.di?' + '+eok(F.di)+'억(예금이자)':'')+' = <b>'+sg(F.p5)+'</b>')
+   +kv('보통 시나리오 순이익 (5년 합계)',eok(r.v5*F.mk)+'억(5년 뒤 값, 매도비 뺌'+(CF.my!=null?', '+CF.my+'년 매수처럼':'')+') − '+eok(r.C+F.rp)+'억(들어간 돈'+(F.rp?', 수리비 '+eok(F.rp)+'억 포함':'')+') − '+eok(F.it)+'억(이자)'+(CF.useU?' + '+eok(r.U)+'억(사는 가치)':'')+(F.di?' + '+eok(F.di)+'억(예금이자)':'')+' = <b>'+sg(F.p5)+'</b>')
    +kv('순이익 시나리오 나쁨 / 보통 / 좋음 (5년 합계)',sg(F.p1)+' / '+sg(F.p5)+' / '+sg(F.p9));
  h+=`<div style="font-weight:700;margin:16px 0 2px">사기 전에 확인</div>`+DT.cku.map(x=>`<div class="sub" style="margin-top:6px">· <b>${x.title}</b> — ${x.ask}</div>`).join('');
  if(r.no)h+=`<div style="margin-top:12px"><a class="btn ghost" target="_blank" rel="noopener" href="https://new.land.naver.com/complexes/${r.no}">네이버부동산에서 확인 →</a></div>`;
@@ -346,7 +346,7 @@ function find(q){
  el.innerHTML=h+'<div style="height:14px"></div>';}
 function summaryChips(){
  const c=[]; c.push(CF.regions.length?(CF.regions.length<=3?CF.regions.map(short).join(' · '):CF.regions.slice(0,2).map(short).join(' · ')+` 외 ${CF.regions.length-2}곳`):'서울·경기 전체');
- if(CF.cash!=null)c.push('현금 '+eok(CF.cash)+'억'); if(CF.maxc!=null)c.push('투입 '+eok(CF.maxc)+'억 이하'); if(CF.first)c.push('생애최초'); if(CF.loan!=null)c.push('대출 '+eok(CF.loan)+'억까지'); if(CF.inc!=null)c.push('소득 '+eok(CF.inc)+'억·DSR'); if(CF.repair)c.push('수리비 평당 '+(CF.rpu||150)+'만'); c.push(CF.useU?'사는 가치 포함':'시세차익만'); if(CF.mg!=null)c.push('시장 연 '+CF.mg+'% 가정');
+ if(CF.cash!=null)c.push('현금 '+eok(CF.cash)+'억'); if(CF.maxc!=null)c.push('투입 '+eok(CF.maxc)+'억 이하'); if(CF.first)c.push('생애최초'); if(CF.loan!=null)c.push('대출 '+eok(CF.loan)+'억까지'); if(CF.inc!=null)c.push('소득 '+eok(CF.inc)+'억·DSR'); if(CF.repair)c.push('수리비 평당 '+(CF.rpu||150)+'만'); c.push(CF.useU?'사는 가치 포함':'시세차익만'); if(CF.my!=null)c.push(CF.my+'년 매수처럼');
  const SZ={s:'소형',m:'중형',l:'대형'},AG={n:'신축',m:'준신축',o:'구축'};
  if(CF.size.length)c.push(CF.size.map(x=>SZ[x]).join('·')); if(CF.age.length)c.push(CF.age.map(x=>AG[x]).join('·'));
  if(CF.st)c.push(CF.st==='a1'?'역 1km':'급행 2km'); if(CF.hh)c.push(CF.hh+'세대+'); if(CF.trust)c.push('거래 충분');
@@ -361,21 +361,34 @@ function result(){
  app.innerHTML=`${DT.alert?`<div class="box warn" style="margin-top:0"><b>이번 주는 진입 신호가 아니에요</b><br><span class="sub">${DT.alert}. 순위는 그대로, 사는 시점만 미루세요. <a href="market.html">시장 보기</a></span></div>`:''}
  <div class="eyebrow">내 조건에 맞는 ${V.length.toLocaleString()}곳 중 — 모두에게 좋은 집이 아니라 내 돈·내 조건에서</div><div class="hq">5년 시나리오 기준 기대가치 Top ${Math.min(10,V.length)}</div>
  <div style="margin:6px 0 10px">${summaryChips()}</div>
+ ${mkt()}
  <p class="hint">왼쪽 번호 = <b>${CF.sort==='obj'?'내 조건 안 객관 점수 순위':'내 돈·내 조건에서 5년 시나리오로 따진 순위'}</b>. 오른쪽 숫자 = <b>객관 점수</b>(5~95): 지금 시장이 값을 쳐 주는 입지·역·연식·규모의 급이에요. 5년 시나리오와 따로 계산해서, 객관 30점인 집이 내 돈으로는 1등일 수 있어요. 초록 줄 = <b>보통 시나리오</b>일 때 ${CF.cash!=null?'내 돈':'들어가는 돈'}이 얼마나 불어나는지 — 예측이 아니라 과거 실거래로 만든 가정이에요. 순서는 <b>나쁨 시나리오까지 함께</b> 따져 정했어요${CF.cash!=null?' — 대출이자(연 '+(CF.irate==null?DT.rate.loan:CF.irate)+'%)·남는 현금 예금이자'+(CF.repair?'·구축 수리비':'')+' 포함':''}.</p>
- ${mkt()}${lens(MR)}${explain(M1,O1)}
+ ${lens(MR)}${explain(M1,O1)}
  <div style="display:flex;gap:6px;margin:0 0 8px;flex-wrap:wrap"><button class="btn ghost" style="width:auto;flex:0 0 auto;padding:8px 12px;font-size:.88rem;${CF.sort!=='obj'?'border-color:var(--blue);color:var(--blue)':''}" onclick="CF.sort='money';save();result()">남는 돈 순</button><button class="btn ghost" style="width:auto;flex:0 0 auto;padding:8px 12px;font-size:.88rem;${CF.sort==='obj'?'border-color:var(--blue);color:var(--blue)':''}" onclick="CF.sort='obj';save();result()">객관 점수 순</button><span style="width:6px"></span><button class="btn ghost" style="width:auto;flex:0 0 auto;padding:8px 12px;font-size:.88rem;${CF.useU?'':'border-color:var(--blue);color:var(--blue)'}" onclick="CF.useU=false;save();result()">시세차익만</button><button class="btn ghost" style="width:auto;flex:0 0 auto;padding:8px 12px;font-size:.88rem;${CF.useU?'border-color:var(--blue);color:var(--blue)':''}" onclick="CF.useU=true;save();result()">사는 가치 포함</button></div>
  <input id="sq" type="search" placeholder="단지 이름으로 찾기 (조건 밖·순위 밖 단지도)" oninput="find(this.value)" style="width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit;margin:4px 0 8px">
  <div id="found"></div>
  <div id="list"></div><button class="btn ghost" id="more" style="margin-top:12px" onclick="N+=10;draw()">다음 10곳</button>
  <div style="display:flex;gap:10px;margin-top:14px"><button class="btn ghost" onclick="setup()">조건 바꾸기</button><button class="btn ghost" onclick="intro()">처음 질문</button></div>`;
  draw(); window.scrollTo(0,0);}
-// 시장 가정: 시장 전체가 5년에 얼마나 오를지는 아무도 못 맞힌다 → 과거 가운데를 기본으로, 과거 최악·최고 5년을 눌러 볼 수 있게
-const AN=x=>+((Math.pow(1+x/100,1/5)-1)*100).toFixed(1);
+// 시장 해 선택(09-24 사용자): 방향은 모른다 → 기본은 과거 16번 전부 섞음. 막대를 누르면 '앞으로 5년이 그 해 매수처럼' — 그 해의 시장 상승률 + 그 해 좋은 입지 기울기를 함께 적용
+const AN=x=>(Math.pow(1+x/100,1/5)-1)*100;
+const SMED=(()=>{const a=(DT.qreg||[]).map(x=>x[3]).sort((x,y)=>x-y);return a.length?(a[(a.length-1)>>1]+a[a.length>>1])/2:0;})();
+function yearOf(y){const L=(DT.lvl5||[]).find(x=>x[0]===y), Q=(DT.qreg||[]).find(x=>x[0]===y);return L?{y,lv:L[1],sl:Q?Q[3]:SMED}:null;}
+function bars(sel,click){
+ const L=DT.lvl5||[]; if(!L.length)return '';
+ const mx=Math.max(...L.map(x=>x[1])), mn=Math.min(0,...L.map(x=>x[1])), H=120, z=H*mx/(mx-mn), med=((Math.pow(1+DT.level/100,5)-1)*100);
+ let h=`<div style="position:relative;height:${H+22}px;margin:12px 0 6px;display:flex;align-items:stretch;gap:2px">`
+  +`<div style="position:absolute;left:0;right:0;top:${z}px;border-top:1px solid var(--ink3)"></div>`
+  +`<div style="position:absolute;left:0;right:0;top:${z-H*med/(mx-mn)}px;border-top:1px dashed var(--blue)"><span style="position:absolute;left:0;top:-15px;font-size:.68rem;color:var(--blue);background:var(--surface2);padding:0 3px;border-radius:4px">16번의 가운데 +${med.toFixed(0)}%</span></div>`;
+ h+=L.map(([y,v])=>{const on=sel===y, ht=Math.abs(v)*H/(mx-mn), tp=v>=0?z-ht:z, c=v>=0?'blue':'red';
+  return `<div ${click?`onclick="CF.my=${on?'null':y};save();result()" `:''}style="flex:1;position:relative;${click?'cursor:pointer;':''}" title="${y} 매수 → 5년 뒤 ${v>0?'+':''}${v.toFixed(0)}%"><i style="position:absolute;left:0;right:0;top:${tp}px;height:${Math.max(2,ht)}px;border-radius:3px;background:var(--${c});opacity:${sel==null||on?1:.35}"></i>`
+   +`<span style="position:absolute;left:50%;transform:translateX(-50%);top:${H+6}px;font-size:.62rem;color:var(--${on?'ink':'ink3'});font-weight:${on?800:400}">${on||y%2===0?String(y).slice(2):''}</span></div>`;}).join('');
+ return h+`</div><div class="sub" style="font-size:.72rem;text-align:center;margin-bottom:8px">매수 연도('06~'21) · 5년 뒤 서울·경기 실제 상승률(KB)</div>`;}
 function mkt(){
- const L=DT.lvl5||[], lo=L.length?L.reduce((a,b)=>a[1]<b[1]?a:b):null, hi=L.length?L.reduce((a,b)=>a[1]>b[1]?a:b):null, cur=CF.mg==null?DT.level:CF.mg;
- const B=(v,lbl)=>`<button class="btn ghost" style="width:auto;flex:0 0 auto;padding:7px 10px;font-size:.82rem;${(v==null?CF.mg==null:CF.mg===v)?'border-color:var(--blue);color:var(--blue)':''}" onclick="CF.mg=${v};save();result()">${lbl}</button>`;
- return `<div style="margin:0 0 10px"><div class="sub" style="margin-bottom:6px">시장 전체 가정: <b>연 ${cur}%</b> (5년 ${((Math.pow(1+cur/100,5)-1)*100).toFixed(0)}%) — 이건 아무도 못 맞혀요. 과거 5년 실제로 바꿔 보기:</div><div style="display:flex;gap:6px;flex-wrap:wrap">`
-  +(lo?B(AN(lo[1]),`${lo[0]} 매수처럼 연 ${AN(lo[1])}%`):'')+B(null,`과거 가운데 연 ${DT.level}%`)+(hi?B(AN(hi[1]),`${hi[0]} 매수처럼 연 ${AN(hi[1])}%`):'')+`</div></div>`;}
+ const Y=CF.my!=null?yearOf(CF.my):null;
+ return `<div class="box" style="margin:0 0 10px;padding:12px 14px"><div style="font-weight:800">앞으로 5년, 오를지 내릴지 아무도 몰라요</div>`
+  +`<div class="sub">${Y?`지금 보는 것: <b>앞으로 5년이 ${Y.y}년 매수처럼 흘러가면</b> — 시장 5년 ${Y.lv>0?'+':''}${Y.lv.toFixed(0)}%(연 ${AN(Y.lv).toFixed(1)}%), 그해 좋은 입지 ${Y.sl-SMED>0.02?'더':Y.sl-SMED<-0.02?'덜':'비슷하게'} 오름. <button class="linkbtn" style="padding:0" onclick="CF.my=null;save();result()">과거 전부 섞기로 돌아가기</button>`:'지금 보는 것: <b>과거 16번을 전부 섞은 가운데</b>(연 '+DT.level+'%). 막대를 누르면 그 해처럼 흘러갈 때로 순위가 다시 매겨져요.'}</div>`
+  +bars(CF.my,true)+`</div>`;}
 // 두 관점(09-23 사용자: "객관적으로는 여기가 더 좋아요는 있어야 하지만, 이 서비스에선 내 입장도 중요"): 내 입장 1위 + 내 조건 안 객관 상위 3
 let LENS=[];
 function pickL(i){const r=LENS[i];if(!r)return;const q=$('#sq');q.value=r.n;find(r.n);q.scrollIntoView({behavior:'smooth',block:'start'});}
