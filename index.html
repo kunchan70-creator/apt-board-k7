@@ -124,7 +124,8 @@ ul.plain{padding-left:18px}
 .fact{animation:rise .45s cubic-bezier(.2,.8,.2,1) both}@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .opt{transition:transform .15s,border-color .15s,background .15s}.opt:active{transform:scale(.98)}
 .cap{font-size:.72rem;color:var(--ink3);line-height:1.5;margin:2px 0 10px}
-@media (prefers-reduced-motion:reduce){.prog i,.sw i,.sw i:before{transition:none}.chart .gy,.chart .gx{transform:none!important;animation:none!important}.chart .fd{opacity:1!important;animation:none!important}.chart .draw{stroke-dashoffset:0!important;animation:none!important}.fact{animation:none}}
+.chart{cursor:pointer}
+@media (prefers-reduced-motion:reduce){.prog i,.sw i,.sw i:before{transition:none}.fact{animation:none}}
 </style>
 <div class="card stage" id="app"></div>
 <div class="card tight"><div class="kv"><span class="k">5년 시나리오 순위가 과거에 맞았는지</span><span class="v"><a href="evidence.html">검증 →</a></span></div>
@@ -175,7 +176,6 @@ function pick(i){
  <div class="cta"><button class="btn" onclick="${qi<QS.length-1?'qi++;ask()':'setup()'}">${qi<QS.length-1?'다음':'이제 내 조건 정하기'}</button></div>`;
  $('#fact').scrollIntoView({behavior:'smooth',block:'nearest'}); countUp($('#fact'));}
 function countUp(el){   // 사실 상자의 큰 숫자가 0에서 올라오게(움직임 줄이기 설정이면 그대로)
- if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
  el.querySelectorAll('.n').forEach(n=>{const t=n.textContent, m=t.match(/-?[\d,]+(\.\d+)?/); if(!m)return; const v=parseFloat(m[0].replace(/,/g,'')), dec=m[1]?m[1].length-1:0, t0=performance.now();
   const f=now=>{const k=Math.min(1,(now-t0)/700), e=1-Math.pow(1-k,3), x=v*e; n.textContent=t.replace(m[0],dec?x.toFixed(dec):Math.round(x).toLocaleString()); if(k<1)requestAnimationFrame(f);}; requestAnimationFrame(f);});}
 // ---------------- ② 조건 ----------------
@@ -466,7 +466,9 @@ function explain(M1,O1){
 function draw(){$('#list').innerHTML=V.slice(0,N).map((r,i)=>row(r,i+1)).join('')||'<p class="sub">조건에 맞는 곳이 없어요. 조건을 넓혀 보세요.</p>';$('#more').style.display=V.length>N?'block':'none';}
 // 그림은 화면에 들어올 때 움직이기 시작(모바일에서 아래쪽 그림은 스크롤할 때쯤 이미 끝나 있던 문제)
 const IO=window.IntersectionObserver?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('go');IO.unobserve(e.target);}}),{threshold:.25}):null;
-function watch(){document.querySelectorAll('.chart:not(.go)').forEach(c=>IO?IO.observe(c):c.classList.add('go'));}
+function watch(){document.querySelectorAll('.chart:not(.go):not([data-w])').forEach(c=>{c.dataset.w=1;IO?IO.observe(c):c.classList.add('go');});}
+// 그래프를 누르면 다시 재생(막대 선택이 있는 결과 화면 막대는 누르면 화면이 새로 그려져 자연히 다시 재생됨)
+app.addEventListener('click',e=>{const c=e.target.closest('.chart');if(!c||e.target.closest('[onclick]'))return;c.classList.remove('go');void c.offsetWidth;c.classList.add('go');});
 new MutationObserver(watch).observe(app,{childList:true,subtree:true});
 if(CF.done)result(); else intro();
 </script>
