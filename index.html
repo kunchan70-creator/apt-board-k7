@@ -145,6 +145,9 @@ details.card[open] .more b:after{content:'접기'}details.card:not([open]) .more
 .bub.me{background:var(--blue-bg);color:var(--blue);border-bottom-right-radius:6px;align-self:flex-end}
 .bub b{font-weight:800}.typing{display:inline-flex;gap:4px;padding:4px 2px}.typing i{width:7px;height:7px;border-radius:50%;background:var(--ink3);animation:blink 1s infinite}
 .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}@keyframes blink{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+.wcard{background:var(--surface2);border-radius:14px;padding:10px 12px;font-size:.88rem;line-height:1.45;word-break:keep-all;animation:rise .4s cubic-bezier(.2,.8,.2,1) both}
+.wcard span{display:block;font-size:.7rem;font-weight:800;color:var(--blue);margin-bottom:3px}
+.why{display:flex;gap:6px;align-items:flex-start;background:var(--blue-bg);color:var(--ink2);border-radius:12px;padding:9px 12px;font-size:.84rem;line-height:1.5;margin:4px 0 10px}.why b{color:var(--blue);white-space:nowrap}
 .skip{align-self:flex-end;background:none;border:0;color:var(--ink3);font:inherit;font-size:.82rem;cursor:pointer;padding:4px 0}
 .pills{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 0}
 .pill{border:1.5px solid var(--blue);background:var(--blue-bg);color:var(--blue);border-radius:999px;padding:8px 12px;font:inherit;font-size:.9rem;font-weight:600;cursor:pointer}
@@ -202,45 +205,45 @@ function levEx(){   // 같은 현금으로: 대출 적은 집 vs 대출 큰 좋�
  CF.cash=keep; CF.my=km; const md=(v,k)=>{v=v.map(x=>x[k]).sort((x,y)=>x-y);return v[v.length>>1]||0;};
  return {K,a:[md(a,'p1'),md(a,'p9')],b:[md(b,'p1'),md(b,'p9')]};}
 const QS=[
- {key:'my',q:'앞으로 5년,<br>서울·경기 집값은 어떨 것 같아요?',o:[['오를 것 같아요','up'],['비슷할 것 같아요','flat'],['내릴 것 같아요','dn'],['모르겠어요',null]],
+ {key:'my',why:'5년 뒤 집값은 아무도 몰라요. 그래서 예측 대신, 어느 경우로 볼지 직접 골라요. 이 답에 따라 순위가 달라져요.',q:'앞으로 5년,<br>서울·경기 집값은 어떨 것 같아요?',o:[['오를 것 같아요','up'],['비슷할 것 같아요','flat'],['내릴 것 같아요','dn'],['모르겠어요',null]],
   a:v=>{const [u,f,d]=mktP(), g=v?grp(v):null;
    return v==null?`<b class="k">맞아요, 아무도 몰라요</b>과거 31번(반기)은 이랬어요. 이 확률대로 섞어서 보여 드릴게요.`
     :`<b class="k">과거 31번 중 ${g.n}번이 그랬어요</b>그때 5년 평균 <span class="n">${g.lv>0?'+':''}${g.lv.toFixed(0)}%</span>${g.sl-SMED>0.03?'좋은 입지가 <b>더</b> 올랐어요.':g.sl-SMED<-0.03?'좋은 입지가 <b>덜</b> 올랐어요.':''} 이 경우로 보여 드릴게요.`;},
   v:v=>{const [u,f,d]=mktP();return hbars([['오름',u,u+'%'],['비슷',f,f+'%'],['내림',d,d+'%']],100);},
   d:v=>`실거래 지수${line()}사서 5년 뒤(반기별)${bars(null,false)}<p class="note">'결국 오른다'는 2013~17년에 산 사람의 기억이에요. 2021년 말에 산 사람은 −15%까지 빠졌다가 5년 가까이 지나서야 본전이에요.</p>`},
- {key:null,q:'좋은 동네 아파트가<br>내 돈으로도 가장 많이 남을까요?',o:[['네, 좋은 동네가 더 남죠',1],['꼭 그렇진 않을 것 같아요',0]],
-  a:v=>`<b class="k">${v?'꼭 그렇진 않아요':'맞아요'}</b><div style="font-size:1.15rem;font-weight:800;line-height:1.45;margin:2px 0 0">좋은 동네는 오를 때 더 벌고,<br>떨어질 때 더 잃어요</div><div class="sub" style="margin-top:4px">비싸서 같은 돈이면 대출이 커지거든요.</div>`,
+ {key:null,why:'결과에 나오는 숫자 두 개(남는 돈, 입지 점수)를 읽는 법이에요.',q:'비싼 동네 아파트일수록<br>내 돈으로도 더 많이 남을까요?',o:[['네, 비싼 데는 이유가 있죠',1],['꼭 그렇진 않을 것 같아요',0]],
+  a:v=>`<b class="k">${v?'꼭 그렇진 않아요':'맞아요'}</b><div style="font-size:1.15rem;font-weight:800;line-height:1.45;margin:2px 0 0">비싼 동네는 오르내림 폭이 커요</div><div class="sub" style="margin-top:4px;line-height:1.55">잘되면 더 벌고, 안되면 더 잃을 수 있어요. 지난 15년(2011~21년 매수)엔 비싼 동네가 덜 떨어졌지만, 2006~10년 매수 땐 더 떨어졌어요. 게다가 같은 돈이면 대출이 커서 이자도 더 나가요.</div>`,
   v:v=>eduView(),
-  d:v=>`<p class="note" style="margin:0">입지 점수는 서울·경기 1.5만 곳의 지금 ㎡값을 동네·역 거리·연식·단지 규모로 나눠 본 값이에요(수익률과 무관). 과거 15년엔 입지 점수 상위 20%가 시장보다 평균 20%p 더 올랐지만, 2006~10년 매수 때는 반대였어요. 그래서 1위인데 입지 33점일 수도, 입지 74점인데 50위일 수도 있어요.</p>`},
- {key:'lens',q:'잘될 때와 안될 때,<br>뭐가 더 중요해요?',o:[['덜 잃는 게 중요해요','safe'],['반반이요','bal'],['크게 버는 게 중요해요','up'],['돈보다 좋은 동네가 먼저예요','obj']],
+  d:v=>`<p class="note" style="margin:0">입지 점수 = 시장이 지금 비싸게 쳐 주는 조건(동네·역 거리·연식·단지 규모)을 서울·경기 1.5만 곳과 비교한 점수예요(수익률과 무관). 과거 15년엔 입지 점수 상위 20%가 시장보다 평균 20%p 더 올랐지만, 2006~10년 매수 때는 반대였어요. 그래서 1위인데 입지 33점일 수도, 입지 74점인데 50위일 수도 있어요.</p>`},
+ {key:'lens',why:'방향을 모를 땐 ‘얼마나 잃어도 괜찮은가’가 순위를 가르거든요.',q:'잘될 때와 안될 때,<br>뭐가 더 중요해요?',o:[['덜 잃는 게 중요해요','safe'],['반반이요','bal'],['크게 버는 게 중요해요','up'],['돈보다 좋은 동네가 먼저예요','obj']],
   a:v=>`<b class="k">${{safe:'떨어져도 덜 잃는 집부터',bal:'보통과 나쁜 경우를 반반 따져서',up:'잘될 때 크게 버는 집부터',obj:'지금 좋은 입지부터'}[v]}</b>${{safe:'대출이 적은 집이 위로 와요.',bal:'가장 무난한 순서예요.',up:'대출을 크게 끼고 좋은 입지를 사는 쪽이 위로 와요. 안되면 더 잃어요.',obj:'시장이 값을 쳐 주는 입지·역·연식·규모 순이에요. 남는 돈은 같이 보여 드려요.'}[v]}`,
   v:v=>{const e=levEx(), f=x=>(x>=0?'+':'−')+eok(Math.abs(x))+'억';
    return `<div class="sub" style="margin-top:10px">현금 ${eok(e.K)}억으로 5년 뒤 남는 돈(서울·경기 중앙값)</div>`+range2([['대출 적은 집',e.a[0]/1e4,e.a[1]/1e4],['좋은 입지 + 큰 대출',e.b[0]/1e4,e.b[1]/1e4]]);},
   d:v=>`<p class="note" style="margin:0">순서는 나쁨·보통·좋음 시나리오 중 어디에 무게를 두느냐예요 — 안정 7:3:0, 반반 5:5:0, 크게 0:5:5. '좋은 동네'는 입지 점수 순. 결과 화면에서 언제든 바꿀 수 있어요.</p>`},
- {key:'useU',q:'그 집에<br>직접 살 건가요?',o:[['네, 살 거예요',true],['아니요, 투자예요',false]],
+ {key:'useU',why:'살면 아끼는 월세도 수익이라, 실거주냐 투자냐에 따라 1위가 바뀌어요.',q:'그 집에<br>직접 살 건가요?',o:[['네, 살 거예요',true],['아니요, 투자예요',false]],
   a:v=>{const t=typical(true);return v?`<b class="k">그럼 아끼는 월세도 수익이에요</b>5억 집 한 채를 사서 살면, 5년 동안`:`<b class="k">시세차익만으로 따져 볼게요</b>살지 않으면 아끼는 월세(5년 약 ${t[1][1].toFixed(2)}억)가 빠져요. 5억 집 한 채라면`;},
   v:v=>fall(typical(v))+(v?'':`<div class="sub">실거주라면 같은 집에서 ${typical(true)[1][1].toFixed(2)}억이 더 남아요 — 그래서 순위도 달라져요.</div>`),
   d:v=>`<p class="note" style="margin:0">남의 집에 살면 매년 전세금의 약 ${(DT.conv['경기도']||5).toFixed(1)}%를 월세로 내는 셈이에요(실제 월세 계약으로 계산). 집을 사면 그만큼을 아껴요.</p>`}];
 let qi=0;
 // 첫 화면(처음 한 번만): 여러 사람의 고민 → 결국 한 질문 → 이 서비스가 해 주는 것 → 시작
-const WORRY=['첫 집, 어디서부터 봐야 할지 모르겠어요','지금 집 팔고 갈아타도 될까요?','떨어져도 덜 잃는 집이면 좋겠어요','오를 때 제대로 오를 곳을 사고 싶어요','살면서 자산도 불리고 싶어요','근처에 더 나은 집, 놓치고 있진 않을까요?'];
+const WORRY=[['신혼부부','첫 집, 어디서부터 봐야 할지 모르겠어요'],['40대 가족','지금 집 팔고 갈아타도 될까요?'],['은퇴 준비','떨어져도 덜 잃는 집이면 좋겠어요'],['맞벌이','오를 때 제대로 오를 곳을 사고 싶어요'],['사회초년생','전세 대신 사는 게 나을까요?'],['이사 예정','근처에 더 나은 집, 놓치고 있진 않을까요?']];
 let TT=[];
 function chat(){
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
  app.innerHTML=`<div class="chat"><button class="skip" onclick="talkAll()">건너뛰기 ›</button>
- <div id="talk" style="display:flex;flex-direction:column"></div>
+ <div class="sub" style="margin:2px 0 8px">집을 두고 다들 이런 고민을 해요</div><div id="talk" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
  <div id="one" style="opacity:0;transition:opacity .5s"><div class="sub" style="margin:18px 0 2px;text-align:center">고민은 달라도, 결국 이 질문이에요</div>
   <div class="hq" style="text-align:center;margin-top:4px;font-size:clamp(1.45rem,6.4vw,1.8rem)">내 돈으로 5년 뒤,<br>가장 남는 집은 어디일까?</div></div>
- <div id="three" style="opacity:0;transition:opacity .5s;margin-top:8px">${[['내 형편 안에서만','현금·대출·소득으로 실제로 살 수 있는 집만 서울·경기 '+DT.n.toLocaleString()+'곳에서'],['실제 거래로 5년 뒤를','집값이 오르면·비슷하면·내리면 — 과거에 실제로 그랬던 만큼'],['좋은 동네인지도 함께','남는 돈만이 아니라 입지 점수로 동네·단지의 급도']].map(([t,d],k)=>`<div style="display:flex;gap:12px;align-items:flex-start;margin:12px 0"><b style="flex:0 0 28px;height:28px;border-radius:50%;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center">${k+1}</b><span><b style="display:block">${t}</b><span class="sub">${d}</span></span></div>`).join('')}</div>
+ <div id="three" style="opacity:0;transition:opacity .5s;margin-top:8px">${[['내 형편 안에서만','현금·대출·소득으로 실제로 살 수 있는 집만 서울·경기 '+DT.n.toLocaleString()+'곳에서'],['예측 대신 경우를 나눠서','5년 뒤 집값은 아무도 몰라요. 그래서 오르면·비슷하면·내리면을 과거 실제 거래로 따로 보여 드려요'],['좋은 동네인지도 함께','남는 돈만이 아니라 입지 점수로 동네·단지의 급도']].map(([t,d],k)=>`<div style="display:flex;gap:12px;align-items:flex-start;margin:12px 0"><b style="flex:0 0 28px;height:28px;border-radius:50%;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center">${k+1}</b><span><b style="display:block">${t}</b><span class="sub">${d}</span></span></div>`).join('')}</div>
  <div id="talkgo" style="margin-top:auto;padding:14px 0 6px;opacity:0;transition:opacity .4s;position:sticky;bottom:0;background:linear-gradient(to bottom,transparent,var(--surface) 22%)"><button class="btn" onclick="CF.seen=true;save();qi=0;ask()">시작하기 · 4가지만 물어볼게요</button>
  ${CF.done?'<p style="text-align:center;margin:6px 0 0"><button class="linkbtn" onclick="CF.seen=true;save();result()">내 결과 바로 보기</button></p>':''}</div></div>`;
  let t=250;
- WORRY.forEach((w,i)=>{TT.push(setTimeout(()=>add(i%2?'me':'app',w),t)); t+=520;});
+ WORRY.forEach((w,i)=>{TT.push(setTimeout(()=>add(w),t)); t+=380;});
  TT.push(setTimeout(()=>{$('#talk').style.opacity=.45;$('#talk').style.transition='opacity .6s';$('#one').style.opacity=1;},t+=350));
  TT.push(setTimeout(()=>{$('#three').style.opacity=1;},t+=900));
  TT.push(setTimeout(()=>{$('#talkgo').style.opacity=1;},t+=700));}
-function add(who,html){const d=document.createElement('div');d.className='bub '+who;d.style.fontSize='.95rem';d.innerHTML=html;const T=$('#talk');if(T)T.appendChild(d);}
-function talkAll(){TT.forEach(clearTimeout);TT=[];const T=$('#talk');if(!T)return;T.innerHTML='';WORRY.forEach((w,i)=>add(i%2?'me':'app',w));T.style.opacity=.45;['one','three','talkgo'].forEach(k=>$('#'+k).style.opacity=1);}
+function add(w){const d=document.createElement('div');d.className='wcard';d.innerHTML=`<span>${w[0]}</span>“${w[1]}”`;const T=$('#talk');if(T)T.appendChild(d);}
+function talkAll(){TT.forEach(clearTimeout);TT=[];const T=$('#talk');if(!T)return;T.innerHTML='';WORRY.forEach(w=>add(w));T.style.opacity=.45;['one','three','talkgo'].forEach(k=>$('#'+k).style.opacity=1);}
 function intro(){chat();}
 function intro_old(){
  app.innerHTML=`<div class="eyebrow">서울·경기 아파트 ${DT.n.toLocaleString()}곳</div>
@@ -253,7 +256,7 @@ function intro_old(){
 function ask(){
  const Q=QS[qi];
  app.innerHTML=`<div class="prog"><i style="width:${qi/QS.length*100}%"></i></div><div class="eyebrow">${qi+1} / ${QS.length}</div>
- <div class="hq">${Q.q}</div><div id="opts">${Q.o.map((o,i)=>`<button class="opt" onclick="pick(${i})">${o[0]}</button>`).join('')}</div><div id="fact"></div>`;}
+ <div class="hq">${Q.q}</div>${Q.why?`<div class="why"><b>왜 묻나요</b><span>${Q.why}</span></div>`:''}<div id="opts">${Q.o.map((o,i)=>`<button class="opt" onclick="pick(${i})">${o[0]}</button>`).join('')}</div><div id="fact"></div>`;}
 function pick(i){
  const Q=QS[qi], v=Q.o[i][1]; if(Q.key){CF[Q.key]=v; if(Q.key==='lens')CF.sort=null; save();}
  document.querySelectorAll('#opts .opt').forEach((b,j)=>b.classList.toggle('on',j===i));
