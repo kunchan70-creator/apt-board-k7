@@ -180,8 +180,8 @@ const QS=[
    return `<div class="sub" style="margin-top:10px">현금 ${eok(e.K)}억으로 5년 뒤 남는 돈(서울·경기 중앙값)</div>`+range2([['대출 적은 집',e.a[0]/1e4,e.a[1]/1e4],['좋은 입지 + 큰 대출',e.b[0]/1e4,e.b[1]/1e4]]);},
   d:v=>`<p class="note" style="margin:0">순서는 나쁨·보통·좋음 시나리오 중 어디에 무게를 두느냐예요 — 안정 7:3:0, 반반 5:5:0, 크게 0:5:5. '좋은 동네'는 객관 점수 순. 결과 화면에서 언제든 바꿀 수 있어요.</p>`},
  {key:'useU',q:'그 집에<br>직접 살 건가요?',o:[['네, 살 거예요',true],['아니요, 투자예요',false]],
-  a:v=>v?`<b class="k">그럼 아끼는 월세도 수익이에요</b>5억 집 한 채, 5년 보통 시나리오`:`<b class="k">시세차익만으로 따져 볼게요</b>살면서 아끼는 월세는 빼요. 5억 집 한 채라면`,
-  v:v=>fall(typical()),
+  a:v=>{const t=typical(true);return v?`<b class="k">그럼 아끼는 월세도 수익이에요</b>5억 집 한 채를 사서 살면, 5년 동안`:`<b class="k">시세차익만으로 따져 볼게요</b>살지 않으면 아끼는 월세(5년 약 ${t[1][1].toFixed(2)}억)가 빠져요. 5억 집 한 채라면`;},
+  v:v=>fall(typical(v))+(v?'':`<div class="sub">실거주라면 같은 집에서 ${typical(true)[1][1].toFixed(2)}억이 더 남아요 — 그래서 순위도 달라져요.</div>`),
   d:v=>`<p class="note" style="margin:0">남의 집에 살면 매년 전세금의 약 ${(DT.conv['경기도']||5).toFixed(1)}%를 월세로 내는 셈이에요(실제 월세 계약으로 계산). 집을 사면 그만큼을 아껴요.</p>`}];
 let qi=0;
 function intro(){
@@ -367,7 +367,7 @@ function row(r,lbl){
  return `<details style="border-bottom:1px solid var(--line2)"><summary style="align-items:center;gap:10px">
  <span style="display:flex;gap:10px;align-items:center;min-width:0;flex:1"><span class="rank">${lbl}</span>
   <span style="min-width:0"><span style="display:block;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.n} ${r.b}㎡${r.bu?' <span class="tag red">분담금</span>':''}${r.rd?' <span class="tag amber">'+r.rd.split(' ')[0]+'</span>':''}</span>
-  <span style="display:block;margin-top:2px"><b class="num" style="font-size:1.12rem;color:var(--${F.p5>=0?'green':'red'})">${sg(F.p5)}</b> <span class="sub">보통 · ${alt[0]} ${sg(alt[1])}</span></span>
+  <span style="display:block;margin-top:2px"><b class="num" style="font-size:1.12rem;color:var(--${F.p5>=0?'green':'red'})">${sg(F.p5)}</b> <span class="sub">보통${CF.useU?'':'(시세차익)'} · ${alt[0]} ${sg(alt[1])}</span></span>
   <span class="sub" style="display:block">${r.gu} · ${eok(r.p)}억${CF.cash!=null?' · 대출 '+eok(F.L)+'억':''} · 연 ${(G.ann*100).toFixed(1)}%</span></span></span>
  <span style="flex:0 0 52px;display:flex;flex-direction:column;align-items:flex-end;gap:2px"><span class="num" style="font-size:1.25rem;font-weight:800;color:var(--${scol(r.sc)});line-height:1">${r.sc}</span><span style="font-size:.66rem;color:var(--ink3)">객관</span>${r.g!=='A'?`<span class="tag ${GC[r.g]}" style="font-size:.66rem">신뢰 ${r.g}</span>`:''}</span></summary>${detail(r)}</details>`;}
 let N=10, V=[];
@@ -432,7 +432,7 @@ function result(){
  ${tipObj()}
  <input id="sq" type="search" placeholder="단지 이름으로 찾기" oninput="find(this.value)" style="width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit;margin:10px 0 4px">
  <div id="found"></div>
- <div class="sub" style="margin:10px 0 0">${V.length.toLocaleString()}곳 중 · 초록 = 5년 뒤 남는 돈 · 오른쪽 = 동네·단지 급(객관 점수)</div>
+ <div class="sub" style="margin:10px 0 0">${V.length.toLocaleString()}곳 중 · 초록 = 5년 뒤 남는 돈(${CF.useU?'아끼는 월세 포함':'시세차익만'}) · 오른쪽 = 동네·단지 급(객관 점수)</div>
  <div id="list"></div><button class="btn ghost" id="more" style="margin-top:12px" onclick="N+=10;draw()">다음 10곳</button>
  <div style="display:flex;gap:10px;margin-top:14px"><button class="btn ghost" onclick="setup()">조건 바꾸기</button><button class="btn ghost" onclick="intro()">처음 질문</button></div>`;
  draw(); window.scrollTo(0,0);}
@@ -466,10 +466,10 @@ function fall(rows){
   +`<div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="position:relative;height:${H}px;width:70%"><i class="gy" style="position:absolute;left:0;right:0;bottom:0;height:${tot*sc}px;background:var(--ink);border-radius:4px;transform-origin:bottom;animation-delay:${pts.length*260}ms"></i><b class="num fd" style="position:absolute;left:50%;transform:translateX(-50%);bottom:${tot*sc+3}px;font-size:.8rem;white-space:nowrap;animation-delay:${pts.length*260+300}ms">+${tot.toFixed(2)}억</b></div><span style="font-size:.72rem;font-weight:700;margin-top:4px">5년 합계</span></div>`;
  return `<div class="chart" style="display:flex;gap:4px;margin:16px 0 6px">${cols}</div>`;}
 // 사는 가치 그림용: 서울·경기 가운데 집(5억으로 환산)의 5년 보통 시나리오
-function typical(){
+function typical(live){
  const md=a=>{a=a.filter(x=>isFinite(x)).sort((x,y)=>x-y);return a[a.length>>1]||0;}, P=50000;
  const g=md(R.filter(r=>!r.as).map(r=>(r.v5-r.p)/r.p)), u=md(R.filter(r=>!r.as).map(r=>r.U/r.p)), c=md(R.filter(r=>!r.as).map(r=>(r.C-r.p)/r.p));
- return [['시세차익<br>(보통)',g*P/1e4],['아끼는<br>월세',u*P/1e4],['세금·<br>비용',-c*P/1e4]];}
+ const t=[['시세차익<br>(보통)',g*P/1e4],['아끼는<br>월세',u*P/1e4],['세금·<br>비용',-c*P/1e4]]; return live===false?[t[0],t[2]]:t;}
 // 가치관(09-24 사용자: "가치관에 따라 점수를 달리"): 같은 시나리오에서 나쁨·보통·좋음 중 어디에 무게를 두나. 모델은 하나, 저울만 다르다.
 const LENS_W={safe:[.7,.3,0],bal:[.5,.5,0],up:[0,.5,.5],obj:[.5,.5,0]};
 const LENS_T={safe:['안정형','나쁜 경우를 크게 봐요 — 대출이 적고 떨어져도 덜 잃는 곳'],bal:['균형형','보통과 나쁜 경우를 반반 — 기본'],up:['상승형','잘 풀릴 때를 봐요 — 대출을 크게 끼고 좋은 입지·큰 집. 나쁠 땐 더 잃어요'],obj:['좋은 집 순','객관 점수 순 — 지금 시장이 값을 쳐 주는 입지·역·연식·규모']};
