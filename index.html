@@ -132,6 +132,12 @@ ul.plain{padding-left:18px}
 .opt{transition:transform .15s,border-color .15s,background .15s}.opt:active{transform:scale(.98)}
 .cap{font-size:.72rem;color:var(--ink3);line-height:1.5;margin:2px 0 10px}
 .seg{display:flex;background:var(--surface2);border-radius:12px;padding:3px;gap:2px;margin:12px 0 4px}
+.pk2{display:flex;gap:10px;margin:10px 0 4px}
+.pk2 button{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 8px 12px;border:1.5px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink2);font:inherit;cursor:pointer;transition:.15s}
+.pk2 button b{font-size:.98rem}.pk2 button .d{font-size:.76rem;color:var(--ink3)}
+.pk2 button .ck{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:.72rem;font-weight:900;display:none;align-items:center;justify-content:center}
+.pk2 button.on{border:2px solid var(--blue);background:var(--blue-bg);color:var(--blue)}.pk2 button.on .d{color:var(--blue)}.pk2 button.on .ck{display:flex}
+.pk2 button:not(.on){opacity:.7}
 .seg button{flex:1;border:0;background:transparent;padding:9px 2px;border-radius:9px;font:inherit;font-size:.84rem;font-weight:700;color:var(--ink3);cursor:pointer;white-space:nowrap}
 .seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.15)}
 .fold{border-top:1px solid var(--line2)}.fold>summary{padding:12px 0;font-weight:700;font-size:.92rem;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
@@ -387,7 +393,7 @@ function cc(key,opts,multi){return `<div class="cc">${opts.map(([v,l])=>`<button
 function setup(){
  app.innerHTML=`<div class="hq">매수 조건 설정</div>
  <div class="sec">🏠 보유 목적</div>
- <div class="seg">${[['실거주',true],['임대(전세)',false]].map(([t,v])=>`<button class="${CF.useU===v?'on':''}" onclick="CF.useU=${v};save();setup()">${t}</button>`).join('')}</div>
+ <div class="pk2">${[['🏡','실거주','직접 거주',true],['🔑','임대(전세)','전세 놓고 보유',false]].map(([e,t,d,v])=>`<button class="${CF.useU===v?'on':''}" onclick="CF.useU=${v};save();setup()"><span class="ck">✓</span><span style="font-size:1.5rem;line-height:1">${e}</span><b>${t}</b><span class="d">${d}</span></button>`).join('')}</div>
  ${CF.useU?'':'<div class="hint" style="margin-top:4px">토지거래허가구역(서울 전역·경기 12곳)은 실거주 의무로 제외됩니다.</div>'}
  <div class="sec">📍 희망 지역</div><div class="hint">복수 선택 가능 · 미선택 시 서울·경기 전체</div>
  <div class="picked" id="picked"></div>
