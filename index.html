@@ -165,6 +165,9 @@ details.card[open] .more b:after{content:'접기'}details.card:not([open]) .more
 .opt small{display:block;font-size:.76rem;font-weight:500;color:var(--ink3);margin-top:2px}
 .rk{flex:0 0 30px;height:30px;border-radius:50%;background:var(--surface2);color:var(--ink2);font-weight:800;display:flex;align-items:center;justify-content:center}.rk.r1{background:var(--blue);color:#fff}
 details.top3{margin-top:8px;padding:0!important}details.top3>summary{padding:12px 14px!important}
+details.adv{margin-top:18px;border:1.5px solid var(--blue)!important;border-radius:14px;background:var(--blue-bg);padding:0 14px}
+details.adv>summary{padding:12px 0!important;color:var(--blue)}details.adv>summary b{color:var(--blue);font-size:.98rem}
+details.adv[open]{background:var(--surface)}
 .pills{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 0}
 .pill{border:1.5px solid var(--blue);background:var(--blue-bg);color:var(--blue);border-radius:999px;padding:8px 12px;font:inherit;font-size:.9rem;font-weight:600;cursor:pointer}
 .pill b{font-weight:800}.pill.on{background:var(--blue);color:#fff}
@@ -321,7 +324,7 @@ function setup(){
  <div class="sec">연소득 <span class="hint">(DSR 계산용, 선택)</span></div><div class="hint">넣으면 DSR 40%(스트레스 금리 +${STRESS}%p, 원리금균등) 한도 안에서만 대출을 잡아요. 부부 합산 소득을 넣으면 돼요.</div>
  <div class="inp"><input type="number" inputmode="decimal" step="0.1" placeholder="예: 0.6" value="${CF.inc==null?'':(CF.inc/1e4)}" oninput="CF.inc=this.value===''?null:Math.round(this.value*1e4);count()"><b>억/년</b></div>
  
- <details class="fold"><summary><span>더 자세한 조건 <span class="sub" style="font-weight:400">(대출·금리·수리비·면적·연식·역…)</span></span></summary><div>
+ <details class="fold adv"><summary><span><b>⚙ 더 자세한 조건</b><span class="sub" style="display:block;font-weight:400;font-size:.78rem;margin-top:2px">대출·금리·수리비·면적·연식·역 거리</span></span></summary><div>
  <div class="sec">대출은 얼마까지 받을 생각인가요?</div><div class="hint">비워 두면 은행 한도(LTV · 집값별 6억/4억/2억 · 소득을 넣으면 DSR)까지. 필요한 만큼만 빌린다고 보고, 남는 현금은 예금에 둔다고 계산해요.</div>
  <div class="inp"><input type="number" inputmode="decimal" step="0.1" placeholder="한도까지" value="${CF.loan==null?'':(CF.loan/1e4)}" oninput="CF.loan=this.value===''?null:Math.round(this.value*1e4);count()"><b>억</b></div>
  <div class="inp"><input type="number" inputmode="decimal" step="100" placeholder="기존 대출 연 상환액 0" value="${CF.debt==null?'':CF.debt}" oninput="CF.debt=this.value===''?null:+this.value;count()"><b>만원/년</b></div>
