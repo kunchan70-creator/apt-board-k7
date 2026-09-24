@@ -93,7 +93,7 @@ small.src{display:block;color:var(--ink3);font-size:.8rem;margin-top:4px;line-he
 .card h2:first-child,.card h1:first-child{margin-top:0}
 ul.plain{padding-left:18px}
 </style></head><body><div class="wrap">
-<div class="top"><a href="index.html" class="brand" style="display:flex;align-items:center;gap:8px;color:inherit;text-decoration:none"><svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg3)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg3)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg3)"/></svg>집셈</a><details class="menu"><summary aria-label="메뉴">☰</summary><div class="mbox"><a href="index.html" class=on><b>매수 분석</b><span>자기자본 기준 단지별 5년 순이익</span></a><a href="evidence.html"><b>모델 검증</b><span>과거 실거래 기반 사후 검증</span></a><a href="market.html"><b>시장 동향</b><span>매매가격·거래량 추이와 주간 경보</span></a><a href="map.html"><b>단지 지도</b><span>서울·경기 단지 위치·지표</span></a><a href="guide.html"><b>산출 방법</b><span>계산 방법 요약·자료 출처</span></a><div class="mdate">2026.09.24 기준</div></div></details></div>
+<div class="top"><a href="index.html" class="brand" style="display:flex;align-items:center;gap:8px;color:inherit;text-decoration:none"><svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg4)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg4)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg4)"/></svg>집셈</a><details class="menu"><summary aria-label="메뉴">☰</summary><div class="mbox"><a href="index.html" class=on><b>매수 분석</b><span>자기자본 기준 단지별 5년 순이익</span></a><a href="evidence.html"><b>모델 검증</b><span>과거 실거래 기반 사후 검증</span></a><a href="market.html"><b>시장 동향</b><span>매매가격·거래량 추이와 주간 경보</span></a><a href="map.html"><b>단지 지도</b><span>서울·경기 단지 위치·지표</span></a><a href="guide.html"><b>산출 방법</b><span>계산 방법 요약·자료 출처</span></a><div class="mdate">2026.09.24 기준</div></div></details></div>
 
 <style>
 .stage{min-height:62vh}
@@ -244,7 +244,24 @@ const QS=[
   a:v=>`<b class="k">${{bal:'기준 시나리오 순이익이 큰 순서로 표시합니다',safe:'비관 시나리오 손실이 작은 순서로 표시합니다',obj:'입지 점수 순서로 표시합니다'}[v]}</b>결과에서 언제든 바꿀 수 있어요.`},QU];
 let qi=0;
 // 첫 화면(처음 한 번만): 여러 사람의 고민 → 결국 한 질문 → 이 서비스가 해 주는 것 → 시작
-const WORRY=[['💍 신혼부부','첫 집, 어디서부터 봐야 할지 모르겠어요'],['👨‍👩‍👧 40대 가족','지금 집 매도하고 갈아타도 될까요?'],['🌿 은퇴 준비','하락장에도 손실이 적은 집이면 좋겠어요'],['💼 맞벌이','오를 때 제대로 오를 곳을 매수하고 싶어요'],['🎒 사회초년생','전세 대신 매수하는 게 나을까요?'],['📦 이사 예정','근처에 더 나은 집, 놓치고 있진 않을까요?']];
+// 집셈 전용 아이콘(09-24): 로고와 같은 선·둥근 모서리. 이모지 대신.
+const IC={
+ home:'<path d="M4.5 11 12 4.8l7.5 6.2V19a1.2 1.2 0 0 1-1.2 1.2H5.7A1.2 1.2 0 0 1 4.5 19Z"/><path d="M9.6 20.2v-4.4h4.8v4.4"/>',
+ key:'<circle cx="8" cy="12" r="3.6"/><path d="M11.6 12H20.5M17.2 12v3M20.2 12v2.4"/>',
+ pin:'<path d="M12 21s-6.2-5.5-6.2-10.6a6.2 6.2 0 0 1 12.4 0C18.2 15.5 12 21 12 21Z"/><path d="M9.6 10.4h4.8M9.6 12.6h4.8"/>',
+ won:'<circle cx="12" cy="12" r="8.3"/><path d="M7.8 8.6l1.9 7 2.3-5.6 2.3 5.6 1.9-7M7.4 11.6h9.2"/>',
+ area:'<rect x="5" y="7" width="14" height="13" rx="1.6"/><path d="M5 3.6h14M5 2.6v2M19 2.6v2M9.5 11.5h5M9.5 14.5h5"/>',
+ year:'<rect x="4" y="5.6" width="16" height="14.6" rx="2"/><path d="M8 3.6v3.6M16 3.6v3.6M4 10.2h16M9 14.2h6M9 17h3.5"/>',
+ gear:'<circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.6M12 17.9v2.6M3.5 12h2.6M17.9 12h2.6M6 6l1.8 1.8M16.2 16.2 18 18M6 18l1.8-1.8M16.2 7.8 18 6"/>',
+ fog:'<path d="M3 16.5 7 12.5l3.2 2.6 3.6-4.1"/><path d="M13.8 11 20.5 5.5M13.8 11l6.7 6.2" stroke-dasharray="1.5 2.3"/>',
+ pair:'<path d="M3.5 20.2v-6.4L7.6 10l4.1 3.8v6.4"/><rect x="13.6" y="4.6" width="7" height="15.6" rx="1.2"/><path d="M16 8.4h2.2M16 11.4h2.2M16 14.4h2.2M2.5 20.2h19"/>',
+ drop:'<path d="M3.5 7.5 9 13l3.6-3 7.9 7.9"/><path d="M20.5 12.6v5.3h-5.3"/>',
+ book:'<rect x="5" y="3.4" width="14" height="17.2" rx="2"/><path d="M9 8h6M9 11.5h6M9 15h3.6"/>',
+ blocks:'<path d="M3 20.4h18M5 20.4V9.4h5.4v11M10.4 20.4V4.6h8.6v15.8"/><path d="M13.2 8.4h3M13.2 11.6h3M13.2 14.8h3M7.2 12.6h1M7.2 15.8h1"/>',
+ bill:'<path d="M6 3.4h12v17.2l-2-1.3-2 1.3-2-1.3-2 1.3-2-1.3-2 1.3Z"/><path d="M9 8h6M9 11.4h6M9 14.8h3.6"/>'};
+function ic(n,sz,tile){const g=`<svg viewBox="0 0 24 24" width="${tile?Math.round(sz*.56):sz}" height="${tile?Math.round(sz*.56):sz}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+ return tile?`<span style="display:inline-flex;align-items:center;justify-content:center;width:${sz}px;height:${sz}px;border-radius:${Math.round(sz*.3)}px;background:var(--blue-bg);color:var(--blue);flex:0 0 auto">${g}</span>`:`<span style="display:inline-flex;vertical-align:-3px;color:var(--blue);margin-right:4px">${g}</span>`;}
+const WORRY=[['신혼부부','첫 집, 어디서부터 봐야 할지 모르겠어요'],['40대 가족','지금 집 매도하고 갈아타도 될까요?'],['은퇴 준비','하락장에도 손실이 적은 집이면 좋겠어요'],['맞벌이','오를 때 제대로 오를 곳을 매수하고 싶어요'],['사회초년생','전세 대신 매수하는 게 나을까요?'],['이사 예정','근처에 더 나은 집, 놓치고 있진 않을까요?']];
 let TT=[];
 function chat(){   // 09-24 사용자: 고민 말풍선(취지) 원복 → 결국 한 질문 → 시작
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
@@ -262,18 +279,18 @@ function chat(){   // 09-24 사용자: 고민 말풍선(취지) 원복 → 결�
  TT.push(setTimeout(()=>{const g=$('#talkgo');if(g)g.style.opacity=1;},t+800));}
 // 09-24 사용자: 첫 화면 다음, 누구나 공감하는 질문으로 원리를 이해시키고 조건 입력으로 자연스럽게 잇는다
 const WHY3=[   // 09-24 사용자: 보기마다 다른 한 줄 답 + 그래프, 증명된 핵심은 초록
- {e:'🔮',q:'지금 시장 분위기를 보면,<br>5년 뒤 집값을 가늠할 수 있을까요?',o:['가늠할 수 있다','어느 정도는 가능하다','거의 불가능하다'],ans:2,
+ {e:'fog',q:'지금 시장 분위기를 보면,<br>5년 뒤 집값을 가늠할 수 있을까요?',o:['가늠할 수 있다','어느 정도는 가능하다','거의 불가능하다'],ans:2,
   f:k=>{const L=DT.ev5||[], neg=L.filter(x=>x[1]<0), lo=L.reduce((a,x)=>x[1]<a[1]?x:a,L[0]), hi=L.reduce((a,x)=>x[1]>a[1]?x:a,L[0]), G=v=>`<b style="color:var(--green)">${v}</b>`;
    const yrs=neg.length?neg[0][0]+'~'+neg[neg.length-1][0]+'년':'';
    return {t:k===2?`데이터도 같은 결론입니다. 매수 연도에 따라 5년 성과가 ${G(lo[1]+'%')}에서 ${G('+'+hi[1]+'%')}까지 갈렸습니다.`
       :`데이터는 다르게 말합니다. 늘 오른다던 부동산도 ${G(yrs)}에 매수했다면 5년 뒤에도 손실이었습니다.`,
      v:colbars(L,x=>x[1]<0||x[0]===hi[0]),cap:'매수 연도별 5년 뒤 서울·경기 평균 변화(%)'};}},
- {e:'🏘️',q:'같은 해에 매수했다면,<br>어느 단지를 골랐는지가 결과를 바꿀까요?',o:['크게 바꾼다','별 차이 없다'],ans:0,
+ {e:'pair',q:'같은 해에 매수했다면,<br>어느 단지를 골랐는지가 결과를 바꿀까요?',o:['크게 바꾼다','별 차이 없다'],ans:0,
   f:k=>{const Q=DT.q5||[], a=Q[0], b=Q[Q.length-1], G=v=>`<b style="color:var(--green)">${v}</b>`;
    return {t:(k===0?'데이터도 같은 결론입니다.':'데이터는 다르게 말합니다.')+` 같은 시점에 매수해도 5년 성과가 ${G('+'+a.med+'%')}에서 ${G('+'+b.med+'%')}까지 차이 났습니다.`,
      v:qbars(Q.map((x,n)=>[n===0?'하위 20%':n===Q.length-1?'상위 20%':'','+'+x.med+'%',x.med,n===0||n===Q.length-1]).reverse(),Math.ceil(b.med/10)*10),
      cap:`과거 실거래 ${(DT.evn||0).toLocaleString()}건 · 집셈 평가 5분위별 5년 중위 상승률`};}},
- {e:'🌧️',q:'집값이 떨어질 때,<br>모든 아파트가 비슷하게 떨어질까요?',o:['다 같이 비슷하게 떨어진다','단지마다 크게 다르다'],ans:1,
+ {e:'drop',q:'집값이 떨어질 때,<br>모든 아파트가 비슷하게 떨어질까요?',o:['다 같이 비슷하게 떨어진다','단지마다 크게 다르다'],ans:1,
   f:k=>{const d=R.map(r=>r.dd).filter(x=>x!=null).sort((a,b)=>a-b), q=f=>d[Math.floor(f*(d.length-1))], G=v=>`<b style="color:var(--green)">${v}</b>`;
    const B=[['−35↓',d.filter(v=>v<-35).length,1]]; for(let e=-35;e<0;e+=5)B.push([String(e),d.filter(v=>v>=e&&v<e+5).length,e<=-35||e>=-5]); B.push(['0↑',d.filter(v=>v>=0).length,1]);
    return {t:(k===1?'데이터도 같은 결론입니다.':'데이터는 다르게 말합니다.')+` 2022년 하락기에 단지 10곳 중 1곳은 ${G(Math.round(q(0.1))+'%')} 넘게 떨어졌고, 1곳은 ${G(Math.round(q(0.9))+'%')}에 그쳤습니다.`,
@@ -291,7 +308,7 @@ function why3(i){
  const w=WHY3[i], last=i===WHY3.length-1, a=WA[i], done=a!=null, r=done?w.f(a):null;
  app.innerHTML=`<div class="chat"><button class="skip" onclick="setup()">건너뛰기 ›</button>
  <div class="sub" style="margin:4px 0 10px">${WHY3.map((_,k)=>`<span style="display:inline-block;width:${k===i?18:6}px;height:6px;border-radius:3px;margin-right:4px;background:${k<=i?'var(--blue)':'var(--line)'}"></span>`).join('')} <span style="margin-left:4px">Q${i+1} / ${WHY3.length}</span></div>
- <div style="font-size:2.3rem;line-height:1;margin:2px 0 10px">${w.e}</div><div class="hq" style="font-size:clamp(1.4rem,6.2vw,1.75rem);line-height:1.4">${w.q}</div>
+ <div style="margin:2px 0 12px">${ic(w.e,48,1)}</div><div class="hq" style="font-size:clamp(1.4rem,6.2vw,1.75rem);line-height:1.4">${w.q}</div>
  <div style="margin:14px 0 4px">${w.o.map((t,k)=>`<button class="opt${done&&k===a?' on':''}" ${done?'disabled':''} onclick="WA[${i}]=${k};why3(${i})">${t}</button>`).join('')}</div>
  ${done?`<div style="background:var(--surface2);border-radius:14px;padding:12px 14px;margin-top:10px;animation:rise .35s both">
    <div style="line-height:1.6;font-size:.95rem;font-weight:600">${r.t}</div>${r.v}<div class="sub" style="font-size:.7rem;text-align:center;margin-top:2px">${r.cap}</div></div>`:''}
@@ -301,15 +318,15 @@ function why3(i){
 function bridge(){   // 09-24 사용자: 토스식 체크 모션 대신 '셈' 도장이 찍힌다
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
  const nc=new Set(R.map(r=>r.no||r.n)).size;
- const L=[['🗂️','과거 실거래 20년','비관·기준·낙관 세 시나리오로'],['🏢','서울·경기 '+nc.toLocaleString()+'개 단지','같은 자금으로 매수 가능한 곳만'],['🌧️','하락기 낙폭까지','단지별 손실 확률로'],['🧾','취득세·대출이자·중개보수','전부 반영한 5년 순이익으로']];
+ const L=[['book','과거 실거래 20년','비관·기준·낙관 세 시나리오로'],['blocks','서울·경기 '+nc.toLocaleString()+'개 단지','같은 자금으로 매수 가능한 곳만'],['drop','하락기 낙폭까지','단지별 손실 확률로'],['bill','취득세·대출이자·중개보수','전부 반영한 5년 순이익으로']];
  app.innerHTML=`<style>@keyframes stamp{0%{transform:scale(2.1) rotate(-16deg);opacity:0}55%{transform:scale(.9) rotate(-9deg);opacity:1}100%{transform:scale(1) rotate(-9deg);opacity:1}}
  .seal{flex:0 0 auto;width:34px;height:34px;border:2.5px solid var(--red);color:var(--red);border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.95rem;opacity:0;transform:rotate(-9deg)}
  .seal.on{animation:stamp .38s cubic-bezier(.3,1.4,.5,1) both}</style>
  <div class="chat"><button class="skip" onclick="setup()">건너뛰기 ›</button>
- <div style="font-size:2.3rem;line-height:1;margin:2px 0 10px">🧮</div>
+ <div style="margin:2px 0 12px"><svg width="48" height="48" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg3)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg3)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg3)"/></svg></div>
  <div class="hq" style="font-size:clamp(1.4rem,6.2vw,1.75rem);line-height:1.4">이 모든 것을<br>단지별로 계산합니다</div>
  <div style="margin:20px 0 6px">${L.map(([e,a,b],k)=>`<div id="br${k}" style="display:flex;gap:12px;align-items:center;padding:11px 0;border-bottom:1px dashed var(--line);opacity:.25;transition:opacity .3s">
-  <span style="flex:0 0 28px;font-size:1.35rem;text-align:center">${e}</span>
+  ${ic(e,36,1)}
   <span style="flex:1;min-width:0"><b style="display:block;font-size:.98rem">${a}</b><span class="sub" style="font-size:.84rem">${b}</span></span>
   <span class="seal" id="bs${k}">셈</span></div>`).join('')}</div>
  <div id="brgo" style="opacity:0;transition:opacity .4s"><p style="text-align:center;font-weight:700;margin:18px 0 10px">이제 자금 조건만 입력하면 됩니다</p>
@@ -392,21 +409,21 @@ function qSize(v){if(v==null)CF.size=[];else{const i=CF.size.indexOf(v);i<0?CF.s
 function cc(key,opts,multi){return `<div class="cc">${opts.map(([v,l])=>`<button class="${(multi?CF[key].includes(v):CF[key]===v)?'on':''}" onclick='${multi?'multiTog':'one'}(${JSON.stringify(key)},${JSON.stringify(v)})'>${l}</button>`).join('')}</div>`;}
 function setup(){
  app.innerHTML=`<div class="hq">매수 조건 설정</div>
- <div class="sec">🏠 보유 목적</div>
- <div class="pk2">${[['🏡','실거주','직접 거주',true],['🔑','임대(전세)','전세 놓고 보유',false]].map(([e,t,d,v])=>`<button class="${CF.useU===v?'on':''}" onclick="CF.useU=${v};save();setup()"><span class="ck">✓</span><span style="font-size:1.5rem;line-height:1">${e}</span><b>${t}</b><span class="d">${d}</span></button>`).join('')}</div>
+ <div class="sec">${ic('home',18)}보유 목적</div>
+ <div class="pk2">${[['home','실거주','직접 거주',true],['key','임대(전세)','전세 놓고 보유',false]].map(([e,t,d,v])=>`<button class="${CF.useU===v?'on':''}" onclick="CF.useU=${v};save();setup()"><span class="ck">✓</span><span style="color:inherit">${ic(e,30).replace('color:var(--blue);margin-right:4px','color:inherit')}</span><b>${t}</b><span class="d">${d}</span></button>`).join('')}</div>
  ${CF.useU?'':'<div class="hint" style="margin-top:4px">토지거래허가구역(서울 전역·경기 12곳)은 실거주 의무로 제외됩니다.</div>'}
- <div class="sec">📍 희망 지역</div><div class="hint">복수 선택 가능 · 미선택 시 서울·경기 전체</div>
+ <div class="sec">${ic('pin',18)}희망 지역</div><div class="hint">복수 선택 가능 · 미선택 시 서울·경기 전체</div>
  <div class="picked" id="picked"></div>
  <input id="rq" type="search" placeholder="시·구 검색 (예: 수원, 강동)" oninput="$('#rl').innerHTML=regionHTML(this.value);$('#rlf').open=!!this.value" style="width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit">
  <details class="fold" id="rlf" style="border-top:0"><summary><span style="font-weight:600;font-size:.86rem;color:var(--blue)">지역 목록</span></summary><div id="rl" style="max-height:340px;overflow:auto;padding-right:4px"></div></details>
- <div class="sec">💰 가용 자기자본</div><div class="hint">대출을 제외한 현금(취득세·중개보수 포함). 갈아타기의 경우 기존 주택 매도 후 대출 상환 잔액을 합산합니다.</div>
+ <div class="sec">${ic('won',18)}가용 자기자본</div><div class="hint">대출을 제외한 현금(취득세·중개보수 포함). 갈아타기의 경우 기존 주택 매도 후 대출 상환 잔액을 합산합니다.</div>
  <div class="inp"><input id="i_cash" type="number" inputmode="decimal" step="0.1" placeholder="예: 3" value="${CF.cash==null?'':(CF.cash/1e4)}" oninput="CF.cash=this.value===''?null:Math.round(this.value*1e4);count()"><b>억</b></div>
  <div class="tg"><span><b>생애최초 주택 구입</b><br><span class="hint">LTV 70% 적용 (규제지역은 금융기관 확인 필요)</span></span><label class="sw"><input type="checkbox" id="i_first" ${CF.first?'checked':''} onchange="CF.first=this.checked;count()"><i></i></label></div>
  <div class="sec">연소득 <span class="hint">(선택 · DSR 산정용)</span></div><div class="hint">입력 시 DSR 40%(스트레스 금리 +${STRESS}%p, 원리금균등상환) 한도 내에서 대출을 산정합니다. 부부 합산 소득 기준.</div>
  <div class="inp"><input type="number" inputmode="decimal" step="0.1" placeholder="예: 0.6" value="${CF.inc==null?'':(CF.inc/1e4)}" oninput="CF.inc=this.value===''?null:Math.round(this.value*1e4);count()"><b>억/년</b></div>
  
- <div class="sec">📐 전용면적 <span class="hint">(복수 선택 · 미선택 시 전체)</span></div><div id="c_size"></div> <div class="sec">🏗️ 준공 연차 <span class="hint">(복수 선택 · 미선택 시 전체)</span></div><div id="c_age"></div>
- <details class="fold adv"><summary><span><b>⚙ 세부 조건</b><span class="sub" id="advsum" style="display:block;font-weight:400;font-size:.8rem;margin-top:2px"></span></span></summary><div>
+ <div class="sec">${ic('area',18)}전용면적 <span class="hint">(복수 선택 · 미선택 시 전체)</span></div><div id="c_size"></div> <div class="sec">${ic('year',18)}준공 연차 <span class="hint">(복수 선택 · 미선택 시 전체)</span></div><div id="c_age"></div>
+ <details class="fold adv"><summary><span><b>${ic('gear',18)}세부 조건</b><span class="sub" id="advsum" style="display:block;font-weight:400;font-size:.8rem;margin-top:2px"></span></span></summary><div>
  <div class="sec">대출 희망액</div><div class="hint">미입력 시 금융기관 한도(LTV · 주택가격별 6억/4억/2억 · 소득 입력 시 DSR)를 적용합니다. 필요액만 차입하고 여유 자금은 예금으로 운용한다고 가정합니다.</div>
  <div class="inp"><input type="number" inputmode="decimal" step="0.1" placeholder="한도 적용" value="${CF.loan==null?'':(CF.loan/1e4)}" oninput="CF.loan=this.value===''?null:Math.round(this.value*1e4);count()"><b>억</b></div>
  <div class="inp"><input type="number" inputmode="decimal" step="100" placeholder="기존 대출 연 상환액 0" value="${CF.debt==null?'':CF.debt}" oninput="CF.debt=this.value===''?null:+this.value;count()"><b>만원/년</b></div>
