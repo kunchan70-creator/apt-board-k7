@@ -233,23 +233,12 @@ const WORRY=[['신혼부부','첫 집, 어디서부터 봐야 할지'],['40대 �
 let TT=[];
 function chat(){
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
- const q5=DT.q5||[];
- app.innerHTML=`<div class="chat"><button class="skip" onclick="talkAll()">건너뛰기 ›</button>
- <div id="talk" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px"></div>
- <div id="one" style="opacity:0;transition:opacity .5s"><div class="hq" style="text-align:center;margin-top:22px;font-size:clamp(1.45rem,6.4vw,1.8rem)">내 돈으로 5년 뒤,<br>가장 남는 집은 어디일까?</div>
-  <div class="sub" style="text-align:center;margin-top:6px;line-height:1.55">집값을 맞히진 않아요.<br>같은 돈으로 살 수 있는 집들을<br><b>과거 실제 거래</b>로 견줘 봐요.</div></div>
- <div id="trust" style="opacity:0;transition:opacity .5s;margin-top:10px">${fold('정말 믿을 만한가요?',`<div class="sub" style="line-height:1.55">맞힐 수 있다면 다들 좋은 곳에만 살겠죠. 대신 <b>같은 때, 같은 돈으로 살 수 있던 집들 중 어느 쪽이 나았나</b>는 과거에 꽤 가려냈어요 — 학습에 쓰지 않은 시기의 실제 거래 ${((DT.q5n||0)/1e4).toFixed(0)}만 건, 산 뒤 5년 결과:</div>
-  ${q5.length?hbars([['셈 상위 20%',q5[4].med,'+'+q5[4].med.toFixed(0)+'%'],['셈 하위 20%',q5[0].med,'+'+q5[0].med.toFixed(0)+'%']],Math.max(1,...q5.map(q=>q.med))):''}
-  <div class="sub" style="font-size:.78rem">원금을 잃은 비율: 상위 20% <b>${(q5[4]||{}).loss}%</b> · 하위 20% <b>${(q5[0]||{}).loss}%</b> · <a href="evidence.html">검증 자세히 →</a></div>
-  <div class="sub" style="margin-top:8px;line-height:1.55">· 내 현금·대출·소득으로 실제로 살 수 있는 집만 봐요<br>· 5년 뒤 시장은 한쪽으로 정하지 않고 과거 비율대로 섞어서 셈해요<br>· 선호 동네인지(입지 점수)도 함께 적어요</div>`)}</div>
- <div id="talkgo" style="margin-top:auto;padding:14px 0 6px;opacity:0;transition:opacity .4s;position:sticky;bottom:0;background:linear-gradient(to bottom,transparent,var(--surface) 22%)"><button class="btn" onclick="CF.seen=true;save();mktPage()">시작하기</button>
- <p class="sub" style="text-align:center;margin:6px 0 0;font-size:.74rem">참고용 셈이에요. 투자 권유가 아니에요.</p>
- <p style="text-align:center;margin:6px 0 0">${hasSaved()?'<button class="linkbtn" onclick="result()">저장된 내 조건으로 바로 보기 →</button>':'<button class="linkbtn" disabled style="color:var(--ink3);cursor:default">저장된 내 조건이 없어요</button>'}</p></div></div>`;
- let t=250;
- WORRY.forEach((w,i)=>{TT.push(setTimeout(()=>add(w),t)); t+=380;});
- const op=(id,v)=>{const e=$('#'+id);if(e)e.style.opacity=v;};   // 화면이 바뀐 뒤 남은 타이머가 에러 내지 않게
- TT.push(setTimeout(()=>{op('talk',.45);op('one',1);},t+=350));
- TT.push(setTimeout(()=>{op('trust',1);op('talkgo',1);},t+=900));}
+ app.innerHTML=`<div style="min-height:52vh;display:flex;flex-direction:column;justify-content:center;text-align:center">
+ <div class="hq" style="font-size:clamp(1.7rem,7.4vw,2.1rem);line-height:1.35">내 돈으로<br>어디 사는 게<br>제일 나을까?</div>
+ <div class="sub" style="margin-top:12px;line-height:1.6">현금만 넣으면, 과거 실거래로 셈해서<br>가장 나은 곳을 보여 드려요.</div></div>
+ <div class="cta"><button class="btn" onclick="CF.seen=true;save();setup()">시작하기</button>
+ <p style="text-align:center;margin:6px 0 0">${hasSaved()?'<button class="linkbtn" onclick="result()">저장된 내 조건으로 바로 보기 →</button>':'<button class="linkbtn" disabled style="color:var(--ink3);cursor:default">저장된 내 조건이 없어요</button>'}</p>
+ <p class="sub" style="text-align:center;margin:10px 0 0;font-size:.74rem">참고용 셈이에요. 투자 권유가 아니에요.</p></div>`;}
 function add(w){const d=document.createElement('div');d.className='wcard';d.innerHTML=`<span>${w[0]}</span>“${w[1]}”`;const T=$('#talk');if(T)T.appendChild(d);}
 function talkAll(){TT.forEach(clearTimeout);TT=[];const T=$('#talk');if(!T)return;T.innerHTML='';WORRY.forEach(w=>add(w));T.style.opacity=.45;['one','trust','talkgo'].forEach(k=>$('#'+k).style.opacity=1);}
 // ---- 지금 시장은?(09-24 사용자: 시장 국면부터 알리고 — 이런 국면에서 과거엔 이랬고, 맞힐 확률은 이 정도) ----
@@ -319,7 +308,10 @@ function multiTog(key,v){const a=CF[key],i=a.indexOf(v); if(i>=0)a.splice(i,1); 
 function one(key,v){CF[key]=v; refresh();}
 function cc(key,opts,multi){return `<div class="cc">${opts.map(([v,l])=>`<button class="${(multi?CF[key].includes(v):CF[key]===v)?'on':''}" onclick='${multi?'multiTog':'one'}(${JSON.stringify(key)},${JSON.stringify(v)})'>${l}</button>`).join('')}</div>`;}
 function setup(){
- app.innerHTML=`<div class="eyebrow">마지막</div><div class="hq">어디서, 얼마로 찾으세요?</div>
+ app.innerHTML=`<div class="hq">어디서, 얼마로 찾으세요?</div>
+ <div class="sec">산 집에 직접 살 건가요?</div>
+ <div class="seg">${[['직접 살 거예요',true],['세 줄 거예요',false]].map(([t,v])=>`<button class="${CF.useU===v?'on':''}" onclick="CF.useU=${v};save();setup()">${t}</button>`).join('')}</div>
+ ${CF.useU?'':'<div class="hint" style="margin-top:4px">서울 전역과 경기 12곳은 사면 직접 살아야 해서 빠져요.</div>'}
  <div class="sec">어디로 이사 가실 건가요?</div><div class="hint">여러 곳 고를 수 있어요. 안 고르면 서울·경기 전체에서 찾아요.</div>
  <div class="picked" id="picked"></div>
  <input id="rq" type="search" placeholder="시·구 이름으로 찾기 (예: 수원, 강동)" oninput="$('#rl').innerHTML=regionHTML(this.value);$('#rlf').open=!!this.value" style="width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit">
@@ -557,25 +549,20 @@ function result(){
  {const W=V.slice(0,40);RS={lo:Math.min(0,...W.map(r=>r.F.p1)),hi:Math.max(1,...W.map(r=>r.F.p9))};}
  if(L==='obj')V.sort((a,b)=>b.sc-a.sc||lscore(b)-lscore(a));
  const chips=summaryChips(true);
- app.innerHTML=`${DT.alert?`<div class="box warn" style="margin-top:0"><b>이번 주 경보가 켜져 있어요</b> <span class="sub">${DT.alert} · 과열 때 자주 켜졌던 신호예요. 늘 맞진 않아요 · <a href="market.html">기준 보기</a></span></div>`:''}
- <div class="hq" style="margin-top:0">내 돈으로 5년, 셈해 보면</div>
- <div class="sub" style="margin:2px 0 0;font-size:.76rem">참고용 셈이에요 · 투자 권유가 아니에요 · 판단과 책임은 본인에게 있어요</div>
- <div class="chips">${chips}<a onclick="setup()">바꾸기</a></div>
- <div class="pills">${['lens','useU'].map(k=>`<button class="pill${OPEN===k?' on':''}" onclick="openOpt('${k}')">${pillTxt(k)} ▾</button>`).join('')}</div>
- <div id="optp">${OPEN?optHTML(OPEN):''}</div>
- <p class="lead2">${meaning()}</p>
- ${CF.tip1?'':`<div class="tip" id="tip1" style="margin:8px 0 0"><span><b>숫자 읽는 법</b> — 가장 믿을 만한 건 <b>보통</b>이에요. 그 옆 <b>손해 볼 확률</b>도 같이 보세요. '잘되면'은 10번 중 1번꼴이라 펼쳤을 때만 작게 적었어요. 오른 건 더 오를 것 같은 게 사람 마음이라서요. <button class="linkbtn" style="padding:0" onclick="CF.tip1=1;save();$('#tip1').remove()">알겠어요 ✕</button></span></div>`}
- ${CF.my!=null?(()=>{const g=GRP[CF.my]?grp(CF.my):null,y=!g?yearOf(CF.my):null;return `<div class="warn2"><span>⚠</span><span>지금 숫자는 <b>${g?'시장이 '+GN[CF.my]+'('+GD[CF.my]+')':(y?y.lbl+' 매수처럼 흘러간다면':'가정')}</b>이라는 가정이에요. ${g?`과거 ${g.N}번 중 ${g.n}번(${Math.round(g.n/g.N*100)}%)만 그랬어요.`:'과거 한 시점일 뿐이에요.'} <button class="linkbtn" style="padding:0" onclick="CF.my=null;save();result()">확률대로 보기 →</button></span></div>`;})():''}
- ${tipObj()}
- <input id="sq" type="search" placeholder="단지·동 이름으로 찾기 (예: 광명역 데시앙)" oninput="find(this.value)" style="width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit;margin:10px 0 4px">
- <div id="found"></div>
- <div class="sub" style="margin:10px 0 0;line-height:1.6">${V.length.toLocaleString()}곳 중 · <b>굵은 숫자</b> = 내 돈으로 5년 뒤 남는 돈, 보통${CF.useU?'(집값 차익 + 아끼는 월세)':'(시세차익만)'} · <b>막대</b> = 10번 중 8번이 들어오는 범위(<span class="neg">빨강 = 손해 쪽</span>, 흐려지는 끝 = 잘 풀린 경우). ${CF.my==null?'':'시장은 위에서 고른 경우로 두고, 그 안에서 이 단지가 덜·더 풀리는 폭(10번 중 1번꼴)'} · <b>오른쪽</b> = 입지 점수</div>
+ const T1=V[0], why1={bal:'5년 뒤 가장 많이 남아요',safe:'나쁠 때도 가장 덜 잃어요',obj:'선호 동네 1위예요'}[L];
+ app.innerHTML=`${DT.alert?`<div class="box warn" style="margin-top:0"><b>이번 주 경보가 켜져 있어요</b> <span class="sub">과열 때 자주 켜졌던 신호예요. 늘 맞진 않아요 · <a href="market.html">기준 보기</a></span></div>`:''}
+ <div class="eyebrow">셈해 보면</div>
+ ${T1?`<div class="hq" style="margin-top:2px">${T1.n} ${T1.b}㎡</div><div class="sub" style="margin-top:2px">${T1.gu} · ${eok(T1.p)}억 — 내 조건 ${V.length.toLocaleString()}곳 중 ${why1}</div>`:'<div class="hq">조건에 맞는 곳이 없어요</div>'}
+ <div class="chips" style="margin-top:10px">${chips}<a onclick="setup()">바꾸기</a></div>
  ${(()=>{if(!CF.regions.length)return '';const z=CF.regions.filter(g=>!V.some(r=>r.gu===g));if(!z.length)return '';
   return `<div class="tip" style="margin:8px 0 0"><span>${z.map(g=>{const A=R.filter(r=>r.gu===g);const c0=CF.regions;CF.regions=[g];const B=A.filter(r=>{const k=CF.cash;CF.cash=null;const o=ok(r);CF.cash=k;return o;});CF.regions=c0;
    if(!B.length)return `<b>${short(g)}</b>엔 면적·연식 등 조건에 맞는 단지가 없어요.`;const m=Math.min(...B.map(r=>fin(r).own));return `<b>${short(g)}</b>엔 내 현금으로 살 수 있는 곳이 없어요 — 가장 적게 드는 곳도 현금 ${eok(m)}억이 필요해요${B.some(r=>r.ltv<0.5)?'(토지거래허가·대출 규제 지역)':''}.`;}).join('<br>')}</span></div>`;})()}
  <div id="list"></div><button class="btn ghost" id="more" style="margin-top:12px" onclick="N+=10;draw()">다음 10곳</button>
- <div style="display:flex;gap:10px;margin-top:14px"><button class="btn ghost" onclick="setup()">조건 바꾸기</button><button class="btn ghost" onclick="chat()">처음부터</button></div>`;
- draw(); window.scrollTo(0,0);}
+ ${fold('다른 순서로 보기 · 단지 찾기',`<div class="pills">${['lens'].map(k=>`<button class="pill${OPEN===k?' on':''}" onclick="openOpt('${k}')">${pillTxt(k)} ▾</button>`).join('')}</div><div id="optp">${OPEN?optHTML(OPEN):''}</div><input id="sq" type="search" placeholder="단지·동 이름으로 찾기" oninput="find(this.value)" style="width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit;margin:10px 0 4px"><div id="found"></div>`)}
+ <div style="display:flex;gap:10px;margin-top:14px"><button class="btn ghost" onclick="setup()">조건 바꾸기</button><button class="btn ghost" onclick="chat()">처음부터</button></div>
+ <p class="sub" style="margin:12px 2px 0;font-size:.74rem">참고용 셈이에요 · 투자 권유가 아니에요 · 판단과 책임은 본인에게 있어요</p>`;
+ draw();
+ if(OPEN){const f=$('#optp')&&$('#optp').closest('details');if(f){f.open=true;f.scrollIntoView({block:'nearest'});}} else window.scrollTo(0,0);}
 // 시장 해 선택(09-24 사용자): 방향은 모른다 → 기본은 과거 16번 전부 섞음. 막대를 누르면 '앞으로 5년이 그 해 매수처럼' — 그 해의 시장 상승률 + 그 해 좋은 입지 기울기를 함께 적용
 const AN=x=>(Math.pow(1+x/100,1/5)-1)*100;
 const SMED=(()=>{const a=(DT.qreg||[]).map(x=>x[3]).sort((x,y)=>x-y);return a.length?(a[(a.length-1)>>1]+a[a.length>>1])/2:0;})();
