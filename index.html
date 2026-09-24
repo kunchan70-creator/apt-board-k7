@@ -341,7 +341,7 @@ function bridge(){   // 09-24 사용자: 토스식 체크 모션 대신 '셈' �
  L.forEach((_,k)=>{TT.push(setTimeout(()=>{const r=$('#br'+k);if(r)r.style.opacity=1;},t));
   TT.push(setTimeout(()=>{const b=$('#bs'+k);if(b)b.classList.add('on');},t+380)); t+=700;});
  TT.push(setTimeout(()=>{const g=$('#brgo');if(g)g.style.opacity=1;},t+100));}
-function add(w){const d=document.createElement('div');d.className='wcard';d.innerHTML=`<span style="display:flex;align-items:center;gap:5px"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${IC[w[0]]}</svg>${w[1]}</span>“${w[2]}”`;const T=$('#talk');if(T)T.appendChild(d);}
+function add(w){const d=document.createElement('div');d.className='wcard';d.innerHTML=`<span style="display:flex;align-items:center;gap:5px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${IC[w[0]]}</svg>${w[1]}</span>“${w[2]}”`;const T=$('#talk');if(T)T.appendChild(d);}
 function talkAll(){TT.forEach(clearTimeout);TT=[];const T=$('#talk');if(!T)return;T.innerHTML='';WORRY.forEach(w=>add(w));T.style.opacity=.45;['one','trust','talkgo'].forEach(k=>$('#'+k).style.opacity=1);}
 // ---- 지금 시장은?(09-24 사용자: 시장 국면부터 알리고 — 이런 국면에서 과거엔 이랬고, 맞힐 확률은 이 정도) ----
 const PHN={'up+':'집값 +3% 넘게 · 거래 늘어남','up-':'집값 +3% 넘게 · 거래 줄어듦','flat+':'집값 0~3% · 거래 늘어남','flat-':'집값 0~3% · 거래 줄어듦','dn+':'집값 내림 · 거래 늘어남','dn-':'집값 내림 · 거래 줄어듦'};
