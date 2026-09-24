@@ -234,8 +234,7 @@ let TT=[];
 function chat(){
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
  app.innerHTML=`<div style="min-height:52vh;display:flex;flex-direction:column;justify-content:center;text-align:center">
- <div class="hq" style="font-size:clamp(1.7rem,7.4vw,2.1rem);line-height:1.35">내 돈으로<br>어디 사는 게<br>제일 나을까?</div>
- <div class="sub" style="margin-top:12px;line-height:1.6">현금만 넣으면, 과거 실거래로 셈해서<br>가장 나은 곳을 보여 드려요.</div></div>
+ <div class="hq" style="font-size:clamp(1.7rem,7.4vw,2.1rem);line-height:1.35">내 돈으로<br>어디 사는 게<br>제일 나을까?</div></div>
  <div class="cta"><button class="btn" onclick="CF.seen=true;save();setup()">시작하기</button>
  <p style="text-align:center;margin:6px 0 0">${hasSaved()?'<button class="linkbtn" onclick="result()">저장된 내 조건으로 바로 보기 →</button>':'<button class="linkbtn" disabled style="color:var(--ink3);cursor:default">저장된 내 조건이 없어요</button>'}</p>
  <p class="sub" style="text-align:center;margin:10px 0 0;font-size:.74rem">참고용 셈이에요. 투자 권유가 아니에요.</p></div>`;}
