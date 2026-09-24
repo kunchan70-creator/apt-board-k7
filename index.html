@@ -552,7 +552,9 @@ function result(){
  TOP1=V[0];
  {const W=V.slice(0,40);RS={lo:Math.min(0,...W.map(r=>r.F.p1)),hi:Math.max(1,...W.map(r=>r.F.p9))};}
  if(L==='obj')V.sort((a,b)=>b.sc-a.sc||lscore(b)-lscore(a));
- const chips=summaryChips(true);
+ const chips=(()=>{const g=CF.regions, cnt={};g.forEach(x=>{const c=x.split(' ')[0];cnt[c]=(cnt[c]||0)+1;});const cs=Object.keys(cnt);
+   const rg=!g.length?'서울·경기 전체':g.length<=2?g.map(short).join(' · '):cs.length===1?cs[0]+' '+g.length+'곳':short(g[0])+' 외 '+(g.length-1)+'곳';
+   return rg+(CF.cash!=null?' · 현금 '+eok(CF.cash)+'억':'');})();
  N=3;
  app.innerHTML=`${DT.alert?`<div class="box warn" style="margin-top:0"><b>이번 주 경보가 켜져 있어요</b> <span class="sub">과열 때 자주 켜졌던 신호예요. 늘 맞진 않아요</span></div>`:''}
  ${V.length?`<div class="hq" style="margin:2px 0 10px">${{bal:'내 돈으로 5년, 가장 남는 곳',safe:'나빠도 가장 덜 잃는 곳',obj:'선호 동네 순'}[L]}</div>`+qsRow()+V.slice(0,3).map((r,k)=>{const F=r.F, sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', v=L==='safe'?F.p1:F.p5;
@@ -564,7 +566,7 @@ function result(){
  <div class="chips" style="margin-top:10px">${chips}<a onclick="setup()">바꾸기</a></div>
  ${(()=>{if(!CF.regions.length)return '';const z=CF.regions.filter(g=>!V.some(r=>r.gu===g));if(!z.length)return '';
   return `<div class="tip" style="margin:8px 0 0"><span>${z.map(g=>{const A=R.filter(r=>r.gu===g);const c0=CF.regions;CF.regions=[g];const B=A.filter(r=>{const k=CF.cash;CF.cash=null;const o=ok(r);CF.cash=k;return o;});CF.regions=c0;
-   if(!B.length)return `<b>${short(g)}</b>엔 면적·연식 등 조건에 맞는 단지가 없어요.`;const m=Math.min(...B.map(r=>fin(r).own));return `<b>${short(g)}</b>엔 내 현금으로 살 수 있는 곳이 없어요 — 가장 적게 드는 곳도 현금 ${eok(m)}억이 필요해요${B.some(r=>r.ltv<0.5)?'(토지거래허가·대출 규제 지역)':''}.`;}).join('<br>')}</span></div>`;})()}
+   if(!B.length)return `<b>${short(g)}</b>는 고른 조건에 맞는 단지가 없어요.`;const m=Math.min(...B.map(r=>fin(r).own));return `<b>${short(g)}</b>는 현금이 <b>${eok(Math.max(0,m-(CF.cash||0)))}억</b> 더 있어야 해요.`;}).join('<br>')}</span></div>`;})()}
  
  <div id="list"></div><button class="btn ghost" id="more" style="margin-top:12px" onclick="N+=10;draw()">다음 10곳</button>
  ${fold('다른 순서로 보기 · 단지 찾기',`<div class="pills">${['lens'].map(k=>`<button class="pill${OPEN===k?' on':''}" onclick="openOpt('${k}')">${pillTxt(k)} ▾</button>`).join('')}</div><div id="optp">${OPEN?optHTML(OPEN):''}</div><input id="sq" type="search" placeholder="단지·동 이름으로 찾기" oninput="find(this.value)" style="width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit;margin:10px 0 4px"><div id="found"></div>`)}
