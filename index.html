@@ -104,7 +104,7 @@ ul.plain{padding-left:18px}
 .hint{font-size:.84rem;color:var(--ink3);margin:2px 0 10px}
 .cc{display:flex;flex-wrap:wrap;gap:7px}
 .cc button{padding:9px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink2);font:inherit;font-size:.9rem;font-weight:600;cursor:pointer}
-.cc button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cc button.on{background:var(--blue);color:#fff;border-color:var(--blue)}.cc button.on::before{content:'✓ '}
 .cc button.all{border-style:dashed}
 .grp{margin:12px 0 4px;font-size:.84rem;font-weight:700;color:var(--ink3)}
 .picked{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
@@ -192,7 +192,7 @@ const DEF={done:false,sort:'money',my:null,regions:[],cash:DT.my.cash,maxc:DT.my
 function load(){try{return Object.assign({},DEF,JSON.parse(localStorage.getItem('v2cfg')||'{}'))}catch(e){return Object.assign({},DEF)}}
 function save(){try{if(CF.keep===false){localStorage.removeItem('v2cfg');return;}localStorage.setItem('v2cfg',JSON.stringify(CF))}catch(e){}}
 function hasSaved(){try{const j=JSON.parse(localStorage.getItem('v2cfg')||'null');return !!(j&&j.done&&j.keep!==false);}catch(e){return false;}}
-let CF=load(); CF.my=null; CF.mv=3;   // 09-24: 시장은 늘 과거 확률대로(고르는 질문·버튼 없앰). 경우별 숫자는 단지 상세에 참고로만
+let CF=load(); CF.my=null; CF.mv=3; if((CF.size||[]).some(x=>'sml'.includes(x))){CF.size=[...new Set(CF.size.flatMap(x=>({s:['49','59'],m:['74','84'],l:['101']})[x]||[x]))];}   // 09-24: 시장은 늘 과거 확률대로(고르는 질문·버튼 없앰). 경우별 숫자는 단지 상세에 참고로만
 // ---------------- ① 질문 ----------------
 const q5=DT.q5||[], Q_TOP=q5[4]||{}, Q_BOT=q5[0]||{};   // top·bottom은 window 예약 이름이라 쓰면 스크립트가 죽는다
 function nAff(K){return R.filter(r=>r.p+r.fee+r.bu+repair(r)-Math.min(r.p*r.ltv,lcap(r.p))<=K).length;}
@@ -308,6 +308,8 @@ function tog(g){const i=CF.regions.indexOf(g); if(i>=0)CF.regions.splice(i,1); e
 function togAll(l){const all=l.every(g=>CF.regions.includes(g)); CF.regions=CF.regions.filter(g=>!l.includes(g)); if(!all)CF.regions.push(...l); refresh();}
 function multiTog(key,v){const a=CF[key],i=a.indexOf(v); if(i>=0)a.splice(i,1); else a.push(v); refresh();}
 function one(key,v){CF[key]=v; refresh();}
+const szOf=b=>b<=49?'49':b<=59?'59':b<=74?'74':b<=84?'84':'101';
+const SZL={'49':'49㎡↓','59':'59㎡','74':'74㎡','84':'84㎡','101':'101㎡↑'},AGL={n:'신축',m:'준신축',o:'구축'};
 function cc(key,opts,multi){return `<div class="cc">${opts.map(([v,l])=>`<button class="${(multi?CF[key].includes(v):CF[key]===v)?'on':''}" onclick='${multi?'multiTog':'one'}(${JSON.stringify(key)},${JSON.stringify(v)})'>${l}</button>`).join('')}</div>`;}
 function setup(){
  app.innerHTML=`<div class="hq">어디서, 얼마로 찾으세요?</div>
@@ -324,7 +326,7 @@ function setup(){
  <div class="sec">연소득 <span class="hint">(DSR 계산용, 선택)</span></div><div class="hint">넣으면 DSR 40%(스트레스 금리 +${STRESS}%p, 원리금균등) 한도 안에서만 대출을 잡아요. 부부 합산 소득을 넣으면 돼요.</div>
  <div class="inp"><input type="number" inputmode="decimal" step="0.1" placeholder="예: 0.6" value="${CF.inc==null?'':(CF.inc/1e4)}" oninput="CF.inc=this.value===''?null:Math.round(this.value*1e4);count()"><b>억/년</b></div>
  
- <details class="fold adv"><summary><span><b>⚙ 더 자세한 조건</b><span class="sub" style="display:block;font-weight:400;font-size:.78rem;margin-top:2px">대출·금리·수리비·면적·연식·역 거리</span></span></summary><div>
+ <details class="fold adv"><summary><span><b>⚙ 더 자세한 조건</b><span class="sub" id="advsum" style="display:block;font-weight:400;font-size:.8rem;margin-top:2px"></span></span></summary><div>
  <div class="sec">대출은 얼마까지 받을 생각인가요?</div><div class="hint">비워 두면 은행 한도(LTV · 집값별 6억/4억/2억 · 소득을 넣으면 DSR)까지. 필요한 만큼만 빌린다고 보고, 남는 현금은 예금에 둔다고 계산해요.</div>
  <div class="inp"><input type="number" inputmode="decimal" step="0.1" placeholder="한도까지" value="${CF.loan==null?'':(CF.loan/1e4)}" oninput="CF.loan=this.value===''?null:Math.round(this.value*1e4);count()"><b>억</b></div>
  <div class="inp"><input type="number" inputmode="decimal" step="100" placeholder="기존 대출 연 상환액 0" value="${CF.debt==null?'':CF.debt}" oninput="CF.debt=this.value===''?null:+this.value;count()"><b>만원/년</b></div>
@@ -336,8 +338,8 @@ function setup(){
  <div class="inp"><input type="number" inputmode="numeric" step="10" placeholder="150" value="${CF.rpu==null?'':CF.rpu}" oninput="CF.rpu=this.value===''?150:+this.value;count()"><b>만원/평(공급)</b></div>
  <div class="sec">총 투입금 상한 <span class="hint">(선택)</span></div>
  <div class="inp"><input id="i_max" type="number" inputmode="decimal" step="0.1" placeholder="없음" value="${CF.maxc==null?'':(CF.maxc/1e4)}" oninput="CF.maxc=this.value===''?null:Math.round(this.value*1e4);count()"><b>억</b></div>
- <div class="sec">면적</div><div id="c_size"></div>
- <div class="sec">연식</div><div id="c_age"></div>
+ <div class="sec">면적 <span class="hint">(여러 개 가능 · 안 고르면 전부)</span></div><div id="c_size"></div>
+ <div class="sec">연식 <span class="hint">(여러 개 가능 · 안 고르면 전부)</span></div><div id="c_age"></div>
  <div class="sec">역</div><div id="c_st"></div>
  <div class="sec">단지 규모</div><div id="c_hh"></div>
  <div class="tg"><span><b>거래가 충분한 곳만</b><br><span class="hint">⚠ 거래 적음·급매 섞임 같은 표시가 붙은 곳 빼기</span></span><label class="sw"><input type="checkbox" ${CF.trust?'checked':''} onchange="CF.trust=this.checked;count()"><i></i></label></div>
@@ -350,10 +352,12 @@ function refresh(){
  if(!$('#rl'))return;
  $('#rl').innerHTML=regionHTML(($('#rq')||{}).value);
  $('#picked').innerHTML=CF.regions.length?CF.regions.map(g=>`<span onclick='tog(${JSON.stringify(g)})'>${g} ✕</span>`).join(''):'<span style="background:var(--surface2);color:var(--ink3)">서울·경기 전체</span>';
- $('#c_size').innerHTML=cc('size',[['s','소형 (~60㎡)'],['m','중형 (60~85㎡)'],['l','대형 (85㎡~)']],true);
+ $('#c_size').innerHTML=cc('size',[['49','49㎡ 이하'],['59','59㎡ · 24평'],['74','74㎡ · 29평'],['84','84㎡ · 34평 (국민평형)'],['101','101㎡ 이상']],true);
  $('#c_age').innerHTML=cc('age',[['n','신축 (10년 안)'],['m','준신축 (10~20년)'],['o','구축 (20년 넘음)']],true);
  $('#c_st').innerHTML=cc('st',[['','상관없음'],['a1','역 1km 안'],['x2','신분당·GTX 2km 안']],false);
  $('#c_hh').innerHTML=cc('hh',[[0,'상관없음'],[300,'300세대 이상'],[1000,'1,000세대 이상']],false);
+ {const a=[];if(CF.size.length)a.push(CF.size.map(x=>SZL[x]).join('·'));if(CF.age.length)a.push(CF.age.map(x=>AGL[x]).join('·'));if(CF.st)a.push(CF.st==='a1'?'역 1km 안':'신분당·GTX 2km 안');if(CF.hh)a.push(CF.hh.toLocaleString()+'세대↑');if(CF.loan!=null)a.push('대출 '+eok(CF.loan)+'억까지');if(CF.irate!=null)a.push('금리 '+CF.irate+'%');if(!CF.repair)a.push('수리비 없음');if(CF.maxc!=null)a.push('투입 '+eok(CF.maxc)+'억 이하');
+  const e=$('#advsum');if(e)e.innerHTML=a.length?'지금: <b style="color:var(--ink)">'+a.join(' · ')+'</b>':'지금: 전부(기본) — 대출·금리·면적·연식·역 거리';}
  count();}
 // ---------------- 거르기 ----------------
 // 금액 기준(2026-09-23 사용자 지시): %가 아니라 '5년 뒤 내 돈이 얼마나 늘었나'로 줄세운다.
@@ -389,7 +393,7 @@ function ok(r){
  if(!CF.useU&&r.ltv<0.5)return false;   // 세 주기: 토지거래허가구역(서울 전역·경기 12곳)은 실거주 의무라 뺌
  if(CF.cash!=null&&cash(r)>CF.cash)return false;
  if(CF.maxc!=null&&r.C-r.hold+repair(r)>CF.maxc)return false;
- if(CF.size.length){const z=r.b<=59?'s':r.b<=84?'m':'l';if(!CF.size.includes(z))return false;}
+ if(CF.size.length){if(!CF.size.includes(szOf(r.b)))return false;}
  if(CF.age.length){if(!r.y)return false;const a=YEAR-r.y,z=a<=10?'n':a<=20?'m':'o';if(!CF.age.includes(z))return false;}
  if(CF.st==='a1'&&!(r.ka!=null&&r.ka<=1))return false;
  if(CF.st==='x2'&&!(r.kx!=null&&r.kx<=2))return false;
@@ -508,7 +512,7 @@ function find(q0){
 function summaryChips(txt){
  const c=[]; c.push(CF.regions.length?(CF.regions.length<=3?CF.regions.map(short).join(' · '):CF.regions.slice(0,2).map(short).join(' · ')+` 외 ${CF.regions.length-2}곳`):'서울·경기 전체');
  if(CF.cash!=null)c.push('현금 '+eok(CF.cash)+'억'); if(CF.maxc!=null)c.push('투입 '+eok(CF.maxc)+'억 이하'); if(CF.first)c.push('생애최초'); if(CF.loan!=null)c.push('대출 '+eok(CF.loan)+'억까지'); if(CF.inc!=null)c.push('소득 '+eok(CF.inc)+'억·DSR'); if(CF.repair)c.push('수리비 평당 '+(CF.rpu||150)+'만'); c.push(CF.useU?'사는 가치 포함':'시세차익만'); if(CF.my!=null&&yearOf(CF.my))c.push(yearOf(CF.my).lbl+' 매수처럼');
- const SZ={s:'소형',m:'중형',l:'대형'},AG={n:'신축',m:'준신축',o:'구축'};
+ const SZ={'49':'49㎡↓','59':'59㎡','74':'74㎡','84':'84㎡','101':'101㎡↑'},AG={n:'신축',m:'준신축',o:'구축'};
  if(CF.size.length)c.push(CF.size.map(x=>SZ[x]).join('·')); if(CF.age.length)c.push(CF.age.map(x=>AG[x]).join('·'));
  if(CF.st)c.push(CF.st==='a1'?'역 1km':'급행 2km'); if(CF.hh)c.push(CF.hh+'세대+'); if(CF.trust)c.push('거래 충분');
  return txt?c.filter(x=>!/수리비|사는 가치|시세차익|매수처럼/.test(x)).join(' · '):c.map(x=>`<span class="tag gray" style="margin:0 5px 5px 0">${x}</span>`).join('');}
