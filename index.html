@@ -289,8 +289,24 @@ function why3(i){
  <div style="margin:14px 0 4px">${w.o.map((t,k)=>`<button class="opt${done&&k===a?' on':''}" ${done?'disabled':''} onclick="WA[${i}]=${k};why3(${i})">${t}</button>`).join('')}</div>
  ${done?`<div style="background:var(--surface2);border-radius:14px;padding:12px 14px;margin-top:10px;animation:rise .35s both">
    <div style="line-height:1.6;font-size:.95rem;font-weight:600">${r.t}</div>${r.v}<div class="sub" style="font-size:.7rem;text-align:center;margin-top:2px">${r.cap}</div></div>`:''}
- <div class="cta" style="margin-top:18px">${done?`<button class="btn" onclick="${last?'setup()':'why3('+(i+1)+')'}">${last?'매수 조건 입력':'다음 질문'}</button>`:''}
+ <div class="cta" style="margin-top:18px">${done?`<button class="btn" onclick="${last?'bridge()':'why3('+(i+1)+')'}">다음</button>`:''}
  ${i>0?`<p style="text-align:center;margin:6px 0 0"><button class="linkbtn" onclick="why3(${i-1})">이전</button></p>`:''}</div></div>`;}
+// 09-24 사용자: 질문 -> 조건 입력 사이 연결. 로딩처럼 짧은 문구가 하나씩 체크(서비스가 해 주는 일)
+function bridge(){
+ TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
+ const nc=new Set(R.map(r=>r.no||r.n)).size;
+ const L=[['과거 실거래 20년','비관·기준·낙관 세 시나리오로'],['서울·경기 '+nc.toLocaleString()+'개 단지','같은 자금으로 매수 가능한 곳만'],['하락기 낙폭까지','단지별 손실 확률로'],['취득세·대출이자·중개보수','전부 반영한 5년 순이익으로']];
+ app.innerHTML=`<div class="chat"><button class="skip" onclick="setup()">건너뛰기 ›</button>
+ <div class="hq" style="font-size:clamp(1.4rem,6.2vw,1.75rem);line-height:1.4;margin-top:8px">이 모든 것을<br>단지별로 계산합니다</div>
+ <div id="brl" style="margin:22px 0 6px">${L.map(([a,b],k)=>`<div id="br${k}" style="display:flex;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line2);opacity:.25;transition:opacity .3s">
+  <span id="bi${k}" style="flex:0 0 22px;height:22px;border-radius:50%;border:2.5px solid var(--line);border-top-color:var(--blue);display:inline-block"></span>
+  <span><b style="display:block;font-size:.98rem">${a}</b><span class="sub" style="font-size:.84rem">${b}</span></span></div>`).join('')}</div>
+ <div id="brgo" style="opacity:0;transition:opacity .4s"><p style="text-align:center;font-weight:700;margin:18px 0 10px">이제 자금 조건만 입력하면 됩니다</p>
+ <div class="cta" style="margin-top:0"><button class="btn" onclick="setup()">매수 조건 입력</button></div></div></div>`;
+ let t=200;
+ L.forEach((_,k)=>{TT.push(setTimeout(()=>{const r=$('#br'+k),b=$('#bi'+k);if(!r)return;r.style.opacity=1;b.animate([{transform:'rotate(0)'},{transform:'rotate(360deg)'}],{duration:600,iterations:1});},t));
+  TT.push(setTimeout(()=>{const b=$('#bi'+k);if(!b)return;b.style.border='0';b.style.background='var(--green)';b.innerHTML='<svg viewBox="0 0 22 22" width="22" height="22"><path d="M6 11.5l3.2 3.2L16 8" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';},t+600)); t+=750;});
+ TT.push(setTimeout(()=>{const g=$('#brgo');if(g)g.style.opacity=1;},t+100));}
 function add(w){const d=document.createElement('div');d.className='wcard';d.innerHTML=`<span>${w[0]}</span>“${w[1]}”`;const T=$('#talk');if(T)T.appendChild(d);}
 function talkAll(){TT.forEach(clearTimeout);TT=[];const T=$('#talk');if(!T)return;T.innerHTML='';WORRY.forEach(w=>add(w));T.style.opacity=.45;['one','trust','talkgo'].forEach(k=>$('#'+k).style.opacity=1);}
 // ---- 지금 시장은?(09-24 사용자: 시장 국면부터 알리고 — 이런 국면에서 과거엔 이랬고, 맞힐 확률은 이 정도) ----
