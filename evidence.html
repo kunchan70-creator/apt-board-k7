@@ -1,19 +1,19 @@
 <!doctype html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="light dark"><meta name="robots" content="noindex,nofollow">
-<title>점수 검증</title><link rel="icon" href="data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 64 64' aria-hidden='true' style='flex:0 0 auto'%3E%3Cdefs%3E%3ClinearGradient id='lg1' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%234c9dff'/%3E%3Cstop offset='1' stop-color='%231757d6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='url(%23lg1)'/%3E%3Cpath d='M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z' fill='%23ffffff' stroke='%23ffffff' stroke-width='4' stroke-linejoin='round'/%3E%3Crect x='24.5' y='32.5' width='15' height='4' rx='2' fill='url(%23lg1)'/%3E%3Crect x='24.5' y='40' width='15' height='4' rx='2' fill='url(%23lg1)'/%3E%3C/svg%3E"><meta name="theme-color" content="#3182f6">
+<title>점수 검증</title><link rel="icon" href="data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 64 64' aria-hidden='true' style='flex:0 0 auto'%3E%3Cdefs%3E%3ClinearGradient id='lg1' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%236b83ff'/%3E%3Cstop offset='1' stop-color='%233346c9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='url(%23lg1)'/%3E%3Cpath d='M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z' fill='%23ffffff' stroke='%23ffffff' stroke-width='4' stroke-linejoin='round'/%3E%3Crect x='24.5' y='32.5' width='15' height='4' rx='2' fill='url(%23lg1)'/%3E%3Crect x='24.5' y='40' width='15' height='4' rx='2' fill='url(%23lg1)'/%3E%3C/svg%3E"><meta name="theme-color" content="#4263eb">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
 :root{
- --bg:#f2f4f6;--surface:#fff;--surface2:#f9fafb;--ink:#191f28;--ink2:#4e5968;--ink3:#8b95a1;--line:#e5e8eb;--line2:#f2f4f6;
- --blue:#3182f6;--blue-bg:#e8f3ff;--red:#f04452;--red-bg:#fee;--green:#00a660;--green-bg:#e5f7ee;--amber:#f59e0b;--amber-bg:#fff5e5;
- --r:18px;--r2:12px;--shadow:0 1px 3px rgba(0,0,0,.04)}
+ --bg:#f3f2ec;--surface:#fff;--surface2:#f8f7f3;--ink:#1a1f2c;--ink2:#4c5566;--ink3:#8a909b;--line:#e6e3da;--line2:#f1efe8;--grid:rgba(66,99,235,.07);
+ --blue:#4263eb;--blue-bg:#eef1ff;--red:#f04452;--red-bg:#fee;--green:#00a660;--green-bg:#e5f7ee;--amber:#f59e0b;--amber-bg:#fff5e5;
+ --r:16px;--r2:11px;--shadow:0 1px 3px rgba(0,0,0,.04)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
- --bg:#111417;--surface:#191c20;--surface2:#212529;--ink:#eaedf0;--ink2:#a7b0ba;--ink3:#7b848e;--line:#2a2f35;--line2:#212529;
- --blue:#4d95ff;--blue-bg:#13294a;--red:#ff6b77;--red-bg:#3a1a1e;--green:#2ecc82;--green-bg:#10301f;--amber:#ffb340;--amber-bg:#3a2a10;--shadow:none}}
-:root[data-theme="dark"]{--bg:#111417;--surface:#191c20;--surface2:#212529;--ink:#eaedf0;--ink2:#a7b0ba;--ink3:#7b848e;--line:#2a2f35;--line2:#212529;--blue:#4d95ff;--blue-bg:#13294a;--red:#ff6b77;--red-bg:#3a1a1e;--green:#2ecc82;--green-bg:#10301f;--amber:#ffb340;--amber-bg:#3a2a10;--shadow:none}
+ --bg:#111417;--surface:#191c20;--surface2:#212529;--ink:#eaedf0;--ink2:#a7b0ba;--ink3:#7b848e;--line:#2a2f35;--line2:#212529;--grid:rgba(124,147,255,.06);
+ --blue:#7c93ff;--blue-bg:#1e2548;--red:#ff6b77;--red-bg:#3a1a1e;--green:#2ecc82;--green-bg:#10301f;--amber:#ffb340;--amber-bg:#3a2a10;--shadow:none}}
+:root[data-theme="dark"]{--bg:#111417;--surface:#191c20;--surface2:#212529;--ink:#eaedf0;--ink2:#a7b0ba;--ink3:#7b848e;--line:#2a2f35;--line2:#212529;--grid:rgba(124,147,255,.06);--blue:#7c93ff;--blue-bg:#1e2548;--red:#ff6b77;--red-bg:#3a1a1e;--green:#2ecc82;--green-bg:#10301f;--amber:#ffb340;--amber-bg:#3a2a10;--shadow:none}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.5;letter-spacing:-.01em;
+body{margin:0;background:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px;color:var(--ink);font-size:16px;line-height:1.5;letter-spacing:-.01em;
  font-family:Pretendard,"Pretendard Variable",-apple-system,BlinkMacSystemFont,system-ui,"Noto Sans KR","Malgun Gothic",sans-serif;
  padding:0 16px 96px;-webkit-font-smoothing:antialiased}
 .wrap{max-width:720px;margin:0 auto}
@@ -93,7 +93,7 @@ small.src{display:block;color:var(--ink3);font-size:.8rem;margin-top:4px;line-he
 .card h2:first-child,.card h1:first-child{margin-top:0}
 ul.plain{padding-left:18px}
 </style></head><body><div class="wrap">
-<div class="top"><a href="index.html" class="brand" style="display:flex;align-items:center;gap:8px;color:inherit;text-decoration:none"><svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4c9dff"/><stop offset="1" stop-color="#1757d6"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg2)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg2)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg2)"/></svg>집셈</a><details class="menu"><summary aria-label="메뉴">☰</summary><div class="mbox"><a href="index.html"><b>매수 분석</b><span>자기자본 기준 단지별 5년 순이익</span></a><a href="evidence.html" class=on><b>모델 검증</b><span>과거 실거래 기반 사후 검증</span></a><a href="market.html"><b>시장 동향</b><span>매매가격·거래량 추이와 주간 경보</span></a><a href="map.html"><b>단지 지도</b><span>서울·경기 단지 위치·지표</span></a><a href="guide.html"><b>산출 방법</b><span>계산 방법 요약·자료 출처</span></a><div class="mdate">2026.09.24 기준</div></div></details></div>
+<div class="top"><a href="index.html" class="brand" style="display:flex;align-items:center;gap:8px;color:inherit;text-decoration:none"><svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg2)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg2)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg2)"/></svg>집셈</a><details class="menu"><summary aria-label="메뉴">☰</summary><div class="mbox"><a href="index.html"><b>매수 분석</b><span>자기자본 기준 단지별 5년 순이익</span></a><a href="evidence.html" class=on><b>모델 검증</b><span>과거 실거래 기반 사후 검증</span></a><a href="market.html"><b>시장 동향</b><span>매매가격·거래량 추이와 주간 경보</span></a><a href="map.html"><b>단지 지도</b><span>서울·경기 단지 위치·지표</span></a><a href="guide.html"><b>산출 방법</b><span>계산 방법 요약·자료 출처</span></a><div class="mdate">2026.09.24 기준</div></div></details></div>
 
 <div class="card">
 <h1>이 점수, 과거에 맞았나요?</h1>
