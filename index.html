@@ -255,36 +255,40 @@ function chat(){   // 09-24 사용자: 고민 말풍선(취지) 원복 → 결�
  TT.push(setTimeout(()=>{const T=$('#talk');if(!T)return;T.style.transition='opacity .5s';T.style.opacity=.45;$('#one').style.opacity=1;},t+250));
  TT.push(setTimeout(()=>{const g=$('#talkgo');if(g)g.style.opacity=1;},t+800));}
 // 09-24 사용자: 첫 화면 다음, 누구나 공감하는 질문으로 원리를 이해시키고 조건 입력으로 자연스럽게 잇는다
-const WHY3=[   // 09-24 사용자: 직접 답하고, 데이터가 확정해 준다(어렴풋이 느끼던 것을 숫자로)
+const WHY3=[   // 09-24 사용자: 보기마다 다른 한 줄 답 + 그래프, 증명된 핵심은 초록
  {q:'지금 시장 분위기를 보면,<br>5년 뒤 집값을 가늠할 수 있을까요?',o:['가늠할 수 있다','어느 정도는 가능하다','거의 불가능하다'],ans:2,
-  f:()=>{const L=(DT.ev5||[]), lo=L.reduce((a,x)=>x[1]<a[1]?x:a,L[0]||[0,0]), hi=L.reduce((a,x)=>x[1]>a[1]?x:a,L[0]||[0,0]), P=DT.phase, T=P?(P.tab[P.key]||[]):[];
-   return {t:`매수 연도만 달라도 5년 뒤 서울·경기 평균은 <b class="neg">${lo[1]>0?'+':''}${lo[1]}%</b>(${lo[0]}년 매수)부터 <b class="pos">+${hi[1]}%</b>(${hi[0]}년 매수)까지 벌어졌습니다.`+(P&&T[3]!=null?` 지난 1년 흐름이 지금과 같았던 시기에도 5년 뒤 상승 비율은 ${T[3]}%로, 전체 평균 ${P.base[3]}%와 ${Math.abs(T[3]-P.base[3])<10?'거의 같았습니다':'차이가 있었지만 결과는 크게 엇갈렸습니다'}.`:''),
-     v:colbars(L), c:'그래서 집셈은 시장 전망 대신 비관·기준·낙관 세 시나리오로 계산합니다.'};}},
+  f:k=>{const L=DT.ev5||[], neg=L.filter(x=>x[1]<0), lo=L.reduce((a,x)=>x[1]<a[1]?x:a,L[0]), hi=L.reduce((a,x)=>x[1]>a[1]?x:a,L[0]), G=v=>`<b style="color:var(--green)">${v}</b>`;
+   const yrs=neg.length?neg[0][0]+'~'+neg[neg.length-1][0]+'년':'';
+   return {t:k===2?`데이터도 같은 결론입니다. 매수 연도에 따라 5년 성과가 ${G(lo[1]+'%')}에서 ${G('+'+hi[1]+'%')}까지 갈렸습니다.`
+      :`데이터는 다르게 말합니다. 늘 오른다던 부동산도 ${G(yrs)}에 매수했다면 5년 뒤에도 손실이었습니다.`,
+     v:colbars(L,x=>x[1]<0||x[0]===hi[0]),cap:'매수 연도별 5년 뒤 서울·경기 평균 변화(%)'};}},
  {q:'같은 해에 매수했다면,<br>어느 단지를 골랐는지가 결과를 바꿀까요?',o:['크게 바꾼다','별 차이 없다'],ans:0,
-  f:()=>{const Q=DT.q5||[]; if(!Q.length)return {t:'',v:'',c:''}; const a=Q[0], b=Q[Q.length-1];
-   return {t:`과거 실거래 ${(DT.evn||0).toLocaleString()}건 사후 검증에서, 같은 시점에 매수해도 집셈이 상위 20%로 평가한 주택은 5년 중위 <b class="pos">+${b.med}%</b>, 하위 20%는 <b>+${a.med}%</b>였습니다. 손실 비율도 ${b.loss}% 대 ${a.loss}%로 달랐습니다.`,
-     v:hbars(Q.map((x,k)=>[k===0?'하위 20%':k===Q.length-1?'상위 20%':(k+1)*20-20+'~'+(k+1)*20+'%',x.med,'+'+x.med+'%']).reverse(),Math.ceil(b.med/10)*10),
-     c:'시장 방향은 맞힐 수 없어도, 어떤 집이 나은지는 데이터로 가릴 수 있습니다.'};}},
- {q:'실거주한다면,<br>내지 않는 월세도 수익일까요?',o:['수익이다','수익이 아니다'],ans:0,
-  f:()=>{const t=typical(true), f=v=>(v>=0?'+':'−')+Math.abs(v).toFixed(2)+'억';
-   return {t:`서울·경기 중위 주택(5억 환산)을 5년 보유하면 시세차익(기준)은 <b>${f(t[0][1])}</b>, 내지 않은 월세(주거비 절감)는 <b class="pos">${f(t[1][1])}</b>입니다. 주거비 절감이 시세차익에 견줄 만한 규모입니다.`,
-     v:hbars(t.map((x,k)=>[['시세차익(기준)','주거비 절감','세금·거래비용'][k],Math.abs(x[1]),f(x[1])]),Math.ceil(Math.max(...t.map(x=>Math.abs(x[1])))*2)/2),
-     c:'그래서 실거주라면 주거비 절감을 순이익에 포함합니다. 다음 화면에서 보유 목적부터 선택합니다.'};}}];
-function colbars(L){if(!L.length)return '';const mx=Math.max(...L.map(x=>x[1])), mn=Math.min(0,...L.map(x=>x[1])), W=320, H=120, n=L.length, bw=W/n, y=v=>8+(mx-v)/(mx-mn)*(H-8), z=y(0);
- return `<svg viewBox="0 0 ${W} ${H+16}" style="width:100%;margin-top:8px"><line x1="0" x2="${W}" y1="${z}" y2="${z}" stroke="var(--line)"/>`+L.map(([yr,v],k)=>{const t=Math.min(y(v),z), h=Math.max(1.5,Math.abs(y(v)-z));
-  return `<rect x="${k*bw+2}" y="${t}" width="${bw-4}" height="${h}" rx="2" fill="${v>=0?'var(--blue)':'var(--red)'}"/><text x="${k*bw+bw/2}" y="${H+13}" text-anchor="middle" font-size="8" fill="var(--ink3)">${String(yr).slice(2)}</text>`;}).join('')+`</svg><div class="sub" style="font-size:.7rem;text-align:center">매수 연도별 5년 뒤 서울·경기 평균 변화(%)</div>`;}
+  f:k=>{const Q=DT.q5||[], a=Q[0], b=Q[Q.length-1], G=v=>`<b style="color:var(--green)">${v}</b>`;
+   return {t:(k===0?'데이터도 같은 결론입니다.':'데이터는 다르게 말합니다.')+` 같은 시점에 매수해도 5년 성과가 ${G('+'+a.med+'%')}에서 ${G('+'+b.med+'%')}까지 차이 났습니다.`,
+     v:qbars(Q.map((x,n)=>[n===0?'하위 20%':n===Q.length-1?'상위 20%':'','+'+x.med+'%',x.med,n===0||n===Q.length-1]).reverse(),Math.ceil(b.med/10)*10),
+     cap:`과거 실거래 ${(DT.evn||0).toLocaleString()}건 · 집셈 평가 5분위별 5년 중위 상승률`};}},
+ {q:'집값이 떨어질 때,<br>모든 아파트가 비슷하게 떨어질까요?',o:['다 같이 비슷하게 떨어진다','단지마다 크게 다르다'],ans:1,
+  f:k=>{const d=R.map(r=>r.dd).filter(x=>x!=null).sort((a,b)=>a-b), q=f=>d[Math.floor(f*(d.length-1))], G=v=>`<b style="color:var(--green)">${v}</b>`;
+   const B=[['−35↓',d.filter(v=>v<-35).length,1]]; for(let e=-35;e<0;e+=5)B.push([String(e),d.filter(v=>v>=e&&v<e+5).length,e<=-35||e>=-5]); B.push(['0↑',d.filter(v=>v>=0).length,1]);
+   return {t:(k===1?'데이터도 같은 결론입니다.':'데이터는 다르게 말합니다.')+` 2022년 하락기에 단지 10곳 중 1곳은 ${G(Math.round(q(0.1))+'%')} 넘게 떨어졌고, 1곳은 ${G(Math.round(q(0.9))+'%')}에 그쳤습니다.`,
+     v:hist(B), cap:`2021 하반기 고점 → 2022~23 저점, 단지 ${d.length.toLocaleString()}곳의 낙폭 분포`};}}];
+function colbars(L,hl){if(!L.length)return '';const mx=Math.max(...L.map(x=>x[1])), mn=Math.min(0,...L.map(x=>x[1])), W=320, H=120, n=L.length, bw=W/n, y=v=>8+(mx-v)/(mx-mn)*(H-8), z=y(0);
+ return `<svg viewBox="0 0 ${W} ${H+16}" style="width:100%;margin-top:8px"><line x1="0" x2="${W}" y1="${z}" y2="${z}" stroke="var(--line)"/>`+L.map((x,k)=>{const [yr,v]=x, t=Math.min(y(v),z), h=Math.max(1.5,Math.abs(y(v)-z)), g=hl(x);
+  return `<rect x="${k*bw+2}" y="${t}" width="${bw-4}" height="${h}" rx="2" fill="${g?'var(--green)':'var(--ink3)'}" fill-opacity="${g?1:.28}"/>${g?`<text x="${k*bw+bw/2}" y="${v<0?t+h+9:t-3}" text-anchor="middle" font-size="8" font-weight="700" fill="var(--green)">${v>0?'+':''}${Math.round(v)}</text>`:''}<text x="${k*bw+bw/2}" y="${H+13}" text-anchor="middle" font-size="8" fill="var(--ink3)">${String(yr).slice(2)}</text>`;}).join('')+`</svg>`;}
+function qbars(rows,max){return rows.map(([k,t,v,g])=>`<div style="display:flex;align-items:center;gap:8px;margin:6px 0"><span style="flex:0 0 4.6em;font-size:.76rem;color:${g?'var(--green)':'var(--ink3)'};font-weight:${g?800:400};text-align:right">${k}</span><span style="flex:1;height:16px;background:var(--line2);border-radius:5px;overflow:hidden"><i style="display:block;height:100%;width:${v/max*100}%;background:${g?'var(--green)':'var(--ink3)'};opacity:${g?1:.35};border-radius:5px"></i></span><b class="num" style="flex:0 0 3.4em;font-size:.8rem;color:${g?'var(--green)':'var(--ink3)'}">${t}</b></div>`).join('');}
+function hist(B){const mx=Math.max(...B.map(b=>b[1])), W=320, H=100, bw=W/B.length;
+ return `<svg viewBox="0 0 ${W} ${H+16}" style="width:100%;margin-top:8px">`+B.map(([l,c,g],k)=>{const h=Math.max(1.5,c/mx*H);
+  return `<rect x="${k*bw+2}" y="${H-h}" width="${bw-4}" height="${h}" rx="2" fill="${g?'var(--green)':'var(--ink3)'}" fill-opacity="${g?1:.28}"/><text x="${k*bw+bw/2}" y="${H+12}" text-anchor="middle" font-size="8" fill="${g?'var(--green)':'var(--ink3)'}">${l}</text>`;}).join('')+`</svg>`;}
 let WA={};
 function why3(i){
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
- const w=WHY3[i], last=i===WHY3.length-1, a=WA[i], done=a!=null, r=done?w.f():null;
+ const w=WHY3[i], last=i===WHY3.length-1, a=WA[i], done=a!=null, r=done?w.f(a):null;
  app.innerHTML=`<div class="chat"><button class="skip" onclick="setup()">건너뛰기 ›</button>
  <div class="sub" style="margin:4px 0 10px">${WHY3.map((_,k)=>`<span style="display:inline-block;width:${k===i?18:6}px;height:6px;border-radius:3px;margin-right:4px;background:${k<=i?'var(--blue)':'var(--line)'}"></span>`).join('')} <span style="margin-left:4px">Q${i+1} / ${WHY3.length}</span></div>
  <div class="hq" style="font-size:clamp(1.4rem,6.2vw,1.75rem);line-height:1.4">${w.q}</div>
- <div style="margin:14px 0 4px">${w.o.map((t,k)=>`<button class="opt${done&&k===a?' on':''}" style="${done&&k===w.ans?'border-color:var(--green);':''}" ${done?'disabled':''} onclick="WA[${i}]=${k};why3(${i})">${t}${done&&k===w.ans?' <b style="color:var(--green)">✓ 데이터</b>':''}</button>`).join('')}</div>
+ <div style="margin:14px 0 4px">${w.o.map((t,k)=>`<button class="opt${done&&k===a?' on':''}" ${done?'disabled':''} onclick="WA[${i}]=${k};why3(${i})">${t}</button>`).join('')}</div>
  ${done?`<div style="background:var(--surface2);border-radius:14px;padding:12px 14px;margin-top:10px;animation:rise .35s both">
-   <div style="font-size:.74rem;font-weight:800;color:var(--blue);margin-bottom:4px">데이터 확인 결과 · ${a===w.ans?'판단과 일치':'판단과 다름'}</div>
-   <div style="line-height:1.65;font-size:.93rem">${r.t}</div>${r.v}
-   <div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--line);font-weight:700;font-size:.9rem;line-height:1.55">${r.c}</div></div>`:''}
+   <div style="line-height:1.6;font-size:.95rem;font-weight:600">${r.t}</div>${r.v}<div class="sub" style="font-size:.7rem;text-align:center;margin-top:2px">${r.cap}</div></div>`:''}
  <div class="cta" style="margin-top:18px">${done?`<button class="btn" onclick="${last?'setup()':'why3('+(i+1)+')'}">${last?'매수 조건 입력':'다음 질문'}</button>`:''}
  ${i>0?`<p style="text-align:center;margin:6px 0 0"><button class="linkbtn" onclick="why3(${i-1})">이전</button></p>`:''}</div></div>`;}
 function add(w){const d=document.createElement('div');d.className='wcard';d.innerHTML=`<span>${w[0]}</span>“${w[1]}”`;const T=$('#talk');if(T)T.appendChild(d);}
