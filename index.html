@@ -259,7 +259,7 @@ function chat(){
  <div id="one" style="opacity:0;transition:opacity .5s"><div class="hq" style="text-align:center;margin-top:22px;font-size:clamp(1.45rem,6.4vw,1.8rem)">내 돈으로 5년 뒤,<br>가장 남는 집은 어디일까?</div>
   <div class="sub" style="text-align:center;margin-top:6px;line-height:1.55">집값을 맞히진 않아요.<br>같은 돈으로 살 수 있는 집들을<br><b>과거 실제 거래</b>로 견줘 봐요.</div></div>
  <div id="trust" style="opacity:0;transition:opacity .5s;margin-top:10px">${fold('정말 믿을 만한가요?',`<div class="sub" style="line-height:1.55">맞힐 수 있다면 다들 좋은 곳에만 살겠죠. 대신 <b>같은 때, 같은 돈으로 살 수 있던 집들 중 어느 쪽이 나았나</b>는 과거에 꽤 가려냈어요 — 학습에 쓰지 않은 시기의 실제 거래 ${((DT.q5n||0)/1e4).toFixed(0)}만 건, 산 뒤 5년 결과:</div>
-  ${q5.length?hbars([['저희 상위 20%',q5[4].med,'+'+q5[4].med.toFixed(0)+'%'],['저희 하위 20%',q5[0].med,'+'+q5[0].med.toFixed(0)+'%']],Math.max(1,...q5.map(q=>q.med))):''}
+  ${q5.length?hbars([['셈 상위 20%',q5[4].med,'+'+q5[4].med.toFixed(0)+'%'],['셈 하위 20%',q5[0].med,'+'+q5[0].med.toFixed(0)+'%']],Math.max(1,...q5.map(q=>q.med))):''}
   <div class="sub" style="font-size:.78rem">원금을 잃은 비율: 상위 20% <b>${(q5[4]||{}).loss}%</b> · 하위 20% <b>${(q5[0]||{}).loss}%</b> · <a href="evidence.html">검증 자세히 →</a></div>
   <div class="sub" style="margin-top:8px;line-height:1.55">· 내 현금·대출·소득으로 실제로 살 수 있는 집만 봐요<br>· 오르면·비슷하면·내리면을 따로 보여 드려요<br>· 선호 동네인지(입지 점수)도 함께 적어요</div>`)}</div>
  <div id="talkgo" style="margin-top:auto;padding:14px 0 6px;opacity:0;transition:opacity .4s;position:sticky;bottom:0;background:linear-gradient(to bottom,transparent,var(--surface) 22%)"><button class="btn" onclick="CF.seen=true;save();mktPage()">시작하기</button>
@@ -426,19 +426,14 @@ const scol=s=>s>=80?'green':s>=60?'blue':s>=40?'amber':'red';
 const GUP={};R.forEach(r=>(GUP[r.gu]=GUP[r.gu]||[]).push(r.sc));Object.values(GUP).forEach(a=>a.sort((x,y)=>y-x));
 function guTop(r){const a=GUP[r.gu]||[];return Math.max(1,Math.round((a.indexOf(r.sc)+1)/a.length*100));}   // 같은 시·구 안 상위 %
 // 왜 이 점수인가(객관 점수): 지금 서울·경기 실거래가 쳐 주는 조건만 — 5년 시나리오와 무관(v2quality)
-function why(r){
+function why(r){   // 요약만(09-24 사용자: 계산법 전부 노출 금지 — 전체는 로컬 docs/method_full.html)
  if(!r.q)return '';
- const kv=(k,v)=>`<div class="kv"><span class="k">${k}</span><span class="v">${v}</span></div>`, pq=v=>(v>0?'+':'')+v.toFixed(0)+'%', man=v=>Math.round(v).toLocaleString()+'만원/㎡';
- const [P,bd,cond,act,rel]=r.q;
- let h=`<div class="sub">${r.gu} 안에서 상위 ${guTop(r)}% · 실제 데이터</div>`
-  +`<p class="note" style="margin-top:2px">지금 시장이 값을 쳐 주는 조건으로 본 급 — 수익률과 무관.</p>`
-  +kv('서울·경기 평균 ㎡값',man(DT.qa.avg||0));
- const sub=(P.slice(2).reduce((a,[k,v])=>a*(1+v/100),1)-1)*100;
- h+=P.map(([k,v,lv],i)=>(i===2?kv('이 단지 조건 (역·연식·규모)',`<span class="${sub>0?'pos':sub<0?'neg':''}">${pq(sub)}</span>`):'')+`<div class="kv"${i>1?' style="padding-left:12px;font-size:.9rem"':''}><span class="k">${i>1?'· ':''}${S[k]}${i===0?' ('+r.gu+')':i===1?' (구 안 법정동)':''}${lv>=0?' · '+S[lv]:''}</span><span class="v ${v>0?'pos':v<0?'neg':''}">${pq(v)}</span></div>`).join('');
- h+=kv('= 이 조건의 ㎡값'+(Math.abs(bd)>=1?' (면적 차이 '+pq(bd)+' 보정)':''),man(cond))
-  +kv('실제 ㎡값 (최근 실거래) · 상대가격',man(act)+` <span class="${rel>0?'pos':rel<0?'neg':''}">조건 대비 ${pq(rel)}</span>`)
-  +`<p class="note">서울·경기 ${(DT.qa.n||0).toLocaleString()}곳의 지금 ㎡값을 이 조건들로 회귀한 값(설명력 ${Math.round((DT.qa.r2||0)*100)}%). 상대가격은 점수 밖.</p>`;
- return h;}
+ const [P]=r.q, nm=(k,i,lv)=>(i===0?'지역('+r.gu+')':i===1?'동네':S[k])+(lv>=0?' '+S[lv]:'');
+ const up=P.map(([k,v,lv],i)=>[nm(k,i,lv),v]).filter(x=>x[1]>=3).sort((a,b)=>b[1]-a[1]).map(x=>'▲ '+x[0]);
+ const dn=P.map(([k,v,lv],i)=>[nm(k,i,lv),v]).filter(x=>x[1]<=-3).sort((a,b)=>a[1]-b[1]).map(x=>'▼ '+x[0]);
+ return `<div class="sub">${r.gu} 안에서 상위 ${guTop(r)}%</div><p class="note" style="margin-top:2px">지금 시장이 값을 더 쳐 주는 조건(지역·동네·역·연식·규모)인지로 매긴 급이에요. 수익 예측은 아니에요.</p>`
+  +(up.length?`<div style="margin-top:6px;line-height:1.7"><b class="pos" style="font-size:.84rem">강점</b> <span style="font-size:.88rem">${up.join(' · ')}</span></div>`:'')
+  +(dn.length?`<div style="line-height:1.7"><b class="neg" style="font-size:.84rem">약점</b> <span style="font-size:.88rem">${dn.join(' · ')}</span></div>`:'');}
 // 신뢰도 → 말로 된 배지(가장 중요한 이유 하나). 역 거리 직선 추정·좌표 없음 같은 작은 이유는 배지 없이 상세에만.
 const FLAG=[[/입주권 단계/,'입주권·분담금 추정','재건축 입주권 단계라 분담금을 사례 공식으로 추정했어요'],
  [/매도 매물/,'매물 많음','팔려는 매물이 세대수에 비해 많아요. 당분간 값이 눌릴 수 있어요'],
@@ -470,12 +465,12 @@ function detail(r){
  more+=fold('입지 점수 '+r.sc+' — 왜?',why(r));
  // 시나리오
  const shown=r.pt.reduce((a,[k,v])=>a+v,0), rest=r.al-shown;
- more+=fold('5년 시나리오는 어떻게 잡았나',`<p class="note" style="margin-top:0">과거 실거래로 만든 가정 — 시장 가운데는 과거 평균(5년 +${(Math.pow(1+DT.level/100,5)*100-100).toFixed(0)}%), 나쁨·좋음은 비슷한 집들이 실제로 흩어졌던 폭.</p>`
+ more+=fold('5년 시나리오 요약',`<p class="note" style="margin-top:0">과거 20년 실거래에서 비슷한 집들이 5년 동안 실제로 흩어졌던 폭으로 잡은 가정이에요.</p>`
    +kv('5년 뒤 값 나쁨 / 보통 / 좋음',eok(F.sv1)+' / '+eok(F.sv5)+' / '+eok(F.sv9)+'억')
-   +kv('이 지역',pp(r.gt))+(r.as?kv('새 아파트 값','구 신축 ㎡값 기준'):kv('이 단지 특성',pp(r.al)))
-   +r.pt.map(([k,v])=>`<div class="kv" style="padding:4px 0 4px 12px;font-size:.86rem"><span class="k">· ${S[k]}</span><span class="v ${v>0?'pos':'neg'}">${pp(v)}</span></div>`).join('')
-   +(!r.as&&Math.abs(rest)>=0.05?`<div class="kv" style="padding:4px 0 4px 12px;font-size:.86rem"><span class="k">· 그 밖</span><span class="v ${rest>0?'pos':'neg'}">${pp(rest)}</span></div>`:'')
-   +(r.as?`<p class="note">${r.as}</p>`:''));
+   +(()=>{const hi=r.pt.filter(([k,v])=>v>=0.5).map(([k])=>'▲ '+S[k]), lo=r.pt.filter(([k,v])=>v<=-0.5).map(([k])=>'▼ '+S[k]);
+     const g=r.gt>0.5?'평균보다 조금 높게':r.gt<-0.5?'평균보다 조금 낮게':'평균 정도로';
+     return `<div style="margin-top:6px;line-height:1.7;font-size:.88rem">이 지역은 ${g} 봤어요.</div>`
+      +(r.as?`<p class="note">${r.as}</p>`:(hi.length?`<div style="line-height:1.7"><b class="pos" style="font-size:.84rem">높게 본 이유</b> <span style="font-size:.88rem">${hi.join(' · ')}</span></div>`:'')+(lo.length?`<div style="line-height:1.7"><b class="neg" style="font-size:.84rem">낮게 본 이유</b> <span style="font-size:.88rem">${lo.join(' · ')}</span></div>`:''));})());
  // 지난 기록
  const past=(r.h5&&(r.h5[0]!=null||r.h5[1]!=null)?kv('지난 5년 이 단지 / 같은 구',(r.h5[0]!=null?pc(r.h5[0]):'-')+' / '+(r.h5[1]!=null?pc(r.h5[1]):'-')):'')
    +(r.dd!=null?kv('2021 하반기 → 2022~23 바닥',pc(r.dd)):'')+(r.dv!=null?kv('그때 거래 수 변화',(r.dv>0?'+':'')+r.dv+'%'):'');
