@@ -160,6 +160,7 @@ details.card[open] .more b:after{content:'접기'}details.card:not([open]) .more
 #splash .sl{font-size:1.08rem;font-weight:600;opacity:.92;animation:up .6s .75s cubic-bezier(.2,.8,.2,1) both}
 @keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}@keyframes up{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
 .dotw>div{display:flex;align-items:center;gap:8px;margin:6px 0}.dotw span{flex:0 0 44px;font-size:.8rem;color:var(--ink2)}.dotw b{display:flex;gap:3px}.dotw i{width:13px;height:13px;border-radius:50%;display:block}.dotw em{font-style:normal;font-size:.8rem;font-weight:700;white-space:nowrap}
+.opt.rec{border:2px solid var(--blue);background:var(--blue-bg);font-weight:800;padding-top:14px;padding-bottom:14px}.recb{display:inline-block;font-size:.68rem;font-weight:700;color:#fff;background:var(--blue);border-radius:6px;padding:1px 6px;margin-right:6px;vertical-align:2px}
 .opt small{display:block;font-size:.76rem;font-weight:500;color:var(--ink3);margin-top:2px}
 .pills{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 0}
 .pill{border:1.5px solid var(--blue);background:var(--blue-bg);color:var(--blue);border-radius:999px;padding:8px 12px;font:inherit;font-size:.9rem;font-weight:600;cursor:pointer}
@@ -227,7 +228,7 @@ const QU={key:'useU',why:'들어가 살면 아끼는 월세가 수익이고, 세
  d:v=>`<p class="note" style="margin:0">세 주기는 전세를 끼고 사는 것으로 계산해요 — 필요한 현금 = 매가·세금 − 전세금(그 단지 전세가율, 없으면 55%), 주담대 없음, 5년 뒤 전세금은 돌려줘요.</p>`};
 
 const QS=[
- {key:'bel',why:'5년 뒤 집값은 아무도 몰라요. 내 예상이 과거에 얼마나 자주 맞았는지 먼저 보여 드릴게요.',q:'앞으로 5년,<br>서울·경기 집값은 어떨 것 같아요?',o:[['크게 오를 것 같아요<small>5년에 +25% 넘게 (1년에 4.6% 넘게)</small>','up'],['조금 오를 것 같아요<small>5년에 +5~25% (물가 정도)</small>','flat'],['제자리거나 내릴 것 같아요<small>5년에 +5% 미만</small>','dn'],['모르겠어요',null]],
+ {key:'bel',why:'5년 뒤 집값은 아무도 몰라요. 내 예상이 과거에 얼마나 자주 맞았는지 먼저 보여 드릴게요.',q:'앞으로 5년,<br>서울·경기 집값은 어떨 것 같아요?',o:[['모르겠어요<small>솔직히 아무도 몰라요 — 과거 확률대로 볼게요</small>',null,1],['크게 오를 것 같아요<small>5년에 +25% 넘게 (1년에 4.6% 넘게)</small>','up'],['조금 오를 것 같아요<small>5년에 +5~25% (물가 정도)</small>','flat'],['제자리거나 내릴 것 같아요<small>5년에 +5% 미만</small>','dn']],
   a:v=>{CF.my=null; save(); const g=v?grp(v):null, c=((DT.ml||{}).coh||[]).find(x=>x[0]===2021&&x[1]===2);   // 답은 결과를 거르지 않는다(09-24 사용자: 다들 '오른다'를 고를 것 — 확률대로를 보게)
    const tail=`<div style="margin-top:8px;line-height:1.55">그래서 결과는 한쪽을 고르지 않고 <b>세 경우를 확률대로 섞어</b> 보여 드려요. 경우별 숫자는 단지마다 따로 적어 둘게요.</div>`;
    if(v==null)return `<b class="k">맞아요, 아무도 몰라요</b>과거 31번(반기마다 산 경우)은 이랬어요.`+tail;
@@ -301,7 +302,7 @@ function intro_old(){
 function ask(){
  const Q=QS[qi];
  app.innerHTML=`<div class="prog"><i style="width:${qi/QS.length*100}%"></i></div><div class="eyebrow">${qi+1} / ${QS.length}</div>
- <div class="hq">${Q.q}</div>${Q.why?`<div class="why"><b>왜 묻나요</b><span>${Q.why}</span></div>`:''}<div id="opts">${Q.o.map((o,i)=>`<button class="opt" onclick="pick(${i})">${o[0]}</button>`).join('')}</div><div id="fact"></div>`;}
+ <div class="hq">${Q.q}</div>${Q.why?`<div class="why"><b>왜 묻나요</b><span>${Q.why}</span></div>`:''}<div id="opts">${Q.o.map((o,i)=>`${i===1&&Q.o[0][2]?'<div class="sub" style="margin:12px 2px 2px">그래도 내 생각이 있다면</div>':''}<button class="opt${o[2]?' rec':''}" onclick="pick(${i})">${o[2]?'<span class="recb">가장 정직한 답</span>':''}${o[0]}</button>`).join('')}</div><div id="fact"></div>`;}
 function pick(i){
  const Q=QS[qi], v=Q.o[i][1]; if(Q.key){CF[Q.key]=v; if(Q.key==='lens')CF.sort=null; save();}
  document.querySelectorAll('#opts .opt').forEach((b,j)=>b.classList.toggle('on',j===i));
