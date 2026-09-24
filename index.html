@@ -254,7 +254,7 @@ function setup(){
  <div class="sec">연식</div><div id="c_age"></div>
  <div class="sec">역</div><div id="c_st"></div>
  <div class="sec">단지 규모</div><div id="c_hh"></div>
- <div class="tg"><span><b>거래가 충분한 곳만</b><br><span class="hint">신뢰도 A·B만(최근 3개월 실거래 2건 이상)</span></span><label class="sw"><input type="checkbox" ${CF.trust?'checked':''} onchange="CF.trust=this.checked;count()"><i></i></label></div>
+ <div class="tg"><span><b>거래가 충분한 곳만</b><br><span class="hint">⚠ 거래 적음·급매 섞임 같은 표시가 붙은 곳 빼기</span></span><label class="sw"><input type="checkbox" ${CF.trust?'checked':''} onchange="CF.trust=this.checked;count()"><i></i></label></div>
  </div></details>
  <div class="cta"><button class="btn" id="go" onclick="CF.done=true;save();result()">결과 보기</button></div>`;
  refresh(); window.scrollTo(0,0);}
@@ -318,10 +318,23 @@ function why(r){
   +kv('실제 ㎡값 (최근 실거래) · 상대가격',man(act)+` <span class="${rel>0?'pos':rel<0?'neg':''}">조건 대비 ${pq(rel)}</span>`)
   +`<p class="note">서울·경기 ${(DT.qa.n||0).toLocaleString()}곳의 지금 ㎡값을 이 조건들로 회귀한 값(설명력 ${Math.round((DT.qa.r2||0)*100)}%). 상대가격은 점수 밖.</p>`;
  return h;}
+// 신뢰도 → 말로 된 배지(가장 중요한 이유 하나). 역 거리 직선 추정·좌표 없음 같은 작은 이유는 배지 없이 상세에만.
+const FLAG=[[/입주권 단계/,'입주권·분담금 추정','재건축 입주권 단계라 분담금을 사례 공식으로 추정했어요'],
+ [/매도 매물/,'매물 많음','팔려는 매물이 세대수에 비해 많아요. 당분간 값이 눌릴 수 있어요'],
+ [/호가 하위.*높음/,'호가가 더 비쌈','지금 매물 값이 최근 실거래보다 꽤 높아요. 실제로 드는 돈이 더 클 수 있어요'],
+ [/호가 하위.*낮음/,'급매 섞임','실거래보다 싼 매물이 있어요. 급매·하자 매물일 수 있어요'],
+ [/1년 흐름/,'급매 섞임','최근 거래값이 1년 흐름보다 낮아요. 급매·저층 거래일 수 있어요'],
+ [/분양권·입주권/,'분양권 거래','최근 거래 일부가 입주 전 분양권 거래예요'],
+ [/공식 자료:/,'정비사업 진행','재건축·리모델링이 진행 중이라 값에 새 아파트 기대가 들어 있어요. 속도·분담금에 따라 크게 갈려요'],
+ [/3건 미만/,'거래 적음','최근 3개월 거래가 적어 지금 값을 1년 흐름으로 추정했어요'],
+ [/소단지/,'작은 단지','작은 단지는 과거 자료가 적어 덜 확실해요'],
+ [/전세 실거래 없음/,'전세 자료 없음','전세 거래가 없어 사는 가치를 평균(전세가율 55%)으로 가정했어요'],
+ [/최근 \d+개월 거래 \d+건/,'거래 조금 적음','최근 3개월 거래가 3~4건이라 지금 값이 조금 덜 확실해요']];
+function flag(r){const W=(r.why||[]).map(i=>S[i]||'');for(const [re,t,d] of FLAG)if(W.some(w=>re.test(w)))return {t,d};return null;}
 function fold(t,body,open){return body?`<details class="fold"${open?' open':''}><summary><span>${t}</span></summary><div>${body}</div></details>`:'';}
 function detail(r){
  const kv=(k,v)=>`<div class="kv"><span class="k">${k}</span><span class="v">${v}</span></div>`, F=fin(r), rp=F.rp, sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', l=Math.max(r.ltv,CF.first?0.7:0);
- const plain=`<p style="margin:6px 0 2px;line-height:1.6">${CF.cash!=null?`현금 <b>${eok(F.own)}억</b>${F.L>0?` + 대출 <b>${eok(F.L)}억</b>`:''}으로 사요. `:''}5년 뒤 보통이면 <b class="${F.p5>=0?'pos':'neg'}">${sg(F.p5)}</b>, 나쁘면 <b class="${F.p1>=0?'pos':'neg'}">${sg(F.p1)}</b>이에요.${TOP1&&r!==TOP1&&CF.cash!=null?(()=>{const t=(lscore(r)-lscore(TOP1))/1e4;return Math.abs(t)<0.05?' 1위와 거의 같아요.':t>0?` 1위보다 <b>${t.toFixed(2)}억 더</b> 남아요.`:` 1위보다 <b>${Math.abs(t).toFixed(2)}억 덜</b> 남는 건 ${why2(r)}예요.`;})():''}${r.g!=='A'?` <span class="sub">(신뢰 ${r.g}: ${r.g==='B'?'거래가 조금 적어요':'거래가 적거나 가정이 들어가요'})</span>`:''}</p>`;
+ const plain=`<p style="margin:6px 0 2px;line-height:1.6">${CF.cash!=null?`현금 <b>${eok(F.own)}억</b>${F.L>0?` + 대출 <b>${eok(F.L)}억</b>`:''}으로 사요. `:''}5년 뒤 보통이면 <b class="${F.p5>=0?'pos':'neg'}">${sg(F.p5)}</b>, 나쁘면 <b class="${F.p1>=0?'pos':'neg'}">${sg(F.p1)}</b>이에요.${TOP1&&r!==TOP1&&CF.cash!=null?(()=>{const t=(lscore(r)-lscore(TOP1))/1e4;return Math.abs(t)<0.05?' 1위와 거의 같아요.':t>0?` 1위보다 <b>${t.toFixed(2)}억 더</b> 남아요.`:` 1위보다 <b>${Math.abs(t).toFixed(2)}억 덜</b> 남는 건 ${why2(r)}예요.`;})():''}</p>`+((f=>f?`<div class="tip" style="margin:6px 0 2px"><span>⚠ <b>${f.t}</b> — ${f.d}. 그래서 나쁘면~잘되면 폭을 더 넓게 잡았어요.</span></div>`:'')(flag(r)));
  let h=`<div style="padding:2px 0 14px">`+plain
   +`<div class="mini"><div><span>나쁘면</span><b class="${F.p1>=0?'pos':'neg'}">${sg(F.p1)}</b></div><div><span>보통</span><b class="${F.p5>=0?'pos':'neg'}">${sg(F.p5)}</b></div><div><span>잘되면</span><b class="pos">${sg(F.p9)}</b></div></div>`
   +(r.no?`<div style="margin-top:10px"><a class="btn ghost" target="_blank" rel="noopener" href="https://new.land.naver.com/complexes/${r.no}">네이버부동산에서 매물 보기 →</a></div>`:'');
@@ -352,7 +365,7 @@ function detail(r){
    +`<p class="note">조합 발표 ${DT.bk.n}건으로 보정한 공식(오차 ${DT.bk.err}%). 실제 분담금은 조합 공지로 확인하세요.</p>`);}
  if(r.ev!=null&&DT.ev)more+=fold('예정 급행역 '+r.ev.toFixed(1)+'km(참고)',`<p class="note" style="margin-top:0">신분당 2차 선례: 1km 안 단지가 5년간 같은 구보다 ${DT.ev[0]>0?'+':''}${DT.ev[0]}%p. 선례가 하나뿐이라 점수 밖.</p>`);
  // 신뢰·확인
- more+=fold('신뢰도 '+r.g+' · 사기 전에 확인',(r.why.length?r.why.map(i=>`<div class="sub" style="margin-top:5px">· ${S[i]}</div>`).join(''):'<div class="sub">· 거래가 충분하고 입력이 전부 실측이에요</div>')
+ more+=fold('확인할 점 · 사기 전에',(r.why.length?r.why.map(i=>`<div class="sub" style="margin-top:5px">· ${S[i]}</div>`).join(''):'<div class="sub">· 거래가 충분하고 입력이 전부 실측이에요</div>')
    +DT.cku.map(x=>`<div class="sub" style="margin-top:6px">· <b>${x.title}</b> — ${x.ask}</div>`).join(''));
  h+=`<details class="fold" style="margin-top:12px"><summary><span style="font-weight:600;font-size:.86rem;color:var(--ink3)">숫자로 자세히 보기</span></summary><div>${vsTop(r)}${more}</div></details>`;
  return h+'</div>';}
@@ -369,7 +382,7 @@ function row(r,lbl){
   <span style="min-width:0"><span style="display:block;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.n} ${r.b}㎡${r.bu?' <span class="tag red">분담금</span>':''}${r.rd?' <span class="tag amber">'+r.rd.split(' ')[0]+'</span>':''}</span>
   <span style="display:block;margin-top:2px"><b class="num" style="font-size:1.12rem;color:var(--${F.p5>=0?'green':'red'})">${sg(F.p5)}</b> <span class="sub">보통${CF.useU?'':'(시세차익)'} · ${alt[0]} ${sg(alt[1])}</span></span>
   <span class="sub" style="display:block">${r.gu} · ${eok(r.p)}억${CF.cash!=null?' · 대출 '+eok(F.L)+'억':''} · 연 ${(G.ann*100).toFixed(1)}%</span></span></span>
- <span style="flex:0 0 52px;display:flex;flex-direction:column;align-items:flex-end;gap:2px"><span class="num" style="font-size:1.25rem;font-weight:800;color:var(--${scol(r.sc)});line-height:1">${r.sc}</span><span style="font-size:.66rem;color:var(--ink3)">객관</span>${r.g!=='A'?`<span class="tag ${GC[r.g]}" style="font-size:.66rem">신뢰 ${r.g}</span>`:''}</span></summary>${detail(r)}</details>`;}
+ <span style="flex:0 0 52px;display:flex;flex-direction:column;align-items:flex-end;gap:2px"><span class="num" style="font-size:1.25rem;font-weight:800;color:var(--${scol(r.sc)});line-height:1">${r.sc}</span><span style="font-size:.66rem;color:var(--ink3)">객관</span>${(f=>f?`<span class="tag ${r.g==='C'?'amber':'gray'}" style="font-size:.64rem;white-space:nowrap">⚠ ${f.t}</span>`:'')(flag(r))}</span></summary>${detail(r)}</details>`;}
 let N=10, V=[];
 const nz=x=>String(x).replace(/\s|아파트|\(|\)/g,'');
 function find(q){
