@@ -58,7 +58,8 @@ th{font-size:.78rem;font-weight:600;color:var(--ink3);background:var(--surface)}
 th:first-child,td:first-child{text-align:left}
 tbody td:first-child{font-weight:600}
 .note{font-size:.82rem;color:var(--ink3);line-height:1.55;margin:10px 0 0}
-.foot{text-align:center;color:var(--ink3);font-size:.78rem;padding:28px 0 0}
+.foot{text-align:center;color:var(--ink3);font-size:.78rem;padding:10px 0 0}
+.disc{margin:28px 0 0;padding:14px 16px;border-radius:14px;background:var(--surface2,#f2f4f6);color:var(--ink2,#4e5968);font-size:.78rem;line-height:1.65}
 details{border-top:1px solid var(--line2)}
 details summary{cursor:pointer;padding:13px 0;font-weight:600;font-size:.95rem;list-style:none;display:flex;justify-content:space-between}
 details summary::-webkit-details-marker{display:none}
@@ -87,7 +88,7 @@ small.src{display:block;color:var(--ink3);font-size:.8rem;margin-top:4px;line-he
 ul.plain{padding-left:18px}
 </style></head><body><div class="wrap">
 <div class="top"><span class="brand" style="display:flex;align-items:center;gap:8px"><svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4c9dff"/><stop offset="1" stop-color="#1757d6"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg2)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg2)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg2)"/></svg>집셈</span><span class="date">2026.09.24</span></div>
-<nav class="tabs"><a href="index.html">추천</a><a href="market.html">시장</a><a href="map.html">지도</a><a href="evidence.html">검증</a><a href="guide.html" class=on>설명</a></nav>
+<nav class="tabs"><a href="index.html">셈하기</a><a href="market.html">시장</a><a href="map.html">지도</a><a href="evidence.html">검증</a><a href="guide.html" class=on>설명</a></nav>
 <div class="card">
 <h1>점수와 시나리오는 어떻게 만드나</h1>
 <div class="toc"><a href="#four">숫자 네 개</a><a href="#calc">계산</a><a href="#coef">단지 특성 계수</a><a href="#ok">과거에 맞았나</a><a href="#v1">v1 대조</a><a href="#no">믿으면 안 되는 것</a><a href="#src">자료 출처</a></div>
@@ -109,7 +110,7 @@ ul.plain{padding-left:18px}
 <tr><th>총수익 R</th><td>(V + U − 최종투입금) ÷ 최종투입금</td></tr>
 <tr><th>CE</th><td>½ × 연환산 R(중앙) + ½ × 연환산 R(하위 10%). 과거 검증에서 점수가 가른 건 주로 하방이라 나쁜 결과에 절반을 준다.</td></tr>
 <tr><th>정비사업(재건축·재개발·리모델링)</th><td>서울 정비사업 정보몽땅 1,179곳 + 경기데이터드림 533곳 공식 목록을 번지로 단지에 붙이고, 추진경과 날짜로 과거 매수 시점의 단계를 복원해 검증했다. 과거엔 진행 중 단지가 같은 구보다 5년 매매 +3~9%p 더 올랐는데 모델은 하위권으로 매겼다(전세가율이 낮게 잡혀서) → '매수 시점 단계'를 단지 특성에 넣었다(초기 +2.7%p). 관리처분 이후(입주권)는 분담금을 모르면 순위 밖. 경기 리모델링은 국토부 건축HUB(세움터)의 주택건설사업계획승인 목록에서 사업주체가 '리모델링주택조합'인 곳을 찾는다. <b>공식 자료로 확인이 안 되는 정비사업 흔적</b>(보도로만 알려진 리모델링, 매물 설명의 조합 문구, 네이버 '재건축' 분류)은 단계·분담금을 검증할 수 없어 신뢰 D로 순위에서 뺀다.</td></tr>
-<tr><th>내 돈 기준 순서(추천 탭)</th><td>가진 현금을 넣으면 %가 아니라 <b>5년 뒤 늘어난 금액</b>으로 줄세운다. 대출은 필요한 만큼만(LTV·6억·내가 정한 상한 안), 이자 = 대출 × 금리 × 5년(원금 그대로 가정), 남는 현금은 정기예금(세후). 순이익 = 5년 뒤 가치 + 아끼는 주거비 − 실제 들어가는 돈 − 대출이자 + 예금이자, 순서 = 나쁜 경우와 보통의 가운데. 금리 기본값 = 한국은행 ECOS 주택담보대출·정기예금 신규취급 평균(매일 갱신, 직접 바꿀 수 있음). 대출 한도 = LTV(규제지역 40%, 생애최초 70%) · 집값별 한도(15억 이하 6억, 15~25억 4억, 25억 초과 2억, 2025.10.15 대책 기준) · 소득을 넣으면 DSR 40%(금리 + 스트레스 3%p, 원리금균등, 만기 입력) 중 가장 작은 값. 양도세는 넣지 않았다. 현금을 안 넣으면 대출 없이 투입금 대비 연수익으로 줄세운다. <b>모두에게 좋은 집은 없다</b> — 같은 단지도 현금 1억인 사람과 3억인 사람에게 순위가 다르다.</td></tr>
+<tr><th>내 돈 기준 순서(셈하기 탭)</th><td>가진 현금을 넣으면 %가 아니라 <b>5년 뒤 늘어난 금액</b>으로 줄세운다. 대출은 필요한 만큼만(LTV·6억·내가 정한 상한 안), 이자 = 대출 × 금리 × 5년(원금 그대로 가정), 남는 현금은 정기예금(세후). 순이익 = 5년 뒤 가치 + 아끼는 주거비 − 실제 들어가는 돈 − 대출이자 + 예금이자, 순서 = 나쁜 경우와 보통의 가운데. 금리 기본값 = 한국은행 ECOS 주택담보대출·정기예금 신규취급 평균(매일 갱신, 직접 바꿀 수 있음). 대출 한도 = LTV(규제지역 40%, 생애최초 70%) · 집값별 한도(15억 이하 6억, 15~25억 4억, 25억 초과 2억, 2025.10.15 대책 기준) · 소득을 넣으면 DSR 40%(금리 + 스트레스 3%p, 원리금균등, 만기 입력) 중 가장 작은 값. 양도세는 넣지 않았다. 현금을 안 넣으면 대출 없이 투입금 대비 연수익으로 줄세운다. <b>모두에게 좋은 집은 없다</b> — 같은 단지도 현금 1억인 사람과 3억인 사람에게 순위가 다르다.</td></tr>
 <tr><th>구축 수리비(가정)</th><td>20년 넘은 집은 올수리, 10~20년은 절반: 공급면적(전용÷0.75) 평수 × 평당 150만원(화면에서 바꾸거나 끌 수 있음). 과거 수익 검증엔 없는 비용이라 가정으로 표시한다.</td></tr>
 <tr><th>지난 하락기 기록</th><td>단지마다 2021 하반기 → 2022 하반기~2023 상반기 바닥의 실거래 중위 변화와 거래 수 변화. 값은 대부분 −20% 안팎으로 비슷했고, 점수 상위권(외곽 구축)은 거래가 −74%로 하위권(−56%)보다 더 끊겼다 = 하락기에 팔기 어려웠다. 점수가 아니라 실제 기록으로 보여 준다.</td></tr>
 <tr><th>분담금 공식(사례 보정)</th><td>분담금 = 새 전용 × (옛 집 ㎡값 × k2 + 전용㎡당 공사비 × kc) − 옛 집 시세 × k1 (= 조합원 분양가 − 권리가액). 조합 발표·관리처분·추정분담금 보도 95건(단지·종전→새 면적·분담금·출처)을 모아, 발표 시점 옛 집 실거래가와 공사비 지수로 k를 맞췄다. 최근 사례일수록 무게를 크게(24개월마다 절반) — 공사비가 올라 옛 사례와 섞어 평균 내면 안 되므로. 한 건씩 빼고 맞혀 본 오차 중앙이 옛 집 시세의 약 9%(일산·과천·분당은 1~9%, 은마·잠실주공5·목동 일부는 10~15%). 이 오차가 10% 안이라 <b>입주권 단계(관리처분 이후) 재건축도 최근 실거래가 있으면 순위에 넣는다</b>(분담금 추정 + 완공까지 기간, 신뢰 C). 리모델링은 옛 집 시세를 찾은 사례가 2건뿐이라 아직 보정하지 못했다. 사례는 data/stat/burden_cases*.json에 쌓고, 요청이 오면 더 모아 다시 보정한다.</td></tr>
@@ -166,5 +167,5 @@ ul.plain{padding-left:18px}
 </tbody></table></div>
 <p class="note">매일 아침 자동 갱신(실거래·지수), 매주 월요일 모델 재학습. 오늘 매긴 점수는 매주 저장해 두고 12·24·60개월 뒤 실제 실거래와 대조한다.</p>
 </div>
-<p class="foot">공개 데이터로 매일 자동 계산 · 투자 권유 아님</p>
+<div class="disc"><b>꼭 읽어 주세요</b><br>집셈은 공개 자료(국토교통부 실거래·KB부동산·네이버부동산 등)로 과거를 셈해 보여 주는 <b>참고 자료</b>예요. 특정 부동산의 매수·매도를 권유하거나 자문하지 않아요. 모든 숫자는 가정이 들어간 추정이라 틀릴 수 있고, 과거 기록이 미래를 보장하지 않아요. <b>투자 판단과 그 결과의 책임은 본인에게 있어요.</b> 계약 전에는 실거래가·등기부·현장을 꼭 직접 확인하고, 필요하면 전문가와 상담하세요.</div><p class="foot">공개 데이터로 매일 자동 계산</p>
 </div></body></html>

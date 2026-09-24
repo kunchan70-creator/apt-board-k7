@@ -58,7 +58,8 @@ th{font-size:.78rem;font-weight:600;color:var(--ink3);background:var(--surface)}
 th:first-child,td:first-child{text-align:left}
 tbody td:first-child{font-weight:600}
 .note{font-size:.82rem;color:var(--ink3);line-height:1.55;margin:10px 0 0}
-.foot{text-align:center;color:var(--ink3);font-size:.78rem;padding:28px 0 0}
+.foot{text-align:center;color:var(--ink3);font-size:.78rem;padding:10px 0 0}
+.disc{margin:28px 0 0;padding:14px 16px;border-radius:14px;background:var(--surface2,#f2f4f6);color:var(--ink2,#4e5968);font-size:.78rem;line-height:1.65}
 details{border-top:1px solid var(--line2)}
 details summary{cursor:pointer;padding:13px 0;font-weight:600;font-size:.95rem;list-style:none;display:flex;justify-content:space-between}
 details summary::-webkit-details-marker{display:none}
@@ -87,7 +88,7 @@ small.src{display:block;color:var(--ink3);font-size:.8rem;margin-top:4px;line-he
 ul.plain{padding-left:18px}
 </style></head><body><div class="wrap">
 <div class="top"><span class="brand" style="display:flex;align-items:center;gap:8px"><svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4c9dff"/><stop offset="1" stop-color="#1757d6"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg3)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg3)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg3)"/></svg>집셈</span><span class="date">2026.09.24</span></div>
-<nav class="tabs"><a href="index.html" class=on>추천</a><a href="market.html">시장</a><a href="map.html">지도</a><a href="evidence.html">검증</a><a href="guide.html">설명</a></nav>
+<nav class="tabs"><a href="index.html" class=on>셈하기</a><a href="market.html">시장</a><a href="map.html">지도</a><a href="evidence.html">검증</a><a href="guide.html">설명</a></nav>
 <style>
 .stage{min-height:62vh}
 .eyebrow{font-size:.8rem;font-weight:700;color:var(--blue);letter-spacing:.02em}
@@ -262,6 +263,7 @@ function chat(){
   <div class="sub" style="font-size:.78rem">원금을 잃은 비율: 상위 20% <b>${(q5[4]||{}).loss}%</b> · 하위 20% <b>${(q5[0]||{}).loss}%</b> · <a href="evidence.html">검증 자세히 →</a></div>
   <div class="sub" style="margin-top:8px;line-height:1.55">· 내 현금·대출·소득으로 실제로 살 수 있는 집만 봐요<br>· 오르면·비슷하면·내리면을 따로 보여 드려요<br>· 선호 동네인지(입지 점수)도 함께 적어요</div>`)}</div>
  <div id="talkgo" style="margin-top:auto;padding:14px 0 6px;opacity:0;transition:opacity .4s;position:sticky;bottom:0;background:linear-gradient(to bottom,transparent,var(--surface) 22%)"><button class="btn" onclick="CF.seen=true;save();mktPage()">시작하기</button>
+ <p class="sub" style="text-align:center;margin:6px 0 0;font-size:.74rem">참고용 셈이에요. 투자 권유가 아니에요.</p>
  <p style="text-align:center;margin:6px 0 0">${hasSaved()?'<button class="linkbtn" onclick="result()">저장된 내 조건으로 바로 보기 →</button>':'<button class="linkbtn" disabled style="color:var(--ink3);cursor:default">저장된 내 조건이 없어요</button>'}</p></div></div>`;
  let t=250;
  WORRY.forEach((w,i)=>{TT.push(setTimeout(()=>add(w),t)); t+=380;});
@@ -364,6 +366,7 @@ function setup(){
  <div class="tg"><span><b>거래가 충분한 곳만</b><br><span class="hint">⚠ 거래 적음·급매 섞임 같은 표시가 붙은 곳 빼기</span></span><label class="sw"><input type="checkbox" ${CF.trust?'checked':''} onchange="CF.trust=this.checked;count()"><i></i></label></div>
  </div></details>
  <div class="tg"><span><b>이 기기에 내 조건 저장하기</b><br><span class="hint">저장하면 다음에 '저장된 내 조건으로 바로 보기'로 들어와요. 서버로는 보내지 않아요.</span></span><label class="sw"><input type="checkbox" ${CF.keep!==false?'checked':''} onchange="CF.keep=this.checked;save()"><i></i></label></div>
+ <p class="sub" style="margin:14px 2px 0;font-size:.76rem;line-height:1.55">결과는 과거 자료로 셈한 <b>참고용 숫자</b>예요. 어느 집을 사라는 권유가 아니고, 판단과 책임은 본인에게 있어요.</p>
  <div class="cta"><button class="btn" id="go" onclick="CF.done=true;save();result()">결과 보기</button></div>`;
  refresh(); window.scrollTo(0,0);}
 function refresh(){
@@ -416,7 +419,7 @@ function ok(r){
  if(CF.hh&&!(r.hh>=CF.hh))return false;
  if(CF.trust&&!(r.g==='A'||r.g==='B'))return false;
  return true;}
-function count(){const n=R.filter(ok).length;const b=$('#go');if(b){b.textContent=n?`${n.toLocaleString()}곳 중 Top 10 보기`:'조건에 맞는 곳이 없어요';b.disabled=!n;b.style.opacity=n?1:.5;}save();}
+function count(){const n=R.filter(ok).length;const b=$('#go');if(b){b.textContent=n?`${n.toLocaleString()}곳 셈해 보기`:'조건에 맞는 곳이 없어요';b.disabled=!n;b.style.opacity=n?1:.5;}save();}
 // ---------------- ③ 결과 ----------------
 const GC={A:'green',B:'blue',C:'amber'};
 const scol=s=>s>=80?'green':s>=60?'blue':s>=40?'amber':'red';
@@ -576,7 +579,8 @@ function result(){
  if(L==='obj')V.sort((a,b)=>b.sc-a.sc||lscore(b)-lscore(a));
  const chips=summaryChips(true);
  app.innerHTML=`${DT.alert?`<div class="box warn" style="margin-top:0"><b>이번 주 경보가 켜져 있어요</b> <span class="sub">${DT.alert} · 과열 때 자주 켜졌던 신호예요. 늘 맞진 않아요 · <a href="market.html">기준 보기</a></span></div>`:''}
- <div class="hq" style="margin-top:0">내 돈으로 5년, 가장 남는 곳</div>
+ <div class="hq" style="margin-top:0">내 돈으로 5년, 셈해 보면</div>
+ <div class="sub" style="margin:2px 0 0;font-size:.76rem">참고용 셈이에요 · 투자 권유가 아니에요 · 판단과 책임은 본인에게 있어요</div>
  <div class="chips">${chips}<a onclick="setup()">바꾸기</a></div>
  <div class="pills">${['my','lens','useU'].map(k=>`<button class="pill${OPEN===k?' on':''}" onclick="openOpt('${k}')">${pillTxt(k)} ▾</button>`).join('')}</div>
  <div id="optp">${OPEN?optHTML(OPEN):''}</div>
@@ -708,5 +712,5 @@ let SPL=null;   // 오프닝 뒤엔 언제나 고민 화면에서 시작(09-24 �
 function endSplash(){const sp=$('#splash'); if(!sp||sp.classList.contains('out'))return; clearTimeout(SPL); sp.classList.add('out'); setTimeout(()=>{sp.remove(); chat();},450);}
 SPL=setTimeout(endSplash,CF.seen?1500:2300);
 </script>
-<p class="foot">공개 데이터로 매일 자동 계산 · 투자 권유 아님</p>
+<div class="disc"><b>꼭 읽어 주세요</b><br>집셈은 공개 자료(국토교통부 실거래·KB부동산·네이버부동산 등)로 과거를 셈해 보여 주는 <b>참고 자료</b>예요. 특정 부동산의 매수·매도를 권유하거나 자문하지 않아요. 모든 숫자는 가정이 들어간 추정이라 틀릴 수 있고, 과거 기록이 미래를 보장하지 않아요. <b>투자 판단과 그 결과의 책임은 본인에게 있어요.</b> 계약 전에는 실거래가·등기부·현장을 꼭 직접 확인하고, 필요하면 전문가와 상담하세요.</div><p class="foot">공개 데이터로 매일 자동 계산</p>
 </div></body></html>
