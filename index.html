@@ -142,7 +142,7 @@ details.card[open] .more b:after{content:'접기'}details.card:not([open]) .more
 .chat{min-height:calc(100vh - 190px);display:flex;flex-direction:column;padding-top:4px}
 .bub{max-width:84%;padding:12px 15px;border-radius:20px;margin:6px 0;font-size:1.03rem;line-height:1.55;word-break:keep-all;animation:rise .35s cubic-bezier(.2,.8,.2,1) both}
 .bub.app{background:var(--surface2);color:var(--ink);border-bottom-left-radius:6px;align-self:flex-start}
-.bub.me{background:var(--blue);color:#fff;border-bottom-right-radius:6px;align-self:flex-end}
+.bub.me{background:var(--blue-bg);color:var(--blue);border-bottom-right-radius:6px;align-self:flex-end}
 .bub b{font-weight:800}.typing{display:inline-flex;gap:4px;padding:4px 2px}.typing i{width:7px;height:7px;border-radius:50%;background:var(--ink3);animation:blink 1s infinite}
 .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}@keyframes blink{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
 .skip{align-self:flex-end;background:none;border:0;color:var(--ink3);font:inherit;font-size:.82rem;cursor:pointer;padding:4px 0}
@@ -213,28 +213,25 @@ const QS=[
   v:v=>fall(typical(v))+(v?'':`<div class="sub">실거주라면 같은 집에서 ${typical(true)[1][1].toFixed(2)}억이 더 남아요 — 그래서 순위도 달라져요.</div>`),
   d:v=>`<p class="note" style="margin:0">남의 집에 살면 매년 전세금의 약 ${(DT.conv['경기도']||5).toFixed(1)}%를 월세로 내는 셈이에요(실제 월세 계약으로 계산). 집을 사면 그만큼을 아껴요.</p>`}];
 let qi=0;
-// 첫 대화(처음 한 번만): 소비자 입장 → '그래서 만들었어요' → 시작하기
-const TALK=[['app','집, 마련하고 싶으시죠?'],['me','네… 근데 부동산은 너무 어려워요.'],
- ['app','가장 좋은 집은 너무 비싸고,<br>어떤 게 좋은 집인지도 헷갈리죠.'],
- ['me','제 형편에 맞으면 돼요. 그런데 근처에 더 나은 집이 있었는데 몰라서 놓치면… 너무 아까울 것 같아요.'],
- ['app',()=>`그래서 만들었어요.<br><b>내 돈으로 살 수 있는 집</b>만 놓고, 서울·경기 <b>${DT.n.toLocaleString()}곳</b>을 실제 거래로 비교해 드릴게요.`],
- ['app','4가지만 물어볼게요.']];
+// 첫 화면(처음 한 번만): 여러 사람의 고민 → 결국 한 질문 → 이 서비스가 해 주는 것 → 시작
+const WORRY=['첫 집, 어디서부터 봐야 할지 모르겠어요','지금 집 팔고 갈아타도 될까요?','떨어져도 덜 잃는 집이면 좋겠어요','오를 때 제대로 오를 곳을 사고 싶어요','살면서 자산도 불리고 싶어요','근처에 더 나은 집, 놓치고 있진 않을까요?'];
 let TT=[];
 function chat(){
- TT.forEach(clearTimeout); TT=[];
- app.innerHTML=`<div class="chat"><button class="skip" onclick="talkAll()">건너뛰기 ›</button><div id="talk" style="display:flex;flex-direction:column"></div>
- <div id="talkgo" style="margin-top:auto;padding-top:16px;opacity:0;transition:opacity .4s;position:sticky;bottom:12px"><button class="btn" onclick="CF.seen=true;save();qi=0;ask()">시작하기</button>
- ${CF.done?'<p style="text-align:center"><button class="linkbtn" onclick="CF.seen=true;save();result()">내 결과 바로 보기</button></p>':''}</div></div>`;
- window.scrollTo(0,0); let t=300;
- TALK.forEach(([who,txt],i)=>{
-  const html=typeof txt==='function'?txt():txt;
-  if(who==='app'){TT.push(setTimeout(()=>add('app','<span class="typing"><i></i><i></i><i></i></span>','ty'),t)); t+=750;
-   TT.push(setTimeout(()=>{const e=$('#ty');if(e){e.remove();}add('app',html);},t));}
-  else TT.push(setTimeout(()=>add('me',html),t));
-  t+=who==='app'?650:900;});
- TT.push(setTimeout(()=>{const g=$('#talkgo');if(g)g.style.opacity=1;},t));}
-function add(who,html,id){const d=document.createElement('div');d.className='bub '+who;if(id)d.id=id;d.innerHTML=html;const T=$('#talk');if(T){T.appendChild(d);const b=d.getBoundingClientRect().bottom;if(b>innerHeight-90)scrollBy({top:b-innerHeight+110,behavior:'smooth'});}}
-function talkAll(){TT.forEach(clearTimeout);TT=[];const T=$('#talk');if(!T)return;T.innerHTML='';TALK.forEach(([w,x])=>add(w,typeof x==='function'?x():x));$('#talkgo').style.opacity=1;}
+ TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
+ app.innerHTML=`<div class="chat"><button class="skip" onclick="talkAll()">건너뛰기 ›</button>
+ <div id="talk" style="display:flex;flex-direction:column"></div>
+ <div id="one" style="opacity:0;transition:opacity .5s"><div class="sub" style="margin:18px 0 2px;text-align:center">고민은 달라도, 결국 이 질문이에요</div>
+  <div class="hq" style="text-align:center;margin-top:4px;font-size:clamp(1.45rem,6.4vw,1.8rem)">내 돈으로 5년 뒤,<br>가장 남는 집은 어디일까?</div></div>
+ <div id="three" style="opacity:0;transition:opacity .5s;margin-top:8px">${[['내 형편 안에서만','현금·대출·소득으로 실제로 살 수 있는 집만 서울·경기 '+DT.n.toLocaleString()+'곳에서'],['실제 거래로 5년 뒤를','집값이 오르면·비슷하면·내리면 — 과거에 실제로 그랬던 만큼'],['좋은 동네인지도 함께','남는 돈만이 아니라 입지 점수로 동네·단지의 급도']].map(([t,d],k)=>`<div style="display:flex;gap:12px;align-items:flex-start;margin:12px 0"><b style="flex:0 0 28px;height:28px;border-radius:50%;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center">${k+1}</b><span><b style="display:block">${t}</b><span class="sub">${d}</span></span></div>`).join('')}</div>
+ <div id="talkgo" style="margin-top:auto;padding:14px 0 6px;opacity:0;transition:opacity .4s;position:sticky;bottom:0;background:linear-gradient(to bottom,transparent,var(--surface) 22%)"><button class="btn" onclick="CF.seen=true;save();qi=0;ask()">시작하기 · 4가지만 물어볼게요</button>
+ ${CF.done?'<p style="text-align:center;margin:6px 0 0"><button class="linkbtn" onclick="CF.seen=true;save();result()">내 결과 바로 보기</button></p>':''}</div></div>`;
+ let t=250;
+ WORRY.forEach((w,i)=>{TT.push(setTimeout(()=>add(i%2?'me':'app',w),t)); t+=520;});
+ TT.push(setTimeout(()=>{$('#talk').style.opacity=.45;$('#talk').style.transition='opacity .6s';$('#one').style.opacity=1;},t+=350));
+ TT.push(setTimeout(()=>{$('#three').style.opacity=1;},t+=900));
+ TT.push(setTimeout(()=>{$('#talkgo').style.opacity=1;},t+=700));}
+function add(who,html){const d=document.createElement('div');d.className='bub '+who;d.style.fontSize='.95rem';d.innerHTML=html;const T=$('#talk');if(T)T.appendChild(d);}
+function talkAll(){TT.forEach(clearTimeout);TT=[];const T=$('#talk');if(!T)return;T.innerHTML='';WORRY.forEach((w,i)=>add(i%2?'me':'app',w));T.style.opacity=.45;['one','three','talkgo'].forEach(k=>$('#'+k).style.opacity=1);}
 function intro(){chat();}
 function intro_old(){
  app.innerHTML=`<div class="eyebrow">서울·경기 아파트 ${DT.n.toLocaleString()}곳</div>
@@ -284,7 +281,7 @@ function setup(){
  <div class="picked" id="picked"></div>
  <input id="rq" type="search" placeholder="시·구 이름으로 찾기 (예: 수원, 강동)" oninput="$('#rl').innerHTML=regionHTML(this.value);$('#rlf').open=!!this.value" style="width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit">
  <details class="fold" id="rlf" style="border-top:0"><summary><span style="font-weight:600;font-size:.86rem;color:var(--blue)">목록에서 고르기</span></summary><div id="rl" style="max-height:340px;overflow:auto;padding-right:4px"></div></details>
- <div class="sec">가진 현금은 얼마인가요?</div><div class="hint">대출을 빼고 내 돈으로 낼 수 있는 금액. 세금·중개비까지 이 안에서 계산해요.</div>
+ <div class="sec">가진 현금은 얼마인가요?</div><div class="hint">대출을 빼고 내 돈으로 낼 수 있는 금액(세금·중개비 포함). 갈아타기라면 지금 집을 팔고 남는 돈까지 더해 넣으세요.</div>
  <div class="inp"><input id="i_cash" type="number" inputmode="decimal" step="0.1" placeholder="예: 3" value="${CF.cash==null?'':(CF.cash/1e4)}" oninput="CF.cash=this.value===''?null:Math.round(this.value*1e4);count()"><b>억</b></div>
  <div class="tg"><span><b>생애최초 주택 구입</b><br><span class="hint">대출 한도 LTV 70%로 계산(규제지역은 은행 확인 필요)</span></span><label class="sw"><input type="checkbox" id="i_first" ${CF.first?'checked':''} onchange="CF.first=this.checked;count()"><i></i></label></div>
  <div class="sec">연소득 <span class="hint">(DSR 계산용, 선택)</span></div><div class="hint">넣으면 DSR 40%(스트레스 금리 +${STRESS}%p, 원리금균등) 한도 안에서만 대출을 잡아요. 부부 합산 소득을 넣으면 돼요.</div>
