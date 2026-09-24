@@ -260,14 +260,16 @@ function chat(){
  <p style="text-align:center;margin:6px 0 0">${hasSaved()?'<button class="linkbtn" onclick="result()">저장된 내 조건으로 바로 보기 →</button>':'<button class="linkbtn" disabled style="color:var(--ink3);cursor:default">저장된 내 조건이 없어요</button>'}</p></div></div>`;
  let t=250;
  WORRY.forEach((w,i)=>{TT.push(setTimeout(()=>add(w),t)); t+=380;});
- TT.push(setTimeout(()=>{$('#talk').style.opacity=.45;$('#talk').style.transition='opacity .6s';$('#one').style.opacity=1;},t+=350));
- TT.push(setTimeout(()=>{$('#trust').style.opacity=1;$('#talkgo').style.opacity=1;},t+=900));}
+ const op=(id,v)=>{const e=$('#'+id);if(e)e.style.opacity=v;};   // 화면이 바뀐 뒤 남은 타이머가 에러 내지 않게
+ TT.push(setTimeout(()=>{op('talk',.45);op('one',1);},t+=350));
+ TT.push(setTimeout(()=>{op('trust',1);op('talkgo',1);},t+=900));}
 function add(w){const d=document.createElement('div');d.className='wcard';d.innerHTML=`<span>${w[0]}</span>“${w[1]}”`;const T=$('#talk');if(T)T.appendChild(d);}
 function talkAll(){TT.forEach(clearTimeout);TT=[];const T=$('#talk');if(!T)return;T.innerHTML='';WORRY.forEach(w=>add(w));T.style.opacity=.45;['one','trust','talkgo'].forEach(k=>$('#'+k).style.opacity=1);}
 // ---- 지금 시장은?(09-24 사용자: 시장 국면부터 알리고 — 이런 국면에서 과거엔 이랬고, 맞힐 확률은 이 정도) ----
 const PHN={'up+':'집값 +3% 넘게 · 거래 늘어남','up-':'집값 +3% 넘게 · 거래 줄어듦','flat+':'집값 0~3% · 거래 늘어남','flat-':'집값 0~3% · 거래 줄어듦','dn+':'집값 내림 · 거래 늘어남','dn-':'집값 내림 · 거래 줄어듦'};
 function dots(p,d){const n=Math.round(p/10);return Array.from({length:10},(_,k)=>`<i class="fd" style="animation-delay:${d+k*.06}s;background:var(--${k<n?'blue':'line2'})"></i>`).join('');}
 function mktPage(){
+ TT.forEach(clearTimeout); TT=[];
  const P=DT.phase; if(!P){qi=0;ask();return;}
  const T=P.tab[P.key]||[], b=P.base, y=Math.floor(P.t/12), m=P.t%12+1, f=v=>(v>0?'+':'')+v+'%', n5=Math.round((T[3]||0)/10), b5=Math.round((b[3]||0)/10);
  app.innerHTML=`<div class="eyebrow">지금 시장 · ${y}년 ${m}월</div>
@@ -380,6 +382,7 @@ function lcap(p){return p<=150000?60000:p<=250000?40000:20000;}
 function dsrMax(){if(CF.inc==null)return 1e12;const r=((CF.irate==null?DT.rate.loan:CF.irate)+STRESS)/100/12,n=(CF.yrs||30)*12,room=CF.inc*0.4-(CF.debt||0);if(room<=0)return 0;return room/12*(1-Math.pow(1+r,-n))/r;}
 function repair(r){if(!CF.repair||!r.y||r.as)return 0;   // 새로 짓는 집(완공 경로)은 수리비 없음
 const a=YEAR-r.y,f=a>=20?1:a>=10?0.5:0;return Math.round(r.b/0.75/3.3058*(CF.rpu||150)*f);}
+function LB(){const k=CF.my;return k==null?['나쁘면','잘되면']:k==='up'?['덜 오르면','더 오르면']:k==='dn'?['더 내리면','덜 내리면']:['덜 풀리면','더 풀리면'];}
 function fin(r){   // 현금을 모르면 대출 없이(투입금 대비 효율만). 입주권(r.be)은 주택담보대출이 안 나와 대출 0
  const rp=repair(r), l=Math.max(r.ltv,CF.first?0.7:0), cap=r.be?0:Math.min(r.p*l,lcap(r.p),CF.loan==null?1e12:CF.loan,dsrMax()), up=r.p+r.fee+r.bu+rp, K=CF.cash;
  const jd=CF.useU?0:r.p*Math.min(r.jr||55,90)/100;   // 세 주기: 받는 전세금(전세가율, 없으면 55%)만큼 현금이 덜 들고, 전세 낀 집은 주담대가 안 나와 대출 0
@@ -440,9 +443,9 @@ function flag(r){const W=(r.why||[]).map(i=>S[i]||'');for(const [re,t,d] of FLAG
 function fold(t,body,open){return body?`<details class="fold"${open?' open':''}><summary><span>${t}</span></summary><div>${body}</div></details>`:'';}
 function detail(r){
  const kv=(k,v)=>`<div class="kv"><span class="k">${k}</span><span class="v">${v}</span></div>`, F=fin(r), rp=F.rp, sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', l=Math.max(r.ltv,CF.first?0.7:0);
- const plain=`<p style="margin:6px 0 2px;line-height:1.6">${CF.cash!=null?`현금 <b>${eok(F.own)}억</b>${F.L>0?` + 대출 <b>${eok(F.L)}억</b>`:''}${F.jd?` + 전세금 <b>${eok(F.jd)}억</b>`:''}으로 사요. `:''}5년 뒤 보통이면 <b class="${F.p5>=0?'pos':'neg'}">${sg(F.p5)}</b>, 나쁘면 <b class="${F.p1>=0?'pos':'neg'}">${sg(F.p1)}</b>이에요.${TOP1&&r!==TOP1&&CF.cash!=null?(()=>{const t=(lscore(r)-lscore(TOP1))/1e4;return Math.abs(t)<0.05?' 1위와 거의 같아요.':t>0?` 1위보다 <b>${t.toFixed(2)}억 더</b> 남아요.`:` 1위보다 <b>${Math.abs(t).toFixed(2)}억 덜</b> 남는 건 ${why2(r)}예요.`;})():''}</p>`+((f=>f?`<div class="tip" style="margin:6px 0 2px"><span>⚠ <b>${f.t}</b> — ${f.d}. 그래서 나쁘면~잘되면 폭을 더 넓게 잡았어요.</span></div>`:'')(flag(r)));
+ const plain=`<p style="margin:6px 0 2px;line-height:1.6">${CF.cash!=null?`현금 <b>${eok(F.own)}억</b>${F.L>0?` + 대출 <b>${eok(F.L)}억</b>`:''}${F.jd?` + 전세금 <b>${eok(F.jd)}억</b>`:''}으로 사요. `:''}5년 뒤 보통이면 <b class="${F.p5>=0?'pos':'neg'}">${sg(F.p5)}</b>, ${LB()[0]} <b class="${F.p1>=0?'pos':'neg'}">${sg(F.p1)}</b>이에요.${TOP1&&r!==TOP1&&CF.cash!=null?(()=>{const t=(lscore(r)-lscore(TOP1))/1e4;return Math.abs(t)<0.05?' 1위와 거의 같아요.':t>0?` 1위보다 <b>${t.toFixed(2)}억 더</b> 남아요.`:` 1위보다 <b>${Math.abs(t).toFixed(2)}억 덜</b> 남는 건 ${why2(r)}예요.`;})():''}</p>`+((f=>f?`<div class="tip" style="margin:6px 0 2px"><span>⚠ <b>${f.t}</b> — ${f.d}. 그래서 ${LB()[0]}~${LB()[1]} 폭을 더 넓게 잡았어요.</span></div>`:'')(flag(r)));
  let h=`<div style="padding:0 12px 14px">`+plain
-  +`<div class="mini"><div><span>나쁘면</span><b class="${F.p1>=0?'pos':'neg'}">${sg(F.p1)}</b></div><div><span>보통</span><b class="${F.p5>=0?'pos':'neg'}">${sg(F.p5)}</b></div><div><span>잘되면</span><b class="pos">${sg(F.p9)}</b></div></div>`
+  +`<div class="mini"><div><span>${LB()[0]}</span><b class="${F.p1>=0?'pos':'neg'}">${sg(F.p1)}</b></div><div><span>보통</span><b class="${F.p5>=0?'pos':'neg'}">${sg(F.p5)}</b></div><div><span>${LB()[1]}</span><b class="pos">${sg(F.p9)}</b></div></div>`
   +(r.no?`<div style="margin-top:10px"><a class="btn ghost" target="_blank" rel="noopener" href="https://new.land.naver.com/complexes/${r.no}">네이버부동산에서 매물 보기 →</a></div>`:'');
  let more='';
  // 돈 계산
@@ -486,7 +489,7 @@ function row(r,lbl){
  return `<details class="card"${lbl===1&&CF.cash!=null?' open':''}><summary style="display:block">
  <span style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="min-width:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><span style="color:var(--ink3);margin-right:6px">${lbl}</span>${r.n} ${r.b}㎡${r.bu?' <span class="tag red">분담금</span>':''}${r.rd?' <span class="tag amber">'+r.rd.split(' ')[0]+'</span>':''}</span>
   <span style="flex:0 0 auto;font-size:.74rem;color:var(--ink3);white-space:nowrap">입지 <b class="num" style="font-size:1rem;color:var(--${scol(r.sc)})">${r.sc}</b></span></span>
- ${rbar(F)}<span style="display:flex;justify-content:space-between;gap:4px;font-size:.78rem;white-space:nowrap"><span class="${F.p1>=0?'pos':'neg'}">나쁘면 ${sg(F.p1)}</span><b>보통 ${sg(F.p5)}</b><span class="pos">잘되면 ${sg(F.p9)}</span></span>
+ ${rbar(F)}<span style="display:flex;justify-content:space-between;gap:4px;font-size:.78rem;white-space:nowrap"><span class="${F.p1>=0?'pos':'neg'}">${LB()[0]} ${sg(F.p1)}</span><b>보통 ${sg(F.p5)}</b><span class="${F.p9>=0?'pos':'neg'}">${LB()[1]} ${sg(F.p9)}</span></span>
  <span class="sub" style="display:block;margin-top:2px">${r.gu} · ${eok(r.p)}억${CF.cash!=null?' · 대출 '+eok(F.L)+'억':''}${F.jd?' · 전세 '+eok(F.jd)+'억':''}</span>
  <span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="more"><b></b><i>⌄</i></span>${(f=>f?`<span class="tag ${r.g==='C'?'amber':'gray'}" style="font-size:.68rem;margin-top:6px">⚠ ${f.t}</span>`:'')(flag(r))}</span>
  </summary>${detail(r)}</details>`;}
@@ -548,6 +551,7 @@ function why2(r){   // 1위보다 덜 남는 이유를 말로(큰 것 두 개)
  const d=Object.keys(W).map(k=>[k,a[k]-b[k]]).filter(x=>x[1]<-300).sort((x,y)=>x[1]-y[1]).slice(0,2);
  return d.length?d.map(([k])=>W[k]).join(', '):'차이가 작아요';}
 function result(){
+ TT.forEach(clearTimeout); TT=[];
  V=R.filter(ok); V.forEach(r=>r.F=fin(r)); N=10;
  const L=lensKey();
  V.sort((a,b)=>lscore(b)-lscore(a));                  // 가치관 저울로 줄 세움
@@ -566,7 +570,7 @@ function result(){
  ${tipObj()}
  <input id="sq" type="search" placeholder="단지·동 이름으로 찾기 (예: 광명역 데시앙)" oninput="find(this.value)" style="width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit;margin:10px 0 4px">
  <div id="found"></div>
- <div class="sub" style="margin:10px 0 0;line-height:1.6">${V.length.toLocaleString()}곳 중 · <b>막대</b> = 내 돈으로 5년 뒤 남는 돈의 범위(<span class="neg">나쁘면</span>~<span class="pos">잘되면</span>, 세로선 = 보통${CF.useU?'':', 시세차익만'}) · <b>오른쪽</b> = 입지 점수</div>
+ <div class="sub" style="margin:10px 0 0;line-height:1.6">${V.length.toLocaleString()}곳 중 · <b>막대</b> = 내 돈으로 5년 뒤 남는 돈의 범위(<span class="neg">${LB()[0]}</span>~<span class="pos">${LB()[1]}</span>, 세로선 = 보통${CF.useU?'':', 시세차익만'}). ${CF.my==null?'시장이 오를지 내릴지와 단지 운을 모두 넣은 폭 — 양 끝은 10번 중 1번꼴':'시장은 위에서 고른 경우로 두고, 그 안에서 이 단지가 덜·더 풀리는 폭(10번 중 1번꼴)'} · <b>오른쪽</b> = 입지 점수</div>
  <div id="list"></div><button class="btn ghost" id="more" style="margin-top:12px" onclick="N+=10;draw()">다음 10곳</button>
  <div style="display:flex;gap:10px;margin-top:14px"><button class="btn ghost" onclick="setup()">조건 바꾸기</button><button class="btn ghost" onclick="chat()">처음부터</button></div>`;
  draw(); window.scrollTo(0,0);}
