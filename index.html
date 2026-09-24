@@ -198,46 +198,35 @@ function mktP(){const g=['up','flat','dn'].map(grp);return g.map(x=>x?Math.round
 function eduEx(){   // 같은 현금으로: 남는 돈 1위 vs 입지 점수 1위(서울·경기 전체 또는 고른 지역, 시장 섞음·반반)
  const kc=CF.cash, km=CF.my, kl=CF.lens, K=kc==null?30000:kc; CF.cash=K; CF.my=null; CF.lens='bal';
  const ok_=R.map(r=>(r.F=fin(r),r)).filter(r=>r.F.ok);   // 교육용이라 지역은 서울·경기 전체(차이가 잘 보이게)
- const m=ok_.filter(r=>r.sc<40).sort((a,b)=>lscore(b)-lscore(a))[0], o=ok_.slice().sort((a,b)=>b.sc-a.sc||lscore(b)-lscore(a))[0];   // 입지 낮지만 많이 남는 집 vs 입지 1위
- const pk=x=>x&&{n:x.n,b:x.b,gu:x.gu,sc:x.sc,p:x.p,L:x.F.L,p5:x.F.p5,p1:x.F.p1,p9:x.F.p9}, res={K,m:pk(m),o:pk(o)};
+ const byM=ok_.slice().sort((a,b)=>b.F.p5-a.F.p5), m=byM[0], o=ok_.slice().sort((a,b)=>b.sc-a.sc||b.F.p5-a.F.p5)[0];   // 많이 남는 1위 vs 선호 동네(입지) 1위 — 늘 사실 그대로
+ const pk=x=>x&&{n:x.n,b:x.b,gu:x.gu,sc:x.sc,p:x.p,L:x.F.L,p5:x.F.p5,p1:x.F.p1,p9:x.F.p9,rk:byM.indexOf(x)+1}, res={K,m:pk(m),o:pk(o)};
+ {const t=ok_.slice().sort((a,b)=>b.sc-a.sc),q=Math.max(1,Math.floor(t.length/3)),av=(a,k)=>a.reduce((s,r)=>s+r.F[k],0)/a.length;res.hi={p5:av(t.slice(0,q),'p5'),p1:av(t.slice(0,q),'p1')};res.lo={p5:av(t.slice(-q),'p5'),p1:av(t.slice(-q),'p1')};}
  CF.cash=kc; CF.my=km; CF.lens=kl; R.forEach(r=>r.F=null); return res;}
 function eduCards(){const e=eduEx(), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억'; if(!e.m||!e.o)return '';
  const c=(x,t,hl)=>`<div style="flex:1;min-width:0;background:var(--surface);border:1.5px solid var(--${hl});border-radius:14px;padding:10px"><div style="font-size:.72rem;font-weight:800;color:var(--${hl})">${t}</div>`
   +`<div style="font-weight:700;font-size:.86rem;margin:4px 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x.n}</div><div class="sub" style="font-size:.72rem">${x.gu} · ${eok(x.p)}억 · 대출 ${eok(x.L)}억</div>`
   +`<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:8px"><span><b class="num" style="color:var(--green);font-size:1.05rem">${sg(x.p5)}</b><span class="sub" style="display:block;font-size:.68rem">남는 돈(보통)<br>나쁘면 ${sg(x.p1)}</span></span><span style="text-align:right"><b class="num" style="font-size:1.05rem">${x.sc}</b><span class="sub" style="display:block;font-size:.68rem">입지 점수</span></span></div></div>`;
  return `<div class="sub" style="margin-top:10px">현금 ${eok(e.K)}억으로 살 수 있는 서울·경기 집 중</div><div style="display:flex;gap:8px;margin:6px 0 4px">${c(e.m,'입지 낮아도 많이 남는 집','green')}${c(e.o,'입지 점수 1위','blue')}</div>`;}
-function eduView(){const e=eduEx(), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억'; if(!e.m||!e.o)return '';
- const nm=x=>`입지 ${x.sc}점 · ${x.n} (${eok(x.p)}억)`;
- return `<div class="sub" style="margin-top:12px">현금 ${eok(e.K)}억으로 산다면, 5년 뒤 남는 돈</div>`+range2([[nm(e.m),e.m.p1/1e4,e.m.p9/1e4],[nm(e.o),e.o.p1/1e4,e.o.p9/1e4]])
-  +`<div style="font-weight:800;margin:16px 0 6px">그래서 결과에는 숫자 두 개가 나와요</div>`
-  +`<div style="border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:12px;display:flex;gap:10px;align-items:center">`
-  +`<span class="rank">1</span><span style="flex:1;min-width:0"><b style="display:block;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.m.n}</b>`
-  +`<span style="display:inline-block;margin-top:3px;border:2px solid var(--green);border-radius:8px;padding:1px 6px"><b class="num" style="color:var(--green)">${sg(e.m.p5)}</b></span></span>`
-  +`<span style="border:2px solid var(--blue);border-radius:8px;padding:2px 8px;text-align:center"><b class="num" style="font-size:1.15rem">${e.m.sc}</b><span style="display:block;font-size:.64rem;color:var(--ink3)">입지</span></span></div>`
-  +`<div style="margin-top:8px;font-size:.9rem;line-height:1.7"><span style="color:var(--green);font-weight:800">■ 초록 숫자</span> 내 돈으로 5년 뒤 남는 돈 — <b>순위는 이걸로</b><br><span style="color:var(--blue);font-weight:800">■ 오른쪽 점수</span> 입지 점수 — 동네·단지의 급(순위와 별개)</div>`;}
+function eduView(){const e=eduEx(), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억'; if(!e.hi)return '';
+ const row=(t,x)=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line2)"><b style="font-size:.9rem">${t}</b><span style="white-space:nowrap;font-size:.86rem">보통 <b class="num ${x.p5>=0?'pos':'neg'}">${sg(x.p5)}</b> <span class="sub">· 나쁠 때 ${sg(x.p1)}</span></span></div>`;
+ return `<div class="sub" style="margin-top:12px">현금 ${eok(e.K)}억으로 살 수 있는 곳, 5년 뒤 평균 (입지 상위 1/3 vs 하위 1/3)</div>`+row('선호 동네',e.hi)+row('그 밖',e.lo);}
 function levEx(){   // 같은 현금으로: 대출 적은 집 vs 대출 큰 좋은 입지 — 잘되면/나쁘면(5년 합계, 중앙값)
  const keep=CF.cash, km=CF.my, K=keep==null?30000:keep; CF.cash=K; CF.my=null; const a=[],b=[];
  for(const r of R){const F=fin(r); if(!F.ok)continue; if(F.L<5000)a.push(F); else if(r.sc>=60&&F.L>=25000)b.push(F);}
  CF.cash=keep; CF.my=km; const md=(v,k)=>{v=v.map(x=>x[k]).sort((x,y)=>x-y);return v[v.length>>1]||0;};
  return {K,a:[md(a,'p1'),md(a,'p9')],b:[md(b,'p1'),md(b,'p9')]};}
 // 결과 화면 버튼 전용(질문에선 안 물음 — 사람은 어딘가 살아야 하니 기본은 실거주, 09-24 사용자)
-const QU={key:'useU',why:'어떻게 쓰느냐에 따라 드는 현금과 남는 돈 계산이 달라져요.',
- q:'산 집에 들어가 살 건가요,<br>세를 줄 건가요?',o:[['들어가 살 거예요<small>어차피 낼 월세를 안 내는 만큼이 수익이에요</small>',true],['세 주고, 나는 다른 데 살 거예요<small>전세금만큼 현금이 덜 들어요. 단, 서울 전역·경기 12곳(과천·광명·분당 등)은 토지거래허가구역이라 사면 들어가 살아야 해서 빠져요</small>',false]],
- a:v=>v?`<b class="k">그럼 아끼는 월세도 수익이에요</b>5억 집 한 채를 사서 살면, 5년 동안`
-  :`<b class="k">전세금만큼 현금이 덜 들어요</b>대신 수익은 시세차익만 남고, 실거주 의무 지역(서울 전역·경기 12곳)은 순위에서 빠져요. 5억 집 한 채라면`,
- v:v=>fall(typical(v))+(v?'':`<div class="sub">들어가 살았다면 같은 집에서 ${typical(true)[1][1].toFixed(2)}억(아끼는 월세)이 더 남아요.</div>`),
- d:v=>`<p class="note" style="margin:0">세 주기는 전세를 끼고 사는 것으로 계산해요 — 필요한 현금 = 매가·세금 − 전세금(그 단지 전세가율, 없으면 55%), 주담대 없음, 5년 뒤 전세금은 돌려줘요.</p>`};
+const QU={key:'useU',q:'산 집에<br>직접 살 건가요?',o:[['직접 살 거예요',true],['세 줄 거예요',false]],
+ a:v=>v?`<b class="k">안 내는 월세도 남는 돈으로 쳐요</b>`
+  :`<b class="k">전세금만큼 현금이 덜 들어요</b>서울 전역과 경기 12곳은 사면 직접 살아야 해서 빠져요.`};
 
 const QS=[
- {key:null,why:'결과엔 숫자가 두 개 나와요 — 내 돈으로 남는 돈, 그리고 입지 점수. 둘의 순서가 왜 다른지 미리 보여 드리려고 물어요. 결과는 바뀌지 않아요.',q:'사람들이 선호하는 동네일수록<br>내 돈으로도 더 많이 남을까요?',o:[['네, 그럴 것 같아요<small>좋은 동네가 더 오르니 남는 돈도 클 거라고 봐요</small>',1],['꼭 그렇진 않을 것 같아요<small>이미 비싸서 같은 돈이면 대출·세금이 커질 수 있다고 봐요</small>',0]],
-  a:v=>`<b class="k">${v?'꼭 그렇진 않아요':'맞아요'}</b><div style="font-size:1.15rem;font-weight:800;line-height:1.45;margin:2px 0 0">선호 동네는 오르내림 폭이 커요</div><div class="sub" style="margin-top:4px;line-height:1.55">잘되면 더 벌고, 안되면 더 잃을 수 있어요. 지난 15년(2011~21년 매수)엔 선호 동네가 덜 떨어졌지만, 2006~10년 매수 땐 더 떨어졌어요. 게다가 시세가 높아 같은 돈이면 대출이 커지고 이자도 더 나가요.</div>`,
-  v:v=>eduView(),
-  d:v=>`<p class="note" style="margin:0">입지 점수 = 시장이 지금 비싸게 쳐 주는 조건(동네·역 거리·연식·단지 규모)을 서울·경기 1.5만 곳과 비교한 점수예요(수익률과 무관). 과거 15년엔 입지 점수 상위 20%가 시장보다 평균 20%p 더 올랐지만, 2006~10년 매수 때는 반대였어요. 그래서 1위인데 입지 33점일 수도, 입지 74점인데 50위일 수도 있어요.</p>`},
- {key:'lens',why:'같은 집들이라도 어떤 숫자로 줄 세우느냐에 따라 1위가 달라져요. 결과 화면에서 언제든 바꿀 수 있어요.',q:'결과를 어떤 순서로<br>볼까요?',o:[['남는 돈 순<small>가장 흔한 경우(10번 중 가운데)에 남는 돈이 큰 곳부터</small>','bal'],['덜 잃는 순<small>10번 중 1번 나쁜 경우에 손해가 가장 작은 곳부터</small>','safe'],['선호 동네 순<small>남는 돈보다 사람들이 선호하는 동네·단지 먼저(입지 점수)</small>','obj']],
-  a:v=>`<b class="k">${{safe:'나쁠 때 덜 잃는 집부터',bal:'보통 남는 돈이 큰 집부터',obj:'지금 선호 동네부터'}[v]}</b>${{safe:'대출이 적은 집이 위로 와요. 목록의 큰 숫자도 나쁠 때 숫자로 보여 드려요.',bal:'목록의 큰 숫자(보통) 그대로 줄 세워요.',obj:'시장이 값을 쳐 주는 입지·역·연식·규모 순이에요.'}[v]}`,
-  v:v=>{const e=levEx(), f=x=>(x>=0?'+':'−')+eok(Math.abs(x))+'억';
-   return `<div class="sub" style="margin-top:10px">현금 ${eok(e.K)}억으로 5년 뒤 남는 돈(서울·경기 중앙값)</div>`+range2([['대출 적은 집',e.a[0]/1e4,e.a[1]/1e4],['좋은 입지 + 큰 대출',e.b[0]/1e4,e.b[1]/1e4]]);},
-  d:v=>`<p class="note" style="margin:0">보통 순 = 가운데 값, 덜 잃는 순 = 10번 중 1번 나쁜 경우 값, 선호 동네 순 = 입지 점수. 결과 화면에서 언제든 바꿀 수 있어요.</p>`},QU];
+ {key:null,q:'선호 동네 집이<br>돈도 더 남을까요?',o:[['그럴 것 같아요',1],['꼭 그렇진 않을 것 같아요',0]],
+  a:v=>{const e=eduEx(), yes=e.hi&&e.hi.p5>e.lo.p5, worse=e.hi&&e.hi.p1<e.lo.p1;
+   return `<b class="k">${yes?(v?'대체로 맞아요':'대체로는 더 남았어요'):(v?'꼭 그렇진 않아요':'맞아요')}</b>${yes?'같은 돈으로 살 수 있는 곳 중에선, 선호 동네가 보통 더 남았어요.'+(worse?' 대신 나쁠 땐 더 잃었어요.':''):'선호 동네는 비싸서, 같은 돈이면 대출과 세금이 더 들어요.'}`;},
+  v:v=>eduView()},
+ {key:'lens',q:'어떤 집부터<br>볼까요?',o:[['많이 남는 집부터','bal'],['덜 잃는 집부터','safe'],['선호 동네 집부터','obj']],
+  a:v=>`<b class="k">${{bal:'보통 때 많이 남는 순서로 보여 드릴게요',safe:'나쁠 때도 덜 잃는 순서로 보여 드릴게요',obj:'선호 동네 순서로 보여 드릴게요'}[v]}</b>결과에서 언제든 바꿀 수 있어요.`},QU];
 let qi=0;
 // 첫 화면(처음 한 번만): 여러 사람의 고민 → 결국 한 질문 → 이 서비스가 해 주는 것 → 시작
 const WORRY=[['신혼부부','첫 집, 어디서부터 봐야 할지'],['40대 가족','지금 갈아타도 될까요?'],['은퇴 준비','떨어져도 덜 잃는 집'],['맞벌이','오를 때 제대로 오를 곳']];
@@ -302,7 +291,7 @@ function ask(){
 function pick(i){
  const Q=QS[qi], v=Q.o[i][1]; if(Q.key){CF[Q.key]=v; if(Q.key==='lens')CF.sort=null; save();}
  document.querySelectorAll('#opts .opt').forEach((b,j)=>b.classList.toggle('on',j===i));
- $('#fact').innerHTML=`<div class="fact">${Q.a(v)}${Q.v?Q.v(v):''}${fold('근거 자세히',Q.d?Q.d(v):'')}</div>
+ $('#fact').innerHTML=`<div class="fact">${Q.a(v)}${Q.v?Q.v(v):''}${Q.d?fold('근거 자세히',Q.d(v)):''}</div>
  <div class="cta"><button class="btn" onclick="${qi<QS.length-1?'qi++;ask()':'setup()'}">${qi<QS.length-1?'다음':'이제 내 조건 정하기'}</button></div>`;
  $('#fact').scrollIntoView({behavior:'smooth',block:'nearest'}); countUp($('#fact'));}
 function countUp(el){   // 사실 상자의 큰 숫자가 0에서 올라오게(움직임 줄이기 설정이면 그대로)
