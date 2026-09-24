@@ -258,10 +258,16 @@ const IC={
  drop:'<path d="M3.5 7.5 9 13l3.6-3 7.9 7.9"/><path d="M20.5 12.6v5.3h-5.3"/>',
  book:'<rect x="5" y="3.4" width="14" height="17.2" rx="2"/><path d="M9 8h6M9 11.5h6M9 15h3.6"/>',
  blocks:'<path d="M3 20.4h18M5 20.4V9.4h5.4v11M10.4 20.4V4.6h8.6v15.8"/><path d="M13.2 8.4h3M13.2 11.6h3M13.2 14.8h3M7.2 12.6h1M7.2 15.8h1"/>',
+ ring:'<circle cx="9" cy="14.5" r="5"/><circle cx="15" cy="14.5" r="5"/><path d="M9 9.5 7.4 7.3 9 5.2l1.6 2.1Z"/>',
+ family:'<circle cx="7" cy="6.8" r="2.2"/><circle cx="17" cy="6.8" r="2.2"/><circle cx="12" cy="11.6" r="1.7"/><path d="M3.4 19.6v-3a3.6 3.6 0 0 1 7.2 0v3M13.4 19.6v-3a3.6 3.6 0 0 1 7.2 0v3M9.6 20.4v-1.3a2.4 2.4 0 0 1 4.8 0v1.3"/>',
+ sprout:'<path d="M12 20.4v-8"/><path d="M12 12.4c0-4.2 2.8-6.6 7.4-6.6 0 4.2-2.8 6.6-7.4 6.6Z"/><path d="M12 15c0-3.2-2.2-5.2-5.8-5.2 0 3.2 2.2 5.2 5.8 5.2Z"/><path d="M6.5 20.4h11"/>',
+ bags:'<rect x="7.5" y="5.6" width="13" height="9.4" rx="1.8"/><rect x="3.5" y="10" width="13" height="9.4" rx="1.8" style="fill:var(--surface2)"/><path d="M8 10V8.4h4V10M3.5 14.2h13"/>',
+ pack:'<path d="M6.8 9.4a5.2 5.2 0 0 1 10.4 0v9.6a1.6 1.6 0 0 1-1.6 1.6H8.4A1.6 1.6 0 0 1 6.8 19Z"/><path d="M10 4.4h4M9.4 13.4h5.2v3.8H9.4Z"/>',
+ box:'<path d="M4 7.9 12 4l8 3.9v8.4L12 20.4 4 16.3Z"/><path d="M4 7.9l8 4 8-4M12 11.9v8.5M8 6l8 3.9"/>',
  bill:'<path d="M6 3.4h12v17.2l-2-1.3-2 1.3-2-1.3-2 1.3-2-1.3-2 1.3Z"/><path d="M9 8h6M9 11.4h6M9 14.8h3.6"/>'};
 function ic(n,sz,tile){const g=`<svg viewBox="0 0 24 24" width="${tile?Math.round(sz*.56):sz}" height="${tile?Math.round(sz*.56):sz}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
  return tile?`<span style="display:inline-flex;align-items:center;justify-content:center;width:${sz}px;height:${sz}px;border-radius:${Math.round(sz*.3)}px;background:var(--blue-bg);color:var(--blue);flex:0 0 auto">${g}</span>`:`<span style="display:inline-flex;vertical-align:-3px;color:var(--blue);margin-right:4px">${g}</span>`;}
-const WORRY=[['신혼부부','첫 집, 어디서부터 봐야 할지 모르겠어요'],['40대 가족','지금 집 매도하고 갈아타도 될까요?'],['은퇴 준비','하락장에도 손실이 적은 집이면 좋겠어요'],['맞벌이','오를 때 제대로 오를 곳을 매수하고 싶어요'],['사회초년생','전세 대신 매수하는 게 나을까요?'],['이사 예정','근처에 더 나은 집, 놓치고 있진 않을까요?']];
+const WORRY=[['ring','신혼부부','첫 집, 어디서부터 봐야 할지 모르겠어요'],['family','40대 가족','지금 집 매도하고 갈아타도 될까요?'],['sprout','은퇴 준비','하락장에도 손실이 적은 집이면 좋겠어요'],['bags','맞벌이','오를 때 제대로 오를 곳을 매수하고 싶어요'],['pack','사회초년생','전세 대신 매수하는 게 나을까요?'],['box','이사 예정','근처에 더 나은 집, 놓치고 있진 않을까요?']];
 let TT=[];
 function chat(){   // 09-24 사용자: 고민 말풍선(취지) 원복 → 결국 한 질문 → 시작
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
@@ -335,7 +341,7 @@ function bridge(){   // 09-24 사용자: 토스식 체크 모션 대신 '셈' �
  L.forEach((_,k)=>{TT.push(setTimeout(()=>{const r=$('#br'+k);if(r)r.style.opacity=1;},t));
   TT.push(setTimeout(()=>{const b=$('#bs'+k);if(b)b.classList.add('on');},t+380)); t+=700;});
  TT.push(setTimeout(()=>{const g=$('#brgo');if(g)g.style.opacity=1;},t+100));}
-function add(w){const d=document.createElement('div');d.className='wcard';d.innerHTML=`<span>${w[0]}</span>“${w[1]}”`;const T=$('#talk');if(T)T.appendChild(d);}
+function add(w){const d=document.createElement('div');d.className='wcard';d.innerHTML=`<span style="display:flex;align-items:center;gap:5px"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${IC[w[0]]}</svg>${w[1]}</span>“${w[2]}”`;const T=$('#talk');if(T)T.appendChild(d);}
 function talkAll(){TT.forEach(clearTimeout);TT=[];const T=$('#talk');if(!T)return;T.innerHTML='';WORRY.forEach(w=>add(w));T.style.opacity=.45;['one','trust','talkgo'].forEach(k=>$('#'+k).style.opacity=1);}
 // ---- 지금 시장은?(09-24 사용자: 시장 국면부터 알리고 — 이런 국면에서 과거엔 이랬고, 맞힐 확률은 이 정도) ----
 const PHN={'up+':'집값 +3% 넘게 · 거래 늘어남','up-':'집값 +3% 넘게 · 거래 줄어듦','flat+':'집값 0~3% · 거래 늘어남','flat-':'집값 0~3% · 거래 줄어듦','dn+':'집값 내림 · 거래 늘어남','dn-':'집값 내림 · 거래 줄어듦'};
