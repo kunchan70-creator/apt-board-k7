@@ -139,6 +139,13 @@ details.card>div{padding:0 12px}
 .more{display:inline-flex;align-items:center;gap:3px;color:var(--blue);font-size:.78rem;font-weight:700;margin-top:6px}
 .more i{font-style:normal;display:inline-block;transition:transform .2s}details.card[open] .more i{transform:rotate(180deg)}
 details.card[open] .more b:after{content:'접기'}details.card:not([open]) .more b:after{content:'자세히'}
+.chat{min-height:calc(100vh - 190px);display:flex;flex-direction:column;padding-top:4px}
+.bub{max-width:84%;padding:12px 15px;border-radius:20px;margin:6px 0;font-size:1.03rem;line-height:1.55;word-break:keep-all;animation:rise .35s cubic-bezier(.2,.8,.2,1) both}
+.bub.app{background:var(--surface2);color:var(--ink);border-bottom-left-radius:6px;align-self:flex-start}
+.bub.me{background:var(--blue);color:#fff;border-bottom-right-radius:6px;align-self:flex-end}
+.bub b{font-weight:800}.typing{display:inline-flex;gap:4px;padding:4px 2px}.typing i{width:7px;height:7px;border-radius:50%;background:var(--ink3);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}@keyframes blink{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+.skip{align-self:flex-end;background:none;border:0;color:var(--ink3);font:inherit;font-size:.82rem;cursor:pointer;padding:4px 0}
 .pills{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 0}
 .pill{border:1.5px solid var(--blue);background:var(--blue-bg);color:var(--blue);border-radius:999px;padding:8px 12px;font:inherit;font-size:.9rem;font-weight:600;cursor:pointer}
 .pill b{font-weight:800}.pill.on{background:var(--blue);color:#fff}
@@ -206,7 +213,30 @@ const QS=[
   v:v=>fall(typical(v))+(v?'':`<div class="sub">실거주라면 같은 집에서 ${typical(true)[1][1].toFixed(2)}억이 더 남아요 — 그래서 순위도 달라져요.</div>`),
   d:v=>`<p class="note" style="margin:0">남의 집에 살면 매년 전세금의 약 ${(DT.conv['경기도']||5).toFixed(1)}%를 월세로 내는 셈이에요(실제 월세 계약으로 계산). 집을 사면 그만큼을 아껴요.</p>`}];
 let qi=0;
-function intro(){
+// 첫 대화(처음 한 번만): 소비자 입장 → '그래서 만들었어요' → 시작하기
+const TALK=[['app','집, 마련하고 싶으시죠?'],['me','네… 근데 부동산은 너무 어려워요.'],
+ ['app','가장 좋은 집은 너무 비싸고,<br>어떤 게 좋은 집인지도 헷갈리죠.'],
+ ['me','제 형편에 맞으면 돼요. 그런데 근처에 더 나은 집이 있었는데 몰라서 놓치면… 너무 아까울 것 같아요.'],
+ ['app',()=>`그래서 만들었어요.<br><b>내 돈으로 살 수 있는 집</b>만 놓고, 서울·경기 <b>${DT.n.toLocaleString()}곳</b>을 실제 거래로 비교해 드릴게요.`],
+ ['app','4가지만 물어볼게요.']];
+let TT=[];
+function chat(){
+ TT.forEach(clearTimeout); TT=[];
+ app.innerHTML=`<div class="chat"><button class="skip" onclick="talkAll()">건너뛰기 ›</button><div id="talk" style="display:flex;flex-direction:column"></div>
+ <div id="talkgo" style="margin-top:auto;padding-top:16px;opacity:0;transition:opacity .4s;position:sticky;bottom:12px"><button class="btn" onclick="CF.seen=true;save();qi=0;ask()">시작하기</button>
+ ${CF.done?'<p style="text-align:center"><button class="linkbtn" onclick="CF.seen=true;save();result()">내 결과 바로 보기</button></p>':''}</div></div>`;
+ window.scrollTo(0,0); let t=300;
+ TALK.forEach(([who,txt],i)=>{
+  const html=typeof txt==='function'?txt():txt;
+  if(who==='app'){TT.push(setTimeout(()=>add('app','<span class="typing"><i></i><i></i><i></i></span>','ty'),t)); t+=750;
+   TT.push(setTimeout(()=>{const e=$('#ty');if(e){e.remove();}add('app',html);},t));}
+  else TT.push(setTimeout(()=>add('me',html),t));
+  t+=who==='app'?650:900;});
+ TT.push(setTimeout(()=>{const g=$('#talkgo');if(g)g.style.opacity=1;},t));}
+function add(who,html,id){const d=document.createElement('div');d.className='bub '+who;if(id)d.id=id;d.innerHTML=html;const T=$('#talk');if(T){T.appendChild(d);const b=d.getBoundingClientRect().bottom;if(b>innerHeight-90)scrollBy({top:b-innerHeight+110,behavior:'smooth'});}}
+function talkAll(){TT.forEach(clearTimeout);TT=[];const T=$('#talk');if(!T)return;T.innerHTML='';TALK.forEach(([w,x])=>add(w,typeof x==='function'?x():x));$('#talkgo').style.opacity=1;}
+function intro(){chat();}
+function intro_old(){
  app.innerHTML=`<div class="eyebrow">서울·경기 아파트 ${DT.n.toLocaleString()}곳</div>
  <div class="hq" style="font-size:clamp(1.5rem,6.6vw,1.9rem)">내 돈으로 살 수 있는 집 중<br>5년 뒤 가장 많이 남는 곳</div>
  <p class="sub" style="font-size:1rem">현금 1억인 사람과 3억인 사람의 답은 달라요. <b>내 돈으로 살 수 있는 집</b>만 놓고, 세금·이자까지 뺀 <b>남는 돈</b>으로 줄 세워요.</p>
@@ -470,7 +500,7 @@ function result(){
  <div id="found"></div>
  <div class="sub" style="margin:10px 0 0">${V.length.toLocaleString()}곳 중 · <b style="color:var(--green)">초록</b> = 내 돈으로 5년 뒤 남는 돈(${CF.useU?'아끼는 월세 포함':'시세차익만'}) · <b>오른쪽</b> = 입지 점수(5~95, 좋은 동네·단지일수록 높음)</div>
  <div id="list"></div><button class="btn ghost" id="more" style="margin-top:12px" onclick="N+=10;draw()">다음 10곳</button>
- <div style="display:flex;gap:10px;margin-top:14px"><button class="btn ghost" onclick="setup()">조건 바꾸기</button><button class="btn ghost" onclick="intro()">처음 질문</button></div>`;
+ <div style="display:flex;gap:10px;margin-top:14px"><button class="btn ghost" onclick="setup()">조건 바꾸기</button><button class="btn ghost" onclick="chat()">처음부터</button></div>`;
  draw(); window.scrollTo(0,0);}
 // 시장 해 선택(09-24 사용자): 방향은 모른다 → 기본은 과거 16번 전부 섞음. 막대를 누르면 '앞으로 5년이 그 해 매수처럼' — 그 해의 시장 상승률 + 그 해 좋은 입지 기울기를 함께 적용
 const AN=x=>(Math.pow(1+x/100,1/5)-1)*100;
@@ -582,7 +612,7 @@ function watch(){document.querySelectorAll('.chart:not(.go):not([data-w])').forE
 // 그래프를 누르면 다시 재생(막대 선택이 있는 결과 화면 막대는 누르면 화면이 새로 그려져 자연히 다시 재생됨)
 app.addEventListener('click',e=>{const c=e.target.closest('.chart');if(!c||e.target.closest('[onclick]'))return;c.classList.remove('go');void c.offsetWidth;c.classList.add('go');});
 new MutationObserver(watch).observe(app,{childList:true,subtree:true});
-if(CF.done)result(); else intro();
+if(!CF.seen)chat(); else if(CF.done)result(); else {qi=0;ask();}
 </script>
 <p class="foot">공개 데이터로 매일 자동 계산 · 투자 권유 아님</p>
 </div></body></html>
