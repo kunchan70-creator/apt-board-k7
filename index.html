@@ -238,15 +238,22 @@ const QS=[
   a:v=>`<b class="k">${{bal:'보통 때 순이익이 큰 순서로 보여 드릴게요',safe:'나쁠 때도 덜 잃는 순서로 보여 드릴게요',obj:'선호 동네 순서로 보여 드릴게요'}[v]}</b>결과에서 언제든 바꿀 수 있어요.`},QU];
 let qi=0;
 // 첫 화면(처음 한 번만): 여러 사람의 고민 → 결국 한 질문 → 이 서비스가 해 주는 것 → 시작
-const WORRY=[['신혼부부','첫 집, 어디서부터 봐야 할지'],['40대 가족','지금 갈아타도 될까요?'],['은퇴 준비','떨어져도 덜 잃는 집'],['맞벌이','오를 때 제대로 오를 곳']];
+const WORRY=[['신혼부부','첫 집, 어디서부터 봐야 할지 모르겠어요'],['40대 가족','지금 집 매도하고 갈아타도 될까요?'],['은퇴 준비','떨어져도 덜 잃는 집이면 좋겠어요'],['맞벌이','오를 때 제대로 오를 곳을 매수하고 싶어요'],['사회초년생','전세 대신 매수하는 게 나을까요?'],['이사 예정','근처에 더 나은 집, 놓치고 있진 않을까요?']];
 let TT=[];
-function chat(){
+function chat(){   // 09-24 사용자: 고민 말풍선(취지) 원복 → 결국 한 질문 → 시작
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
- app.innerHTML=`<div style="min-height:52vh;display:flex;flex-direction:column;justify-content:center;text-align:center">
- <div class="hq" style="font-size:clamp(1.7rem,7.4vw,2.1rem);line-height:1.35">내 자본으로<br>어디를 매수하면<br>가장 나을까?</div></div>
- <div class="cta"><button class="btn" onclick="CF.seen=true;save();setup()">시작하기</button>
+ app.innerHTML=`<div class="chat"><button class="skip" onclick="talkAll()">건너뛰기 ›</button>
+ <div class="sub" style="margin:2px 0 8px">집을 두고 다들 이런 고민을 해요</div><div id="talk" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
+ <div id="one" style="opacity:0;transition:opacity .5s"><div class="sub" style="margin:22px 0 2px;text-align:center">고민은 달라도, 결국 이 질문이에요</div>
+  <div class="hq" style="text-align:center;margin-top:6px;font-size:clamp(1.6rem,7vw,2rem);line-height:1.35">내 자본으로<br>어디를 매수하면<br>가장 나을까?</div></div>
+ <div id="trust"></div>
+ <div id="talkgo" class="cta" style="opacity:0;transition:opacity .4s"><button class="btn" onclick="CF.seen=true;save();setup()">시작하기</button>
  <p style="text-align:center;margin:6px 0 0">${hasSaved()?'<button class="linkbtn" onclick="result()">저장된 내 조건으로 바로 보기 →</button>':'<button class="linkbtn" disabled style="color:var(--ink3);cursor:default">저장된 내 조건이 없어요</button>'}</p>
- <p class="sub" style="text-align:center;margin:10px 0 0;font-size:.74rem">참고용 셈이에요. 투자 권유가 아니에요.</p></div>`;}
+ <p class="sub" style="text-align:center;margin:10px 0 0;font-size:.74rem">참고용 셈이에요. 투자 권유가 아니에요.</p></div></div>`;
+ let t=250;
+ WORRY.forEach(w=>{TT.push(setTimeout(()=>add(w),t)); t+=380;});
+ TT.push(setTimeout(()=>{const T=$('#talk');if(!T)return;T.style.transition='opacity .5s';T.style.opacity=.45;$('#one').style.opacity=1;},t+250));
+ TT.push(setTimeout(()=>{const g=$('#talkgo');if(g)g.style.opacity=1;},t+800));}
 function add(w){const d=document.createElement('div');d.className='wcard';d.innerHTML=`<span>${w[0]}</span>“${w[1]}”`;const T=$('#talk');if(T)T.appendChild(d);}
 function talkAll(){TT.forEach(clearTimeout);TT=[];const T=$('#talk');if(!T)return;T.innerHTML='';WORRY.forEach(w=>add(w));T.style.opacity=.45;['one','trust','talkgo'].forEach(k=>$('#'+k).style.opacity=1);}
 // ---- 지금 시장은?(09-24 사용자: 시장 국면부터 알리고 — 이런 국면에서 과거엔 이랬고, 맞힐 확률은 이 정도) ----
