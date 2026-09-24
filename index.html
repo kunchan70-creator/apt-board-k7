@@ -163,6 +163,8 @@ details.card[open] .more b:after{content:'접기'}details.card:not([open]) .more
 .dotw>div{display:flex;align-items:center;gap:8px;margin:6px 0}.dotw span{flex:0 0 44px;font-size:.8rem;color:var(--ink2)}.dotw b{display:flex;gap:3px}.dotw i{width:13px;height:13px;border-radius:50%;display:block}.dotw em{font-style:normal;font-size:.8rem;font-weight:700;white-space:nowrap}
 .opt.rec{border:2px solid var(--blue);background:var(--blue-bg);font-weight:800;padding-top:14px;padding-bottom:14px}.recb{display:inline-block;font-size:.68rem;font-weight:700;color:#fff;background:var(--blue);border-radius:6px;padding:1px 6px;margin-right:6px;vertical-align:2px}
 .opt small{display:block;font-size:.76rem;font-weight:500;color:var(--ink3);margin-top:2px}
+.rk{flex:0 0 30px;height:30px;border-radius:50%;background:var(--surface2);color:var(--ink2);font-weight:800;display:flex;align-items:center;justify-content:center}.rk.r1{background:var(--blue);color:#fff}
+details.top3{margin-top:8px;padding:0!important}details.top3>summary{padding:12px 14px!important}
 .pills{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 0}
 .pill{border:1.5px solid var(--blue);background:var(--blue-bg);color:var(--blue);border-radius:999px;padding:8px 12px;font:inherit;font-size:.9rem;font-weight:600;cursor:pointer}
 .pill b{font-weight:800}.pill.on{background:var(--blue);color:#fff}
@@ -543,20 +545,19 @@ function result(){
  {const W=V.slice(0,40);RS={lo:Math.min(0,...W.map(r=>r.F.p1)),hi:Math.max(1,...W.map(r=>r.F.p9))};}
  if(L==='obj')V.sort((a,b)=>b.sc-a.sc||lscore(b)-lscore(a));
  const chips=summaryChips(true);
- const T1=V[0], why1={bal:'5년 뒤 가장 많이 남아요',safe:'나쁠 때도 가장 덜 잃어요',obj:'선호 동네 1위예요'}[L];
+ N=3;
  app.innerHTML=`${DT.alert?`<div class="box warn" style="margin-top:0"><b>이번 주 경보가 켜져 있어요</b> <span class="sub">과열 때 자주 켜졌던 신호예요. 늘 맞진 않아요</span></div>`:''}
- <div class="eyebrow">셈해 보면</div>
- ${T1?(()=>{const F=T1.F, sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', v=L==='safe'?F.p1:F.p5;
-   return `<div class="hq" style="margin-top:2px">${T1.n} ${T1.b}㎡</div><div class="sub" style="margin-top:2px">${T1.gu} · ${eok(T1.p)}억 · 내 조건 ${V.length.toLocaleString()}곳 중 ${why1}</div>
-   <div style="margin-top:12px;background:var(--surface2);border-radius:16px;padding:14px 16px;display:flex;justify-content:space-between;align-items:flex-end;gap:8px">
-    <span><span class="sub" style="display:block;font-size:.8rem">${L==='safe'?'나쁠 때(10번 중 1번)':'5년 뒤 보통'}</span><b class="num ${v>=0?'pos':'neg'}" style="font-size:1.9rem;line-height:1.1">${sg(v)}</b></span>
-    <span style="font-size:.84rem;font-weight:700;color:var(--${lossP(F)>=30?'red':'ink2'});white-space:nowrap">${lossTxt(F)}</span></div>
-   <details class="card" style="margin-top:8px"><summary style="display:block;font-weight:700;color:var(--blue);font-size:.9rem">자세히 보기 ⌄</summary>${detail(T1)}</details>`;})():'<div class="hq">조건에 맞는 곳이 없어요</div>'}
+ ${V.length?`<div class="hq" style="margin:2px 0 10px">${{bal:'내 돈으로 5년, 가장 남는 곳',safe:'나빠도 가장 덜 잃는 곳',obj:'선호 동네 순'}[L]}</div>`+V.slice(0,3).map((r,k)=>{const F=r.F, sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', v=L==='safe'?F.p1:F.p5;
+   return `<details class="card top3"${k===0?' style="border:2px solid var(--blue)"':''}><summary style="display:flex;align-items:center;gap:12px">
+    <span class="rk${k===0?' r1':''}">${k+1}</span>
+    <span style="flex:1;min-width:0"><b style="display:block;line-height:1.3;word-break:keep-all">${r.n} <span style="white-space:nowrap">${r.b}㎡</span></b><span class="sub" style="font-size:.78rem">${r.gu} · ${eok(r.p)}억</span></span>
+    <span style="text-align:right;white-space:nowrap"><b class="num ${v>=0?'pos':'neg'}" style="font-size:1.35rem;line-height:1.15">${sg(v)}</b><span class="sub" style="display:block;font-size:.72rem">${lossTxt(F)}</span></span>
+   </summary>${detail(r)}</details>`;}).join(''):'<div class="hq">조건에 맞는 곳이 없어요</div>'}
  <div class="chips" style="margin-top:10px">${chips}<a onclick="setup()">바꾸기</a></div>
  ${(()=>{if(!CF.regions.length)return '';const z=CF.regions.filter(g=>!V.some(r=>r.gu===g));if(!z.length)return '';
   return `<div class="tip" style="margin:8px 0 0"><span>${z.map(g=>{const A=R.filter(r=>r.gu===g);const c0=CF.regions;CF.regions=[g];const B=A.filter(r=>{const k=CF.cash;CF.cash=null;const o=ok(r);CF.cash=k;return o;});CF.regions=c0;
    if(!B.length)return `<b>${short(g)}</b>엔 면적·연식 등 조건에 맞는 단지가 없어요.`;const m=Math.min(...B.map(r=>fin(r).own));return `<b>${short(g)}</b>엔 내 현금으로 살 수 있는 곳이 없어요 — 가장 적게 드는 곳도 현금 ${eok(m)}억이 필요해요${B.some(r=>r.ltv<0.5)?'(토지거래허가·대출 규제 지역)':''}.`;}).join('<br>')}</span></div>`;})()}
- ${V.length>1?'<div style="font-weight:800;margin:18px 2px 4px">다른 곳</div>':''}
+ 
  <div id="list"></div><button class="btn ghost" id="more" style="margin-top:12px" onclick="N+=10;draw()">다음 10곳</button>
  ${fold('다른 순서로 보기 · 단지 찾기',`<div class="pills">${['lens'].map(k=>`<button class="pill${OPEN===k?' on':''}" onclick="openOpt('${k}')">${pillTxt(k)} ▾</button>`).join('')}</div><div id="optp">${OPEN?optHTML(OPEN):''}</div><input id="sq" type="search" placeholder="단지·동 이름으로 찾기" oninput="find(this.value)" style="width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit;margin:10px 0 4px"><div id="found"></div>`)}
  <div style="display:flex;gap:10px;margin-top:14px"><button class="btn ghost" onclick="setup()">조건 바꾸기</button><button class="btn ghost" onclick="chat()">처음부터</button></div>
@@ -669,7 +670,7 @@ function explain(M1){
   +`<p class="note">${w.join(', ').replace(/고$/,'요')}. 오를 거라 보면 위 가치관에서 <b>상승형</b>을 누르거나 시장 막대에서 2015~17년을 눌러 보세요.</p></div></details>`;}
 let PK=[];
 function pickN(i){const n=(PK[i]||{}).n;if(!n)return;const q=$('#sq');q.value=n;find(n);q.scrollIntoView({behavior:'smooth',block:'start'});}
-function draw(){$('#list').innerHTML=V.slice(1,N).map((r,i)=>row(r,i+2)).join('')||(V.length?'':'<p class="sub">조건에 맞는 곳이 없어요. 조건을 넓혀 보세요.</p>');$('#more').style.display=V.length>N?'block':'none';}
+function draw(){$('#list').innerHTML=V.slice(3,N).map((r,i)=>row(r,i+4)).join('')||(V.length?'':'<p class="sub">조건을 넓혀 보세요.</p>');const m=$('#more');m.style.display=V.length>N?'block':'none';m.textContent=N<=3?'4위부터 더 보기':'더 보기';}
 // 그림은 화면에 들어올 때 움직이기 시작(모바일에서 아래쪽 그림은 스크롤할 때쯤 이미 끝나 있던 문제)
 const IO=window.IntersectionObserver?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('go');IO.unobserve(e.target);}}),{threshold:.25}):null;
 function watch(){document.querySelectorAll('.chart:not(.go):not([data-w])').forEach(c=>{c.dataset.w=1;IO?IO.observe(c):c.classList.add('go');});}
