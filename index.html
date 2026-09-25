@@ -381,7 +381,7 @@ const PCARD={
 let SI=0, SPATH='all';
 const PATHS={first:PCARD.first,move:PCARD.move,mine:PCARD.mine,all:STORY}, SQ_={v:STORY};
 const GO={first:['매수 분석 시작',"chat()"],move:['갈아타기 계산하기',"move()"],mine:['우리 단지 찾아보기',"board('obj',1)"],all:['시작하기',"hub()"]};
-function startPath(k){if(k==='all'){SPATH=k;SQ_.v=PATHS[k];SI=0;story(0);return;} talk(k);}
+function startPath(k){if(k==='all'){SPATH=k;SQ_.v=PATHS[k];SI=0;story(0);return;} consult(k);}
 // ---------------- 대화형 안내(09-25): 설명을 이어 붙이지 않고, 묻고 답에 반응한다 ----------------
 let CHT=0;
 const zz=ms=>new Promise(r=>setTimeout(r,ms));
@@ -413,8 +413,62 @@ function talk(k){
  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="display:flex;align-items:center;gap:8px;font-weight:800"><svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg3)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg3)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg3)"/></svg>집셈</span><button class="linkbtn" style="padding:0;font-size:.84rem;color:var(--ink3)" onclick="CHT++;hub()">건너뛰기 ›</button></div>
  <div id="chl" style="display:flex;flex-direction:column;min-height:50vh"></div>`;
  ({first:chFirst,move:chMove,mine:chMine})[k](tk);}
-function affN(K){   // 내 돈 K(만원)로 대출 더해 살 수 있는 단지 수(생애최초 LTV 70%, 한도 규칙 적용)
- const ok_=r=>r.p+r.fee+r.bu-Math.min(r.p*Math.max(r.ltv,.7),lcap(r.p))<=K; return Object.values(CPXK).filter(c=>c.rows.some(ok_)).length;}
+// ---------------- 상담형 안내(09-25): 질문 하나 → 답 → 데이터로 계산한 '분석' 블록(기준·출처) → 요약 ----------------
+const CN={k:null,i:0,a:{}};
+const CSTEP={
+ first:{title:'첫 집 매수 상담',done:'입력하신 조건으로<br>계산을 준비했습니다',steps:[
+  {id:'K',q:'현재 사용할 수 있는<br>자기자본을 선택해 주세요',h:'대출을 제외한 현금 기준입니다.',opts:[['1억 안팎',10000],['2~3억',25000],['4~5억',45000],['6억 이상',65000]],
+   f:v=>{const n=affN(v), N=CPX.length;return ['매수 가능 단지',n.toLocaleString()+'곳',`서울·경기 ${N.toLocaleString()}개 단지 중 ${Math.round(n/N*100)}%`,'기준: 생애최초 LTV 70% · 주택가격별 대출 한도 · 취득세·중개보수 포함'];}},
+  {id:'U',q:'매수 후<br>보유 목적을 선택해 주세요',h:'목적에 따라 대출 규제와 계산 방식이 달라집니다.',opts:[['실거주','직접 거주',true],['임대(전세)','전세를 놓고 보유',false]],
+   f:v=>{const K=CN.a.K, n=v?affN(K):affN(K,1);return ['매수 가능 단지',n.toLocaleString()+'곳',v?'실거주 기준 · 전 지역 대상':'토지거래허가구역(서울 전역·경기 12곳)은 실거주 의무로 제외','기준: '+(DT.rules&&DT.rules.name||'현행 대출 규제')];}}],
+  sum:a=>[['자기자본',{10000:'1억 안팎',25000:'2~3억',45000:'4~5억',65000:'6억 이상'}[a.K]],['보유 목적',a.U?'실거주':'임대(전세)'],['매수 가능 단지',(a.U?affN(a.K):affN(a.K,1)).toLocaleString()+'곳']],
+  go:['희망 지역 선택하고 분석하기',a=>{CF.cash=a.K;CF.useU=a.U;CF.first=true;save();setup();}]},
+ move:{title:'갈아타기 상담',done:'보유와 이동,<br>비교 계산을 준비했습니다',steps:[
+  {id:'C',q:'현재 보유 중인<br>단지를 검색해 주세요',h:'단지명 또는 동 이름으로 검색합니다.',search:1,f:k=>{const c=CPXK[k],r=bestRow(c)||c.rows[0],P=PC(r),sg=v=>(v>=0?'+':'')+Math.round(v)+'%';return ['입지 점수',c.sc+'점',r.as?'입주권 단계 — 5년 시세는 분담금 확정 후 비교':`5년 뒤 시세(가운데 값) ${sg(P.p5)} · 오를 확률 약 ${P.up}%`,'기준: 과거 20년 실거래 · 입지 점수는 현재 시장가격 기준 5~95'];}},
+  {id:'L',q:'남은 주택담보대출을<br>선택해 주세요',h:'매도 후 쓸 수 있는 자기자본을 계산합니다.',opts:[['없음',0],['1억 안팎',10000],['2~3억',25000],['4억 이상',40000]],
+   f:v=>{const c=CPXK[CN.a.C],b=c.rows.slice().sort((x,y)=>Math.abs(x.b-84)-Math.abs(y.b-84))[0],K=Math.max(0,Math.round(b.p*(1-.004)-v));return ['매도 후 가용 자기자본(추정)',eok(K)+'억',`${b.b}㎡ 최근 실거래 ${eok(b.p)}억 − 대출 − 중개보수 0.4%`,'1주택 양도소득세 비과세 가정 · 이사 비용 제외'];}}],
+  sum:a=>{const c=CPXK[a.C];return [['보유 단지',c.n],['남은 대출',a.L?eok(a.L)+'억':'없음']];},
+  go:['갈아타기 비교 결과 보기',a=>{const c=CPXK[a.C],b=c.rows.slice().sort((x,y)=>Math.abs(x.b-84)-Math.abs(y.b-84))[0];MV.k=a.C;MV.b=b.b;MV.loan=a.L;move();mvRun();}]},
+ mine:{title:'우리 단지 진단',done:'진단 결과를<br>요약했습니다',steps:[
+  {id:'C',q:'진단할 단지를<br>검색해 주세요',h:'단지명 또는 동 이름으로 검색합니다.',search:1,f:k=>{const c=CPXK[k],[g,b]=goodBad(c);return ['입지 점수',c.sc+'점',(g.length?'강점 '+g.slice(0,2).join(' · '):'')+(g.length&&b.length?' / ':'')+(b.length?'약점 '+b.slice(0,2).join(' · '):''),'기준: 역 거리·연식·단지 규모·동네 등 현재 시장가격에 반영된 조건 · 5~95'];}}],
+  sum:a=>{const c=CPXK[a.C],r=bestRow(c)||c.rows[0],P=PC(r),sg=v=>(v>=0?'+':'')+Math.round(v)+'%';return [['단지',c.n+' · '+c.gu],['입지 점수',c.sc+'점'],['5년 뒤 시세(가운데 값)',r.as?'입주권 단계':sg(P.p5)],['오를 확률',r.as?'-':'약 '+P.up+'%']];},
+  go:['단지 성적표 보기',a=>rcard(a.C)],go2:['다른 단지와 비교하기',a=>{CM=[a.C,null];cmp();}]}};
+function consult(k,i){
+ CN.k=k; CN.i=i==null?0:i; if(i==null)CN.a={}; TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
+ if(!document.getElementById('stcss'))document.head.insertAdjacentHTML('beforeend',STCSS);
+ const C=CSTEP[k], n=C.steps.length, done=CN.i>=n;
+ const head=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:.78rem;font-weight:800;color:var(--blue)">${C.title}</span><button class="linkbtn" style="padding:0;font-size:.84rem;color:var(--ink3)" onclick="hub()">나가기</button></div>
+  <div style="height:4px;border-radius:2px;background:var(--line2);margin-bottom:18px"><i style="display:block;height:100%;width:${Math.min(1,(CN.i+(done?0:0))/n)*100}%;background:var(--blue);border-radius:2px;transition:width .4s"></i></div>`;
+ if(done){   // 분석 요약
+  const S_=C.sum(CN.a);
+  app.innerHTML=head+`<div id="stw"><div class="sub sr" style="font-size:.76rem;font-weight:800;letter-spacing:.06em">분석 요약</div>
+   <div class="hq sr" style="font-size:clamp(1.3rem,5.8vw,1.6rem);line-height:1.4;margin:6px 0 14px;${D_(100)}">${C.done}</div>
+   <div class="sr" style="border:1px solid var(--line);border-radius:14px;overflow:hidden;${D_(250)}">${S_.map(([a,b],j)=>`<div style="display:flex;justify-content:space-between;gap:10px;padding:12px 14px;${j?'border-top:1px solid var(--line2)':''}"><span class="sub" style="font-size:.84rem">${a}</span><b style="font-size:.92rem;text-align:right">${b}</b></div>`).join('')}</div>
+   <p class="sub sr" style="font-size:.74rem;line-height:1.6;margin-top:10px;${D_(400)}">과거 실거래 ${(DT.evn||0).toLocaleString()}건으로 검증한 방식으로 계산합니다. 시장 전체의 방향은 예측하지 않으며, 참고용 산출치입니다.</p>
+   <div class="cta sr" style="${D_(550)}"><button class="btn" onclick="CSTEP['${k}'].go[1](CN.a)">${C.go[0]}</button>${C.go2?`<button class="btn ghost" style="margin-top:8px" onclick="CSTEP['${k}'].go2[1](CN.a)">${C.go2[0]}</button>`:''}
+   <p style="text-align:center;margin:6px 0 0"><button class="linkbtn" onclick="consult('${k}',${n-1})">이전</button></p></div></div>`;return;}
+ const st=C.steps[CN.i], v=CN.a[st.id];
+ app.innerHTML=head+`<div id="stw"><div class="sub" style="font-size:.76rem;font-weight:800">질문 ${CN.i+1} / ${n}</div>
+  <div class="hq sr" style="font-size:clamp(1.3rem,5.8vw,1.6rem);line-height:1.4;margin:6px 0 4px">${st.q}</div><div class="sub sr" style="font-size:.84rem;${D_(100)}">${st.h}</div>
+  <div id="cnin" style="margin-top:16px">${st.search?`<input id="cnq" type="search" placeholder="단지명·동 검색" style="width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit" oninput="cnFind(this.value)"><div id="cnr"></div>`
+   :st.opts.map((o,j)=>{const [t,a,b]=o, val=o.length>2?b:a, d=o.length>2?a:'';return `<button class="opt sr${v===val?' on':''}" style="${D_(150+j*70)}" onclick="cnSet(${j})"><b>${t}</b>${d?`<span class="sub" style="display:block;font-size:.76rem;font-weight:400">${d}</span>`:''}</button>`;}).join('')}</div>
+  <div id="cnf"></div>
+  <div class="cta" style="margin-top:14px"><button class="btn" id="cnnext" ${v==null?'disabled style="opacity:.4"':''} onclick="consult('${k}',${CN.i+1})">${CN.i===n-1?'분석 요약 보기':'다음'}</button>
+  ${CN.i>0?`<p style="text-align:center;margin:6px 0 0"><button class="linkbtn" onclick="consult('${k}',${CN.i-1})">이전</button></p>`:`<p style="text-align:center;margin:6px 0 0"><button class="linkbtn" onclick="hello()">다른 상담 고르기</button></p>`}</div></div>`;
+ if(v!=null)cnShow(); if(st.search&&v!=null){$('#cnq').value=CPXK[v].n;}}
+function cnSet(j){const st=CSTEP[CN.k].steps[CN.i], o=st.opts[j]; CN.a[st.id]=o.length>2?o[2]:o[1];
+ document.querySelectorAll('#cnin .opt').forEach((b,x)=>b.classList.toggle('on',x===j)); cnShow();}
+function cnFind(q){q=nz(q); const el=$('#cnr'); el.innerHTML=q?Object.values(CPXK).filter(c=>nz(c.n+' '+(c.al2||'')).includes(q)).slice(0,6).map(c=>`<button class="opt" style="margin:6px 0 0" data-k="${c.k}" onclick="cnPick(this.dataset.k)">${c.n} <span class="sub" style="font-size:.76rem">${c.gu}</span></button>`).join('')||'<p class="sub" style="margin-top:8px">검색 결과 없음</p>':'';}
+function cnPick(k){CN.a[CSTEP[CN.k].steps[CN.i].id]=k; $('#cnq').value=CPXK[k].n; $('#cnr').innerHTML=''; cnShow();}
+function cnShow(){   // 답에 대한 분석 블록(보고서 형식)
+ const st=CSTEP[CN.k].steps[CN.i], v=CN.a[st.id]; if(v==null)return; const [lb,big,sub,src]=st.f(v);
+ $('#cnf').innerHTML=`<div class="sr" style="margin-top:14px;border-left:3px solid var(--blue);background:var(--surface2);border-radius:0 12px 12px 0;padding:12px 14px">
+  <div style="font-size:.7rem;font-weight:800;letter-spacing:.06em;color:var(--blue)">분석</div>
+  <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:4px"><span style="font-size:.86rem;font-weight:700">${lb}</span><b style="font-size:1.35rem">${big}</b></div>
+  <div style="font-size:.82rem;color:var(--ink2);margin-top:4px;line-height:1.5">${sub}</div><div class="sub" style="font-size:.7rem;margin-top:6px">${src}</div></div>`;
+ const b=$('#cnnext'); if(b){b.disabled=false;b.style.opacity=1;}}
+function affN(K,rent){   // 내 돈 K(만원)로 대출 더해 살 수 있는 단지 수(생애최초 LTV 70%, 한도 규칙). rent=임대면 토지거래허가구역 제외
+ const ok_=r=>(!rent||r.ltv>=0.5)&&r.p+r.fee+r.bu-Math.min(r.p*Math.max(r.ltv,.7),lcap(r.p))<=K; return Object.values(CPXK).filter(c=>c.rows.some(ok_)).length;}
 async function chFirst(tk){
  if(!await say('첫 집을 알아보시는군요.',tk))return;
  if(!await say('지금 쓸 수 있는 <b>내 돈</b>은 얼마쯤이세요?',tk))return;
@@ -449,7 +503,7 @@ function hello(){   // 09-25 사용자: '안녕하세요'로 시작 + 고민을 
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
  try{localStorage.setItem('jsIntro2','1');}catch(e){}
  if(!document.getElementById('stcss'))document.head.insertAdjacentHTML('beforeend',STCSS);
- const O=[['calc','첫 집을 알아보고 있어요','first'],['swap','지금 집을 팔고 옮길지 고민이에요','move'],['home','우리 단지가 궁금해요','mine']];
+ const O=[['calc','첫 집을 알아보고 있어요','first'],['swap','지금 집을 팔고 옮길지 고민이에요','move'],['home','우리 단지를 진단하고 싶어요','mine']];
  app.innerHTML=`<div id="stw"><div style="margin:6px 0 14px"><span class="sp" style="border-radius:16px;${D_(100)}"><svg width="56" height="56" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg4)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg4)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg4)"/></svg></span></div>
  <div class="hq sr" style="font-size:clamp(1.5rem,6.6vw,1.9rem);line-height:1.4;${D_(350)}">안녕하세요,<br>집셈입니다</div>
  <p class="sr" style="margin:10px 0 0;font-size:.95rem;line-height:1.6;color:var(--ink2);${D_(650)}">집을 사고, 팔고, 기다릴 때<br>필요한 계산을 대신해 드립니다.</p>
