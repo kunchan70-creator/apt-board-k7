@@ -314,7 +314,11 @@ const CPX=(()=>{const m=new Map();R.forEach(r=>{const k=r.no||(r.n+'|'+r.gu);let
   const HB={};L.forEach(c=>HB[c.k]=c);window.CPXK=HB;
   return L;})();
 const KM=(a,b)=>{const R_=6371,t=Math.PI/180,dl=(b[0]-a[0])*t,dn=(b[1]-a[1])*t,x=Math.sin(dl/2)**2+Math.cos(a[0]*t)*Math.cos(b[0]*t)*Math.sin(dn/2)**2;return 2*R_*Math.asin(Math.sqrt(x));};
-const PC=r=>({p1:(r.v1/r.p-1)*100,p5:(r.v5/r.p-1)*100,p9:(r.v9/r.p-1)*100,h:(r.U||0)/r.p*100});
+function upProb(r,x){   // x(만원) 초과 확률. 세 점 (v1,.1)(v5,.5)(v9,.9) 사이는 직선, 바깥은 같은 기울기로 연장
+ const a=r.v1,b=r.v5,c=r.v9; let F;
+ if(x<=a)F=.1-(a-x)/Math.max(1,b-a)*.4; else if(x<=b)F=.1+(x-a)/Math.max(1,b-a)*.4; else if(x<=c)F=.5+(x-b)/Math.max(1,c-b)*.4; else F=.9+(x-c)/Math.max(1,c-b)*.4;
+ return Math.round(Math.min(.99,Math.max(.01,1-F))*100);}
+const PC=r=>({p1:(r.v1/r.p-1)*100,p5:(r.v5/r.p-1)*100,p9:(r.v9/r.p-1)*100,h:(r.U||0)/r.p*100,up:upProb(r,r.p)});
 const UPK=r=>BF.hv?r.ce:((r.v5/r.p-1)+(r.v1/r.p-1))/2;   // 상승 여력 정렬: 기본=시세(기준·비관 평균), 주거비 포함을 켜면 총수익(ce)
 function bestRow(c){const rs=BF.size.length?c.rows.filter(r=>BF.size.includes(szOf(r.b))):c.rows;return rs.length?rs.reduce((a,r)=>UPK(r)>UPK(a)?r:a):null;}
 const LZ={obj:['입지 점수 순위','현재 시장가격에 반영된 입지 조건(지역·동네·역·연식·규모)의 등급입니다. 수익 예측치가 아닙니다.'],
@@ -327,7 +331,7 @@ function board(lens,focus){
  const L_=BF.lens, Q=DT.q5||[], qt=Q[Q.length-1]||{}, qb=Q[0]||{}, H=DT.hubs||[];
  const gus=[...new Set(CPX.map(c=>c.gu))].sort();
  const QP=DT.q5p||[], pt=QP[QP.length-1]||{}, pb=QP[0]||{};
- const sub=L_==='up'?`5년 뒤 <b>시세</b> 기준 순위입니다. 과거 검증: 모델 평가 상위 20% 단지의 실제 5년 시세는 중위 <b style="color:var(--green)">+${pt.med}%</b>(하위 20%는 +${pb.med}%), 손실 비율은 ${pt.loss}% 대 ${pb.loss}%였습니다. 같은 지역 안의 단지 비교에 강합니다. 지역 전체의 방향은 과거에 국면마다 뒤집혀 예측하지 않고, 그 폭을 비관~낙관 범위에 넣었습니다. 입주권(이주·착공) 단계 단지는 분담금이 별도라 제외했습니다.`:L_==='rb'?LZ.rb[1]+(DT.bk?` (보정 사례 ${DT.bk.n}건 · 오차 중앙 옛 집 시세의 ${DT.bk.err}%, 강남 고가 단지는 4~6억까지 벗어난 사례가 있습니다)`:''):LZ[L_][1];
+ const sub=L_==='up'?`5년 뒤 <b>시세</b> 기준 순위입니다. 큰 숫자는 가운데 값(이보다 더 오를 확률과 덜 오를 확률이 반반)이고, '오를 확률'은 5년 뒤 시세가 지금보다 높을 확률입니다(취득세·중개보수 제외). 과거 검증: 모델 평가 상위 20% 단지의 실제 5년 시세는 중위 <b style="color:var(--green)">+${pt.med}%</b>(하위 20%는 +${pb.med}%), 손실 비율은 ${pt.loss}% 대 ${pb.loss}%였습니다. 같은 지역 안의 단지 비교에 강합니다. 지역 전체의 방향은 과거에 국면마다 뒤집혀 예측하지 않고, 그 폭을 비관~낙관 범위에 넣었습니다. 입주권(이주·착공) 단계 단지는 분담금이 별도라 제외했습니다.`:L_==='rb'?LZ.rb[1]+(DT.bk?` (보정 사례 ${DT.bk.n}건 · 오차 중앙 옛 집 시세의 ${DT.bk.err}%, 강남 고가 단지는 4~6억까지 벗어난 사례가 있습니다)`:''):LZ[L_][1];
  app.innerHTML=HOME+`<div class="hq" style="margin:0 0 4px">${LZ[L_][0]}</div><div class="sub" style="font-size:.8rem;line-height:1.55;margin-bottom:10px">${sub}</div>
  ${L_==='up'?`<label class="tg" style="margin:0 0 8px"><span><b>실거주 주거비 절감 포함</b><br><span class="hint">직접 살 때 내지 않는 월세를 수익에 더해 봅니다(관점에 따라 다름)</span></span><span class="sw"><input type="checkbox" ${BF.hv?'checked':''} onchange="BF.hv=this.checked;BF.n=30;board()"><i></i></span></label>`:''}
  
@@ -351,7 +355,7 @@ function blist(){
  L.forEach((x,i)=>x.k=L_==='obj'?(BF.gu?x.c.rg:x.c.ra):i+1);
  const q=nz(BF.q); if(q)L=L.filter(x=>nz(x.c.n+' '+(x.c.al2||'')).includes(q));
  const right=({c,r,d})=>up?(()=>{const P=PC(r);return BF.hv?`<span style="display:block;font-size:.66rem;color:var(--ink3);font-weight:700">5년 총수익 기준</span><b class="num ${r.r5>=0?'pos':'neg'}" style="font-size:1.1rem">${sg(r.r5)}</b><span class="sub" style="display:block;font-size:.7rem">시세 ${sg(P.p5)} · 주거비 ${sg(P.h)}</span><span class="sub" style="display:block;font-size:.7rem">비관 ${sg(r.r1)} · 낙관 ${sg(r.r9)}</span>${regWarn(c.gu,1)}`
-   :`<span style="display:block;font-size:.66rem;color:var(--ink3);font-weight:700">5년 시세 기준</span><b class="num ${P.p5>=0?'pos':'neg'}" style="font-size:1.1rem">${sg(P.p5)}</b><span class="sub" style="display:block;font-size:.7rem">비관 ${sg(P.p1)} · 낙관 ${sg(P.p9)}</span>${regWarn(c.gu,1)}`;})()
+   :`<span style="display:block;font-size:.66rem;color:var(--ink3);font-weight:700">5년 시세 기준 · 오를 확률 약 ${P.up}%</span><b class="num ${P.p5>=0?'pos':'neg'}" style="font-size:1.1rem">${sg(P.p5)}</b><span class="sub" style="display:block;font-size:.7rem">${eok(r.p)}억 → ${eok(r.v5)}억 (${r.v5>=r.p?'+':'−'}${eok(Math.abs(r.v5-r.p))}억)</span><span class="sub" style="display:block;font-size:.7rem">비관 ${sg(P.p1)} · 낙관 ${sg(P.p9)}</span>`;})()
   :L_==='def'?`<span style="display:block;font-size:.66rem;color:var(--ink3);font-weight:700">2022 하락기 변동</span><b class="num" style="font-size:1.15rem;color:${c.dd>-10?'var(--blue)':c.dd<-25?'var(--red)':'var(--ink)'}">${c.dd>0?'+':''}${Math.round(c.dd)}%</b><span class="sub" style="display:block;font-size:.7rem">입지 ${c.sc}</span>`
   :L_==='job'?`<span style="display:block;font-size:.66rem;color:var(--ink3);font-weight:700">직선 ${d.toFixed(1)}km</span><b class="num" style="font-size:1.15rem;color:var(--blue)">${c.sc}</b><span class="sub" style="display:block;font-size:.7rem">입지 점수</span>`
   :L_==='rb'?bkTxt(c,1)
@@ -395,7 +399,7 @@ function rcard(k,back){
   <div style="font-size:1.35rem;font-weight:800;margin:14px 0 2px;word-break:keep-all">${c.n}</div><div class="sub" style="font-size:.82rem">${c.gu}${c.y?' · '+c.y+'년':''}${c.hh?' · '+c.hh.toLocaleString()+'세대':''}</div>
   <div style="display:flex;align-items:flex-end;gap:14px;margin:16px 0 6px"><div><div class="sub" style="font-size:.72rem;font-weight:700">입지 점수</div><div class="num" style="font-size:3rem;font-weight:800;line-height:1;color:var(--blue)">${c.sc}</div></div>
    <div style="padding-bottom:4px;font-size:.86rem;line-height:1.6"><b>서울·경기 상위 ${pct}%</b><br>${c.gu.split(' ').pop()} ${c.rg}위 / ${c.ng}개 단지</div></div>
-  <div class="mini" style="margin-top:10px">${r.as?`<div style="grid-column:span 2"><span>5년 시세</span><b style="font-size:.84rem">입주권 단계 — 분담금 별도라 비교 제외</b></div>`:`<div><span>5년 시세 기준<br>${r.b}㎡</span><b class="${PC(r).p5>=0?'pos':'neg'}">${sg(PC(r).p5)}</b></div><div><span>비관~낙관</span><b style="font-size:.86rem">${sg(PC(r).p1)}~${sg(PC(r).p9)}</b></div>`}<div><span>2022 하락기 변동</span><b style="color:${c.dd==null?'var(--ink3)':c.dd<-25?'var(--red)':'var(--ink)'}">${c.dd==null?'-':Math.round(c.dd)+'%'}</b></div></div>
+  <div class="mini" style="margin-top:10px">${r.as?`<div style="grid-column:span 2"><span>5년 시세</span><b style="font-size:.84rem">입주권 단계 — 분담금 별도라 비교 제외</b></div>`:`<div><span>5년 시세 기준<br>${r.b}㎡</span><b class="${PC(r).p5>=0?'pos':'neg'}">${sg(PC(r).p5)}</b><span style="font-size:.66rem;color:var(--ink3)">${eok(r.p)}→${eok(r.v5)}억</span></div><div><span>오를 확률<br>(5년 뒤 > 지금)</span><b>약 ${PC(r).up}%</b><span style="font-size:.66rem;color:var(--ink3)">비관 ${sg(PC(r).p1)} · 낙관 ${sg(PC(r).p9)}</span></div>`}<div><span>2022 하락기 변동</span><b style="color:${c.dd==null?'var(--ink3)':c.dd<-25?'var(--red)':'var(--ink)'}">${c.dd==null?'-':Math.round(c.dd)+'%'}</b></div></div>
   ${g.length?`<div style="margin-top:12px;font-size:.86rem;line-height:1.7"><b class="pos">강점</b> ${g.map(x=>'▲ '+x).join(' · ')}</div>`:''}${b.length?`<div style="font-size:.86rem;line-height:1.7"><b class="neg">약점</b> ${b.map(x=>'▼ '+x).join(' · ')}</div>`:''}
   ${regWarn(c.gu)}<div class="sub" style="font-size:.68rem;margin-top:12px">참고용 산출치이며, 투자 권유가 아닙니다.</div></div>
  <div style="display:flex;gap:10px;margin-top:12px"><button class="btn" style="flex:1" onclick="cardPng('${k}')">이미지로 저장</button><button class="btn ghost" style="flex:1" onclick="navigator.clipboard&&navigator.clipboard.writeText(location.href).then(()=>this.textContent='링크 복사됨')">링크 복사</button></div>
@@ -410,7 +414,7 @@ function cardPng(k){   // 캔버스로 같은 내용을 그려 PNG 저장(외부
  x.fillStyle='#8a909b'; x.font=F(700,32); x.fillText('입지 점수',120,450); x.fillStyle='#4263eb'; x.font=F(800,200); x.fillText(String(c.sc),110,640);
  x.fillStyle='#1a1f2c'; x.font=F(800,44); x.fillText('서울·경기 상위 '+Math.max(1,Math.round(c.ra/CPX.length*100))+'%',470,560); x.fillStyle='#4c5566'; x.font=F(500,38); x.fillText(c.gu.split(' ').pop()+' '+c.rg+'위 / '+c.ng+'개 단지',470,620);
  const box=(bx,t,v,col)=>{x.fillStyle='#f8f7f3';x.beginPath();x.roundRect(bx,710,270,170,24);x.fill();x.fillStyle='#8a909b';x.font=F(600,28);x.fillText(t,bx+26,760);x.fillStyle=col;x.font=F(800,50);x.fillText(v,bx+26,840);};
- {const P=PC(r);box(120,'5년 시세 기준',sg(P.p5),P.p5>=0?'#00a660':'#f04452'); box(405,'비관~낙관',sg(P.p1)+'~'+sg(P.p9),'#1a1f2c');} box(690,'2022 하락기 변동',c.dd==null?'-':Math.round(c.dd)+'%',c.dd!=null&&c.dd<-25?'#f04452':'#1a1f2c');
+ {const P=PC(r);box(120,'5년 시세 기준',sg(P.p5),P.p5>=0?'#00a660':'#f04452'); box(405,'오를 확률','약 '+P.up+'%','#1a1f2c');} box(690,'2022 하락기 변동',c.dd==null?'-':Math.round(c.dd)+'%',c.dd!=null&&c.dd<-25?'#f04452':'#1a1f2c');
  x.font=F(600,34); let y=960; if(g.length){x.fillStyle='#00a660';x.fillText('강점  '+g.join(' · '),120,y);y+=64;} if(b.length){x.fillStyle='#f04452';x.fillText('약점  '+b.join(' · '),120,y);}
  x.fillStyle='#8a909b'; x.font=F(500,28); x.fillText('참고용 산출치이며, 투자 권유가 아닙니다.',120,H-130);
  const a=document.createElement('a'); a.download='집셈_'+c.n+'.png'; a.href=cv.toDataURL('image/png'); a.click();}
@@ -429,7 +433,7 @@ function cmpRes(){
  const A=CPXK[CM[0]], B=CPXK[CM[1]], pick=c=>{const t=c.rows.slice().sort((a,b)=>Math.abs(a.b-84)-Math.abs(b.b-84));return t[0];}, ra=pick(A), rb=pick(B), sg=v=>(v>=0?'+':'')+Math.round(v)+'%';
  const kx=c=>{const r=c.rows[0];return r.ka!=null?r.ka:null;};
  const L=[['입지 점수',A.sc,B.sc,1,v=>v],['서울·경기 순위',A.ra,B.ra,-1,v=>v.toLocaleString()+'위'],['구 내 순위',A.rg/A.ng,B.rg/B.ng,-1,(v,c)=>c.rg+'/'+c.ng],
-  ['비교 평형',ra.b,rb.b,0,v=>v+'㎡'],['5년 시세 기준',PC(ra).p5,PC(rb).p5,1,sg],['최근 1년 지역 시세',gyof(A.gu),gyof(B.gu),0,v=>v==null?'-':(v>0?'+':'')+v+'%'],['비관',PC(ra).p1,PC(rb).p1,1,sg],['낙관',PC(ra).p9,PC(rb).p9,0,sg],['2022 하락기 변동',A.dd,B.dd,1,v=>v==null?'-':Math.round(v)+'%'],
+  ['비교 평형',ra.b,rb.b,0,v=>v+'㎡'],['5년 시세 기준',PC(ra).p5,PC(rb).p5,1,sg],['오를 확률',PC(ra).up,PC(rb).up,1,v=>'약 '+v+'%'],['5년 뒤 시세(기준)',ra.v5,rb.v5,0,v=>eok(v)+'억'],['최근 1년 지역 시세',gyof(A.gu),gyof(B.gu),0,v=>v==null?'-':(v>0?'+':'')+v+'%'],['비관',PC(ra).p1,PC(rb).p1,1,sg],['낙관',PC(ra).p9,PC(rb).p9,0,sg],['2022 하락기 변동',A.dd,B.dd,1,v=>v==null?'-':Math.round(v)+'%'],
   ['준공',A.y,B.y,1,v=>v?v+'년':'-'],['세대수',A.hh,B.hh,1,v=>v?v.toLocaleString():'-'],['역 거리',kx(A),kx(B),-1,v=>v==null?'-':v.toFixed(1)+'km']];
  const cell=(v,o,dir,f,c)=>{const w=dir&&v!=null&&o!=null&&v!==o&&(dir>0?v>o:v<o);return `<td style="text-align:center;padding:9px 4px;${w?'color:var(--green);font-weight:800':''}">${f(v,c)}</td>`;};
  return `<table style="width:100%;border-collapse:collapse;margin-top:12px;font-size:.88rem"><tr><th></th><th style="padding:6px 4px">${A.n}</th><th style="padding:6px 4px">${B.n}</th></tr>`
