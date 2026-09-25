@@ -93,7 +93,7 @@ small.src{display:block;color:var(--ink3);font-size:.8rem;margin-top:4px;line-he
 .card h2:first-child,.card h1:first-child{margin-top:0}
 ul.plain{padding-left:18px}
 </style></head><body><div class="wrap">
-<div class="top"><a href="index.html" class="brand" style="display:flex;align-items:center;gap:8px;color:inherit;text-decoration:none"><svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg7" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg7)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg7)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg7)"/></svg>집셈</a></div>
+<div class="top"><a href="index.html" class="brand" style="display:flex;align-items:center;gap:8px;color:inherit;text-decoration:none"><svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg8" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg8)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg8)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg8)"/></svg>집셈</a></div>
 
 <style>
 .stage{min-height:62vh}
@@ -381,13 +381,76 @@ const PCARD={
 let SI=0, SPATH='all';
 const PATHS={first:PCARD.first,move:PCARD.move,mine:PCARD.mine,all:STORY}, SQ_={v:STORY};
 const GO={first:['매수 분석 시작',"chat()"],move:['갈아타기 계산하기',"move()"],mine:['우리 단지 찾아보기',"board('obj',1)"],all:['시작하기',"hub()"]};
-function startPath(k){SPATH=k;SQ_.v=PATHS[k];SI=0;story(0);}
+function startPath(k){if(k==='all'){SPATH=k;SQ_.v=PATHS[k];SI=0;story(0);return;} talk(k);}
+// ---------------- 대화형 안내(09-25): 설명을 이어 붙이지 않고, 묻고 답에 반응한다 ----------------
+let CHT=0;
+const zz=ms=>new Promise(r=>setTimeout(r,ms));
+function chBox(){return $('#chl');}
+function chScroll(){const b=chBox();if(b)b.lastElementChild&&b.lastElementChild.scrollIntoView({block:'end',behavior:'smooth'});}
+async function say(html,tk){   // 집셈 말풍선(입력 중 점 → 글)
+ const b=chBox(); if(!b||tk!==CHT)return false;
+ const d=document.createElement('div'); d.className='chb me2'; d.innerHTML='<span class="dots"><i></i><i></i><i></i></span>'; b.appendChild(d); chScroll();
+ await zz(Math.min(1100,380+html.replace(/<[^>]+>/g,'').length*14)); if(tk!==CHT)return false;
+ d.innerHTML=html; chScroll(); await zz(250); return tk===CHT;}
+function me(t){const b=chBox(); if(!b)return; const d=document.createElement('div'); d.className='chb you'; d.textContent=t; b.appendChild(d); chScroll();}
+function choose2(opts,tk){   // 보기 버튼 → 누르면 내 말풍선
+ return new Promise(res=>{const b=chBox(); if(!b||tk!==CHT)return; const w=document.createElement('div'); w.className='chopts';
+  w.innerHTML=opts.map(([t],k)=>`<button data-k="${k}">${t}</button>`).join(''); b.appendChild(w); chScroll();
+  w.querySelectorAll('button').forEach(x=>x.onclick=()=>{const o=opts[+x.dataset.k]; w.remove(); me(o[0]); res(o[1]);});});}
+function findCx(tk,ph){   // 단지 검색 입력 → 고르면 단지 키
+ return new Promise(res=>{const b=chBox(); if(!b||tk!==CHT)return; const w=document.createElement('div'); w.className='chopts';
+  w.innerHTML=`<input type="search" placeholder="${ph}" style="width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit"><div class="chres"></div>`; b.appendChild(w); chScroll();
+  const inp=w.querySelector('input'), out=w.querySelector('.chres'); inp.focus();
+  inp.oninput=()=>{const q=nz(inp.value); out.innerHTML=q?Object.values(CPXK).filter(c=>nz(c.n+' '+(c.al2||'')).includes(q)).slice(0,5).map(c=>`<button data-k="${c.k}" style="width:100%;text-align:left;margin-top:6px">${c.n} <span class="sub" style="font-size:.76rem">${c.gu}</span></button>`).join('')||'<div class="sub" style="margin-top:6px">검색 결과 없음</div>':'';
+   out.querySelectorAll('button').forEach(x=>x.onclick=()=>{const c=CPXK[x.dataset.k]; w.remove(); me(c.n); res(c.k);});};});}
+function talk(k){
+ const tk=++CHT; TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
+ if(!document.getElementById('stcss'))document.head.insertAdjacentHTML('beforeend',STCSS);
+ app.innerHTML=`<style>.chb{max-width:86%;padding:11px 14px;margin:6px 0;border-radius:18px;font-size:.94rem;line-height:1.55;animation:stRise .35s cubic-bezier(.2,.8,.2,1) both}
+ .chb.me2{background:var(--surface2);border-bottom-left-radius:6px;align-self:flex-start}.chb.you{background:var(--blue);color:#fff;border-bottom-right-radius:6px;align-self:flex-end;font-weight:700}
+ .chopts{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px;animation:stRise .35s both}.chopts>button,.chres button{padding:10px 14px;border-radius:999px;border:1.5px solid var(--blue);background:var(--surface);color:var(--blue);font:inherit;font-weight:700;cursor:pointer}.chres{width:100%}.chres button{border-radius:12px;border-color:var(--line);color:var(--ink)}
+ .dots i{display:inline-block;width:6px;height:6px;margin:0 2px;border-radius:50%;background:var(--ink3);animation:stPulse .9s infinite}.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}</style>
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="display:flex;align-items:center;gap:8px;font-weight:800"><svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg3)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg3)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg3)"/></svg>집셈</span><button class="linkbtn" style="padding:0;font-size:.84rem;color:var(--ink3)" onclick="CHT++;hub()">건너뛰기 ›</button></div>
+ <div id="chl" style="display:flex;flex-direction:column;min-height:50vh"></div>`;
+ ({first:chFirst,move:chMove,mine:chMine})[k](tk);}
+function affN(K){   // 내 돈 K(만원)로 대출 더해 살 수 있는 단지 수(생애최초 LTV 70%, 한도 규칙 적용)
+ const ok_=r=>r.p+r.fee+r.bu-Math.min(r.p*Math.max(r.ltv,.7),lcap(r.p))<=K; return Object.values(CPXK).filter(c=>c.rows.some(ok_)).length;}
+async function chFirst(tk){
+ if(!await say('첫 집을 알아보시는군요.',tk))return;
+ if(!await say('지금 쓸 수 있는 <b>내 돈</b>은 얼마쯤이세요?',tk))return;
+ const K=await choose2([['1억 안팎',10000],['2~3억',25000],['4~5억',45000],['그 이상',70000]],tk); if(tk!==CHT)return;
+ const n=affN(K);
+ if(!await say(`그 돈이면 대출을 더해<br>서울·경기 <b style="color:var(--blue)">${n.toLocaleString()}개</b> 단지를 살 수 있어요.`,tk))return;
+ if(!await say('산 집에 <b>직접 사실</b> 건가요, <b>전세를 놓으실</b> 건가요?',tk))return;
+ const U=await choose2([['직접 살 거예요',true],['전세를 놓을 거예요',false]],tk); if(tk!==CHT)return;
+ if(!await say('좋아요. 그중 <b>5년 뒤 어디가 가장 나을지</b>,<br>대출·세금·이자까지 계산해 볼까요?',tk))return;
+ const go=await choose2([['내 조건으로 계산하기',1],['나중에 할게요',0]],tk); if(tk!==CHT)return;
+ if(go){CF.cash=K;CF.useU=U;CF.first=true;save();setup();} else hub();}
+async function chMove(tk){
+ if(!await say('갈아타기를 고민하시는군요.',tk))return;
+ if(!await say('지금 사는 단지를 알려 주시면,<br><b>5년 더 보유할 때</b>와 <b>팔고 옮길 때</b>를 같은 기준으로 비교해 드려요.',tk))return;
+ const k=await findCx(tk,'단지 이름 검색'); if(tk!==CHT)return; const c=CPXK[k], [g]=goodBad(c);
+ if(!await say(`${c.n}(${c.gu})이군요.${g.length?`<br>강점은 <b>${g.slice(0,2).join(' · ')}</b>이에요.`:''}`,tk))return;
+ if(!await say('남은 주택담보대출은 얼마쯤인가요?',tk))return;
+ const L=await choose2([['없어요',0],['1억 안팎',10000],['2~3억',25000],['4억 이상',40000]],tk); if(tk!==CHT)return;
+ if(!await say('그럼 지금 집을 팔았을 때 쓸 수 있는 돈으로<br>옮길 수 있는 곳과 비교해 볼게요.',tk))return;
+ const go=await choose2([['비교해 보기',1],['나중에 할게요',0]],tk); if(tk!==CHT)return;
+ if(go){const b=c.rows.slice().sort((x,y)=>Math.abs(x.b-84)-Math.abs(y.b-84))[0];MV.k=k;MV.b=b.b;MV.loan=L;move();mvRun();} else hub();}
+async function chMine(tk){
+ if(!await say('우리 단지가 궁금하시군요.',tk))return;
+ if(!await say('단지 이름을 알려 주세요.',tk))return;
+ const k=await findCx(tk,'단지 이름 검색'); if(tk!==CHT)return; const c=CPXK[k], [g,b]=goodBad(c), r=bestRow(c)||c.rows[0], P=PC(r), sg=v=>(v>=0?'+':'')+Math.round(v)+'%';
+ if(!await say(`${c.n}(${c.gu})이군요.`,tk))return;
+ if(!await say(`역까지의 거리, 연식, 단지 규모, 동네처럼 시장이 실제로 값을 쳐 주는 조건으로 보면<br>${g.length?`강점은 <b style="color:var(--green)">${g.slice(0,2).join(' · ')}</b>`:''}${g.length&&b.length?',<br>':''}${b.length?`약점은 <b>${b.slice(0,2).join(' · ')}</b>`:''}이에요.`,tk))return;
+ if(!r.as&&!await say(`5년 뒤 시세는 가운데 값으로 <b class="${P.p5>=0?'pos':'neg'}">${sg(P.p5)}</b>,<br>지금보다 오를 확률은 약 <b>${P.up}%</b>로 계산돼요.`,tk))return;
+ const go=await choose2([['성적표 전체 보기','c'],['다른 단지와 비교하기','v'],['메인으로','h']],tk); if(tk!==CHT)return;
+ if(go==='c')rcard(k); else if(go==='v'){CM=[k,null];cmp();} else hub();}
 function hello(){   // 09-25 사용자: '안녕하세요'로 시작 + 고민을 먼저 묻고, 그 고민에 맞는 카드만
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
  try{localStorage.setItem('jsIntro2','1');}catch(e){}
  if(!document.getElementById('stcss'))document.head.insertAdjacentHTML('beforeend',STCSS);
  const O=[['calc','첫 집을 알아보고 있어요','first'],['swap','지금 집을 팔고 옮길지 고민이에요','move'],['home','우리 단지가 궁금해요','mine']];
- app.innerHTML=`<div id="stw"><div style="margin:6px 0 14px"><span class="sp" style="border-radius:16px;${D_(100)}"><svg width="56" height="56" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg3)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg3)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg3)"/></svg></span></div>
+ app.innerHTML=`<div id="stw"><div style="margin:6px 0 14px"><span class="sp" style="border-radius:16px;${D_(100)}"><svg width="56" height="56" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg4)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg4)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg4)"/></svg></span></div>
  <div class="hq sr" style="font-size:clamp(1.5rem,6.6vw,1.9rem);line-height:1.4;${D_(350)}">안녕하세요,<br>집셈입니다</div>
  <p class="sr" style="margin:10px 0 0;font-size:.95rem;line-height:1.6;color:var(--ink2);${D_(650)}">집을 사고, 팔고, 기다릴 때<br>필요한 계산을 대신해 드립니다.</p>
  <div class="sr" style="margin:26px 0 8px;font-weight:800;${D_(1000)}">어떤 고민으로 오셨나요?</div>
@@ -397,7 +460,7 @@ function story(i){
  const prev=SI; SI=i==null?0:Math.max(0,Math.min(SQ_.v.length,i)); const dx=SI>=prev?40:-40; TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
  try{localStorage.setItem('jsIntro2','1');}catch(e){}
  if(!document.getElementById('stcss'))document.head.insertAdjacentHTML('beforeend',STCSS);
- if(SI===SQ_.v.length){app.innerHTML=`<div id="stw" style="--dx:${dx}px;min-height:58vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:16px"><span class="sp" style="border-radius:20px;animation:stPop .6s cubic-bezier(.3,1.4,.5,1) forwards,stGlow 1.4s ease-out .6s 2"><svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg4)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg4)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg4)"/></svg></span>
+ if(SI===SQ_.v.length){app.innerHTML=`<div id="stw" style="--dx:${dx}px;min-height:58vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:16px"><span class="sp" style="border-radius:20px;animation:stPop .6s cubic-bezier(.3,1.4,.5,1) forwards,stGlow 1.4s ease-out .6s 2"><svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg5" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg5)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg5)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg5)"/></svg></span>
    <div class="hq sr" style="font-size:clamp(1.5rem,6.6vw,1.9rem);line-height:1.4;${D_(500)}">셈은 집셈이,<br>결정은 직접</div><div class="sr" style="font-size:.9rem;line-height:1.6;color:var(--ink2);${D_(900)}">집셈은 집을 추천하지 않습니다.<br>흩어진 고민을 같은 기준으로 계산해 드립니다.</div><div class="sub sr" style="font-size:.78rem;line-height:1.6;${D_(1200)}">과거 실거래 ${(DT.evn||0).toLocaleString()}건으로 검증 · 시장 전체의 방향은 예측하지 않습니다<br>서울·경기 아파트 · 매일 갱신</div></div>
    <div class="cta sr" style="${D_(1500)}"><button class="btn" onclick="${GO[SPATH][1]}">${GO[SPATH][0]}</button><p style="text-align:center;margin:6px 0 0"><button class="linkbtn" onclick="hub()">메인으로</button></p></div>`;return;}
  const S_=SQ_.v[SI];
@@ -523,7 +586,7 @@ function rcard(k,back){
  try{history.replaceState(null,'','#c='+encodeURIComponent(k));}catch(e){}
  app.innerHTML=`<button class="linkbtn" style="padding:0;margin:0 0 8px;font-size:.84rem;color:var(--ink3)" onclick="history.replaceState(null,'',location.pathname);board()">‹ 순위로</button>
  <div id="rc" style="border:1.5px solid var(--line);border-radius:20px;padding:18px 16px;background:var(--surface)">
-  <div style="display:flex;justify-content:space-between;align-items:center"><span style="display:flex;align-items:center;gap:6px;font-weight:800;font-size:.85rem"><svg width="22" height="22" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg5" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg5)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg5)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg5)"/></svg>집셈 단지 성적표</span><span class="sub" style="font-size:.7rem">${DT.asof||''}</span></div>
+  <div style="display:flex;justify-content:space-between;align-items:center"><span style="display:flex;align-items:center;gap:6px;font-weight:800;font-size:.85rem"><svg width="22" height="22" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg6" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg6)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg6)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg6)"/></svg>집셈 단지 성적표</span><span class="sub" style="font-size:.7rem">${DT.asof||''}</span></div>
   <div style="font-size:1.35rem;font-weight:800;margin:14px 0 2px;word-break:keep-all">${c.n}</div><div class="sub" style="font-size:.82rem">${c.gu}${c.y?' · '+c.y+'년':''}${c.hh?' · '+c.hh.toLocaleString()+'세대':''}</div>
   <div style="display:flex;align-items:flex-end;gap:14px;margin:16px 0 6px"><div><div class="sub" style="font-size:.72rem;font-weight:700">입지 점수</div><div class="num" style="font-size:3rem;font-weight:800;line-height:1;color:var(--blue)">${c.sc}</div></div>
    <div style="padding-bottom:4px;font-size:.86rem;line-height:1.6"><b>서울·경기 상위 ${pct}%</b><br>${c.gu.split(' ').pop()} ${c.rg}위 / ${c.ng}개 단지</div></div>
@@ -670,7 +733,7 @@ function bridge(){   // 09-24 사용자: 토스식 체크 모션 대신 '셈' �
  .seal{flex:0 0 auto;width:34px;height:34px;border:2.5px solid var(--red);color:var(--red);border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.95rem;opacity:0;transform:rotate(-9deg)}
  .seal.on{animation:stamp .38s cubic-bezier(.3,1.4,.5,1) both}</style>
  <div class="chat"><button class="skip" onclick="setup()">건너뛰기 ›</button>
- <div style="margin:2px 0 12px"><svg width="48" height="48" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg6" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg6)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg6)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg6)"/></svg></div>
+ <div style="margin:2px 0 12px"><svg width="48" height="48" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg7" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg7)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg7)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg7)"/></svg></div>
  <div class="hq" style="font-size:clamp(1.4rem,6.2vw,1.75rem);line-height:1.4">이 모든 것을<br>단지별로 계산합니다</div>
  <div style="margin:20px 0 6px">${L.map(([e,a,b],k)=>`<div id="br${k}" style="display:flex;gap:12px;align-items:center;padding:11px 0;border-bottom:1px dashed var(--line);opacity:.25;transition:opacity .3s">
   ${ic(e,36,1)}
