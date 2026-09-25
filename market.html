@@ -15,7 +15,8 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px;color:var(--ink);font-size:16px;line-height:1.5;letter-spacing:-.01em;
  font-family:Pretendard,"Pretendard Variable",-apple-system,BlinkMacSystemFont,system-ui,"Noto Sans KR","Malgun Gothic",sans-serif;
- padding:0 16px 96px;-webkit-font-smoothing:antialiased}
+ padding:0 16px 96px;-webkit-font-smoothing:antialiased;
+ word-break:keep-all;overflow-wrap:break-word}   /* 09-25 사용자: '7.00'과 '억'이 두 줄로 갈라지는 문제 — 띄어쓰기에서만 줄바꿈 */
 .wrap{max-width:720px;margin:0 auto}
 a{color:var(--blue);text-decoration:none}
 .top{display:flex;align-items:center;justify-content:space-between;padding:18px 2px 10px;gap:12px}
