@@ -353,7 +353,7 @@ const GO={first:['매수 분석 시작',"chat()"],move:['갈아타기 계산하�
 function startPath(k){SPATH=k;SQ_.v=PATHS[k];SI=0;story(0);}
 function hello(){   // 09-25 사용자: '안녕하세요'로 시작 + 고민을 먼저 묻고, 그 고민에 맞는 카드만
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
- try{localStorage.setItem('jsIntro','1');}catch(e){}
+ try{localStorage.setItem('jsIntro2','1');}catch(e){}
  if(!document.getElementById('stcss'))document.head.insertAdjacentHTML('beforeend',STCSS);
  const O=[['calc','첫 집을 알아보고 있어요','first'],['swap','지금 집을 팔고 옮길지 고민이에요','move'],['home','우리 단지가 궁금해요','mine']];
  app.innerHTML=`<div id="stw"><div style="margin:6px 0 14px"><span class="sp" style="border-radius:16px;${D_(100)}"><svg width="56" height="56" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg3)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg3)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg3)"/></svg></span></div>
@@ -364,7 +364,7 @@ function hello(){   // 09-25 사용자: '안녕하세요'로 시작 + 고민을 
  <p class="sr" style="text-align:center;margin:14px 0 0;${D_(1750)}"><button class="linkbtn" onclick="hub()">먼저 둘러볼게요</button></p></div>`;}
 function story(i){
  const prev=SI; SI=i==null?0:Math.max(0,Math.min(SQ_.v.length,i)); const dx=SI>=prev?40:-40; TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
- try{localStorage.setItem('jsIntro','1');}catch(e){}
+ try{localStorage.setItem('jsIntro2','1');}catch(e){}
  if(!document.getElementById('stcss'))document.head.insertAdjacentHTML('beforeend',STCSS);
  if(SI===SQ_.v.length){app.innerHTML=`<div id="stw" style="--dx:${dx}px;min-height:58vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:16px"><span class="sp" style="border-radius:20px;animation:stPop .6s cubic-bezier(.3,1.4,.5,1) forwards,stGlow 1.4s ease-out .6s 2"><svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg4)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="24.5" y="32.5" width="15" height="4" rx="2" fill="url(#lg4)"/><rect x="24.5" y="40" width="15" height="4" rx="2" fill="url(#lg4)"/></svg></span>
    <div class="hq sr" style="font-size:clamp(1.5rem,6.6vw,1.9rem);line-height:1.4;${D_(500)}">셈은 집셈이,<br>결정은 직접</div><div class="sr" style="font-size:.9rem;line-height:1.6;color:var(--ink2);${D_(900)}">집셈은 집을 추천하지 않습니다.<br>흩어진 고민을 같은 기준으로 계산해 드립니다.</div><div class="sub sr" style="font-size:.78rem;${D_(1200)}">서울·경기 아파트 · 과거 20년 실거래 · 매일 갱신</div></div>
@@ -396,7 +396,7 @@ function hub(){   // 09-25 사용자: 기능이 많아 다 별것 아닌 듯 보
  <button onclick="board('obj',1)" style="width:100%;margin-top:12px;display:flex;align-items:center;gap:10px;padding:13px 14px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink3);font:inherit;text-align:left;cursor:pointer">${ic('search',18)}<span style="flex:1">우리 단지 몇 위? <b style="color:var(--ink)">단지 검색</b></span></button>
  <div style="font-size:.76rem;font-weight:800;color:var(--ink3);margin:20px 2px 10px">더 알아보기</div>
  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px 6px">${APPS.map(([n,t,go])=>`<button onclick="${go}" style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:0;border:0;background:transparent;font:inherit;color:var(--ink);cursor:pointer">${ic(n,46,1)}<span style="font-size:.74rem;font-weight:600;line-height:1.3;text-align:center;word-break:keep-all">${t}</span></button>`).join('')}</div>
- <button class="linkbtn" style="display:block;margin:18px auto 0;font-size:.84rem" onclick="startPath('all')">집셈을 만든 이유 ›</button>
+ <button class="linkbtn" style="display:block;margin:18px auto 0;font-size:.84rem" onclick="hello()">집셈 소개 다시 보기 ›</button>
  <p class="sub" style="text-align:center;margin:8px 0 0;font-size:.74rem">참고용 산출치이며, 투자 권유가 아닙니다.</p>`;}
 const HOME=`<button class="linkbtn" style="padding:0;margin:0 0 8px;font-size:.84rem;color:var(--ink3)" onclick="hub()">‹ 홈</button>`;
 
@@ -1117,7 +1117,7 @@ app.addEventListener('click',e=>{const c=e.target.closest('.chart');if(!c||e.tar
 new MutationObserver(watch).observe(app,{childList:true,subtree:true});
 // 오프닝: 로고·이름·한 문구 → 처음이면 고민 화면, 다시 오면 결과(아래에 미리 그려 둠)
 let SPL=null;   // 오프닝 뒤엔 언제나 고민 화면에서 시작(09-24 사용자)
-function endSplash(){const sp=$('#splash'); if(!sp||sp.classList.contains('out'))return; clearTimeout(SPL); sp.classList.add('out'); setTimeout(()=>{sp.remove(); const m=location.hash.match(/^#c=(.+)$/); if(m&&CPXK[decodeURIComponent(m[1])])rcard(decodeURIComponent(m[1])); else {let seen=null;try{seen=localStorage.getItem('jsIntro');}catch(e){} if(seen)hub(); else hello();}},450);}
+function endSplash(){const sp=$('#splash'); if(!sp||sp.classList.contains('out'))return; clearTimeout(SPL); sp.classList.add('out'); setTimeout(()=>{sp.remove(); const m=location.hash.match(/^#c=(.+)$/); if(m&&CPXK[decodeURIComponent(m[1])])rcard(decodeURIComponent(m[1])); else {let seen=null;try{seen=localStorage.getItem('jsIntro2');}catch(e){} if(seen)hub(); else hello();}},450);}
 SPL=setTimeout(endSplash,CF.seen?1500:2300);
 </script>
 <div class="disc"><b>유의사항</b><br>집셈은 공개 자료(국토교통부 실거래·KB부동산·네이버부동산 등)를 바탕으로 과거 데이터를 분석한 <b>참고 자료</b>입니다. 특정 부동산의 매수·매도를 권유하거나 자문하지 않습니다. 모든 수치는 가정에 기반한 추정치로 오차가 있을 수 있으며, 과거 실적이 미래 수익을 보장하지 않습니다. <b>투자 판단과 그 결과에 대한 책임은 본인에게 있습니다.</b> 계약 전 실거래가·등기사항증명서·현장을 직접 확인하고, 필요 시 전문가와 상담하십시오.</div><p class="foot">공개 데이터 기반 · 매일 자동 갱신</p>
