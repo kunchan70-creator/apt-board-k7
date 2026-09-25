@@ -71,6 +71,12 @@ details summary{cursor:pointer;padding:13px 0;font-weight:600;font-size:.95rem;l
 details summary::-webkit-details-marker{display:none}
 details summary::after{content:"＋";color:var(--ink3);font-weight:400}
 details[open] summary::after{content:"－"}
+/* 09-25 사용자: 줄글 최소 — 한 줄 요약 + 태그, 나머지 설명은 '자세히'에 접는다 */
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 10px}
+.tags .tag{white-space:normal}
+details.more{border:0;margin:0 0 8px}
+details.more summary{padding:2px 0;font-size:.78rem;font-weight:600;color:var(--ink3);justify-content:flex-start;gap:4px}
+details.more>div{font-size:.8rem;color:var(--ink3);line-height:1.6;padding:4px 0 2px}
 .btn{display:block;width:100%;text-align:center;padding:15px;border-radius:14px;background:var(--blue);color:#fff;font-weight:700;font-size:.98rem;border:0;cursor:pointer;font-family:inherit}
 .btn.ghost{background:var(--surface2);color:var(--ink2)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -97,26 +103,22 @@ ul.plain{padding-left:18px}
 
 <div class="card">
 <h2>집셈은 무엇을 셈하나요</h2>
-<p>자기자본·대출·소득으로 실제로 매수할 수 있는 서울·경기 아파트(16,588곳)를, <b>5년 순이익</b>으로 견줘 보여 드려요. 집값을 맞히는 서비스가 아니에요.</p>
-<h2>어떻게 셈하나요 — 세 단계</h2>
-<ol style="line-height:1.7;padding-left:20px">
-<li><b>지금 값</b> — 최근 실거래(국토교통부 신고)로 단지·면적별 지금 값을 잡아요.</li>
-<li><b>5년 뒤 범위</b> — 과거 20년 실거래에서 비슷한 집들이 5년 동안 실제로 어떻게 흩어졌는지로 나쁘면·보통·잘되면을 잡아요. 한 숫자로 맞히지 않고, 과거 기록을 넘는 숫자는 쓰지 않아요.</li>
-<li><b>순이익</b> — 대출 한도·이자, 취득세·중개보수·수리비, 실거주 주거비 절감(월세 환산) 또는 전세보증금을 더하고 빼서 5년 순이익을 계산해요.</li>
-</ol>
-<h2>입지 점수는요</h2>
-<p>지금 시장이 값을 더 쳐 주는 조건(지역·동네·역·연식·규모)인지를 5~95로 나타낸 급이에요. 선호되는 곳일수록 높아요. 수익 예측은 아니에요 — 선호 동네는 이미 비싸서 같은 자금이면 순이익이 적을 수 있어요.</p>
+<p style="font-weight:700;margin:0">내 돈으로 살 수 있는 아파트의 5년 순이익</p>
+<div class="tags"><span class="tag gray">서울·경기 16,588곳</span><span class="tag gray">자기자본·대출·소득 반영</span><span class="tag amber">집값 맞히기 아님</span></div>
+<h2>세 단계</h2>
+<div style="display:flex;gap:10px;margin:12px 0"><span class="tag blue" style="height:fit-content">1</span><div><b>지금 값</b><div class="sub" style="font-size:.84rem">최근 실거래</div><div class="tags"><span class="tag gray">국토교통부 신고</span></div></div></div>
+<div style="display:flex;gap:10px;margin:12px 0"><span class="tag blue" style="height:fit-content">2</span><div><b>5년 뒤 범위</b><div class="sub" style="font-size:.84rem">비슷한 집들이 과거 5년간 실제로 흩어진 폭</div><div class="tags"><span class="tag gray">나쁘면·보통·잘되면</span><span class="tag gray">과거 기록 넘는 숫자 안 씀</span></div></div></div>
+<div style="display:flex;gap:10px;margin:12px 0"><span class="tag blue" style="height:fit-content">3</span><div><b>순이익</b><div class="sub" style="font-size:.84rem">들어오는 돈 − 나가는 돈</div><div class="tags"><span class="tag green">+ 주거비 절감 / 전세보증금</span><span class="tag red">− 대출이자</span><span class="tag red">− 취득세·중개보수·수리비</span></div></div></div>
+<h2>입지 점수</h2>
+<p style="font-weight:700;margin:0">시장이 값을 더 쳐 주는 입지 등급 (5~95)</p>
+<div class="tags"><span class="tag gray">지역·동네·역·연식·규모</span><span class="tag amber">수익 예측 아님</span><span class="tag gray">선호 동네는 이미 비쌈 → 순이익은 적을 수 있음</span></div>
 <h2>과거에 맞았나요</h2>
-<p>학습에 쓰지 않은 시기의 실제 거래 14만 건으로 시험했어요. 셈 상위 20%는 산 뒤 5년 가운데 +56%, 하위 20%는 +33%였어요(원금을 잃은 비율 1.0% vs 4.5%). 다만 단지 하나하나를 맞히지는 못해요. <a href="evidence.html">검증 자세히 →</a></p>
+<div class="grid2" style="margin-top:8px"><div style="background:var(--green-bg);border-radius:12px;padding:12px"><div class="sub" style="font-weight:700;color:var(--green)">셈 상위 20%</div><div class="big" style="font-size:1.8rem;color:var(--green)">+56%</div><div class="sub">원금 잃음 1.0%</div></div><div style="background:var(--surface2);border-radius:12px;padding:12px"><div class="sub" style="font-weight:700">셈 하위 20%</div><div class="big" style="font-size:1.8rem">+33%</div><div class="sub">원금 잃음 4.5%</div></div></div><div class="tags"><span class="tag gray">학습에 안 쓴 시기 실거래 14만 건</span><span class="tag gray">5년 총수익 가운데 값</span><span class="tag amber">단지 하나하나는 못 맞힘</span></div>
+<p style="margin:6px 0 0"><a href="evidence.html">검증 자세히 →</a></p>
 <h2>믿으면 안 되는 것</h2>
-<ul style="line-height:1.7;padding-left:20px">
-<li>5년 뒤 시장 방향 — 아무도 몰라요. 그래서 한쪽으로 정하지 않고 과거에 그랬던 비율대로 섞어서 셈해요.</li>
-<li>단지 하나의 정확한 값 — 같은 단지도 동·층·향·집 상태로 수천만 원씩 갈려요.</li>
-<li>재건축·리모델링의 속도와 분담금 — 사업 단계와 공사비에 따라 크게 달라져요.</li>
-<li>정책(대출·세금·토지거래허가)의 변화 — 지금 기준으로 셈했어요.</li>
-</ul>
+<div class="tags"><span class="tag red">5년 뒤 시장 방향 → 과거 비율대로 섞음</span><span class="tag red">단지 하나의 정확한 값 → 동·층·향으로 수천만 원 차이</span><span class="tag red">재건축 속도·분담금</span><span class="tag red">정책 변화 → 지금 기준</span></div>
 <h2>자료 출처</h2>
-<p style="line-height:1.7">국토교통부 아파트 매매·전월세 실거래 · KB부동산 매매가격지수 · 네이버부동산 단지 정보·매물 · 한국은행 금리 · OpenStreetMap 역 위치 · 서울시·경기도 정비사업 공개 목록. 사람이 손으로 매긴 점수는 없어요.</p>
+<div class="tags"><span class="tag gray">국토부 매매·전월세 실거래</span><span class="tag gray">KB 매매지수</span><span class="tag gray">네이버부동산</span><span class="tag gray">한국은행 금리</span><span class="tag gray">OpenStreetMap 역</span><span class="tag gray">서울·경기 정비사업 목록</span><span class="tag blue">사람이 매긴 점수 없음</span></div>
 </div>
 <div class="disc"><b>유의사항</b><br>집셈은 공개 자료(국토교통부 실거래·KB부동산·네이버부동산 등)를 바탕으로 과거 데이터를 분석한 <b>참고 자료</b>입니다. 특정 부동산의 매수·매도를 권유하거나 자문하지 않습니다. 모든 수치는 가정에 기반한 추정치로 오차가 있을 수 있으며, 과거 실적이 미래 수익을 보장하지 않습니다. <b>투자 판단과 그 결과에 대한 책임은 본인에게 있습니다.</b> 계약 전 실거래가·등기사항증명서·현장을 직접 확인하고, 필요 시 전문가와 상담하십시오.</div><p class="foot">공개 데이터 기반 · 매일 자동 갱신</p>
 </div></body></html>
