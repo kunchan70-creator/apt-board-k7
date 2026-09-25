@@ -327,10 +327,10 @@ function board(lens,focus){
  const L_=BF.lens, Q=DT.q5||[], qt=Q[Q.length-1]||{}, qb=Q[0]||{}, H=DT.hubs||[];
  const gus=[...new Set(CPX.map(c=>c.gu))].sort();
  const QP=DT.q5p||[], pt=QP[QP.length-1]||{}, pb=QP[0]||{};
- const sub=L_==='up'?`5년 뒤 <b>시세</b> 기준 순위입니다. 과거 검증: 모델 평가 상위 20% 단지의 실제 5년 시세는 중위 <b style="color:var(--green)">+${pt.med}%</b>(하위 20%는 +${pb.med}%), 손실 비율은 ${pt.loss}% 대 ${pb.loss}%였습니다. 같은 지역 안의 단지 비교에 강하고, 지역 전체의 방향은 맞히지 못합니다. 입주권(이주·착공) 단계 단지는 분담금이 별도라 제외했습니다.`:L_==='rb'?LZ.rb[1]+(DT.bk?` (보정 사례 ${DT.bk.n}건 · 오차 중앙 옛 집 시세의 ${DT.bk.err}%, 강남 고가 단지는 4~6억까지 벗어난 사례가 있습니다)`:''):LZ[L_][1];
+ const sub=L_==='up'?`5년 뒤 <b>시세</b> 기준 순위입니다. 과거 검증: 모델 평가 상위 20% 단지의 실제 5년 시세는 중위 <b style="color:var(--green)">+${pt.med}%</b>(하위 20%는 +${pb.med}%), 손실 비율은 ${pt.loss}% 대 ${pb.loss}%였습니다. 같은 지역 안의 단지 비교에 강합니다. 지역 전체의 방향은 과거에 국면마다 뒤집혀 예측하지 않고, 그 폭을 비관~낙관 범위에 넣었습니다. 입주권(이주·착공) 단계 단지는 분담금이 별도라 제외했습니다.`:L_==='rb'?LZ.rb[1]+(DT.bk?` (보정 사례 ${DT.bk.n}건 · 오차 중앙 옛 집 시세의 ${DT.bk.err}%, 강남 고가 단지는 4~6억까지 벗어난 사례가 있습니다)`:''):LZ[L_][1];
  app.innerHTML=HOME+`<div class="hq" style="margin:0 0 4px">${LZ[L_][0]}</div><div class="sub" style="font-size:.8rem;line-height:1.55;margin-bottom:10px">${sub}</div>
  ${L_==='up'?`<label class="tg" style="margin:0 0 8px"><span><b>실거주 주거비 절감 포함</b><br><span class="hint">직접 살 때 내지 않는 월세를 수익에 더해 봅니다(관점에 따라 다름)</span></span><span class="sw"><input type="checkbox" ${BF.hv?'checked':''} onchange="BF.hv=this.checked;BF.n=30;board()"><i></i></span></label>`:''}
- ${['obj','up','def'].includes(L_)?`<div class="seg" style="margin:0 0 10px">${[['obj','입지 점수'],['up','상승 여력'],['def','하락 방어']].map(([k,t])=>`<button class="${L_===k?'on':''}" onclick="BF.n=30;board('${k}')">${t}</button>`).join('')}</div>`:''}
+ 
  ${L_==='job'?`<div style="display:flex;gap:8px;margin-bottom:8px"><select onchange="BF.hub=+this.value;BF.n=30;blist()" style="flex:1;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit">${H.map((h,k)=>`<option value="${k}" ${BF.hub===k?'selected':''}>${h[0]}</option>`).join('')}</select></div><div class="cc" id="bkm" style="margin-bottom:8px">${[5,10,15,20].map(k=>`<button class="${BF.km===k?'on':''}" onclick="BF.km=${k};BF.n=30;board()">${k}km 이내</button>`).join('')}</div>`
    :`<div style="display:flex;gap:8px;margin-bottom:8px"><select onchange="BF.gu=this.value;BF.n=30;blist()" style="flex:1;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit"><option value="">서울·경기 전체</option>${gus.map(g=>`<option ${BF.gu===g?'selected':''}>${g}</option>`).join('')}</select></div>`}
  <div class="cc" id="bsz" style="margin-bottom:8px"></div>
@@ -368,12 +368,11 @@ function blist(){
 
 // 지역 불확실성(09-25): 집셈 5년 모델은 지역 방향에 베팅하지 않는다(과거 기간마다 뒤집힘). 대신 그 지역에서 과거 예측이 빗나간 폭과 최근 1년 시세를 보여 준다.
 function gyof(gu){const Y=DT.gyoy||{},G=Y.g||{};return G[gu]!=null?G[gu]:G[(gu||'').split(' ')[0]];}
-function regWarn(gu,short){
- const g=(DT.greg||{})[gu]||(DT.greg||{})[(gu||'').split(' ')[0]], y=gyof(gu), Y=DT.gyoy||{}, f=v=>(v>0?'+':'')+v;
- const wide=g&&g[1]-g[0]>=40, weak=y!=null&&Y.med!=null&&y<Y.med-5;
- if(!wide&&!weak)return '';
- const t=(weak?`최근 1년 시세 ${f(y)}%(서울·경기 중앙 ${f(Y.med)}%)`:'')+(weak&&wide?' · ':'')+(wide?`과거 이 지역은 같은 예측 대비 실제 5년 결과가 시기에 따라 ${f(g[0])}~${f(g[1])}%p 갈렸습니다`:'');
- return short?`<span style="display:block;font-size:.7rem;color:var(--amber)">⚠ 지역 흐름 불확실</span>`:`<div class="tip" style="margin:6px 0 2px"><span>⚠ ${t}. 지역 전체의 방향은 모델이 맞히지 못합니다.</span></div>`;}
+function regWarn(gu,short){   // 09-25: 지역 방향은 과거 국면마다 뒤집혀(구 지수 워크포워드) 예측하지 않고, 그 오차 폭은 이미 비관~낙관 범위에 들어 있다 → 경고가 아닌 사실 한 줄
+ if(short)return '';
+ const y=gyof(gu), Y=DT.gyoy||{}, f=v=>(v>0?'+':'')+v;
+ if(y==null||Y.med==null)return '';
+ return `<div class="sub" style="font-size:.76rem;line-height:1.55;margin:8px 0 2px;padding:8px 10px;border-radius:10px;background:var(--surface2)">최근 1년 ${(gu||'').split(' ')[0]} 시세 <b>${f(y)}%</b> (서울·경기 중앙 ${f(Y.med)}%). 지역 전체의 방향은 과거에 국면마다 뒤집혀 예측하지 않으며, 그 폭은 비관~낙관 범위에 반영되어 있습니다.</div>`;}
 // 분담금 표시(09-25): 조합 발표값이 있으면 그것(날짜·단계), 없으면 보정 공식 추정 ± 오차(한 건씩 빼고 맞힌 오차 중앙 × 옛 집 시세)
 const BKW=v=>v>=0?'약 '+eok(v)+'억 부담':'약 '+eok(-v)+'억 환급';
 function bkTxt(c,short){
