@@ -122,6 +122,17 @@ ul.plain{padding-left:18px}
 .grp{margin:12px 0 4px;font-size:.84rem;font-weight:700;color:var(--ink3)}
 .picked{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
 .picked span{background:var(--blue-bg);color:var(--blue);border-radius:999px;padding:6px 10px;font-size:.84rem;font-weight:700;cursor:pointer}
+.rtab{display:flex;gap:6px;background:var(--surface2);border-radius:14px;padding:4px;margin:4px 0 10px}
+.rtab button{flex:1;padding:11px 6px;border:0;border-radius:11px;background:transparent;color:var(--ink2);font:inherit;font-weight:700;font-size:.95rem;cursor:pointer}
+.rtab button.on{background:var(--surface);color:var(--blue);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.rtab button span{display:block;font-size:.72rem;font-weight:500;color:var(--ink3)}
+.rgd{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.rgd>button{padding:10px 4px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:.9rem;font-weight:700;cursor:pointer;line-height:1.25;word-break:keep-all}
+.rgd>button span{display:block;font-size:.7rem;font-weight:500;color:var(--ink3);margin-top:2px}
+.rgd>button.on{background:var(--blue);border-color:var(--blue);color:#fff}.rgd>button.on span{color:#fff;opacity:.85}
+.rgd>button.part{border-color:var(--blue);color:var(--blue)}.rgd>button.open{border-color:var(--blue);border-width:2px}
+.rgd>button.z{opacity:.45}
+.rgd .rsub{grid-column:1/-1;background:var(--blue-bg);border-radius:12px;padding:10px;margin:2px 0}
 .inp{display:flex;align-items:center;gap:10px;background:var(--surface2);border-radius:14px;padding:6px 14px}
 .inp input{flex:1;border:0;background:transparent;font:inherit;font-size:1.3rem;font-weight:800;color:var(--ink);padding:10px 0;min-width:0}
 .inp input:focus{outline:none}
@@ -948,6 +959,25 @@ function regionHTML(f){
  multi.forEach(([c,l])=>h+=chipsFor(l,c));
  if(one.length)h+=`<div class="grp">경기 시·군</div><div class="cc">${one.map(([c,l])=>`<button class="${CF.regions.includes(l[0])?'on':''}" onclick='tog(${JSON.stringify(l[0])})'>${c}</button>`).join('')}</div>`;
  return h||'<p class="hint">맞는 지역이 없어요.</p>';}
+// 희망 지역(09-25 사용자: 처음 쓰는 사람이 지역 고르기를 어려워함 — 원하는 곳이 핵심) = 서울/경기 탭 + 버튼 격자, 버튼마다 내 조건으로 매수 가능한 단지 수
+let RT=null, RO=null;
+function regCnt(){const k=CF.regions;CF.regions=[];const m={};R.forEach(r=>{if(ok(r))(m[r.gu]=m[r.gu]||new Set()).add(r.no||r.n);});CF.regions=k;const o={};for(const g in m)o[g]=m[g].size;return o;}
+function drawReg(){
+ const el=$('#rl'); if(!el)return; const f=(($('#rq')||{}).value||'').trim(), N=regCnt(), n=l=>l.reduce((a,g)=>a+(N[g]||0),0);
+ if(RT==null)RT=CF.regions.length&&!SEOUL.includes(CF.regions[0])?'gg':'se';
+ const GGL=CITIES.flatMap(c=>GG[c]);
+ $('#rtab').innerHTML=[['se','서울',SEOUL],['gg','경기',GGL]].map(([k,t,l])=>{const s=l.filter(g=>CF.regions.includes(g)).length;return `<button class="${RT===k?'on':''}" onclick="RT='${k}';RO=null;$('#rq').value='';drawReg()">${t}<span>${s?s+'곳 선택 · ':''}단지 ${n(l).toLocaleString()}곳</span></button>`;}).join('');
+ if(f){el.innerHTML=regionHTML(f);return;}
+ const btn=(t,sub,cls,act)=>`<button class="${cls}" onclick='${act}'>${t}<span>${sub}</span></button>`;
+ let items=[];
+ if(RT==='se')items=SEOUL.map(g=>({h:btn(short(g),(N[g]||0)+'곳',(CF.regions.includes(g)?'on':'')+(N[g]?'':' z'),`tog(${JSON.stringify(g)})`)}));
+ else items=CITIES.map(c=>{const l=GG[c], s=l.filter(g=>CF.regions.includes(g)).length, multi=l.length>1;
+   const cls=(s===l.length?'on':s?'part':'')+(RO===c?' open':'')+(n(l)?'':' z');
+   return {c,h:btn(c+(multi?' ›':''),multi&&s&&s<l.length?s+'개 구 선택':n(l)+'곳',cls,multi?`RO=RO===${JSON.stringify(c)}?null:${JSON.stringify(c)};drawReg()`:`tog(${JSON.stringify(l[0])})`)};});
+ let h='';items.forEach((x,i)=>{h+=x.h;const end=(i%3===2)||i===items.length-1;
+  if(end&&RO&&RT==='gg'){const j=items.findIndex(y=>y.c===RO);if(j>=0&&Math.floor(j/3)===Math.floor(i/3)){const l=GG[RO];
+   h+=`<div class="rsub"><div class="cc"><button class="all ${l.every(g=>CF.regions.includes(g))?'on':''}" onclick='togAll(${JSON.stringify(l)})'>${RO} 전체</button>${l.map(g=>`<button class="${CF.regions.includes(g)?'on':''}" onclick='tog(${JSON.stringify(g)})'>${short(g)} <span style="font-weight:400;opacity:.75">${N[g]||0}</span></button>`).join('')}</div></div>`;}}});
+ el.innerHTML=`<div class="rgd">${h}</div><div class="hint" style="margin-top:6px">${CF.cash!=null?`숫자 = 자기자본 ${eok(CF.cash)}억(대출 포함)으로 매수 가능한 단지 수 · 흐린 곳은 0곳`:'숫자 = 단지 수 · 위에 자기자본을 넣으면 매수 가능한 단지 수로 바뀝니다'}${RT==='gg'?' · ›는 눌러서 구를 고르는 시':''}</div>`;}
 function tog(g){const i=CF.regions.indexOf(g); if(i>=0)CF.regions.splice(i,1); else CF.regions.push(g); refresh();}
 function togAll(l){const all=l.every(g=>CF.regions.includes(g)); CF.regions=CF.regions.filter(g=>!l.includes(g)); if(!all)CF.regions.push(...l); refresh();}
 function multiTog(key,v){const a=CF[key],i=a.indexOf(v); if(i>=0)a.splice(i,1); else a.push(v); refresh();}
@@ -962,13 +992,14 @@ function setup(){
  <div class="sec">${ic('home',18)}보유 목적</div>
  <div class="pk2">${[['home','실거주','직접 거주',true],['key','임대(전세)','전세 놓고 보유',false]].map(([e,t,d,v])=>`<button class="${CF.useU===v?'on':''}" onclick="CF.useU=${v};save();setup()"><span class="ck">✓</span><span style="color:inherit">${ic(e,30).replace('color:var(--blue);margin-right:4px','color:inherit')}</span><b>${t}</b><span class="d">${d}</span></button>`).join('')}</div>
  ${CF.useU?'':'<div class="hint" style="margin-top:4px">토지거래허가구역(서울 전역·경기 12곳)은 실거주 의무로 제외됩니다.</div>'}
- <div class="sec">${ic('pin',18)}희망 지역</div><div class="hint">복수 선택 가능 · 미선택 시 서울·경기 전체</div>
- <div class="picked" id="picked"></div>
- <input id="rq" type="search" placeholder="시·구 검색 (예: 수원, 강동)" oninput="$('#rl').innerHTML=regionHTML(this.value);$('#rlf').open=!!this.value" style="width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit">
- <details class="fold" id="rlf" style="border-top:0"><summary><span style="font-weight:600;font-size:.86rem;color:var(--blue)">지역 목록</span></summary><div id="rl" style="max-height:340px;overflow:auto;padding-right:4px"></div></details>
  <div class="sec">${ic('won',18)}가용 자기자본</div><div class="hint">대출을 제외한 현금(취득세·중개보수 포함). 갈아타기의 경우 기존 주택 매도 후 대출 상환 잔액을 합산합니다.</div>
  <div class="inp"><input id="i_cash" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 3" value="${CF.cash==null?'':(CF.cash/1e4)}" oninput="CF.cash=parseMoney(this.value);count()"><b>억</b></div>
  <div class="tg"><span><b>생애최초 주택 구입</b><br><span class="hint">LTV 70% 적용 (규제지역은 금융기관 확인 필요)</span></span><label class="sw"><input type="checkbox" id="i_first" ${CF.first?'checked':''} onchange="CF.first=this.checked;count()"><i></i></label></div>
+ <div class="sec">${ic('pin',18)}희망 지역</div><div class="hint">누르면 선택, 다시 누르면 해제 · 여러 곳 가능 · 안 고르면 서울·경기 전체</div>
+ <div class="picked" id="picked"></div>
+ <div class="rtab" id="rtab"></div>
+ <div id="rl"></div>
+ <input id="rq" type="search" placeholder="이름으로 찾기 (예: 수원, 강동, 분당)" oninput="drawReg()" style="width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit;margin-top:10px">
  <div class="sec">연소득 <span class="hint">(선택 · DSR 산정용)</span></div><div class="hint">입력 시 DSR 40%(스트레스 금리 +${STRESS}%p, 원리금균등상환) 한도 내에서 대출을 산정합니다. 부부 합산 소득 기준.</div>
  <div class="inp"><input type="text" inputmode="decimal" autocomplete="off" placeholder="예: 0.6" value="${CF.inc==null?'':(CF.inc/1e4)}" oninput="CF.inc=parseMoney(this.value);count()"><b>억/년</b></div>
  
@@ -995,8 +1026,8 @@ function setup(){
  refresh(); window.scrollTo(0,0);}
 function refresh(){
  if(!$('#rl'))return;
- $('#rl').innerHTML=regionHTML(($('#rq')||{}).value);
- $('#picked').innerHTML=CF.regions.length?CF.regions.map(g=>`<span onclick='tog(${JSON.stringify(g)})'>${g} ✕</span>`).join(''):'<span style="background:var(--surface2);color:var(--ink3)">서울·경기 전체</span>';
+ drawReg();
+ $('#picked').innerHTML=CF.regions.length?CF.regions.map(g=>`<span onclick='tog(${JSON.stringify(g)})'>${g} ✕</span>`).join('')+(CF.regions.length>1?`<span style="background:var(--surface2);color:var(--ink3)" onclick="CF.regions=[];refresh()">모두 지우기</span>`:''):'<span style="background:var(--surface2);color:var(--ink3)">선택 안 함 = 서울·경기 전체</span>';
  $('#c_size').innerHTML=cc('size',[['49','49㎡ 이하'],['59','59㎡ · 24평'],['74','74㎡ · 29평'],['84','84㎡ · 34평 (국민평형)'],['101','101㎡ 이상']],true);
  $('#c_age').innerHTML=cc('age',[['n','신축 (10년 이내)'],['m','준신축 (10~20년)'],['o','구축 (20년 초과)']],true);
  $('#c_st').innerHTML=cc('st',[['','제한 없음'],['a1','역 1km 이내'],['x2','신분당·GTX 2km 이내']],false);
@@ -1045,7 +1076,8 @@ function ok(r){
  if(CF.hh&&!(r.hh>=CF.hh))return false;
  if(CF.trust&&!(r.g==='A'||r.g==='B'))return false;
  return true;}
-function count(){const n=R.filter(ok).length;const b=$('#go');if(b){b.textContent=n?`${n.toLocaleString()}개 단지 분석`:'조건에 맞는 단지 없음';b.disabled=!n;b.style.opacity=n?1:.5;}save();}
+let RGT=null;
+function count(){clearTimeout(RGT);RGT=setTimeout(drawReg,250);const n=new Set(R.filter(ok).map(r=>r.no||r.n+r.gu)).size;const b=$('#go');if(b){b.textContent=n?`${n.toLocaleString()}개 단지 분석`:'조건에 맞는 단지 없음';b.disabled=!n;b.style.opacity=n?1:.5;}save();}
 // ---------------- ③ 결과 ----------------
 const GC={A:'green',B:'blue',C:'amber'};
 const scol=s=>s>=80?'green':s>=60?'blue':s>=40?'amber':'red';
