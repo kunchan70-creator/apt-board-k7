@@ -792,8 +792,8 @@ function bkTxt(c,short){
  const k=c.bkc, r=c.rb, est=r.rb[5], e=Math.round(r.p*((DT.bk&&DT.bk.err)||10)/100), H=v=>`<span style="display:block;font-size:.66rem;color:var(--ink3);font-weight:700">${v}</span>`;
  if(k){const same=k.find(x=>Math.abs(x[0]-x[1])<=6)||k[0];
   return H('조합 발표 · '+same[3])+`<b class="num" style="font-size:1rem;color:${same[2]>=0?'var(--red)':'var(--green)'}">${BKW(same[2])}</b><span class="sub" style="display:block;font-size:.7rem">${Math.round(same[0])}→${Math.round(same[1])}㎡${short?'':' · '+same[4]}</span>`;}
- const amb=Math.abs(est)<e;
- return H('추정 · 동일 평형')+(amb?`<b class="num" style="font-size:.95rem">부담·환급 불확실</b>`:`<b class="num" style="font-size:1rem;color:${est>=0?'var(--red)':'var(--green)'}">${BKW(est)}</b>`)+`<span class="sub" style="display:block;font-size:.7rem">오차 ±${eok(e)}억</span>`;}
+ const lo=est-e, hi=est+e, RG=lo>=0?`부담 ${eok(lo)}~${eok(hi)}억`:hi<=0?`환급 ${eok(-hi)}~${eok(-lo)}억`:`환급 ${eok(-lo)}억 ~ 부담 ${eok(hi)}억`;
+ return H('추정 · 동일 평형')+`<b class="num" style="font-size:1rem;color:${est>=0?'var(--red)':'var(--green)'}">${BKW(est)}</b><span class="sub" style="display:block;font-size:.7rem">범위 ${RG}</span>`;}
 // ---------------- 단지 성적표(공유용 한 장) ----------------
 function qparts(r){const q=r.q; if(!q)return []; const P=q[0]||[], lv=x=>x[2]>=0&&S[x[2]]?' '+S[x[2]]:'';   // 09-27: [이름, %, 입지/단지]
  return [['동네 시세',r.nb&&r.nb[0]!=null?r.nb[0]:(P[0]?P[0][1]+P[1][1]:0),'입지'],['역'+lv(P[2]),P[2][1],'입지'],['급행역'+lv(P[3]),P[3][1],'입지'],['연식'+lv(P[4]),P[4][1],'단지'],['단지 규모'+lv(P[5]),P[5][1],'단지']];}
@@ -1331,7 +1331,7 @@ function detail(r){
  more+=fold('과거 실적',past);
  // 재건축
  if(r.rb){const bu=r.rb[5];
-  more+=fold('재건축 사업성(참고 · 점수 미반영)',kv('용적률',`${r.rb[0]}% → ${r.rb[1]}%${r.rb[4]?'':' (가정)'}`)+((k=>k?kv('조합 발표 분담금',k.slice(0,3).map(x=>Math.round(x[0])+'→'+Math.round(x[1])+'㎡ '+BKW(x[2])+' ('+x[3]+')').join('<br>')):'')((DT.bkc||{})[r.n+'|'+r.gu]))+kv('동일 평형 분담금(추정)',(Math.abs(bu)<r.p*((DT.bk&&DT.bk.err)||10)/100?'부담·환급 불확실':BKW(bu))+' · 오차 ±'+eok(Math.round(r.p*((DT.bk&&DT.bk.err)||10)/100))+'억')
+  more+=fold('재건축 사업성(참고 · 점수 미반영)',kv('용적률',`${r.rb[0]}% → ${r.rb[1]}%${r.rb[4]?'':' (가정)'}`)+((k=>k?kv('조합 발표 분담금',k.slice(0,3).map(x=>Math.round(x[0])+'→'+Math.round(x[1])+'㎡ '+BKW(x[2])+' ('+x[3]+')').join('<br>')):'')((DT.bkc||{})[r.n+'|'+r.gu]))+kv('동일 평형 분담금(추정)',BKW(bu)+' · 오차 ±'+eok(Math.round(r.p*((DT.bk&&DT.bk.err)||10)/100))+'억')
    +(r.rb[7]!=null?kv('84㎡ 신청 시(추정)',BKW(r.rb[7])):'')+kv('준공 후 순가치','현재가의 '+(r.rb[3]/r.p).toFixed(1)+'배')
    +`<p class="note">조합 발표 ${DT.bk.n}건으로 보정한 공식(오차 ${DT.bk.err}%). 실제 분담금은 조합 공지로 확인하십시오.</p>`);}
  if(r.ev!=null&&DT.ev)more+=fold('예정 급행역 '+r.ev.toFixed(1)+'km(참고)',`<p class="note" style="margin-top:0">신분당 2차 선례: 1km 안 단지가 5년간 같은 구보다 ${DT.ev[0]>0?'+':''}${DT.ev[0]}%p. 선례가 1건이라 점수 미반영.</p>`);
