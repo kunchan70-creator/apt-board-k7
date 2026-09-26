@@ -1152,25 +1152,44 @@ function fold(t,body,open){return body?`<details class="fold"${open?' open':''}>
 function howNum(r,F){const up=F.sv5-r.p, use=CF.useU?r.U:0, cost=-(r.C-r.p+F.rp), it=-F.it, dep=F.di, t=v=>(v>=0?'+':'−')+eok(Math.abs(v));
  const P=[['집값 오름',up],['월세 아낌',use],['세금·비용',cost],['대출이자',it],['남는 현금 이자',dep]].filter(([_,v])=>Math.abs(v)>=50);
  return `<div style="margin:8px 0 2px;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:.8rem;line-height:1.6"><b>기준 ${t(F.p5)}억은 이렇게 나와요</b><div style="display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:4px">${P.map(([k,v])=>`<span style="white-space:nowrap">${k} <b style="color:${v>=0?'var(--green)':'var(--red)'}">${t(v)}</b></span>`).join('')}</div>${use?`<div class="sub" style="font-size:.74rem;margin-top:4px">월세 아낌 = 이 집에 월세로 살았다면 5년간 냈을 돈. 월세 아낌을 빼면 ${t(F.p5-use)}억이에요.</div>`:''}</div>`;}
-// 곁다리(09-26 사용자): 이 집을 사는 대신 같은 집에 월세로 살며 남는 돈을 굴리면, 5년에 연 몇 %를 벌어야 사는 것과 같아지나.
-//   사는 쪽 = 기준 순이익에서 '월세 아낌'을 뺀 것(산 사람은 월세를 안 내니까). 세 사는 쪽 = (가진 돈 − 보증금)을 연 x%로 굴린 이익 − 5년 월세.
-//   월세 = (그 집 전세금 − 보증금) × 그 지역 전월세 전환율(국토부 월세 계약으로 추정) ÷ 12. 보증금·월세는 고칠 수 있다.
-const INV={}, INVR={};
-function invCalc(r){const F=fin(r), T=r.T||5, K=CF.cash!=null?CF.cash:F.own, J=r.p*Math.min(r.jr||55,90)/100, cv=((DT.conv||{})[r.se===1?'서울특별시':r.se===2?'인천광역시':'경기도']||5)/100;
- const D=INV.dep!=null?Math.min(INV.dep,K):Math.min(K,Math.round(J*0.2/1000)*1000), m=INV.rent!=null?INV.rent:Math.round(Math.max(0,J-D)*cv/12), rent=m*12*T, use=CF.useU?r.U:0, base=K-D;
- const need=g=>base>0?(Math.pow(Math.max(0,(g-use+rent)/base+1),1/T)-1)*100:null;
- return {K,D,m,rent,base,T,g5:F.p5-use,r5:need(F.p5),r1:need(F.p1),dep:DT.rate.dep*0.846};}
-function invBox(r){if(!CF.useU)return '';const k=(r.no||r.n)+'-'+r.b; INVR[k]=r; const x=invCalc(r), p=v=>v==null?'-':v<0?'0% 미만':v.toFixed(1)+'%';
- return `<details class="fold" style="margin-top:10px"><summary><span style="font-size:.86rem">사지 않고 월세 살며 투자하면 · <b>연 ${p(x.r5)}</b>${x.r5!=null&&x.r5<0?'':'는'} 벌어야 같아요</span></summary><div id="inv-${k}">${invBody(r,x,k)}</div></details>`;}
-function invBody(r,x,k){const p=v=>v==null?'-':v<0?'0% 미만':v.toFixed(1)+'%', t=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억';
- const inp=`<div style="display:flex;gap:8px;margin:8px 0 2px;font-size:.8rem;align-items:center;flex-wrap:wrap"><label>보증금 <input type="number" step="0.1" min="0" value="${(x.D/1e4).toFixed(1)}" style="width:5em" onchange="INV.dep=this.value===''?null:this.value*1e4;invUpd('${k}')">억</label>
- <label>월세 <input type="number" step="1" min="0" value="${x.m}" style="width:5em" onchange="INV.rent=this.value===''?null:+this.value;invUpd('${k}')">만원</label></div>`;
- if(x.base<=0)return `<p class="sub" style="font-size:.82rem">보증금이 가진 돈(${eok(x.K)}억)과 같거나 커서 굴릴 돈이 없어요. 보증금을 줄여 보세요.</p>`+inp;
- return `<div style="font-size:.84rem;line-height:1.65">같은 집에 월세로 살고, 가진 돈 ${eok(x.K)}억 중 보증금을 뺀 <b>${eok(x.base)}억</b>을 ${x.T}년 굴린다면</div>
- <div class="mini" style="margin:8px 0 4px"><div style="outline:2px solid var(--blue)"><span>기준만큼 벌려면</span><b>연 ${p(x.r5)}</b></div><div><span>비관만큼이면</span><b>연 ${p(x.r1)}</b></div><div><span>예금(세후)</span><b style="color:var(--ink3)">연 ${x.dep.toFixed(1)}%</b></div></div>${x.r1!=null&&x.r1<x.dep?`<div class="sub" style="font-size:.76rem">비관이면 예금만 해도 사는 것보다 나아요.</div>`:''}
- ${inp}<div class="sub" style="font-size:.74rem;line-height:1.55">사는 쪽: 집값 차익−세금·이자 ${t(x.g5)}억(월세 아낌은 뺌) · 세 사는 쪽: 5년 월세 ${eok(x.rent)}억을 내고도 같아지는 수익률(세전·복리). 월세는 전세금 × 지역 전월세 전환율로 잡았어요.</div>`;}
+// 곁다리(09-26 사용자): 이 집을 사는 대신 가진 돈을 굴리면 연 몇 %를 벌어야 같아지나 — 사는 방식은 고를 수 있게(사용자: 반드시 이 집에 산다는 가정 말고 선택지로).
+//   ① 월세로 살면: (가진 돈 − 보증금)을 연 x%로 굴린 이익 − 5년 월세 = 이 집을 사서 살 때 순이익(월세 아낌은 뺌 — 산 사람은 월세를 안 내니까)
+//   ② 전세로 살면: (가진 돈 − 전세금)을 굴린 이익 = 같은 순이익
+//   ③ 여기 안 살고 세 주면(전세 끼고 사 두기): 어디 살든 내 주거비는 양쪽이 같아 빠짐 → 가진 돈 전부를 굴린 이익 = 세 주기 순이익(시세차익 − 비용 + 남는 현금 이자).
+//      토지거래허가구역(서울 전역·경기 12곳)은 실거주 의무라 이 선택지를 막는다.
+//   기본 보증금·월세·전세금은 이 집 기준(전세금 × 지역 전월세 전환율), 모두 고칠 수 있다.
+const INV={mode:null}, INVR={};
+function finAs(r,u){const k=CF.useU;CF.useU=u;try{return fin(r);}finally{CF.useU=k;}}
+function invCalc(r){const T=r.T||5, FL=finAs(r,true), FI=finAs(r,false), K=CF.cash!=null?CF.cash:FL.own, J=r.p*Math.min(r.jr||55,90)/100, cv=((DT.conv||{})[r.se===1?'서울특별시':r.se===2?'인천광역시':'경기도']||5)/100;
+ const mode=INV.mode||(CF.useU?'w':'t'), x={mode,K,T,dep:DT.rate.dep*0.846};
+ const need=(g,base,cost)=>base>0?(Math.pow(Math.max(0,(g+cost)/base+1),1/T)-1)*100:null;
+ if(mode==='t'){x.block=r.ltv<0.5?'실거주 의무 지역(토지거래허가구역)이라 세 주고 사 둘 수 없어요.':!FI.ok?`전세 끼고 사도 내 돈 ${eok(FI.own)}억이 들어 가진 돈보다 많아요.`:null;
+  x.base=K; x.jd=FI.jd; x.own=FI.own; x.g5=FI.p5; x.r5=need(FI.p5,K,0); x.r1=need(FI.p1,K,0); return x;}
+ const use=r.U||0; x.g5=FL.p5-use;
+ if(mode==='j'){x.D=INV.jd!=null?Math.min(INV.jd,K):Math.min(J,Math.round(K*0.5/1000)*1000); x.m=0;}   // 다른 곳 전세: 기본 = 가진 돈의 절반(이 집 전세금보다 크면 그만큼)
+ else{x.D=INV.dep!=null?Math.min(INV.dep,K):Math.min(K,Math.round(J*0.2/1000)*1000); x.m=INV.rent!=null?INV.rent:Math.round(Math.max(0,J-x.D)*cv/12);}
+ x.rent=x.m*12*T; x.base=K-x.D; x.r5=need(FL.p5-use,x.base,x.rent); x.r1=need(FL.p1-use,x.base,x.rent);
+ if(!FL.ok)x.block=`사서 들어가 살려면 내 돈 ${eok(FL.own)}억이 들어 가진 돈보다 많아요.`; return x;}
+const PCT=v=>v==null?'-':v<0?'0% 미만':v.toFixed(1)+'%';
+function invBox(r){const k=(r.no||r.n)+'-'+r.b; INVR[k]=r; const x=invCalc(r);
+ return `<details class="fold" style="margin-top:10px"><summary><span style="font-size:.86rem" data-inv>${invSum(x)}</span></summary><div id="inv-${k}">${invBody(r,x,k)}</div></details>`;}
+function invSum(x){return x.block||x.r5==null?'이 집 대신 가진 돈을 굴린다면?':`이 집 대신 ${eok(x.K)}억을 굴린다면 · <b>연 ${PCT(x.r5)}</b>${x.r5<0?'':'면'} 같아요`;}
+function invBody(r,x,k){const t=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', M=[['w','월세로 살면'],['j','전세로 살면'],['t','여기 안 살고 세 주면']];
+ const chips=`<div class="cc" style="margin:2px 0 8px">${M.map(([m,l])=>`<button class="${x.mode===m?'on':''}" onclick="INV.mode='${m}';invUpd('${k}')">${l}</button>`).join('')}</div>`;
+ const inp=x.mode==='w'?`<label>보증금 <input type="number" step="0.1" min="0" value="${(x.D/1e4).toFixed(1)}" style="width:5em" onchange="INV.dep=this.value===''?null:this.value*1e4;invUpd('${k}')">억</label>
+  <label>월세 <input type="number" step="1" min="0" value="${x.m}" style="width:5em" onchange="INV.rent=this.value===''?null:+this.value;invUpd('${k}')">만원</label>`
+  :x.mode==='j'?`<label>전세금 <input type="number" step="0.1" min="0" value="${(x.D/1e4).toFixed(1)}" style="width:5em" onchange="INV.jd=this.value===''?null:this.value*1e4;invUpd('${k}')">억</label>`:'';
+ const inputs=inp?`<div style="display:flex;gap:8px;margin:8px 0 2px;font-size:.8rem;align-items:center;flex-wrap:wrap">${inp}</div>`:'';
+ if(x.block)return chips+`<p class="sub" style="font-size:.82rem">${x.block}</p>`+inputs;
+ if(x.base<=0)return chips+`<p class="sub" style="font-size:.82rem">${x.mode==='j'?'전세금':'보증금'}이 가진 돈(${eok(x.K)}억)과 같거나 커서 굴릴 돈이 없어요.</p>`+inputs;
+ const lead=x.mode==='t'?`이 집은 전세 ${eok(x.jd)}억 끼고 내 돈 ${eok(x.own)}억으로 사 두고(남는 돈은 예금), 나는 어디 살든 주거비는 양쪽이 같다고 봤어요. 그 대신 <b>${eok(x.K)}억 전부</b>를 ${x.T}년 굴린다면`
+  :`다른 곳에 ${x.mode==='j'?'전세':'월세'}로 살고, 가진 돈 ${eok(x.K)}억 중 ${x.mode==='j'?'전세금':'보증금'}을 뺀 <b>${eok(x.base)}억</b>을 ${x.T}년 굴린다면`;
+ const note=x.mode==='t'?`사 두는 쪽: 시세차익 − 세금·비용 + 남는 돈 예금이자 ${t(x.g5)}.`:`사서 사는 쪽: 집값 차익 − 세금·이자 ${t(x.g5)}(월세 아낌은 뺌)${x.rent?` · 세 사는 쪽은 5년 월세 ${eok(x.rent)}억을 내고도 같아지는 수익률`:''}.`;
+ return chips+`<div style="font-size:.84rem;line-height:1.65">${lead}</div>
+ <div class="mini" style="margin:8px 0 4px"><div style="outline:2px solid var(--blue)"><span>기준만큼 벌려면</span><b>연 ${PCT(x.r5)}</b></div><div><span>비관만큼이면</span><b>연 ${PCT(x.r1)}</b></div><div><span>예금(세후)</span><b style="color:var(--ink3)">연 ${x.dep.toFixed(1)}%</b></div></div>${x.r1!=null&&x.r1<x.dep?`<div class="sub" style="font-size:.76rem">비관이면 예금만 해도 사는 것보다 나아요.</div>`:''}
+ ${inputs}<div class="sub" style="font-size:.74rem;line-height:1.55">${note} 수익률은 세전·복리. 기본 금액은 ${x.mode==='j'?'가진 돈의 절반':'이 집 전세금 기준(월세 = 전세금 × 지역 전월세 전환율)'}이고 고칠 수 있어요.</div>`;}
 function invUpd(k){const r=INVR[k], el=document.getElementById('inv-'+k); if(!r||!el)return; const x=invCalc(r); el.innerHTML=invBody(r,x,k);
- const sm=el.parentElement.querySelector('summary b'); if(sm)sm.textContent=x.r5==null?'굴릴 돈 없음':'연 '+(x.r5<0?'0% 미만':x.r5.toFixed(1)+'%');}
+ const sm=el.parentElement.querySelector('[data-inv]'); if(sm)sm.innerHTML=invSum(x);}
 function detail(r){
  const kv=(k,v)=>`<div class="kv"><span class="k">${k}</span><span class="v">${v}</span></div>`, F=fin(r), rp=F.rp, sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', l=Math.max(r.ltv,CF.first?0.7:0);
  const plain=`<p style="margin:6px 0 2px;line-height:1.6">${CF.cash!=null?`매수 재원: 자기자본 <b>${eok(F.own)}억</b>${F.L>0?` + 대출 <b>${eok(F.L)}억</b>`:''}${F.jd?` + 전세보증금 <b>${eok(F.jd)}억</b>`:''}<span class="sub"> (취득세·중개보수${F.rp>0?'·수리비':''}${r.bu?'·분담금':''} 포함)</span>`:''}</p>`+howNum(r,F)+tbox(r);
