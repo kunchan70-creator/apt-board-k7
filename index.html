@@ -1484,35 +1484,92 @@ let JB=(()=>{try{return JSON.parse(localStorage.getItem('jobcfg')||'null')}catch
 const jsave=()=>{try{localStorage.setItem('jobcfg',JSON.stringify(JB))}catch(e){}};
 const JWHO=['나','배우자'], JHRS=[7,8,9], JMAX=[30,40,50,60,70,90];
 function jchip(on,go,t,dis){return `<button class="${on?'on':''}" ${dis?'disabled style="opacity:.45"':''} onclick="${go}">${t}</button>`;}
-function jobv(){TT.forEach(clearTimeout);TT=[];window.scrollTo(0,0);
- const ck=NET.cv||NET.check||{};     // 화면 숫자 = 교차 검증(맞춘 표본과 다른 절반에서 잰 오차)
- app.innerHTML=HOME+`<div class="hq" style="margin:0 0 2px">출퇴근</div><div style="font-weight:700;font-size:.92rem">직장까지 대략 통근 시간으로 단지 찾기</div>
+// ---- 화면: '분석하기'(consult)와 같은 한 질문씩 단계(09-26 사용자: 한 화면 폼은 잘 못 쓴다) -> 분석 요약 -> 단지 목록 ----
+let JW=0;
+const jwho=k=>JB.n===2?JWHO[k]+'의 ':'';
+function jsteps(){const s=[{id:'n'}];for(let k=0;k<JB.n;k++)s.push({id:'job',k},{id:'time',k});return s;}
+function jready(){return JB.P.slice(0,JB.n).every(P=>P.lat!=null);}
+function jobv(){if(JB.done&&jready())jres();else jwiz(0);}
+const JDC=new Map();   // 직장·시각별 계산 결과(같은 조건 다시 안 풂)
+function jlab(P){const k=P.lat+','+P.lon+','+P.hr;if(!JDC.has(k))JDC.set(k,jto([P.lat,P.lon],P.hr));return JDC.get(k);}
+function jcount(ps){return CPX.filter(c=>c.xy&&ps.every(P=>{const t=P.mode==='car'&&JCAR?jcar(c.xy,[P.lat,P.lon]):jtime(c.xy,[P.lat,P.lon],jlab(P),P.hr);return t!=null&&t<=P.max;})).length;}
+function jnearst(P){let b=null,bd=1e9;NET.stations.forEach(s=>{const d=jkm([P.lat,P.lon],[s[1],s[2]]);if(d<bd){bd=d;b=s[0];}});return [b,Math.round(bd*NET.rule.detour/NET.rule.walk_kmh*60)];}
+function jbox(lb,big,sub,src,id){return `<div class="sr" ${id?`id="${id}"`:''} style="margin-top:14px;border-left:3px solid var(--blue);background:var(--surface2);border-radius:0 12px 12px 0;padding:12px 14px">
+ <div style="font-size:.7rem;font-weight:800;letter-spacing:.06em;color:var(--blue)">분석</div>
+ <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:4px"><span style="font-size:.86rem;font-weight:700">${lb}</span><b style="font-size:1.35rem;text-align:right">${big}</b></div>
+ <div style="font-size:.82rem;color:var(--ink2);margin-top:4px;line-height:1.5">${sub}</div>${src?`<div class="sub" style="font-size:.7rem;margin-top:8px">${src}</div>`:''}</div>`;}
+function jwiz(i){JW=i;TT.forEach(clearTimeout);TT=[];window.scrollTo(0,0);
+ if(!document.getElementById('stcss'))document.head.insertAdjacentHTML('beforeend',STCSS);
+ const S=jsteps(),n=S.length,done=i>=n,st=S[i];
+ const head=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:.78rem;font-weight:800;color:var(--blue)">출퇴근 단지 찾기</span><button class="linkbtn" style="padding:0;font-size:.84rem;color:var(--ink3)" onclick="hub()">나가기</button></div>
+  <div style="height:4px;border-radius:2px;background:var(--line2);margin-bottom:18px"><i style="display:block;height:100%;width:${Math.min(1,i/n)*100}%;background:var(--blue);border-radius:2px;transition:width .4s"></i></div>`;
+ const nav=(ok,last)=>`<div class="cta" style="margin-top:14px"><button class="btn" id="jwnext" ${ok?'':'disabled style="opacity:.4"'} onclick="jwiz(${i+1})">${last?'분석 요약 보기':'다음'}</button>
+  <p style="text-align:center;margin:6px 0 0">${i>0?`<button class="linkbtn" onclick="jwiz(${i-1})">이전</button>`:`<button class="linkbtn" onclick="hub()">홈으로</button>`}</p></div>`;
+ if(done){const PS=JB.P.slice(0,JB.n),rows=[['출근하는 사람',JB.n===2?'둘 (맞벌이)':'혼자']];
+  PS.forEach((P,k)=>{rows.push([jwho(k)+'직장',P.lab]);rows.push([jwho(k)+'출근 조건',P.hr+'시 출발 · 편도 '+P.max+'분 이내 · '+(P.mode==='car'&&JCAR?'자가용':'대중교통')]);});
+  app.innerHTML=head+`<div id="stw"><div class="sub sr" style="font-size:.76rem;font-weight:800;letter-spacing:.06em">분석 요약</div>
+   <div class="hq sr" style="font-size:clamp(1.3rem,5.8vw,1.6rem);line-height:1.4;margin:6px 0 14px;${D_(100)}">통근 조건에 맞는<br>단지를 찾았습니다</div>
+   <div class="sr" style="border:1px solid var(--line);border-radius:14px;overflow:hidden;${D_(250)}">${rows.concat([['조건에 맞는 단지','<span id="jwcnt">계산 중…</span>']]).map(([a,b],j)=>`<div style="display:flex;justify-content:space-between;gap:10px;padding:12px 14px;${j?'border-top:1px solid var(--line2)':''}"><span class="sub" style="font-size:.84rem;white-space:nowrap">${a}</span><b style="font-size:.88rem;text-align:right;word-break:keep-all">${b}</b></div>`).join('')}</div>
+   <p class="sub sr" style="font-size:.74rem;line-height:1.6;margin-top:10px;${D_(400)}">통근 시간은 공공 버스·지하철 노선으로 계산한 대략값입니다(실제와 ±10분 안팎). 다음 화면에서 매매가·면적으로 더 좁힐 수 있습니다.</p>
+   <div class="cta sr" style="${D_(550)}"><button class="btn" onclick="JB.done=true;JB.shown=30;jsave();jres()">단지 목록 보기</button>
+   <p style="text-align:center;margin:6px 0 0"><button class="linkbtn" onclick="jwiz(${n-1})">이전</button></p></div></div>`;
+  jbload().then(()=>setTimeout(()=>{const e=$('#jwcnt');if(e)e.textContent=jcount(PS).toLocaleString()+'곳';},30));return;}
+ let body='',ok=true;
+ if(st.id==='n'){
+  body=`<div class="hq sr" style="font-size:clamp(1.3rem,5.8vw,1.6rem);line-height:1.4;margin:6px 0 4px">출근하는 사람은<br>몇 명인가요?</div><div class="sub sr" style="font-size:.84rem;${D_(100)}">맞벌이면 두 사람의 직장을 각각 넣고, 둘 다 조건에 맞는 단지만 찾습니다.</div>
+   <div style="margin-top:16px">${[[1,'혼자','나만 출근해요'],[2,'둘 (맞벌이)','두 사람이 각자 다른 직장에 출근해요']].map(([v,t,d],j)=>`<button class="opt sr${JB.n===v?' on':''}" style="${D_(150+j*70)}" onclick="JB.n=${v};JB.done=false;jsave();jwiz(0)"><b>${t}</b><span class="sub" style="display:block;font-size:.76rem;font-weight:400">${d}</span></button>`).join('')}</div>`
+   +jbox('비교 기준',JB.n===2?'두 사람 모두':'한 사람',JB.n===2?'두 사람 중 더 먼 쪽도 편도 최대 시간 안에 들어오는 단지만 보여 줍니다.':'직장까지 편도 최대 시간 안에 들어오는 단지를 보여 줍니다.');}
+ else if(st.id==='job'){const k=st.k,P=JB.P[k];ok=P.lat!=null;
+  body=`<div class="hq sr" style="font-size:clamp(1.3rem,5.8vw,1.6rem);line-height:1.4;margin:6px 0 4px">${jwho(k)}직장은<br>어디인가요?</div><div class="sub sr" style="font-size:.84rem;${D_(100)}">건물·회사 이름, 도로명 주소, 역 이름 모두 됩니다. 이름 일부만 써도 찾아요.</div>
+   <div style="display:flex;gap:6px;margin-top:16px"><input id="jq${k}" type="search" placeholder="예: 에스타워프라임, 테헤란로 152, 판교역" value="${ok?P.lab.replace(/\x22/g,'&quot;'):''}" onkeydown="if(event.key==='Enter')jfind(${k})" style="flex:1;min-width:0;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit"><button class="btn" style="width:auto;padding:0 16px" onclick="jfind(${k})">찾기</button></div><div id="jr${k}"></div>`;
+  if(ok){const [sn,wm]=jnearst(P);body+=jbox('가장 가까운 역',sn+'역',(wm<=25?`직장에서 걸어서 약 ${wm}분`:`직장에서 약 ${Math.round(wm/60*NET.rule.walk_kmh/NET.rule.detour*10)/10}km — 역이 멀어 버스 노선으로 계산합니다`)+` · 선택한 곳: ${P.lab}`,'직장 위치: 오픈스트리트맵(건물 이름·주소) · 역: 철도 노선도');}}
+ else{const k=st.k,P=JB.P[k];
+  const grp=(t,h)=>`<div class="sub sr" style="font-size:.76rem;font-weight:800;margin:14px 2px 6px">${t}</div><div class="cc sr">${h}</div>`;
+  body=`<div class="hq sr" style="font-size:clamp(1.3rem,5.8vw,1.6rem);line-height:1.4;margin:6px 0 4px">${jwho(k)}출근 조건을<br>골라 주세요</div><div class="sub sr" style="font-size:.84rem;${D_(100)}">출발 시각과, 편도로 괜찮은 최대 시간입니다.</div>`
+   +grp('출근 수단',jchip(P.mode!=='car'||!JCAR,`JB.P[${k}].mode='pt';jsave();jwiz(${i})`,'대중교통')+(JCAR?jchip(P.mode==='car',`JB.P[${k}].mode='car';jsave();jwiz(${i})`,'자가용'):jchip(false,'','자가용 · 실측 모으는 중',1)))
+   +grp('출발 시각',JHRS.map(h=>jchip(P.hr===h,`JB.P[${k}].hr=${h};jsave();jwiz(${i})`,h+'시')).join(''))
+   +grp('편도 최대',JMAX.map(m=>jchip(P.max===m,`JB.P[${k}].max=${m};jsave();jwiz(${i})`,m+'분')).join(''))
+   +jbox(`편도 ${P.max}분 안 단지`,'<span id="jwn">계산 중…</span>',`서울·경기 ${CPX.length.toLocaleString()}개 단지 중 · ${P.lab}까지`,'공공 버스·지하철 노선으로 계산한 대략값(실제와 ±10분 안팎)','jwbox');
+  setTimeout(()=>jbload().then(()=>{const e=$('#jwn');if(e)e.textContent=jcount([P]).toLocaleString()+'곳';}).catch(()=>{const e=$('#jwn');if(e)e.textContent='-';}),30);}
+ app.innerHTML=head+`<div id="stw"><div class="sub" style="font-size:.76rem;font-weight:800">질문 ${i+1} / ${n}</div>${body}${nav(ok,i===n-1)}</div>`;}
+function jres(){TT.forEach(clearTimeout);TT=[];window.scrollTo(0,0);
+ const ck=NET.cv||NET.check||{},PS=JB.P.slice(0,JB.n);
+ app.innerHTML=HOME+`<div class="hq" style="margin:0 0 2px">출퇴근</div><div style="font-weight:700;font-size:.92rem">통근 조건에 맞는 단지</div>
  ${TAGS(['지하철·버스 기준',ck.within10!=null?['실제와 10분 안 '+ck.within10+'%','gray']:null].filter(Boolean))}
- ${MORE(`통근 시간은 공공 자료(서울 열린데이터광장·경기데이터드림의 버스 노선·정류장, 오픈스트리트맵 철도 노선)로 만든 노선망에서 걷기·대기·환승을 규칙으로 더해 계산한 <b>대략값</b>입니다. 10분 단위 구간으로 보여 드리며 실제와 ±10분 안팎 차이가 날 수 있습니다. 평일 8시 출발 실제 길찾기 결과 ${ck.n||0}건(규칙 맞출 때 쓰지 않은 표본)과 비교하면 평균 ${ck.mae}분 차이, ${ck.within10}%가 10분 안입니다(실제 100분 이하 통근 기준).<br>버스 도착 정보(실시간)나 도로 정체는 반영하지 않습니다. 정확한 시간은 쓰시는 지도 앱에서 확인하세요. ${JCAR?`자가용은 평일 출근 시각 실측 ${JCAR.n}건에 맞춘 계산으로, 평균 ${JCAR.mae}분 차이(${JCAR.within10}%가 10분 안)입니다.`:'자가용은 평일 출근길 실측을 모으는 중입니다.'}`)}
- <div style="font-size:.8rem;font-weight:800;color:var(--ink3);margin:12px 2px 6px">출근하는 사람</div>
- <div class="cc">${jchip(JB.n===1,"JB.n=1;jsave();jobv()",'혼자')}${jchip(JB.n===2,"JB.n=2;jsave();jobv()",'둘 (맞벌이)')}</div>
- ${JB.P.slice(0,JB.n).map((P,k)=>`<div class="card" style="padding:14px;margin:10px 0">
-  <div style="font-weight:800;margin-bottom:8px">${JB.n===2?JWHO[k]+'의 ':''}직장</div>
-  ${P.lat!=null?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><b style="flex:1;min-width:0;word-break:keep-all">${P.lab}</b><button class="linkbtn" style="padding:0" onclick="JB.P[${k}].lat=null;jsave();jobv()">바꾸기</button></div>`
-   :`<div style="display:flex;gap:6px"><input id="jq${k}" type="search" placeholder="주소·건물·역 이름 (예: 판교역로 166, 여의도역)" onkeydown="if(event.key==='Enter')jfind(${k})" style="flex:1;min-width:0;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit"><button class="btn" style="width:auto;padding:0 14px" onclick="jfind(${k})">찾기</button></div><div id="jr${k}"></div>`}
-  <div class="sub" style="font-size:.74rem;margin:8px 0 4px">출근 수단</div><div class="cc">${jchip(P.mode==='pt',`JB.P[${k}].mode='pt';jsave();jobv()`,'대중교통')}${JCAR?jchip(P.mode==='car',`JB.P[${k}].mode='car';jsave();jobv()`,'자가용'):jchip(false,'',"자가용 · 실측 모으는 중",1)}</div>
-  <div class="sub" style="font-size:.74rem;margin:8px 0 4px">출발 시각</div><div class="cc">${JHRS.map(h=>jchip(P.hr===h,`JB.P[${k}].hr=${h};jsave();jobv()`,h+'시')).join('')}</div>
-  <div class="sub" style="font-size:.74rem;margin:8px 0 4px">편도 최대</div><div class="cc">${JMAX.map(m=>jchip(P.max===m,`JB.P[${k}].max=${m};jsave();jobv()`,m+'분')).join('')}</div></div>`).join('')}
- <button class="btn" style="margin-top:6px" onclick="jrun()" ${JB.P.slice(0,JB.n).every(P=>P.lat!=null)?'':'disabled'}>단지 찾기</button>
+ <div class="card" style="padding:12px 14px;margin:10px 0">${PS.map((P,k)=>`<div style="display:flex;justify-content:space-between;gap:10px;font-size:.84rem;margin:3px 0"><span class="sub" style="white-space:nowrap">${jwho(k)}직장</span><b style="text-align:right;word-break:keep-all">${P.lab} · ${P.hr}시 · ${P.max}분 이내</b></div>`).join('')}
+  <button class="btn ghost" style="margin-top:10px" onclick="JB.done=false;jsave();jwiz(0)">조건 바꾸기</button></div>
  <div id="jlist" style="margin-top:12px"></div>
+ ${MORE(`통근 시간은 공공 자료(서울 열린데이터광장·경기데이터드림의 버스 노선·정류장, 오픈스트리트맵 철도 노선)로 만든 노선망에서 걷기·대기·환승을 규칙으로 더해 계산한 <b>대략값</b>입니다. 10분 단위 구간으로 보여 드리며 실제와 ±10분 안팎 차이가 날 수 있습니다. 평일 8시 출발 실제 길찾기 결과 ${ck.n||0}건(규칙 맞출 때 쓰지 않은 표본)과 비교하면 평균 ${ck.mae}분 차이, ${ck.within10}%가 10분 안입니다(실제 100분 이하 통근 기준).<br>버스 도착 정보(실시간)나 도로 정체는 반영하지 않습니다. 정확한 시간은 쓰시는 지도 앱에서 확인하세요. ${JCAR?`자가용은 평일 출근 시각 실측 ${JCAR.n}건에 맞춘 계산으로, 평균 ${JCAR.mae}분 차이(${JCAR.within10}%가 10분 안)입니다.`:'자가용은 평일 출근길 실측을 모으는 중입니다(평일 아침에 모아 다음 날 켜집니다).'}`)}
  <p class="sub" style="margin:14px 2px 0;font-size:.74rem">참고용 산출치 · 투자 권유 아님 · 투자 판단과 책임은 본인에게 있습니다</p>`;
- if(JB.P.slice(0,JB.n).every(P=>P.lat!=null))jrun();}
+ jrun();}
 async function jfind(k){const q=($('#jq'+k).value||'').trim(),box=$('#jr'+k);if(!q)return;
  const qq=q.replace(/역$/,''), st=NET.stations.map((s,i)=>[s,i]).filter(([s])=>s[0]===qq||s[0].startsWith(qq)).slice(0,4);
  const item=(lab,la,lo)=>`<button onclick='jpick(${k},${JSON.stringify(lab)},${la},${lo})' style="display:block;width:100%;text-align:left;padding:10px 12px;margin-top:6px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:.86rem;cursor:pointer">${lab}</button>`;
- box.innerHTML=st.map(([s])=>item(s[0]+'역',s[1],s[2])).join('')+'<div class="sub" style="font-size:.74rem;margin-top:6px">주소 찾는 중…</div>';
+ box.innerHTML=st.map(([s])=>item(s[0]+'역',s[1],s[2])).join('')+'<div class="sub" style="font-size:.74rem;margin-top:6px">찾는 중…</div>';
+ let pl=[];try{await jpload();pl=jpsearch(q);}catch(e){}
  let geo=[];try{const r=await fetch('https://nominatim.openstreetmap.org/search?format=json&countrycodes=kr&accept-language=ko&limit=5&q='+encodeURIComponent(q));geo=await r.json();}catch(e){}
- geo=geo.filter(x=>+x.lat>36.8&&+x.lat<38.3);
- box.innerHTML=st.map(([s])=>item(s[0]+'역',s[1],s[2])).join('')+geo.map(x=>item(x.display_name.split(', ').slice(0,4).join(' '),+x.lat,+x.lon)).join('')
-  +((st.length||geo.length)?'':'<div class="sub" style="font-size:.78rem;margin-top:6px">못 찾았습니다. 도로명 주소(예: 테헤란로 152)나 가까운 역 이름으로 찾아 주세요.</div>');}
-function jpick(k,lab,la,lo){Object.assign(JB.P[k],{lab,lat:la,lon:lo});jsave();jobv();}
+ geo=geo.filter(x=>+x.lat>36.8&&+x.lat<38.3&&!pl.some(p=>jkm([p[1],p[2]],[+x.lat,+x.lon])<.15));      // 건물 목록과 같은 곳이면 한 번만
+ box.innerHTML=st.map(([s])=>item(s[0]+'역',s[1],s[2])).join('')+pl.map(([n,la,lo])=>{const g=jgu(la,lo);return item(n+(g?' · '+g:''),la,lo);}).join('')
+  +geo.map(x=>item(x.display_name.split(', ').slice(0,4).join(' '),+x.lat,+x.lon)).join('')
+  +((st.length||pl.length||geo.length)?'':'<div class="sub" style="font-size:.78rem;margin-top:6px">못 찾았습니다. 도로명 주소(예: 테헤란로 152)나 가까운 역 이름으로 찾아 주세요.</div>');}
+// 건물·회사 이름 목록(places.py: 오픈스트리트맵 서울·경기·인천 7만여 곳, 필요할 때만 받음). 부분 일치 + 글자쌍 유사도로 오타도 찾는다
+// (09-26 '에슴타워프라임'·'에스타워 프라임' -> '고덕에스타워프라임'; 주소 검색은 단어 단위라 붙여 쓴 이름의 일부로는 못 찾았다).
+let JPN=null;
+function jpload(){return new Promise((ok,no)=>{if(window.JPLACE)return ok();const s=document.createElement('script');s.src='places.js';s.onload=()=>ok();s.onerror=no;document.head.appendChild(s);});}
+function jpprep(){if(JPN)return JPN;const P=window.JPLACE,n=P.n.split('\n'),la=[],lo=[];let a=0,b=0;
+ for(let i=0;i<n.length;i++){a+=P.la[i];b+=P.lo[i];la.push(a/1e5);lo.push(b/1e5);}
+ JPN={n,k:n.map(x=>x.replace(/\s+/g,'').toLowerCase()),la,lo};return JPN;}
+function jbig(q){const o=new Set();for(const w of q.toLowerCase().split(/\s+/))for(let i=0;i<w.length-1;i++)o.add(w.slice(i,i+2));return [...o];}
+function jpsearch(q){const P=jpprep(),qk=q.replace(/\s+/g,'').toLowerCase(),bg=jbig(q),out=[];if(qk.length<2)return out;
+ for(let i=0;i<P.k.length;i++){const k=P.k[i];let sc;
+  if(k.includes(qk))sc=2+(k===qk?1:k.startsWith(qk)?.5:0);
+  else{let h=0;for(const x of bg)if(k.includes(x))h++;sc=bg.length?h/bg.length:0;if(sc<.6)continue;}
+  out.push([sc,-Math.abs(k.length-qk.length),i]);}
+ out.sort((a,b)=>b[0]-a[0]||b[1]-a[1]);return out.slice(0,6).map(([,,i])=>[P.n[i],P.la[i],P.lo[i]]);}
+function jgu(la,lo){let g=null,bd=3;CPX.forEach(c=>{if(!c.xy)return;const d=jkm([la,lo],c.xy);if(d<bd){bd=d;g=c.gu;}});return g;}   // 가까운 단지의 시·구(3km 안)
+function jpick(k,lab,la,lo){Object.assign(JB.P[k],{lab,lat:la,lon:lo});JB.done=false;jsave();jwiz(JW);}
 function jrun(){const box=$('#jlist');if(!box)return;box.innerHTML='<p class="sub">계산 중…</p>';
- jbload().then(()=>setTimeout(()=>{const PS=JB.P.slice(0,JB.n).map(P=>Object.assign({},P,{mode:P.mode==='car'&&JCAR?'car':'pt'})),Ds=PS.map(P=>P.mode==='car'?null:jto([P.lat,P.lon],P.hr));
+ jbload().then(()=>setTimeout(()=>{const PS=JB.P.slice(0,JB.n).map(P=>Object.assign({},P,{mode:P.mode==='car'&&JCAR?'car':'pt'})),Ds=PS.map(P=>P.mode==='car'?null:jlab(P));
   const jbest=c=>{const rs=c.rows.filter(r=>!r.as&&(!JB.pmax||r.p<=JB.pmax*1e4)&&(!(JB.size||[]).length||JB.size.includes(szOf(r.b))));return rs.length?rs.reduce((a,r)=>UPK(r)>UPK(a)?r:a):null;};
   let L=[];CPX.forEach(c=>{if(!c.xy)return;const r=jbest(c);if(!r)return;
    const ts=PS.map((P,k)=>P.mode==='car'?jcar(c.xy,[P.lat,P.lon]):jtime(c.xy,[P.lat,P.lon],Ds[k],P.hr));if(ts.some((t,k)=>t==null||t>PS[k].max))return;L.push({c,r,ts});});
