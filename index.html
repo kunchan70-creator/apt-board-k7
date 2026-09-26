@@ -1106,7 +1106,7 @@ function setup(i){
  const Q=(t,h)=>`<div class="hq" style="margin:0 0 6px;word-break:keep-all">${t}</div>${h?`<div class="hint" style="margin-bottom:14px">${h}</div>`:''}`;
  let body='', cta=`<div class="cta"><button class="btn" id="go" onclick="${nx}">다음</button></div>`;
  if(k==='purpose'){
-  body=Q('산 집에 직접 사실 건가요?')+[[true,'네, 직접 살 거예요','실거주 · 내지 않아도 되는 월세도 이득으로 계산해요'],[false,'아니요, 전세를 놓을 거예요','임대 · 전세금만큼 자기자본이 덜 들어요 (토지거래허가구역 제외)']].map(([v,t,d])=>`<button class="opt${CF.useU===v?' on':''}" onclick="CF.useU=${v};save();${nx}"><b>${CF.useU===v?'✓ ':''}${t}</b><span class="sub" style="display:block;font-size:.82rem;font-weight:500;margin-top:3px">${d}</span></button>`).join('');}
+  body=Q('산 집에 직접 사실 건가요?')+[[true,'네, 직접 살 거예요','실거주 · 주택담보대출을 받아 들어가 사는 것으로 계산해요'],[false,'아니요, 전세를 놓을 거예요','임대 · 전세금만큼 자기자본이 덜 들어요 (토지거래허가구역 제외)']].map(([v,t,d])=>`<button class="opt${CF.useU===v?' on':''}" onclick="CF.useU=${v};save();${nx}"><b>${CF.useU===v?'✓ ':''}${t}</b><span class="sub" style="display:block;font-size:.82rem;font-weight:500;margin-top:3px">${d}</span></button>`).join('');}
  else if(k==='cash'){
   body=Q('집 사는 데 쓸 수 있는 현금은 얼마인가요?','대출은 빼고 지금 가진 돈만요. 세금·중개보수도 여기서 나가요. 갈아타기라면 지금 집을 팔고 대출을 갚은 뒤 남는 돈까지 더하세요.')
   +`<div class="inp"><input id="i_cash" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 3" value="${CF.cash==null?'':(CF.cash/1e4)}" oninput="CF.cash=parseMoney(this.value);document.querySelectorAll('#qcash button').forEach(b=>b.classList.toggle('on',+b.dataset.v===CF.cash));count()"><b>억</b></div>
@@ -1165,7 +1165,7 @@ function fin(r){   // 현금을 모르면 대출 없이(투입금 대비 효율�
  const jd=CF.useU?0:r.p*Math.min(r.jr||55,90)/100;   // 세 주기: 받는 전세금(전세가율, 없으면 55%)만큼 현금이 덜 들고, 전세 낀 집은 주담대가 안 나와 대출 0
  const L=CF.useU?(K==null?0:Math.max(0,Math.min(up-K,cap))):0, own=Math.max(0,up-L-jd), i=(CF.irate==null?DT.rate.loan:CF.irate)/100, d=DT.rate.dep/100*0.846;
  const Y=CF.my!=null?yearOf(CF.my):null, mk=Y?Math.pow((1+AN(Y.lv)/100)/(1+DT.level/100),r.T)*(r.qc!=null&&!r.as?Math.exp((Y.sl-SMED)*r.qc):1):1;   // 시장 해 선택: 그해 시장 상승률 + 그해 좋은 입지 기울기(기본 = 16번 섞음)
- const left=K==null?0:Math.max(0,K-own), it=L*i*r.T, di=left*d*r.T, f=v=>v+(CF.useU?r.U:0)-r.C-rp-it+di;   // 아끼는 월세는 설정으로 켜고 끔
+ const left=K==null?0:Math.max(0,K-own), it=L*i*r.T, di=left*d*r.T, f=v=>v-r.C-rp-it;   // 아끼는 월세는 설정으로 켜고 끔
  // 나쁨~좋음 폭 = 단지 운 + 시장 흐름(과거 31번 5년 수익의 흩어짐 SDM). 시장 경우를 고르면 시장 몫을 빼고 그 경우 안의 흩어짐(Y.sg)만 남긴다
  const sh=d0=>{if(!Y||!(d0>0))return 1;const t=d0/1.2816,g=Y.sg||0;return Math.sqrt(Math.max(0.15*t*t,t*t-SDM*SDM+g*g))/t;};
  // ★과거 실거래 보정표(scnmap.py): 이런 시장에 산 집들의 하위10%/가운데/상위10%가 모든 때보다 얼마나 달랐나(입지 급 3등분별) — 그만큼만 옮긴다
@@ -1262,9 +1262,9 @@ function tipOnce(){return jsSeen('jsTip')?'':`<div class="sub" style="margin:-4p
 function fold(t,body,open){return body?`<details class="fold"${open?' open':''}><summary><span>${t}</span></summary><div>${body}</div></details>`:'';}
 // 09-26 사용자: 순이익에 월세 아낀 돈이 들어간 게 안 보인다 → '집값이 그만큼 오른다'로 읽힘. 기준 순이익을 조각으로 풀어 한 줄
 // 세금·비용에 팔 때 중개보수 포함 → '집값 오름' = 결과 큰 숫자(F.q5)와 같게
-function howNum(r,F){const up=F.q5, use=CF.useU?r.U:0, cost=-(r.C-r.p+F.rp)-(GRS(F.sv5)-F.sv5), it=-F.it, dep=F.di, t=v=>(v>=0?'+':'−')+eok(Math.abs(v));
- const P=[['집값 오름',up],['월세 아낌',use],['세금·비용',cost],['대출이자',it],['남는 현금 이자',dep]].filter(([_,v])=>Math.abs(v)>=50);
- return `<div style="margin:8px 0 2px;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:.8rem;line-height:1.6"><b>기준 ${t(F.p5)}억은 이렇게 나와요</b><div style="display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:4px">${P.map(([k,v])=>`<span style="white-space:nowrap">${k} <b style="color:${v>=0?'var(--green)':'var(--red)'}">${t(v)}</b></span>`).join('')}</div>${use?`<div class="sub" style="font-size:.74rem;margin-top:4px">월세 아낌 = 이 집에 월세로 살았다면 5년간 냈을 돈. 월세 아낌을 빼면 ${t(F.p5-use)}억이에요.</div>`:''}</div>`;}
+function howNum(r,F){const up=F.q5, cost=-(r.C-r.p)-(GRS(F.sv5)-F.sv5), it=-F.it, t=v=>(v>=0?'+':'−')+eok(Math.abs(v));
+ const P=[['집값 오름',up],['세금·중개보수',cost],['대출이자',it],['수리비',-F.rp]].filter(([_,v])=>Math.abs(v)>=50);
+ return `<div style="margin:8px 0 2px;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:.8rem;line-height:1.6"><b>기준 ${t(F.p5)}억은 이렇게 나와요</b><div style="display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:4px">${P.map(([k,v])=>`<span style="white-space:nowrap">${k} <b style="color:${v>=0?'var(--green)':'var(--red)'}">${t(v)}</b></span>`).join('')}</div></div>`;}
 // 곁다리(09-26 사용자): 이 집을 사는 대신 가진 돈을 굴리면 연 몇 %를 벌어야 같아지나 — 사는 방식은 고를 수 있게(사용자: 반드시 이 집에 산다는 가정 말고 선택지로).
 //   ① 월세로 살면: (가진 돈 − 보증금)을 연 x%로 굴린 이익 − 5년 월세 = 이 집을 사서 살 때 순이익(월세 아낌은 뺌 — 산 사람은 월세를 안 내니까)
 //   ② 전세로 살면: (가진 돈 − 전세금)을 굴린 이익 = 같은 순이익
@@ -1278,10 +1278,10 @@ function invCalc(r){const T=r.T||5, FL=finAs(r,true), FI=finAs(r,false), K=CF.ca
  const need=(g,base,cost)=>base>0?(Math.pow(Math.max(0,(g+cost)/base+1),1/T)-1)*100:null;
  if(mode==='t'){x.block=r.ltv<0.5?'실거주 의무 지역(토지거래허가구역)이라 세 주고 사 둘 수 없어요.':!FI.ok?`전세 끼고 사도 내 돈 ${eok(FI.own)}억이 들어 가진 돈보다 많아요.`:null;
   x.base=K; x.jd=FI.jd; x.own=FI.own; x.g5=FI.p5; x.r5=need(FI.p5,K,0); x.r1=need(FI.p1,K,0); return x;}
- const use=r.U||0; x.g5=FL.p5-use;
+ x.g5=FL.p5;
  if(mode==='j'){x.D=INV.jd!=null?Math.min(INV.jd,K):Math.min(J,Math.round(K*0.5/1000)*1000); x.m=0;}   // 다른 곳 전세: 기본 = 가진 돈의 절반(이 집 전세금보다 크면 그만큼)
  else{x.D=INV.dep!=null?Math.min(INV.dep,K):Math.min(K,Math.round(J*0.2/1000)*1000); x.m=INV.rent!=null?INV.rent:Math.round(Math.max(0,J-x.D)*cv/12);}
- x.rent=x.m*12*T; x.base=K-x.D; x.r5=need(FL.p5-use,x.base,x.rent); x.r1=need(FL.p1-use,x.base,x.rent);
+ x.rent=x.m*12*T; x.base=K-x.D; x.r5=need(FL.p5,x.base,x.rent); x.r1=need(FL.p1,x.base,x.rent);
  if(!FL.ok)x.block=`사서 들어가 살려면 내 돈 ${eok(FL.own)}억이 들어 가진 돈보다 많아요.`; return x;}
 const PCT=v=>v==null?'-':v<0?'0% 미만':v.toFixed(1)+'%';
 function invBox(r){const k=(r.no||r.n)+'-'+r.b; INVR[k]=r; const x=invCalc(r);
@@ -1297,7 +1297,7 @@ function invBody(r,x,k){const t=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', M=[[
  if(x.base<=0)return chips+`<p class="sub" style="font-size:.82rem">${x.mode==='j'?'전세금':'보증금'}이 가진 돈(${eok(x.K)}억)과 같거나 커서 굴릴 돈이 없어요.</p>`+inputs;
  const lead=x.mode==='t'?`이 집은 전세 ${eok(x.jd)}억 끼고 내 돈 ${eok(x.own)}억으로 사 두고(남는 돈은 예금), 나는 어디 살든 주거비는 양쪽이 같다고 봤어요. 그 대신 <b>${eok(x.K)}억 전부</b>를 ${x.T}년 굴린다면`
   :`다른 곳에 ${x.mode==='j'?'전세':'월세'}로 살고, 가진 돈 ${eok(x.K)}억 중 ${x.mode==='j'?'전세금':'보증금'}을 뺀 <b>${eok(x.base)}억</b>을 ${x.T}년 굴린다면`;
- const note=x.mode==='t'?`사 두는 쪽: 시세차익 − 세금·비용 + 남는 돈 예금이자 ${t(x.g5)}.`:`사서 사는 쪽: 집값 차익 − 세금·이자 ${t(x.g5)}(월세 아낌은 뺌)${x.rent?` · 세 사는 쪽은 5년 월세 ${eok(x.rent)}억을 내고도 같아지는 수익률`:''}.`;
+ const note=x.mode==='t'?`사 두는 쪽: 시세차익 − 세금·비용 ${t(x.g5)}.`:`사서 사는 쪽: 집값 차익 − 세금·이자 ${t(x.g5)}(월세 아낌은 뺌)${x.rent?` · 세 사는 쪽은 5년 월세 ${eok(x.rent)}억을 내고도 같아지는 수익률`:''}.`;
  return chips+`<div style="font-size:.84rem;line-height:1.65">${lead}</div>
  <div class="mini" style="margin:8px 0 4px"><div style="outline:2px solid var(--blue)"><span>기준만큼 벌려면</span><b>연 ${PCT(x.r5)}</b></div><div><span>비관만큼이면</span><b>연 ${PCT(x.r1)}</b></div><div><span>예금(세후)</span><b style="color:var(--ink3)">연 ${x.dep.toFixed(1)}%</b></div></div>${x.r1!=null&&x.r1<x.dep?`<div class="sub" style="font-size:.76rem">비관이면 예금만 해도 사는 것보다 나아요.</div>`:''}
  ${inputs}<div class="sub" style="font-size:.74rem;line-height:1.55">${note} 수익률은 세전·복리. 기본 금액은 ${x.mode==='j'?'가진 돈의 절반':'이 집 전세금 기준(월세 = 전세금 × 지역 전월세 전환율)'}이고 고칠 수 있어요.</div>`;}
@@ -1308,7 +1308,7 @@ function detail(r){
  const plain=`<p style="margin:6px 0 2px;line-height:1.6">${CF.cash!=null?`매수 재원: 자기자본 <b>${eok(F.own)}억</b>${F.L>0?` + 대출 <b>${eok(F.L)}억</b>`:''}${F.jd?` + 전세보증금 <b>${eok(F.jd)}억</b>`:''}<span class="sub"> (취득세·중개보수${F.rp>0?'·수리비':''}${r.bu?'·분담금':''} 포함)</span>`:''}</p>`+(!rp&&r.y&&!r.as&&YEAR-r.y>=20?`<div class="sub" style="font-size:.78rem;margin:4px 0 0">지은 지 ${YEAR-r.y}년 · 수리비는 넣지 않았어요. 고쳐 살 계획이면 그만큼 더 듭니다(집 상태에 따라 천차만별).</div>`:'')+howNum(r,F)+tbox(r);
  let h=`<div style="padding:0 12px 14px">`+plain
   +`<div class="sub" style="font-size:.72rem;font-weight:700;margin-top:10px">5년 뒤 집값</div><div class="mini" style="margin-top:4px"><div style="outline:2px solid var(--blue)"><span>기준<br>중위값</span><b class="${F.q5>=0?'pos':'neg'}">${sg(F.q5)}</b></div><div><span>${LB()[0]}<br>하위 10%</span><b class="${F.q1>=0?'pos':'neg'}">${sg(F.q1)}</b></div><div><span>${LB()[1]}<br>상위 10%</span><b style="color:var(--ink3)">${sg(F.q9)}</b></div></div>
-  <div class="sub" style="font-size:.72rem">순이익(월세 아낌·이자·세금 포함)으로는 ${LB()[0]} ${sg(F.p1)} · 기준 ${sg(F.p5)} · ${LB()[1]} ${sg(F.p9)}</div>`;
+  <div class="sub" style="font-size:.72rem">순이익(대출이자·세금·중개보수 뺀 값)으로는 ${LB()[0]} ${sg(F.p1)} · 기준 ${sg(F.p5)} · ${LB()[1]} ${sg(F.p9)}</div>`;
  let more='';
  {const ym=t=>t==null?'-':Math.floor(t/12)+'.'+String(t%12+1).padStart(2,'0'), RW=DT.rwatch||[], cv=(DT.conv||{})[r.se===1?'서울특별시':r.se===2?'인천광역시':'경기도'];
   h+=regWarn(r.gu);
@@ -1316,7 +1316,7 @@ function detail(r){
    +kv('LTV',Math.round(l*100)+'%'+(r.ltv<0.5?' (규제지역)':CF.first?' (생애최초)':' (비규제)'))+kv('주담대 한도',eok(lcap(r.p))+'억 (주택가격별)')
    +kv('DSR',CF.inc==null?'미적용 (소득 미입력)':Math.round((RU.dsr||0.4)*100)+'% · 스트레스 +'+STRESS+'%p')
    +kv('대출 금리',(F.i*100).toFixed(2)+'%'+(CF.irate==null?' (한국은행 '+DT.rate.ym.slice(0,4)+'.'+DT.rate.ym.slice(4)+')':' (직접 입력)'))+kv('예금 금리',DT.rate.dep+'% (세후 적용)')
-   +kv('보유 기간',Math.round(r.T)+'년')+(CF.useU?kv('주거비 절감','전세가율 '+(r.jr||55)+'% × 전월세 전환율'+(cv?' '+cv+'%':'')):'')
+   +kv('보유 기간',Math.round(r.T)+'년')
    +kv('규제 기준',(RU.name||'-')+(RU.until?' (~'+RU.until+')':''))+kv('규제 확인일',RU.checked||'-')
    +(RW.length?`<div class="tip" style="margin-top:6px"><span>⚠ 규제 확인일 이후 금융위원회 대출 관련 발표가 있습니다 — ${RW.map(h=>`<a href="${h.link}" target="_blank" rel="noopener">${h.date} ${h.title.slice(0,28)}</a>`).join(' · ')}</span></div>`:'')
    +`<p class="note">LTV·DSR은 공식 API가 없어 발표문 기준으로 반영하며, 금융위원회 보도자료를 매일 확인합니다.</p>`);}
@@ -1324,7 +1324,7 @@ function detail(r){
  // 돈 계산
  more+=fold('순이익 산출 내역',kv('매매가(최근 실거래)',eok(r.p)+'억')+kv('취득세·중개보수·등기 + 보유세',eok(r.fee+r.hold)+'억')+(rp?kv('수리비(직접 입력)',eok(rp)+'억'):'')+(r.bu?kv(r.be?'분담금(추정, 오차 '+DT.bk.err+'%)':'분담금(보도값)','<b class="neg">'+eok(r.bu)+'억</b>'):'')
    +kv('대출(LTV '+Math.round(l*100)+'%·한도 '+eok(lcap(r.p))+'억'+(CF.inc!=null?'·DSR':'')+')',eok(F.L)+'억')+kv('대출이자 '+Math.round(r.T)+'년('+(F.i*100).toFixed(2)+'%)','−'+eok(F.it)+'억')
-   +(F.di?kv('여유 현금 예금이자',' +'+eok(F.di)+'억'):'')+(CF.useU&&r.U?kv('주거비 절감(월세 환산)','+'+eok(r.U)+'억'):'')
+   
    +kv('5년 후 매도가 중위(매도비용 차감)',eok(F.sv5)+'억')+kv('= 순이익(중위)','<b>'+sg(F.p5)+'</b>'));
  // 객관 점수
  more+=fold('입지 '+r.sc+' · 단지 '+(r.bs??'-')+' — 산정 근거',why(r));
@@ -1363,7 +1363,7 @@ function lossP(F){const a=F.p1,b=F.p5,c=F.p9;let p=a>=0?5:b>=0?10+40*(-a)/Math.m
 function lossTxt(F){const p=lossP(F);return p<=5?'손실 확률 10% 미만':p>=95?'손실 확률 90% 초과':'손실 확률 '+p+'%';}
 function bigNum(r,L,fs){const F=r.F||fin(r), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억';
  if(L==='obj')return `<b class="num" style="font-size:${fs};line-height:1.15;color:var(--blue)">입지 ${r.sc}</b><span style="display:block;font-size:.7rem;color:var(--ink3)">단지 ${r.bs??'-'}</span><span class="sub" style="display:block;font-size:.72rem">순이익 ${sg(F.p5)}</span>`;
- const v=L==='safe'?F.q1:F.q5, n=L==='safe'?F.p1:F.p5;return `<span style="display:block;font-size:.66rem;color:var(--ink3);font-weight:700">${L==='safe'?'비관':'기준'} · 5년 뒤 집값</span><b class="num ${v>=0?'pos':'neg'}" style="font-size:${fs};line-height:1.15">${sg(v)}</b><span style="display:block;font-size:.7rem;color:var(--ink3)">순이익 ${sg(n)}${CF.useU&&r.U>0?' (월세 아낌 포함)':''}</span><span class="sub" style="display:block;font-size:.72rem">${lossTxt(F)}</span>`;}
+ const v=L==='safe'?F.q1:F.q5, n=L==='safe'?F.p1:F.p5;return `<span style="display:block;font-size:.66rem;color:var(--ink3);font-weight:700">${L==='safe'?'비관':'기준'} · 5년 순이익</span><b class="num ${n>=0?'pos':'neg'}" style="font-size:${fs};line-height:1.15">${sg(n)}</b><span style="display:block;font-size:.7rem;color:var(--ink3)">집값 ${sg(v)} − 이자·비용 ${eok(Math.abs(v-n))}억</span><span class="sub" style="display:block;font-size:.72rem">${lossTxt(F)}</span>`;}
 function row(r,lbl){   // 09-24 사용자: 결과를 더 간단히 — 한 줄(이름·지역·가격 | 보통·손해 확률), 누르면 펼침
  const F=r.F||fin(r), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', safe=lensKey()==='safe', v=safe?F.p1:F.p5;
  return `<details class="card"><summary style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px">
@@ -1371,7 +1371,7 @@ function row(r,lbl){   // 09-24 사용자: 결과를 더 간단히 — 한 줄(�
  <span style="text-align:right;white-space:nowrap">${bigNum(r,lensKey(),'1.02rem')}</span>${rng(F,0)}
  </summary>${detail(r)}</details>`;}
 let N=10, V=[], RS={lo:-1,hi:1};
-function rng(F,lab){F={...F,p1:F.q1,p5:F.q5,p9:F.q9};   // 막대도 집값 변화 범위(비관~낙관)
+function rng(F,lab){   // 막대 = 순이익 범위(비관~낙관), 큰 숫자와 같은 축
  const lo=RS.lo, hi=RS.hi, X=v=>Math.max(0,Math.min(100,(v-lo)/(hi-lo)*100)), z=X(0), a=X(F.p1), b=X(F.p9), m=X(F.p5), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v));
  return `<div style="flex:0 0 100%;margin-top:${lab?10:6}px">${lab?`<div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--ink3);margin-bottom:3px"><span>비관 <b style="color:${F.p1<0?'var(--red)':'var(--ink2)'}">${sg(F.p1)}</b></span><span>${lab===2?'10번 중 8번은 이 사이':''}</span><span>낙관 <b style="color:var(--ink2)">${sg(F.p9)}</b></span></div>`:''}
  <div style="position:relative;height:${lab?10:6}px;border-radius:6px;background:var(--line2)">
@@ -1406,7 +1406,7 @@ function find(q0){
  el.innerHTML=h+'<div style="height:14px"></div>';}
 function summaryChips(txt){
  const c=[]; c.push(CF.regions.length?(CF.regions.length<=3?CF.regions.map(short).join(' · '):CF.regions.slice(0,2).map(short).join(' · ')+` 외 ${CF.regions.length-2}곳`):'서울·경기·인천 전체');
- if(CF.cash!=null)c.push('자기자본 '+eok(CF.cash)+'억'); if(CF.maxc!=null)c.push('총투입 '+eok(CF.maxc)+'억 이하'); if(CF.first)c.push('생애최초'); if(CF.loan!=null)c.push('대출 '+eok(CF.loan)+'억까지'); if(CF.inc!=null)c.push('소득 '+eok(CF.inc)+'억·DSR'); if(CF.rpt)c.push('수리비 '+CF.rpt.toLocaleString()+'만'); c.push(CF.useU?'주거비 절감 포함':'시세차익만'); if(CF.my!=null&&yearOf(CF.my))c.push(yearOf(CF.my).lbl+' 매수처럼');
+ if(CF.cash!=null)c.push('자기자본 '+eok(CF.cash)+'억'); if(CF.maxc!=null)c.push('총투입 '+eok(CF.maxc)+'억 이하'); if(CF.first)c.push('생애최초'); if(CF.loan!=null)c.push('대출 '+eok(CF.loan)+'억까지'); if(CF.inc!=null)c.push('소득 '+eok(CF.inc)+'억·DSR'); if(CF.rpt)c.push('수리비 '+CF.rpt.toLocaleString()+'만'); if(CF.my!=null&&yearOf(CF.my))c.push(yearOf(CF.my).lbl+' 매수처럼');
  const SZ={'49':'49㎡↓','59':'59㎡','74':'74㎡','84':'84㎡','101':'101㎡↑'},AG={n:'신축',m:'준신축',o:'구축'};
  if(CF.size.length)c.push(CF.size.map(x=>SZ[x]).join('·')); if(CF.age.length)c.push(CF.age.map(x=>AG[x]).join('·'));
  if(CF.st)c.push(CF.st==='a1'?'역 도보 15분':'급행 2km'); if(CF.hh)c.push(CF.hh+'세대+');
@@ -1443,7 +1443,7 @@ function result(){
  V.sort((a,b)=>lscore(b)-lscore(a));                  // 가치관 저울로 줄 세움
  R.forEach(r=>r.mr=null); V.forEach((r,i)=>r.mr=i+1);
  TOP1=V[0];
- {const W=V.slice(0,40);RS={lo:Math.min(0,...W.map(r=>r.F.q1)),hi:Math.max(1,...W.map(r=>r.F.q9))};}
+ {const W=V.slice(0,40);RS={lo:Math.min(0,...W.map(r=>r.F.p1)),hi:Math.max(1,...W.map(r=>r.F.p9))};}
  if(L==='obj')V.sort((a,b)=>b.sc-a.sc||lscore(b)-lscore(a));
  const chips=(()=>{const g=CF.regions, cnt={};g.forEach(x=>{const c=x.split(' ')[0];cnt[c]=(cnt[c]||0)+1;});const cs=Object.keys(cnt);
    const rg=!g.length?'서울·경기·인천 전체':g.length<=2?g.map(short).join(' · '):cs.length===1?cs[0]+' '+g.length+'곳':short(g[0])+' 외 '+(g.length-1)+'곳';
@@ -1514,7 +1514,7 @@ function lscore(r){const w=LENS_W[lensKey()], F=r.F||fin(r);
  return w[0]*F.p1+w[1]*F.p5+w[2]*F.p9;}
 // 순위를 정하는 값(현금을 넣었을 때 = 보통·나쁨 순이익의 평균)을 다섯 몫으로 나눈다: 집값 오르내림 + 아끼는 월세 − 이자 − 세금·비용 + 예금이자 (정확히 더해짐)
 function split5(r){const F=r.F||fin(r), w=LENS_W[lensKey()], up=w[0]*F.sv1+w[1]*F.sv5+w[2]*F.sv9-r.p;
- return {up, use:CF.useU?r.U:0, it:-F.it, cost:-(r.C-r.p+F.rp), dep:F.di};}
+ return {up, use:0, it:-F.it, cost:-(r.C-r.p+F.rp), dep:0};}
 const PN=[['up','시세 변동'],['use','주거비 절감'],['it','대출이자'],['cost','세금·거래비용'],['dep','예금 이자']];
 let TOP1=null;
 function vsTop(r){
