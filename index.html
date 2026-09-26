@@ -613,8 +613,8 @@ function origin(entry){
  app.innerHTML=`<div id="opw" onclick="document.querySelectorAll('#opw .op').forEach(e=>e.style.animationDelay='0ms')" style="min-height:70vh;display:flex;flex-direction:column;justify-content:center;padding:10px 2px 0">
   ${entry?'':HOME}<div class="op" style="font-size:.8rem;font-weight:700;color:var(--blue);margin-bottom:18px;${D_(100)}">집셈을 만든 이유</div>
   ${L.map(([h,st],j)=>`<div class="op" style="${st};margin:0 0 22px;${D_(d[j])}">${h}</div>`).join('')}
-  <div class="op" style="margin-top:8px;${D_(t)}"><button class="btn" onclick="${entry?nextStep():'hub()'}">${entry?'바로 알아보기':'홈으로'}</button>
-   <button class="btn ghost" style="margin-top:8px" onclick="philo(${entry?1:0})">집셈의 철학 자세히 보기 ›</button>${entry?noAgain('jsNoOrigin'):''}</div></div>`;}
+  <div class="op" style="margin-top:8px;${D_(t)}"><button class="btn" onclick="philo(${entry?1:0})">집셈의 철학 자세히 보기</button>
+   <button class="btn ghost" style="margin-top:8px" onclick="${entry?nextStep():'hub()'}">${entry?'바로 알아보기 ›':'홈으로'}</button>${entry?noAgain('jsNoOrigin'):''}</div></div>`;}
 // 철학(자세히): 공감 질문 → 전문적인 답 → 실제 데이터 한 줄. 스크롤에 맞춰 하나씩
 function philo(entry){
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); topIntro();
@@ -623,18 +623,18 @@ function philo(entry){
  // 09-27 사용자: 과거 대화에서 반복한 원칙으로 — 수요·공급 / % 말고 금액 / 모두에게 좋은 집은 없다 / 객관적인 숫자만(호가 말고 실거래) / 보고 싶은 숫자 경계 / 맞힐 수 없으니 확률·검증. 주거비=수익 아님(사람들은 소비로 느낌)
  const L5=DT.ev5||[], lo=L5.reduce((x,y)=>y[1]<x[1]?y:x,L5[0]||[0,0]), nc=new Set(R.map(r=>r.no||r.n)).size, M=DT.miss||{};
  const P=[['home','집값은 끝없이 오를까요?','집은 주식과 달리 실체가 있는 물건입니다. 살 사람이 없으면 팔 수 없고, 팔리지 않으면 값은 내려옵니다. 집값도 결국 수요와 공급을 벗어나지 못합니다.',lo[1]<0?`${lo[0]}년 매수 · 5년 뒤 서울·경기·인천 평균 −${Math.abs(lo[1])}%`:''],
-  ['won','왜 퍼센트가 아니라 금액일까요?','주택은 생애 최대 지출이자 가장 큰 레버리지입니다. 1억 집의 10%와 10억 집의 10%는 다릅니다. 대출이자·세금·중개보수까지 빼고 실제로 남는 금액으로 셈합니다.','자기자본 40%면 집값 10% → 내 자본 25%'],
+  ['won','집값이 오르면 무조건 이득일까요?','집값이 올라도 대출이자와 세금, 중개보수를 내고 나면 손에 남는 돈은 달라집니다. 그래서 몇 % 오르느냐가 아니라, 모든 비용을 뺀 뒤 실제로 남는 금액으로 셈합니다.','대출이자·세금·중개보수까지 빼고 계산'],
   ['calc','가장 좋은 집을 사야만 할까요?','모두에게 좋은 집은 없습니다. 형편이 다르면 최선도 다릅니다. 살 수 없는 집을 아쉬워하기보다, 내 자본으로 매수할 수 있는 집 가운데 놓친 곳이 없도록 셈합니다.',`서울·경기·인천 ${nc.toLocaleString()}개 단지 전수 비교`],
   ['pin','선호되는 입지는 계속 선호될까요?',`${PS.y0?PS.y0+'년':'15년 전'} 매매가 상위 5곳${same===5||!same?'이 지금도 그대로 상위 5곳입니다':' 가운데 '+same+'곳이 지금도 상위 5곳입니다'}. 역까지의 거리처럼 쉽게 바뀌지 않는 입지 요인은 객관적으로 잴 수 있습니다.`,r15!=null?`시·군·구 매매가 순위 일치도 ${r15} (15년)`:''],
-  ['book','기대감도 점수가 될 수 있을까요?','호재에 대한 기대나 동네에 대한 느낌은 숫자로 확인할 수 없습니다. 실거래·전세·거래량처럼 매수자와 매도자의 선택이 드러난 숫자만 씁니다. 호가보다 실제로 팔린 가격을 봅니다.','호가 아닌 국토교통부 실거래 기준'],
-  ['pulse','오른 집은 더 오르지 않을까요?','오르는 시장에서는 누구나 더 오를 것 같습니다. 사람은 보고 싶은 숫자를 먼저 봅니다. 그래서 가장 큰 숫자가 아니라, 확률상 가장 그럴듯한 가운데 값을 앞에 둡니다.',M.pct?`높게 본 집도 100곳 중 약 ${Math.round(M.pct)}곳은 5년 뒤 내렸습니다`:''],
+  ['tag','매물 가격이 곧 시세일까요?','매물에 붙은 가격(호가)은 파는 사람의 희망입니다. 실제로 팔려야 시세입니다. 그래서 국토교통부에 신고된 실거래가로 셈합니다.','호가 아닌 국토교통부 실거래 기준'],
+  ['pulse','다들 오른다는데, 지금 사야 할까요?','오르는 시장에서는 누구나 더 오를 것 같습니다. 사람은 보고 싶은 숫자를 먼저 봅니다. 그래서 가장 큰 숫자가 아니라, 확률상 가장 그럴듯한 가운데 값을 앞에 둡니다.',M.yrs&&M.yrs[0]?`과거에 빗나간 곳의 ${M.yrs[0][1]}%는 ${M.yrs[0][0]}년 고점에 매수한 경우`:''],
   ['fog','그래서 집값을 맞힐 수 있나요?','아닙니다. 맞힐 수 있다면 모두가 오를 집만 샀을 겁니다. 한 숫자 대신 범위와 확률로 보여 드리고, 빗나간 곳도 공개하며, 해석이 여전히 맞는지 매달 다시 검증합니다.',qt.loss!=null?`과거 검증 손실 비율 · 높게 본 집 ${qt.loss}% · 낮게 본 집 ${qb.loss}%`:'']];
  app.innerHTML=HOME+`<div style="font-size:.8rem;font-weight:700;color:var(--blue)">집셈의 철학</div>
  <div class="hq op" style="font-size:clamp(1.3rem,5.8vw,1.6rem);line-height:1.4;margin:6px 0 22px;${D_(100)}">집을 사기 전,<br>누구나 한 번쯤 하는 질문</div>
  ${P.map(([n,q,a,f],j)=>`<div class="pf" style="margin:0 0 26px;padding:0 0 22px;border-bottom:1px solid var(--line2)"><div style="display:flex;gap:10px;align-items:center">${ic(n,34,1)}<b style="font-size:1.05rem;line-height:1.4">${q}</b></div>
   <div style="font-size:.9rem;line-height:1.75;color:var(--ink2);margin:10px 0 0">${a}</div>${f?`<div style="display:inline-block;margin-top:10px;padding:5px 11px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);font-size:.76rem;font-weight:700;color:var(--ink)">${f}</div>`:''}</div>`).join('')}
  <div class="pf" style="text-align:center;font-weight:800;font-size:1.05rem;margin:4px 0 16px">셈은 집셈이, 결정은 직접.</div>
- <div class="pf"><button class="btn" onclick="${nextStep()}">알아보기 시작</button></div>`;
+ <div class="pf"><button class="btn" onclick="${nextStep()}">알아보기 시작</button>${noAgain('jsNoOrigin')}</div>`;
  const els=[...document.querySelectorAll('.pf')];
  if(window.IntersectionObserver){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.25});els.forEach(e=>io.observe(e));}
  else els.forEach(e=>e.classList.add('in'));
