@@ -244,7 +244,7 @@ const eok=v=>v==null?'-':(v/1e4).toFixed(2), pc=v=>v==null?'-':(v>0?'+':'')+v.to
 const YEAR=new Date().getFullYear();
 // ---------------- 설정 저장 ----------------
 const DEF={done:false,sort:'money',my:null,regions:[],cash:DT.my.cash,maxc:DT.my.max_price,first:!!DT.my.first_home,loan:null,irate:null,inc:null,debt:null,yrs:30,repair:true,rpu:150,useU:true,size:[],age:[],st:'',hh:0,trust:false};
-function load(){try{return Object.assign({},DEF,JSON.parse(localStorage.getItem('v2cfg')||'{}'))}catch(e){return Object.assign({},DEF)}}
+function load(){try{return Object.assign({},DEF,JSON.parse(localStorage.getItem('v2cfg')||'{}'),{trust:false,keep:true})}catch(e){return Object.assign({},DEF)}}
 function save(){try{if(CF.keep===false){localStorage.removeItem('v2cfg');return;}localStorage.setItem('v2cfg',JSON.stringify(CF))}catch(e){}}
 function hasSaved(){try{const j=JSON.parse(localStorage.getItem('v2cfg')||'null');return !!(j&&j.done&&j.keep!==false);}catch(e){return false;}}
 let CF=load(); CF.my=null; CF.mv=3; if((CF.size||[]).some(x=>'sml'.includes(x))){CF.size=[...new Set(CF.size.flatMap(x=>({s:['49','59'],m:['74','84'],l:['101']})[x]||[x]))];}   // 09-24: 시장은 늘 과거 확률대로(고르는 질문·버튼 없앰). 경우별 숫자는 단지 상세에 참고로만
@@ -1124,7 +1124,7 @@ function setup(i){
  else{
   body=Q('이 조건으로 찾을게요','바꾸고 싶은 항목을 누르세요.')
   +`<div class="card" style="padding:4px 14px">${STEPS.slice(0,-1).map((s_,j)=>`<div onclick="setup(${j})" style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 0;${j?'border-top:1px solid var(--line2);':''}cursor:pointer"><span class="sub" style="font-size:.84rem;white-space:nowrap">${SUL[s_]}</span><span style="text-align:right"><b style="font-size:.92rem;word-break:keep-all">${sumVal(s_)}</b> <span style="color:var(--blue);font-size:.84rem;white-space:nowrap">변경 ›</span></span></div>`).join('')}</div>
-  <details class="fold adv"><summary><span><b>${ic('gear',18)}세부 조건 <span style="font-weight:600;font-size:.8rem;opacity:.75">(안 바꿔도 돼요)</span></b><span class="sub" id="advsum" style="display:block;font-weight:400;font-size:.8rem;margin-top:2px"></span></span></summary><div>
+  <details class="fold adv"><summary><span><b>${ic('gear',18)}대출·수리비·역 거리 <span style="font-weight:600;font-size:.8rem;opacity:.75">(안 바꿔도 돼요)</span></b><span class="sub" id="advsum" style="display:block;font-weight:400;font-size:.8rem;margin-top:2px"></span></span></summary><div>
  <div class="hint" style="margin:2px 0 4px">내 사정과 다른 것만 고치세요.</div>
  <div class="fr"><span><b>받을 대출</b><em>비우면 은행 최대 한도</em></span><label><input type="text" inputmode="decimal" autocomplete="off" placeholder="최대" value="${CF.loan==null?'':(CF.loan/1e4)}" oninput="CF.loan=parseMoney(this.value);count()"><i>억</i></label></div>
  <div class="fr"><span><b>대출 금리</b><em>기본 = 요즘 평균</em></span><label><input type="number" inputmode="decimal" step="0.05" placeholder="${DT.rate.loan}" value="${CF.irate==null?'':CF.irate}" oninput="CF.irate=this.value===''?null:+this.value;count()"><i>%</i></label></div>
@@ -1132,7 +1132,6 @@ function setup(i){
  <div class="fl">역까지 거리</div><div id="c_st"></div>
  <div class="fl">단지 크기</div><div id="c_hh"></div>
  <div class="fl">오래된 집 수리비</div><div id="c_rp"></div>
- <div class="tg" style="border:0;margin-top:6px"><span><b>주의할 점 있는 단지 빼기</b><br><span class="hint">분양권·재건축·급매 섞임 단지</span></span><label class="sw"><input type="checkbox" ${CF.trust?'checked':''} onchange="CF.trust=this.checked;count()"><i></i></label></div>
  </div></details>`;
   cta=`<div class="cta"><button class="btn" id="go" onclick="CF.done=true;save();result()">결과 보기</button></div>`;}
  app.innerHTML=head+body+cta;
@@ -1143,10 +1142,12 @@ function refresh(){
  if($('#c_st'))$('#c_st').innerHTML=cc('st',[['','상관없음'],['a1','역 걸어서 15분 이내'],['x2','신분당·GTX 2km 이내']],false);
  if($('#c_rp')){const m=v=>Math.round(84/0.75/3.3058*v/100)*100, k=!CF.repair?0:(CF.rpu||150)>=250?250:(CF.rpu||150)===150?150:-1;
   const O=[[0,'넣지 않음','이미 고친 집이거나 따로 계산할 때'],[150,'보통 수리','도배·바닥·욕실·주방 · 34평 약 '+m(150).toLocaleString()+'만 원'],[250,'고급 올수리','샷시·확장까지 · 34평 약 '+m(250).toLocaleString()+'만 원']];
-  $('#c_rp').innerHTML=`<div class="cc">${O.map(([v,t])=>`<button class="${k===v?'on':''}" onclick="CF.repair=${v>0};${v?`CF.rpu=${v};`:''}refresh()">${t}</button>`).join('')}</div><div class="hint" style="margin:6px 0 0">${(O.find(o=>o[0]===k)||['','','평당 '+CF.rpu+'만 원'])[2]}. 지은 지 20년 넘은 집은 전부, 10~20년은 절반을 더해요.</div>`;}
+  $('#c_rp').innerHTML=`<div class="cc">${O.map(([v,t])=>`<button class="${k===v?'on':''}" onclick="CF.repair=${v>0};${v?`CF.rpu=${v};`:''}refresh()">${t}</button>`).join('')}</div><div class="hint" style="margin:6px 0 0">${(O.find(o=>o[0]===k)||['','','평당 '+CF.rpu+'만 원'])[2]}.<br>수리비는 집 상태·자재에 따라 천차만별이라 대략값으로 넣어요. 지은 지 20년 넘은 집은 전부, 10~20년은 절반.</div>`;}
  if($('#c_hh'))$('#c_hh').innerHTML=cc('hh',[[0,'상관없음'],[300,'300세대 이상'],[1000,'1,000세대 이상']],false);
- {const a=[];if(CF.st)a.push(CF.st==='a1'?'역 걸어서 15분 이내':'신분당·GTX 2km 이내');if(CF.hh)a.push(CF.hh.toLocaleString()+'세대↑');if(CF.loan!=null)a.push('대출 '+eok(CF.loan)+'억까지');if(CF.irate!=null)a.push('금리 '+CF.irate+'%');if(!CF.repair)a.push('수리비 없음');else if((CF.rpu||150)>=250)a.push('고급 수리비');if(CF.maxc!=null)a.push('총투입 '+eok(CF.maxc)+'억 이하');
-  if(CF.trust)a.push('주의 단지 제외');const e=$('#advsum');if(e)e.innerHTML=a.length?'바꾼 것: <b style="color:var(--ink)">'+a.join(' · ')+'</b>':'대출·역 거리·수리비 등 — 지금은 기본값';}
+ {const rp=!CF.repair?'수리비 안 넣음':(CF.rpu||150)>=250?'수리비 고급 올수리':(CF.rpu||150)===150?'수리비 보통':'수리비 평당 '+CF.rpu+'만 원',
+   a=[CF.loan!=null?'대출 '+eok(CF.loan)+'억':'대출 최대 한도','금리 '+(CF.irate!=null?CF.irate:DT.rate.loan)+'%',rp];
+  if(CF.maxc!=null)a.push('최대 '+eok(CF.maxc)+'억');if(CF.st)a.push(CF.st==='a1'?'역 걸어서 15분 이내':'신분당·GTX 2km 이내');if(CF.hh)a.push(CF.hh.toLocaleString()+'세대 이상');
+  const e=$('#advsum');if(e)e.innerHTML='지금 계산: <b style="color:var(--ink)">'+a.join(' · ')+'</b>';}
  count();}
 // ---------------- 거르기 ----------------
 // 금액 기준(2026-09-23 사용자 지시): %가 아니라 '5년 뒤 내 돈이 얼마나 늘었나'로 줄세운다.
@@ -1189,7 +1190,6 @@ function ok(r){
  if(CF.st==='a1'&&!(r.ka!=null&&WKM(r)<=1))return false;
  if(CF.st==='x2'&&!(r.kx!=null&&r.kx<=2))return false;
  if(CF.hh&&!(r.hh>=CF.hh))return false;
- if(CF.trust&&trustOf(r).g==='C')return false;   // 주의할 점(hi) 있는 단지만 뺀다 — 거래 적음 같은 참고 약점은 남김
  return true;}
 let RGT=null;
 function count(){clearTimeout(RGT);RGT=setTimeout(drawReg,250);const n=uniqN();const b=$('#go');if(b){const L=STEPS[SU]==='sum';b.textContent=n?(L?`${n.toLocaleString()}개 단지 결과 보기`:`다음 · 매수 가능 단지 ${n.toLocaleString()}곳`):'조건에 맞는 단지 없음';b.disabled=!n;b.style.opacity=n?1:.5;}save();}
@@ -1411,7 +1411,7 @@ function summaryChips(txt){
  if(CF.cash!=null)c.push('자기자본 '+eok(CF.cash)+'억'); if(CF.maxc!=null)c.push('총투입 '+eok(CF.maxc)+'억 이하'); if(CF.first)c.push('생애최초'); if(CF.loan!=null)c.push('대출 '+eok(CF.loan)+'억까지'); if(CF.inc!=null)c.push('소득 '+eok(CF.inc)+'억·DSR'); if(CF.repair)c.push('수리비 평당 '+(CF.rpu||150)+'만'); c.push(CF.useU?'주거비 절감 포함':'시세차익만'); if(CF.my!=null&&yearOf(CF.my))c.push(yearOf(CF.my).lbl+' 매수처럼');
  const SZ={'49':'49㎡↓','59':'59㎡','74':'74㎡','84':'84㎡','101':'101㎡↑'},AG={n:'신축',m:'준신축',o:'구축'};
  if(CF.size.length)c.push(CF.size.map(x=>SZ[x]).join('·')); if(CF.age.length)c.push(CF.age.map(x=>AG[x]).join('·'));
- if(CF.st)c.push(CF.st==='a1'?'역 도보 15분':'급행 2km'); if(CF.hh)c.push(CF.hh+'세대+'); if(CF.trust)c.push('주의 단지 제외');
+ if(CF.st)c.push(CF.st==='a1'?'역 도보 15분':'급행 2km'); if(CF.hh)c.push(CF.hh+'세대+');
  return txt?c.filter(x=>!/수리비|주거비 절감|시세차익|매수처럼/.test(x)).join(' · '):c.map(x=>`<span class="tag gray" style="margin:0 5px 5px 0">${x}</span>`).join('');}
 let OPEN=null;
 const PILL={my:{up:'시장이 <b>크게 오르면</b>',flat:'시장이 <b>조금 오르면</b>',dn:'시장이 <b>제자리·내리면</b>',mix:'시장은 <b>확률대로</b>',yr:'시장이 <b>그해처럼</b>'},
