@@ -1197,7 +1197,8 @@ function detail(r){
  const kv=(k,v)=>`<div class="kv"><span class="k">${k}</span><span class="v">${v}</span></div>`, F=fin(r), rp=F.rp, sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', l=Math.max(r.ltv,CF.first?0.7:0);
  const plain=`<p style="margin:6px 0 2px;line-height:1.6">${CF.cash!=null?`매수 재원: 자기자본 <b>${eok(F.own)}억</b>${F.L>0?` + 대출 <b>${eok(F.L)}억</b>`:''}${F.jd?` + 전세보증금 <b>${eok(F.jd)}억</b>`:''}<span class="sub"> (취득세·중개보수${F.rp>0?'·수리비':''}${r.bu?'·분담금':''} 포함)</span>`:''}</p>`+howNum(r,F)+tbox(r);
  let h=`<div style="padding:0 12px 14px">`+plain
-  +`<div class="mini"><div style="outline:2px solid var(--blue)"><span>순이익 기준<br>중위값</span><b class="${F.p5>=0?'pos':'neg'}">${sg(F.p5)}</b></div><div><span>${LB()[0]}<br>하위 10%</span><b class="${F.p1>=0?'pos':'neg'}">${sg(F.p1)}</b></div><div><span>${LB()[1]}<br>상위 10%</span><b style="color:var(--ink3)">${sg(F.p9)}</b></div></div>`;
+  +`<div class="sub" style="font-size:.72rem;font-weight:700;margin-top:10px">5년 뒤 집값</div><div class="mini" style="margin-top:4px"><div style="outline:2px solid var(--blue)"><span>기준<br>중위값</span><b class="${F.q5>=0?'pos':'neg'}">${sg(F.q5)}</b></div><div><span>${LB()[0]}<br>하위 10%</span><b class="${F.q1>=0?'pos':'neg'}">${sg(F.q1)}</b></div><div><span>${LB()[1]}<br>상위 10%</span><b style="color:var(--ink3)">${sg(F.q9)}</b></div></div>
+  <div class="sub" style="font-size:.72rem">순이익(월세 아낌·이자·세금 포함)으로는 ${LB()[0]} ${sg(F.p1)} · 기준 ${sg(F.p5)} · ${LB()[1]} ${sg(F.p9)}</div>`;
  let more='';
  {const ym=t=>t==null?'-':Math.floor(t/12)+'.'+String(t%12+1).padStart(2,'0'), RW=DT.rwatch||[], cv=(DT.conv||{})[r.se===1?'서울특별시':r.se===2?'인천광역시':'경기도'];
   h+=regWarn(r.gu);
