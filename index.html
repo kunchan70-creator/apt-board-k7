@@ -245,7 +245,7 @@ const $=q=>document.querySelector(q), app=$('#app');
 const eok=v=>v==null?'-':(v/1e4).toFixed(2), pc=v=>v==null?'-':(v>0?'+':'')+v.toFixed(1)+'%', pp=v=>(v>0?'+':'')+v.toFixed(1)+'%p';
 const YEAR=new Date().getFullYear();
 // ---------------- 설정 저장 ----------------
-const DEF={done:false,sort:'money',my:null,regions:[],cash:DT.my.cash,maxc:DT.my.max_price,first:!!DT.my.first_home,loan:null,irate:null,inc:null,debt:null,yrs:30,rpt:null,useU:true,size:[],age:[],st:'',hh:0,trust:false};
+const DEF={done:false,sort:'money',my:null,regions:[],cash:DT.my.cash,maxc:DT.my.max_price,first:!!DT.my.first_home,loan:null,irate:null,inc:null,debt:null,yrs:30,rpt:null,addU:false,useU:true,size:[],age:[],st:'',hh:0,trust:false};
 function load(){try{return Object.assign({},DEF,JSON.parse(localStorage.getItem('v2cfg')||'{}'),{trust:false,keep:true,lens:'bal',sort:null})}catch(e){return Object.assign({},DEF)}}
 function save(){try{if(CF.keep===false){localStorage.removeItem('v2cfg');return;}localStorage.setItem('v2cfg',JSON.stringify(CF))}catch(e){}}
 function hasSaved(){try{const j=JSON.parse(localStorage.getItem('v2cfg')||'null');return !!(j&&j.done&&j.keep!==false);}catch(e){return false;}}
@@ -1133,6 +1133,7 @@ function setup(i){
  <div class="fr"><span><b>최대 매수 비용</b><em>세금·수리비까지 합친 금액</em></span><label><input id="i_max" type="text" inputmode="decimal" autocomplete="off" placeholder="없음" value="${CF.maxc==null?'':(CF.maxc/1e4)}" oninput="CF.maxc=parseMoney(this.value);count()"><i>억</i></label></div>
  <div class="fl">역까지 거리</div><div id="c_st"></div>
  <div class="fl">단지 크기</div><div id="c_hh"></div>
+ <div class="tg" style="border:0;margin-top:6px"><span><b>월세 아낌도 이익으로 넣기</b><br><span class="hint">직접 살면 안 내는 월세. 단지 전세 실거래 × 지역 전환율로 어림한 값이라 층·집 상태에 따라 차이가 커요. 실거주일 때만.</span></span><label class="sw"><input type="checkbox" ${CF.addU?'checked':''} onchange="CF.addU=this.checked;refresh()"><i></i></label></div>
  <div class="fr"><span><b>수리비</b><em>넣으면 지은 지 20년 넘은 집에만 더해요</em></span><label><input type="number" inputmode="numeric" step="500" placeholder="안 넣음" value="${CF.rpt==null?'':CF.rpt}" oninput="CF.rpt=this.value===''||+this.value<=0?null:+this.value;count();refresh()"><i>만원</i></label></div>
  </div></details>`;
   cta=`<div class="cta"><button class="btn" id="go" onclick="CF.done=true;CF.lens='bal';CF.sort=null;save();result()">결과 보기</button></div>`;}
@@ -1145,7 +1146,7 @@ function refresh(){
  if($('#c_hh'))$('#c_hh').innerHTML=cc('hh',[[0,'상관없음'],[300,'300세대 이상'],[1000,'1,000세대 이상']],false);
  {const rp=CF.rpt?'수리비 '+CF.rpt.toLocaleString()+'만 원':'수리비 안 넣음',
    a=[CF.loan!=null?'대출 '+eok(CF.loan)+'억':'대출 최대 한도','금리 '+(CF.irate!=null?CF.irate:DT.rate.loan)+'%',rp];
-  if(CF.maxc!=null)a.push('최대 '+eok(CF.maxc)+'억');if(CF.st)a.push(CF.st==='a1'?'역 걸어서 15분 이내':'신분당·GTX 2km 이내');if(CF.hh)a.push(CF.hh.toLocaleString()+'세대 이상');
+  if(CF.maxc!=null)a.push('최대 '+eok(CF.maxc)+'억');if(CF.addU&&CF.useU)a.push('월세 아낌 포함');if(CF.st)a.push(CF.st==='a1'?'역 걸어서 15분 이내':'신분당·GTX 2km 이내');if(CF.hh)a.push(CF.hh.toLocaleString()+'세대 이상');
   const e=$('#advsum');if(e)e.innerHTML='지금 계산: <b style="color:var(--ink)">'+a.join(' · ')+'</b>';}
  count();}
 // ---------------- 거르기 ----------------
@@ -1165,7 +1166,7 @@ function fin(r){   // 현금을 모르면 대출 없이(투입금 대비 효율�
  const jd=CF.useU?0:r.p*Math.min(r.jr||55,90)/100;   // 세 주기: 받는 전세금(전세가율, 없으면 55%)만큼 현금이 덜 들고, 전세 낀 집은 주담대가 안 나와 대출 0
  const L=CF.useU?(K==null?0:Math.max(0,Math.min(up-K,cap))):0, own=Math.max(0,up-L-jd), i=(CF.irate==null?DT.rate.loan:CF.irate)/100, d=DT.rate.dep/100*0.846;
  const Y=CF.my!=null?yearOf(CF.my):null, mk=Y?Math.pow((1+AN(Y.lv)/100)/(1+DT.level/100),r.T)*(r.qc!=null&&!r.as?Math.exp((Y.sl-SMED)*r.qc):1):1;   // 시장 해 선택: 그해 시장 상승률 + 그해 좋은 입지 기울기(기본 = 16번 섞음)
- const left=K==null?0:Math.max(0,K-own), it=L*i*r.T, di=left*d*r.T, f=v=>v-r.C-rp-it;   // 아끼는 월세는 설정으로 켜고 끔
+ const left=K==null?0:Math.max(0,K-own), it=L*i*r.T, di=left*d*r.T, f=v=>v-r.C-rp-it+(CF.useU&&CF.addU?r.U:0);   // 아끼는 월세는 설정으로 켜고 끔
  // 나쁨~좋음 폭 = 단지 운 + 시장 흐름(과거 31번 5년 수익의 흩어짐 SDM). 시장 경우를 고르면 시장 몫을 빼고 그 경우 안의 흩어짐(Y.sg)만 남긴다
  const sh=d0=>{if(!Y||!(d0>0))return 1;const t=d0/1.2816,g=Y.sg||0;return Math.sqrt(Math.max(0.15*t*t,t*t-SDM*SDM+g*g))/t;};
  // ★과거 실거래 보정표(scnmap.py): 이런 시장에 산 집들의 하위10%/가운데/상위10%가 모든 때보다 얼마나 달랐나(입지 급 3등분별) — 그만큼만 옮긴다
@@ -1262,8 +1263,8 @@ function tipOnce(){return jsSeen('jsTip')?'':`<div class="sub" style="margin:-4p
 function fold(t,body,open){return body?`<details class="fold"${open?' open':''}><summary><span>${t}</span></summary><div>${body}</div></details>`:'';}
 // 09-26 사용자: 순이익에 월세 아낀 돈이 들어간 게 안 보인다 → '집값이 그만큼 오른다'로 읽힘. 기준 순이익을 조각으로 풀어 한 줄
 // 세금·비용에 팔 때 중개보수 포함 → '집값 오름' = 결과 큰 숫자(F.q5)와 같게
-function howNum(r,F){const up=F.q5, cost=-(r.C-r.p)-(GRS(F.sv5)-F.sv5), it=-F.it, t=v=>(v>=0?'+':'−')+eok(Math.abs(v));
- const P=[['집값 오름',up],['세금·중개보수',cost],['대출이자',it],['수리비',-F.rp]].filter(([_,v])=>Math.abs(v)>=50);
+function howNum(r,F){const use=CF.useU&&CF.addU?r.U:0, up=F.q5, cost=-(r.C-r.p)-(GRS(F.sv5)-F.sv5), it=-F.it, t=v=>(v>=0?'+':'−')+eok(Math.abs(v));
+ const P=[['집값 오름',up],['월세 아낌',use],['세금·중개보수',cost],['대출이자',it],['수리비',-F.rp]].filter(([_,v])=>Math.abs(v)>=50);
  return `<div style="margin:8px 0 2px;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:.8rem;line-height:1.6"><b>기준 ${t(F.p5)}억은 이렇게 나와요</b><div style="display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:4px">${P.map(([k,v])=>`<span style="white-space:nowrap">${k} <b style="color:${v>=0?'var(--green)':'var(--red)'}">${t(v)}</b></span>`).join('')}</div></div>`;}
 // 곁다리(09-26 사용자): 이 집을 사는 대신 가진 돈을 굴리면 연 몇 %를 벌어야 같아지나 — 사는 방식은 고를 수 있게(사용자: 반드시 이 집에 산다는 가정 말고 선택지로).
 //   ① 월세로 살면: (가진 돈 − 보증금)을 연 x%로 굴린 이익 − 5년 월세 = 이 집을 사서 살 때 순이익(월세 아낌은 뺌 — 산 사람은 월세를 안 내니까)
@@ -1363,7 +1364,7 @@ function lossP(F){const a=F.p1,b=F.p5,c=F.p9;let p=a>=0?5:b>=0?10+40*(-a)/Math.m
 function lossTxt(F){const p=lossP(F);return p<=5?'손실 확률 10% 미만':p>=95?'손실 확률 90% 초과':'손실 확률 '+p+'%';}
 function bigNum(r,L,fs){const F=r.F||fin(r), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억';
  if(L==='obj')return `<b class="num" style="font-size:${fs};line-height:1.15;color:var(--blue)">입지 ${r.sc}</b><span style="display:block;font-size:.7rem;color:var(--ink3)">단지 ${r.bs??'-'}</span><span class="sub" style="display:block;font-size:.72rem">순이익 ${sg(F.p5)}</span>`;
- const v=L==='safe'?F.q1:F.q5, n=L==='safe'?F.p1:F.p5;return `<span style="display:block;font-size:.66rem;color:var(--ink3);font-weight:700">${L==='safe'?'비관':'기준'} · 5년 순이익</span><b class="num ${n>=0?'pos':'neg'}" style="font-size:${fs};line-height:1.15">${sg(n)}</b><span style="display:block;font-size:.7rem;color:var(--ink3)">집값 ${sg(v)} − 이자·비용 ${eok(Math.abs(v-n))}억</span><span class="sub" style="display:block;font-size:.72rem">${lossTxt(F)}</span>`;}
+ const v=L==='safe'?F.q1:F.q5, n=L==='safe'?F.p1:F.p5;return `<span style="display:block;font-size:.66rem;color:var(--ink3);font-weight:700">${L==='safe'?'비관':'기준'} · 5년 순이익</span><b class="num ${n>=0?'pos':'neg'}" style="font-size:${fs};line-height:1.15">${sg(n)}</b><span style="display:block;font-size:.7rem;color:var(--ink3)">집값 ${sg(v)} − 이자·비용 ${eok(Math.abs(v-n+(CF.useU&&CF.addU?r.U:0)))}억${CF.useU&&CF.addU&&r.U?' + 월세 아낌 '+eok(r.U)+'억':''}</span><span class="sub" style="display:block;font-size:.72rem">${lossTxt(F)}</span>`;}
 function row(r,lbl){   // 09-24 사용자: 결과를 더 간단히 — 한 줄(이름·지역·가격 | 보통·손해 확률), 누르면 펼침
  const F=r.F||fin(r), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', safe=lensKey()==='safe', v=safe?F.p1:F.p5;
  return `<details class="card"><summary style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px">
@@ -1406,7 +1407,7 @@ function find(q0){
  el.innerHTML=h+'<div style="height:14px"></div>';}
 function summaryChips(txt){
  const c=[]; c.push(CF.regions.length?(CF.regions.length<=3?CF.regions.map(short).join(' · '):CF.regions.slice(0,2).map(short).join(' · ')+` 외 ${CF.regions.length-2}곳`):'서울·경기·인천 전체');
- if(CF.cash!=null)c.push('자기자본 '+eok(CF.cash)+'억'); if(CF.maxc!=null)c.push('총투입 '+eok(CF.maxc)+'억 이하'); if(CF.first)c.push('생애최초'); if(CF.loan!=null)c.push('대출 '+eok(CF.loan)+'억까지'); if(CF.inc!=null)c.push('소득 '+eok(CF.inc)+'억·DSR'); if(CF.rpt)c.push('수리비 '+CF.rpt.toLocaleString()+'만'); if(CF.my!=null&&yearOf(CF.my))c.push(yearOf(CF.my).lbl+' 매수처럼');
+ if(CF.cash!=null)c.push('자기자본 '+eok(CF.cash)+'억'); if(CF.maxc!=null)c.push('총투입 '+eok(CF.maxc)+'억 이하'); if(CF.first)c.push('생애최초'); if(CF.loan!=null)c.push('대출 '+eok(CF.loan)+'억까지'); if(CF.inc!=null)c.push('소득 '+eok(CF.inc)+'억·DSR'); if(CF.rpt)c.push('수리비 '+CF.rpt.toLocaleString()+'만'); if(CF.addU&&CF.useU)c.push('월세 아낌 포함'); if(CF.my!=null&&yearOf(CF.my))c.push(yearOf(CF.my).lbl+' 매수처럼');
  const SZ={'49':'49㎡↓','59':'59㎡','74':'74㎡','84':'84㎡','101':'101㎡↑'},AG={n:'신축',m:'준신축',o:'구축'};
  if(CF.size.length)c.push(CF.size.map(x=>SZ[x]).join('·')); if(CF.age.length)c.push(CF.age.map(x=>AG[x]).join('·'));
  if(CF.st)c.push(CF.st==='a1'?'역 도보 15분':'급행 2km'); if(CF.hh)c.push(CF.hh+'세대+');
