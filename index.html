@@ -225,7 +225,8 @@ details.adv[open]{background:var(--surface)}
 .optp{background:var(--surface2);border-radius:14px;padding:6px 12px 10px;margin:8px 0 0}.optp .opt{margin:6px 0;padding:13px 14px;font-size:.95rem}
 .lead2{font-size:.95rem;line-height:1.55;margin:10px 0 4px;color:var(--ink2)}.lead2 b{color:var(--ink)}
 .tip{display:flex;gap:10px;align-items:center;background:var(--surface2);border-radius:12px;padding:10px 12px;margin:10px 0 0;font-size:.86rem;line-height:1.5}
-.cbar{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--surface2);margin:0 0 12px}.cbar span{flex:1;min-width:0;font-size:.84rem;font-weight:700;color:var(--ink2);word-break:keep-all}.cbar button{flex:0 0 auto;border:1.5px solid var(--blue);background:var(--surface);color:var(--blue);font:inherit;font-weight:800;font-size:.86rem;border-radius:999px;padding:8px 14px;cursor:pointer}
+.cbar{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--surface2);margin:0 0 12px}.cbar em{display:block;font-style:normal;font-size:.7rem;font-weight:800;color:var(--ink3);margin-bottom:1px}.alts{margin:-4px 0 12px;font-size:.8rem;color:var(--ink3)}.alts a{color:var(--blue);font-weight:700;cursor:pointer;margin-left:4px}
+.cbar span{flex:1;min-width:0;font-size:.84rem;font-weight:700;color:var(--ink2);word-break:keep-all}.cbar button{flex:0 0 auto;border:1.5px solid var(--blue);background:var(--surface);color:var(--blue);font:inherit;font-weight:800;font-size:.86rem;border-radius:999px;padding:8px 14px;cursor:pointer}
 .chips{font-size:.82rem;color:var(--ink2);margin:2px 0 0}.chips a{color:var(--blue);font-weight:700;cursor:pointer;margin-left:6px}
 .chart{cursor:pointer}
 @media (prefers-reduced-motion:reduce){.prog i,.sw i,.sw i:before{transition:none}.fact{animation:none}}
@@ -245,7 +246,7 @@ const eok=v=>v==null?'-':(v/1e4).toFixed(2), pc=v=>v==null?'-':(v>0?'+':'')+v.to
 const YEAR=new Date().getFullYear();
 // ---------------- 설정 저장 ----------------
 const DEF={done:false,sort:'money',my:null,regions:[],cash:DT.my.cash,maxc:DT.my.max_price,first:!!DT.my.first_home,loan:null,irate:null,inc:null,debt:null,yrs:30,rpt:null,useU:true,size:[],age:[],st:'',hh:0,trust:false};
-function load(){try{return Object.assign({},DEF,JSON.parse(localStorage.getItem('v2cfg')||'{}'),{trust:false,keep:true})}catch(e){return Object.assign({},DEF)}}
+function load(){try{return Object.assign({},DEF,JSON.parse(localStorage.getItem('v2cfg')||'{}'),{trust:false,keep:true,lens:'bal',sort:null})}catch(e){return Object.assign({},DEF)}}
 function save(){try{if(CF.keep===false){localStorage.removeItem('v2cfg');return;}localStorage.setItem('v2cfg',JSON.stringify(CF))}catch(e){}}
 function hasSaved(){try{const j=JSON.parse(localStorage.getItem('v2cfg')||'null');return !!(j&&j.done&&j.keep!==false);}catch(e){return false;}}
 let CF=load(); CF.my=null; CF.mv=3; if((CF.size||[]).some(x=>'sml'.includes(x))){CF.size=[...new Set(CF.size.flatMap(x=>({s:['49','59'],m:['74','84'],l:['101']})[x]||[x]))];}   // 09-24: 시장은 늘 과거 확률대로(고르는 질문·버튼 없앰). 경우별 숫자는 단지 상세에 참고로만
@@ -1134,7 +1135,7 @@ function setup(i){
  <div class="fl">단지 크기</div><div id="c_hh"></div>
  <div class="fr"><span><b>수리비</b><em>넣으면 지은 지 20년 넘은 집에만 더해요</em></span><label><input type="number" inputmode="numeric" step="500" placeholder="안 넣음" value="${CF.rpt==null?'':CF.rpt}" oninput="CF.rpt=this.value===''||+this.value<=0?null:+this.value;count();refresh()"><i>만원</i></label></div>
  </div></details>`;
-  cta=`<div class="cta"><button class="btn" id="go" onclick="CF.done=true;save();result()">결과 보기</button></div>`;}
+  cta=`<div class="cta"><button class="btn" id="go" onclick="CF.done=true;CF.lens='bal';CF.sort=null;save();result()">결과 보기</button></div>`;}
  app.innerHTML=head+body+cta;
  refresh(); window.scrollTo(0,0);}
 function refresh(){
@@ -1447,14 +1448,16 @@ function result(){
  const chips=(()=>{const g=CF.regions, cnt={};g.forEach(x=>{const c=x.split(' ')[0];cnt[c]=(cnt[c]||0)+1;});const cs=Object.keys(cnt);
    const rg=!g.length?'서울·경기·인천 전체':g.length<=2?g.map(short).join(' · '):cs.length===1?cs[0]+' '+g.length+'곳':short(g[0])+' 외 '+(g.length-1)+'곳';
    return rg+(CF.cash!=null?' · 자기자본 '+eok(CF.cash)+'억':'')+' · '+(CF.useU?'실거주':'전세 놓기');})();
- const cbarH=`<div class="cbar"><span>${chips}</span><button onclick="setup()">조건 변경</button></div>`
+ const cbarH=`<div class="cbar"><span><em>내 조건</em>${chips}</span><button onclick="setup()">내 조건 바꾸기</button></div>`
   +(()=>{if(!CF.regions.length)return '';const z=CF.regions.filter(g=>!V.some(r=>r.gu===g));if(!z.length)return '';
   return `<div class="tip" style="margin:0 0 8px"><span>${z.map(g=>{const A=R.filter(r=>r.gu===g);const c0=CF.regions;CF.regions=[g];const B=A.filter(r=>{const k=CF.cash;CF.cash=null;const o=ok(r);CF.cash=k;return o;});CF.regions=c0;
    if(!B.length)return `<b>${short(g)}</b> — 조건에 맞는 단지 없음`;const m=Math.min(...B.map(r=>fin(r).own));return `<b>${short(g)}</b> — 자기자본 <b>${eok(Math.max(0,m-(CF.cash||0)))}억</b> 추가 필요`;}).join('<br>')}</span></div>`;})()
-  +`<div class="seg" style="margin:0 0 4px">${[['bal','순이익 순'],['safe','손실 적은 순'],['obj','입지 점수 순']].map(([k,t])=>`<button class="${L===k?'on':''}" onclick="CF.lens='${k}';CF.sort=null;save();result()">${t}</button>`).join('')}</div>`;
+  ;
+ const altH=L==='bal'?`<div class="alts">다른 순서로 보기 <a onclick="CF.lens='safe';CF.sort=null;result()">손실 적은 순</a> · <a onclick="CF.lens='obj';CF.sort=null;result()">입지 점수 순</a></div>`
+  :`<div class="alts"><a onclick="CF.lens='bal';CF.sort=null;result()">‹ 순이익 순으로 돌아가기</a></div>`;
  N=3;
  app.innerHTML=`${DT.alert?`<div class="box warn" style="margin-top:0"><b>주간 과열 경보 발령</b> <span class="sub">과거 과열기에 자주 나타난 신호이며, 적중을 보장하지 않습니다.</span></div>`:''}
- ${cbarH}${V.length?`<div class="hq" style="margin:12px 0 10px">${{bal:'5년 순이익 상위 단지',safe:'5년 손실이 적은 단지',obj:'입지 점수 상위 단지'}[L]}</div>`+tipOnce()+qsRow()+V.slice(0,3).map((r,k)=>{const F=r.F, sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', v=L==='safe'?F.p1:F.p5;
+ ${cbarH}${V.length?`<div class="hq" style="margin:12px 0 10px">${{bal:'5년 순이익 상위 단지',safe:'5년 손실이 적은 단지',obj:'입지 점수 상위 단지'}[L]}</div>`+altH+tipOnce()+qsRow()+V.slice(0,3).map((r,k)=>{const F=r.F, sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', v=L==='safe'?F.p1:F.p5;
    return `<details class="card top3"${k===0?' style="border:2px solid var(--blue)"':''}><summary style="display:flex;flex-wrap:wrap;align-items:center;gap:12px">
     <span class="rk${k===0?' r1':''}">${k+1}</span>
     <span style="flex:1;min-width:0"><b style="display:block;line-height:1.3;word-break:keep-all">${r.n} <span style="white-space:nowrap">${r.b}㎡</span></b><span class="sub" style="font-size:.78rem">${r.gu} · <span style="white-space:nowrap">매매가 ${eok(r.p)}억</span></span><span style="display:block;margin-top:3px">${tpill(r)}</span></span>
