@@ -1390,7 +1390,7 @@ function detail(r){   // 09-27 사용자: 이것만 보고 매수를 계획할 �
  more+=fold('계산 기준',kv('매매가 기준',(r.anc==='3m'?'최근 3개월 실거래 가운데 값':'최근 1년 거래를 지역 흐름으로 환산'))
    +kv('대출 규제',(RU.name||'-')+(RU.until?' (~'+RU.until+')':'')+' · 확인 '+(RU.checked||'-'))
    +kv('금리',(F.i*100).toFixed(2)+'%'+(CF.irate==null?' (한국은행 '+DT.rate.ym.slice(0,4)+'.'+DT.rate.ym.slice(4)+' 평균)':' (직접 입력)'))
-   +kv('보유 기간',Math.round(r.T)+'년 · 보유세 '+eok(r.hold)+'억 포함'));
+   +kv('취득세','무주택·1주택 기본세율 (다주택 중과 미반영)')+kv('보유 기간',Math.round(r.T)+'년 · 보유세 '+eok(r.hold)+'억 포함'));
  h+=`<details class="fold" style="margin-top:12px"><summary><span style="font-weight:700;font-size:.88rem;color:var(--blue)">더 보기</span></summary><div>${more}</div></details>`;
  return h+'</div>';}
 // 한 줄(2026-09-23 사용자: "100점이 가장 좋은 결과, 그 안에 얼마 이득·들어가는 돈 대비 연 몇 %"):
