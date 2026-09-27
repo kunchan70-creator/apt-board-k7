@@ -134,7 +134,7 @@ ul.plain{padding-left:18px}
 .pop{opacity:0;transform-box:fill-box;transform-origin:center}.vis .pop{animation:mkPop .35s ease-out forwards;animation-delay:calc(1.3s + var(--i) * 5ms)}
 .gr{transform-box:fill-box;transform-origin:bottom;transform:scaleY(0)}.vis .gr{animation:mkGrow .7s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i) * 25ms)}
 @keyframes mkDraw{to{stroke-dashoffset:0}}@keyframes mkFade{to{opacity:1}}@keyframes mkPop{0%{opacity:0;transform:scale(0)}70%{opacity:1;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}}@keyframes mkGrow{to{transform:scaleY(1)}}
-@media (prefers-reduced-motion:reduce){.step{opacity:1;transform:none;transition:none}.dr{stroke-dasharray:none}.vis .dr,.vis .fa,.vis .pop,.vis .gr{animation:none}.fa,.pop{opacity:1}.gr{transform:none}.mkbar i.mk{left:var(--p);transition:none}}
+@media (prefers-reduced-motion:reduce){.step{transform:none;transition:opacity .35s ease}.vis .pop{animation-duration:.2s}}   /* 09-28: 동작 줄이기 폰에서도 선·막대 그려지는 효과는 남김(전엔 전부 꺼짐) */
 .pbar{height:4px;border-radius:2px;background:var(--line2);overflow:hidden}.pbar i{display:block;height:100%;background:var(--blue);border-radius:2px;transition:width .4s}
 .pn{font-size:.74rem;font-weight:800;color:var(--ink3);margin:8px 0 6px}
 .pq{font-size:.95rem;font-weight:800;color:var(--blue);margin-bottom:6px}
@@ -196,7 +196,8 @@ const LITE=(on,name,val)=>`<div class="lt"><i class="${on?'on':''}"></i><b style
 function page(sc,i,n,go){return `<div class="pbar"><i style="width:${(i+1)/n*100}%"></i></div><div class="pn">${i+1} / ${n}</div>
  <section class="step"><div class="pq">${sc.q}</div><div class="pb" style="color:${sc.c||'var(--ink)'}">${sc.big}</div>${sc.sub?`<div class="ps">${sc.sub}</div>`:''}<div class="pv">${sc.v||''}</div>${sc.line?`<div class="pl">${sc.line}</div>`:''}</section>
  <div class="pnav">${i>0?`<button class="linkbtn" onclick="${go}(${i-1})">‹ 이전</button>`:'<span></span>'}${i<n-1?`<button class="btn pnext" onclick="${go}(${i+1})">다음</button>`:(sc.end||'<span></span>')}</div>`;}
-function mount(el,html,go,i,n){el.innerHTML=html;requestAnimationFrame(()=>requestAnimationFrame(()=>{const s=el.querySelector('.step');if(s)s.classList.add('vis');}));
+function fixDash(root){root.querySelectorAll('path[pathLength="1"]').forEach(p=>{try{const L=p.getTotalLength();if(L>0){p.removeAttribute('pathLength');p.style.strokeDasharray=L;p.style.strokeDashoffset=L;}}catch(e){}});}   // 09-28: iOS 사파리 pathLength 선 그리기 문제
+function mount(el,html,go,i,n){el.innerHTML=html;fixDash(el);requestAnimationFrame(()=>requestAnimationFrame(()=>{const s=el.querySelector('.step');if(s)s.classList.add('vis');}));
  let x0=null;el.ontouchstart=e=>{x0=e.touches[0].clientX;};el.ontouchend=e=>{if(x0==null)return;const d=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(d)>60){const j=i+(d<0?1:-1);if(j>=0&&j<n)window[go](j);}};}
 let RG='서울',TI=0;
 function tScreens(){const T=MD.t[RG],o=T.o26,P=MD.p[RG==='인천'?'인천':'경기'],L=T.lst,S=T.sup,V=MD.val,col=LC(T.lab);
