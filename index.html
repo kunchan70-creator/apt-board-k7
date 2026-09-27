@@ -579,8 +579,10 @@ function cnShow(){   // 답에 대한 분석 블록(보고서 형식)
   <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:4px"><span style="font-size:.86rem;font-weight:700">${lb}</span><b style="font-size:1.35rem">${big}</b></div>
   <div style="font-size:.82rem;color:var(--ink2);margin-top:4px;line-height:1.5">${sub}</div>${vis||''}<div class="sub" style="font-size:.7rem;margin-top:8px">${src}</div></div>`;
  const b=$('#cnnext'); if(b){b.disabled=false;b.style.opacity=1;}}
-function affN(K,rent){   // 내 돈 K(만원)로 대출 더해 살 수 있는 단지 수(생애최초 LTV 70%, 한도 규칙). rent=임대면 토지거래허가구역 제외
- const ok_=r=>(!rent||r.ltv>=0.5)&&r.p+r.fee+r.bu-Math.min(r.p*Math.max(r.ltv,.7),lcap(r.p))<=K; return Object.values(CPXK).filter(c=>c.rows.some(ok_)).length;}
+function affN(K,rent){   // 내 돈 K(만원)로 대출 더해 살 수 있는 단지 수. rent=임대면 토지거래허가구역 제외
+ /* 09-27: 결과 화면과 같은 필터(ok)로 센다 — 전에는 따로 만든 식이라 요약 5,511곳 vs 다음 화면 5,403곳처럼 어긋났다 */
+ const s={cash:CF.cash,useU:CF.useU,regions:CF.regions}; CF.cash=K; CF.useU=!rent; CF.regions=[];
+ try{return uniqN();} finally{CF.cash=s.cash;CF.useU=s.useU;CF.regions=s.regions;}}
 async function chFirst(tk){
  if(!await say('첫 집을 알아보시는군요.',tk))return;
  if(!await say('지금 쓸 수 있는 <b>내 돈</b>은 얼마쯤이세요?',tk))return;
@@ -1068,7 +1070,9 @@ function drawReg(){
  else items=CITIES.map(c=>{const l=GG[c], s=l.filter(g=>CF.regions.includes(g)).length, multi=l.length>1;
    const cls=(s===l.length?'on':s?'part':'')+(RO===c?' open':'')+(n(l)?'':' z');
    return {c,h:btn(c+(multi?' ›':''),multi&&s&&s<l.length?s+'개 구 선택':n(l)+'곳',cls,multi?`RO=RO===${JSON.stringify(c)}?null:${JSON.stringify(c)};drawReg()`:`tog(${JSON.stringify(l[0])})`)};});
- let h='';items.forEach((x,i)=>{h+=x.h;const end=(i%3===2)||i===items.length-1;
+ const TL=RT==='se'?SEOUL:RT==='ic'?INC:GGL, TN=RT==='se'?'서울':RT==='ic'?'인천':'경기', tall=TL.every(g=>CF.regions.includes(g));
+ let h=`<button class="${tall?'on':''}" style="grid-column:1/-1" onclick='togAll(${JSON.stringify(TL)})'>${TN} 전체<span>${n(TL).toLocaleString()}곳</span></button>`;   /* 09-27: 시도를 한 번에 고르기(전엔 탭만 바뀌어 '경기 전체'를 고를 수 없었다) */
+ items.forEach((x,i)=>{h+=x.h;const end=(i%3===2)||i===items.length-1;
   if(end&&RO&&RT==='gg'){const j=items.findIndex(y=>y.c===RO);if(j>=0&&Math.floor(j/3)===Math.floor(i/3)){const l=GG[RO];
    h+=`<div class="rsub"><div class="cc"><button class="all ${l.every(g=>CF.regions.includes(g))?'on':''}" onclick='togAll(${JSON.stringify(l)})'>${RO} 전체</button>${l.map(g=>`<button class="${CF.regions.includes(g)?'on':''}" onclick='tog(${JSON.stringify(g)})'>${short(g)} <span style="font-weight:400;opacity:.75">${N[g]||0}</span></button>`).join('')}</div></div>`;}}});
  el.innerHTML=`<div class="rgd">${h}</div><div class="hint" style="margin-top:6px">${CF.cash!=null?`숫자 = 자기자본 ${eok(CF.cash)}억(대출 포함)으로 매수 가능한 단지 수 · 흐린 곳은 0곳`:'숫자 = 단지 수 · 위에 자기자본을 넣으면 매수 가능한 단지 수로 바뀝니다'}${RT==='gg'?' · ›는 눌러서 구를 고르는 시':''}</div>`;}
@@ -1144,7 +1148,8 @@ function setup(i){
  refresh(); window.scrollTo(0,0);}
 function refresh(){
  if($('#rl'))drawReg();
- const pk=$('#picked'); if(pk)pk.innerHTML=CF.regions.length?CF.regions.map(g=>`<span onclick='tog(${JSON.stringify(g)})'>${g} ✕</span>`).join('')+(CF.regions.length>1?`<span style="background:var(--surface2);color:var(--ink3)" onclick="CF.regions=[];refresh()">모두 지우기</span>`:''):'<span style="background:var(--surface2);color:var(--ink3)">선택 안 함 = 서울·경기·인천 전체</span>';
+ const pk=$('#picked'); const PG=[['서울',SEOUL],['경기',CITIES.flatMap(c=>GG[c])],['인천',INC]].filter(([n_,l])=>l.every(g=>CF.regions.includes(g))), PGL=PG.flatMap(x=>x[1]);   /* 09-27: 시도 전체를 고르면 칩 하나로 */
+ if(pk)pk.innerHTML=CF.regions.length?PG.map(([n_,l])=>`<span onclick='togAll(${JSON.stringify(l)})'>${n_} 전체 ✕</span>`).join('')+CF.regions.filter(g=>!PGL.includes(g)).map(g=>`<span onclick='tog(${JSON.stringify(g)})'>${g} ✕</span>`).join('')+(CF.regions.length>1?`<span style="background:var(--surface2);color:var(--ink3)" onclick="CF.regions=[];refresh()">모두 지우기</span>`:''):'<span style="background:var(--surface2);color:var(--ink3)">선택 안 함 = 서울·경기·인천 전체</span>';
  if($('#c_st'))$('#c_st').innerHTML=cc('st',[['','상관없음'],['a1','역 걸어서 15분 이내'],['x2','신분당·GTX 2km 이내']],false);
  if($('#c_hh'))$('#c_hh').innerHTML=cc('hh',[[0,'상관없음'],[300,'300세대 이상'],[1000,'1,000세대 이상']],false);
  {const rp=CF.rpt?'수리비 '+CF.rpt.toLocaleString()+'만 원':'수리비 안 넣음',
