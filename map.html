@@ -638,7 +638,7 @@ function detail(a) {
   const up = [], dn = [];
   PARTS.forEach((k, i) => { const d = a.dirs[i]; if (d === '0') return; const t = lvText(k, a); (d === '+' ? up : dn).push(`<li><span class="m">${d === '+' ? '▲' : '▼'}</span><span>${PLAB[k]}${t ? `<small>${esc(t)}</small>` : ''}</span></li>`); });
   const gN = GU_N[a.gu] || 0;
-  const st = a.an.name && a.an.km != null ? `${esc(a.an.name)}역 <b>도보 ${a.an.walk ? '' : '약 '}${Math.max(1, Math.round(WKM(a.an) * 15))}분</b> <small>${a.an.walk ? '네이버 도보 경로' : '직선 추정'} ${a.an.km}km</small>` : '-';
+  const st = a.an.name && a.an.km != null ? `${esc(a.an.name)}역 <b>도보 ${a.an.walk ? '' : '약 '}${Math.max(1, Math.round(WKM(a.an) * 15))}분</b> <small>${a.an.walk ? '도보 경로' : '직선 추정'} ${a.an.km}km</small>` : '-';
   const xs = a.ex.name && a.ex.km != null && a.ex.km <= 8 ? `${esc(a.ex.name)}역 <small>${a.ex.walk ? '도보 경로' : '직선 환산'} ${a.ex.km}km</small>` : '8km 이내 없음';
   const bands = a.price.map(p => p[0]);
   const bandTxt = bands.length ? bands.map(b => b + '㎡').join(' · ') : '-';
