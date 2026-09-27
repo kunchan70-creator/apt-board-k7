@@ -649,28 +649,38 @@ function origin(entry){
  app.innerHTML=`<div id="opw" onclick="document.querySelectorAll('#opw .op').forEach(e=>e.style.animationDelay='0ms')" style="min-height:70vh;display:flex;flex-direction:column;justify-content:center;padding:10px 2px 0">
   ${entry?'':HOME}<div class="op" style="font-size:.8rem;font-weight:700;color:var(--blue);margin-bottom:18px;${D_(100)}">집셈을 만든 이유</div>
   ${L.map(([h,st],j)=>`<div class="op" style="${st};margin:0 0 22px;${D_(d[j])}">${h}</div>`).join('')}
-  <div class="op" style="margin-top:8px;${D_(t)}"><button class="btn" onclick="philo(${entry?1:0})">집셈의 철학 자세히 보기</button>
+  <div class="op" style="margin-top:8px;${D_(t)}"><button class="btn" onclick="philo(${entry?1:0})">집 사기 전 알아 두면 좋은 것</button>
    <button class="btn ghost" style="margin-top:8px" onclick="${entry?nextStep():'hub()'}">${entry?'바로 알아보기 ›':'홈으로'}</button>${entry?noAgain('jsNoOrigin'):''}</div></div>`;}
 // 철학(자세히) — 09-28 사용자: 그래프와 함께 · 길어지니 넘겨 보기 · 모바일 애니메이션. 한 장에 질문 하나: 질문 → 그래프(실제 자료) → 짧은 답 → 사실 한 줄. 좌우로 밀거나 다음 버튼
 let PHI=0, PHE=0;
 function phSvg(inner,h){return `<div class="chart" style="margin:14px 0 6px"><svg viewBox="0 0 320 ${h||150}" style="width:100%;height:auto;overflow:visible">${inner}</svg></div>`;}
+let PH={};
 function phCharts(){
  const out={};
  const ML=(DT.ml&&DT.ml.line)||[];
  if(ML.length>8){const W=296,H=110,x0=12,v=ML.map(x=>x[1]),mn=Math.min(...v),mx=Math.max(...v),X=i=>x0+i/(ML.length-1)*W,Y=y=>12+(1-(y-mn)/(mx-mn))*H;
   let pk=0;ML.forEach((x,i)=>{if(x[0]<2023*4&&x[1]>ML[pk][1])pk=i;}); let tr=pk;ML.forEach((x,i)=>{if(i>pk&&x[1]<ML[tr][1])tr=i;});
+  const EP=[];{let P=0,i=0;while(i<ML.length){if(ML[i][1]>=ML[P][1]){P=i;i++;continue;} if(ML[i][1]<=ML[P][1]*.95){let rc=ML.findIndex((z,j)=>j>i&&z[1]>=ML[P][1]);let T=i;for(let j=i;j<(rc<0?ML.length:rc);j++)if(ML[j][1]<ML[T][1])T=j;
+    EP.push({y:Math.floor(ML[P][0]/4),dd:Math.round((ML[T][1]/ML[P][1]-1)*100),rec:rc<0?null:(ML[rc][0]-ML[P][0])/4,now:Math.round(ML[ML.length-1][1]/ML[P][1]*100),yrs:(ML[ML.length-1][0]-ML[P][0])/4});if(rc<0)break;P=rc;i=rc;continue;} i++;}}
+  PH.ep=EP;
   const d=ML.map((x,i)=>`${i?'L':'M'}${X(i).toFixed(1)} ${Y(x[1]).toFixed(1)}`).join(''), yr=q=>Math.floor(q/4), dd=Math.round((ML[tr][1]/ML[pk][1]-1)*100);
   out.home=phSvg(`<path class="draw" pathLength="1" d="${d}" fill="none" stroke="var(--blue)" stroke-width="2.4" stroke-linejoin="round"/>`
    +`<circle class="fd" cx="${X(pk)}" cy="${Y(ML[pk][1])}" r="4" fill="var(--red)" style="animation-delay:1.2s"/><circle class="fd" cx="${X(tr)}" cy="${Y(ML[tr][1])}" r="4" fill="var(--blue)" style="animation-delay:1.4s"/>`
    +`<text class="fd" x="${X(pk)}" y="${Y(ML[pk][1])-9}" font-size="10" text-anchor="middle" fill="var(--red)" font-weight="800" style="animation-delay:1.3s">${yr(ML[pk][0])} 고점</text>`
-   +`<text class="fd" x="${X(tr)}" y="${Y(ML[tr][1])+16}" font-size="10" text-anchor="middle" fill="var(--blue)" font-weight="800" style="animation-delay:1.5s">${yr(ML[tr][0])} ${dd}%</text>`
+   +`<text class="fd" x="${X(tr)}" y="${Y(ML[tr][1])+16}" font-size="10" text-anchor="middle" fill="var(--blue)" font-weight="800" style="animation-delay:1.5s">${yr(ML[tr][0])} −${Math.abs(dd)}%</text>`
    +`<text x="${x0}" y="${H+30}" font-size="9" fill="var(--ink3)">${yr(ML[0][0])}</text><text x="${x0+W}" y="${H+30}" font-size="9" text-anchor="end" fill="var(--ink3)">지금 · 국토부 실거래 흐름</text>`,H+34);}
  const ex=R.filter(r=>r.b===84&&!isMid(r)).sort((a,b)=>Math.abs(a.p-80000)-Math.abs(b.p-80000))[0];
  if(ex){const K0=CF.cash;CF.cash=K0??30000;const F=fin(ex);CF.cash=K0;const up=F.q5,it=F.it,tx=Math.max(0,F.q5-F.it-F.p5),net=F.p5,mx=Math.max(up,1),Wd=v=>Math.abs(v)/mx*100;
   const bar=(k,v,c,off,dl)=>`<div style="display:flex;align-items:center;gap:8px;margin:7px 0"><span style="flex:0 0 5.4em;font-size:.8rem;color:var(--ink2);text-align:right">${k}</span><div style="flex:1;position:relative;height:18px"><i class="gx" style="position:absolute;left:${Math.max(0,off)}%;width:${Wd(v)}%;top:0;bottom:0;background:${c};border-radius:6px;transform-origin:left;animation-delay:${dl}ms"></i></div><b class="num" style="flex:0 0 4.4em;font-size:.84rem;color:${c}">${v>=0?'+':'−'}${eok(Math.abs(v))}억</b></div>`;
   out.won=`<div class="chart" style="margin:14px 0 6px">`+bar('집값 오름',up,'var(--blue)',0,0)+bar('대출이자',-it,'var(--red)',Wd(up)-Wd(it),300)+bar('세금·중개',-tx,'var(--red)',Wd(up)-Wd(it)-Wd(tx),550)+bar('남는 돈',net,net>=0?'var(--green)':'var(--red)',0,850)
    +`<div class="sub" style="font-size:.72rem;text-align:center;margin-top:4px">예: ${ex.gu} 8억대 84㎡ · 자기자본 ${eok(K0??30000)}억 + 대출 · 5년 가장 흔한 경우</div></div>`;}
- out.calc=`<div class="chart">${vHist(CF.cash??30000)}</div>`;
+ {const K=CF.cash??30000, P=80000, Ln=P-K, dn=P*.9, own2=dn-Ln, Wp=v=>v/P*100, pct=Math.round((own2/K-1)*100);
+  const st=(lab,tot,own,dl)=>`<div style="display:flex;align-items:center;gap:8px;margin:8px 0"><span style="flex:0 0 5em;font-size:.8rem;color:var(--ink2);text-align:right">${lab}</span><div style="flex:1;height:22px;position:relative;background:var(--line2);border-radius:6px;overflow:hidden">
+   <i class="gx" style="position:absolute;left:0;top:0;bottom:0;width:${Wp(own)}%;background:var(--blue);transform-origin:left;animation-delay:${dl}ms"></i><i class="gx" style="position:absolute;left:${Wp(own)}%;top:0;bottom:0;width:${Wp(Ln)}%;background:var(--ink3);opacity:.35;transform-origin:left;animation-delay:${dl+200}ms"></i></div><b class="num" style="flex:0 0 4em;font-size:.84rem">${eok(tot)}억</b></div>`;
+  out.calc=`<div class="chart" style="margin:14px 0 6px">`+st('살 때',P,K,0)+st('10% 내리면',dn,own2,500)
+   +`<div style="display:flex;gap:14px;justify-content:center;font-size:.74rem;color:var(--ink3);margin-top:2px"><span><b style="color:var(--blue)">■</b> 자기자본</span><span><b style="color:var(--ink3);opacity:.5">■</b> 대출</span></div>`
+   +`<div style="text-align:center;margin-top:6px;font-size:.9rem;font-weight:800">집값 −10% → 자기자본 <span style="color:var(--red)">−${Math.abs(pct)}%</span></div>`
+   +`<div class="sub" style="font-size:.72rem;text-align:center">예: 8억 집 · 자기자본 ${eok(K)}억 + 대출 ${eok(Ln)}억</div></div>`;}
  const PS=DT.persist||{}, pts=PS.pts||[];
  if(pts.length){const Y=v=>16+(100-v)*1.0;
   out.pin=phSvg(`<text x="70" y="8" font-size="10" text-anchor="middle" fill="var(--ink3)" font-weight="700">${PS.y0||'15년 전'}</text><text x="250" y="8" font-size="10" text-anchor="middle" fill="var(--ink3)" font-weight="700">지금</text>`
@@ -690,19 +700,19 @@ function philo(entry,i){
  if(!document.getElementById('opcss'))document.head.insertAdjacentHTML('beforeend',OPCSS);
  const PS=DT.persist||{}, r15=((PS.r||[]).find(x=>x[0]===15)||[])[1], same=(PS.top_now||[]).filter(x=>(PS.top_old||[]).includes(x)).length, Q=DT.q5p||[], qt=Q[Q.length-1]||{}, qb=Q[0]||{};
  const L5=DT.ev5||[], lo=L5.reduce((x,y)=>y[1]<x[1]?y:x,L5[0]||[0,0]), nc=new Set(R.map(r=>r.no||r.n)).size, M=DT.miss||{}, C=phCharts();
- const P=[['home','집값은 끝없이 오를까요?','살 사람이 없으면 팔리지 않고, 팔리지 않으면 값은 내려옵니다. 집값도 수요와 공급을 벗어나지 못합니다.',lo[1]<0?`${lo[0]}년 매수 · 5년 뒤 평균 −${Math.abs(lo[1])}%`:''],
+ const P=[['home','집값은 끝없이 오를까요?',(()=>{const E=PH.ep||[], a=E.find(e=>e.rec!=null), b=E.find(e=>e.rec==null);return '길게 보면 대체로 올랐지만, 제자리이거나 내린 때도 있었습니다.'+(a?` ${a.y}년 고점에 샀다면 −${Math.abs(a.dd)}%까지 내렸고, 원래 값을 되찾는 데 ${Math.round(a.rec)}년이 걸렸습니다.`:'')+(b?` ${b.y}년 고점에 샀다면 ${Math.round(b.yrs)}년 가까이 지난 지금도 그때 값의 ${b.now}%입니다.`:'')+' 언제 사느냐에 따라 오래 버텨야 할 수 있습니다.';})(),'국토부 실거래 흐름 · 2006년~지금'],
   ['won','오르면 무조건 이득일까요?','이자·세금·중개보수를 내고 나면 남는 돈은 달라집니다. 몇 % 오르느냐가 아니라 실제로 남는 금액으로 셉니다.','대출이자·세금·중개보수까지 빼고 계산'],
-  ['calc','가장 좋은 집을 사야만 할까요?','모두에게 좋은 집은 없습니다. 내 돈으로 살 수 있는 집 가운데 놓친 곳이 없도록 셉니다.',`서울·경기·인천 ${nc.toLocaleString()}개 단지 전수 비교`],
+  ['calc','가장 좋은 집을 사야만 할까요?','집은 자산입니다. 하지만 집값 전체가 온전히 내 것은 아닙니다. 대출을 뺀 자기자본이 내 몫이고, 대출이 클수록 집값이 조금만 움직여도 내 몫은 크게 흔들립니다. 그래서 무리한 최고의 집보다, 감당할 수 있는 범위 안에서 놓친 곳이 없도록 셉니다.',`서울·경기·인천 ${nc.toLocaleString()}개 단지 전수 비교`],
   ['pin','선호되는 입지는 계속 선호될까요?',`${PS.y0?PS.y0+'년':'15년 전'} 가장 비싼 5곳${same===5||!same?'이 지금도 그대로 가장 비싼 5곳입니다':' 가운데 '+same+'곳이 지금도 상위 5곳입니다'}. 역까지 거리처럼 잘 안 바뀌는 입지는 잴 수 있습니다.`,r15!=null?`시·군·구 시세 순위 일치도 ${r15} (15년)`:''],
   ['tag','매물 가격이 곧 시세일까요?','매물 가격(호가)은 파는 사람의 희망입니다. 실제로 팔려야 시세입니다. 그래서 국토교통부에 신고된 실거래가만 씁니다.','호가 아닌 국토교통부 실거래 기준'],
-  ['pulse','다들 오른다는데, 지금 사야 할까요?','오를 때는 누구나 더 오를 것 같습니다. 그래서 가장 큰 숫자가 아니라 가장 흔한 가운데 값을 앞에 둡니다.',M.yrs&&M.yrs[0]?`빗나간 곳의 ${M.yrs[0][1]}%는 ${M.yrs[0][0]}년 고점에 매수`:''],
-  ['fog','그래서 집값을 맞힐 수 있나요?','아닙니다. 한 숫자 대신 범위와 확률로 보여 드리고, 빗나간 곳도 공개하며, 매달 다시 검증합니다.',qt.loss!=null?`손실 비율 · 높게 본 집 ${qt.loss}% · 낮게 본 집 ${qb.loss}%`:'']];
+  ['pulse','다들 오른다는데, 지금 사야 할까요?','정답은 없습니다. 다만 모두가 오른다고 할 때 산 경우가 가장 많이 빗나갔습니다. 그래서 지금 시장이 어떤 상태인지, 비슷했던 과거에 실제 거래가 어땠는지를 숫자로 함께 보여 드립니다. 판단은 그 숫자를 보고 직접 하시면 됩니다.',M.yrs&&M.yrs[0]?`높게 봤다 빗나간 곳의 ${M.yrs[0][1]}%는 ${M.yrs[0][0]}년 고점에 매수`:''],
+  ['fog','그래서 집값을 맞힐 수 있나요?','아니요, 아무도 맞힐 수 없습니다. 대신 20년 실거래로 검증한 확률로 보여 드립니다. 판단에 참고하시라고요. 높게 본 집이 실제로 더 나았는지, 빗나간 곳은 어디였는지도 함께 공개합니다.',qt.loss!=null?`손실 비율 · 높게 본 집 ${qt.loss}% · 낮게 본 집 ${qb.loss}%`:'']];
  const N=P.length+1; PHI=i==null?0:Math.max(0,Math.min(N-1,i)); const k=PHI;
  const body=k<P.length?(([n,q,a,f])=>`<div style="display:flex;gap:10px;align-items:center">${ic(n,34,1)}<b style="font-size:1.12rem;line-height:1.4;word-break:keep-all">${q}</b></div>
    ${C[n]||''}<div style="font-size:.92rem;line-height:1.7;color:var(--ink2);margin:8px 0 0;word-break:keep-all">${a}</div>
    ${f?`<div style="display:inline-block;margin-top:10px;padding:5px 11px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);font-size:.76rem;font-weight:700;color:var(--ink)">${f}</div>`:''}`)(P[k])
   :`<div style="min-height:40vh;display:flex;flex-direction:column;justify-content:center;text-align:center"><div style="font-weight:800;font-size:1.3rem;line-height:1.5">셈은 집셈이,<br>결정은 직접.</div><div class="sub" style="margin-top:10px">국토교통부 실거래 20년 치로 셉니다.</div></div>`;
- app.innerHTML=HOME+`<div style="font-size:.8rem;font-weight:700;color:var(--blue)">집셈의 철학</div>
+ app.innerHTML=HOME+`<div style="font-size:.8rem;font-weight:700;color:var(--blue)">집 사기 전 알아 두면 좋은 것</div>
  <div class="prog" style="margin:10px 0 4px"><i style="width:${(k+1)/N*100}%"></i></div><div class="sub" style="font-size:.74rem;text-align:right">${k+1} / ${N} · 옆으로 밀어서 넘겨요</div>
  <div id="phw" class="op" style="min-height:52vh;padding:8px 0 0">${body}</div>
  <div style="display:flex;gap:8px;margin-top:14px">${k>0?`<button class="btn ghost" style="flex:0 0 30%" onclick="philo(null,${k-1})">‹ 이전</button>`:''}
@@ -1325,7 +1335,7 @@ function menu(){
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
  const it=(t,act,sub)=>`<button class="mrow" onclick="${act}"><span><b>${t}</b>${sub?`<span class="sub">${sub}</span>`:''}</span><span class="sub">›</span></button>`;
  app.innerHTML=HOME+`<div class="hq" style="margin:0 0 10px">메뉴</div>
- <div class="mgrp">서비스</div>${it('집셈 소개','hello()')}${it('집셈의 철학','philo()')}${it('자주 묻는 질문','mpage(\'faq\')')}${it('데이터 출처','mpage(\'src\')')}${it('계산 방법','location.href=\'guide.html\'','숫자를 어떻게 셈하는지')}${it('과거에 맞았나요?','location.href=\'evidence.html\'','검증 결과와 빗나간 곳')}
+ <div class="mgrp">서비스</div>${it('집셈 소개','hello()')}${it('집 사기 전 알아 둘 것','philo()')}${it('자주 묻는 질문','mpage(\'faq\')')}${it('데이터 출처','mpage(\'src\')')}${it('계산 방법','location.href=\'guide.html\'','숫자를 어떻게 셈하는지')}${it('과거에 맞았나요?','location.href=\'evidence.html\'','검증 결과와 빗나간 곳')}
  <div class="mgrp">고객지원</div>${it('고객센터 · 정정 요청','mpage(\'help\')','문의, 잘못된 정보 알리기')}
  <div class="mgrp">약관 · 정책</div>${it('이용약관','mpage(\'terms\')')}${it('개인정보처리방침','mpage(\'privacy\')')}${it('사업자 정보','mpage(\'biz\')')}
  <p class="sub" style="font-size:.74rem;margin:18px 2px 0">데이터 기준일 ${DT.asof||'-'} · 매일 자동 갱신</p>`;}
