@@ -1536,7 +1536,6 @@ function rbCard(r){   // 조합설립 이후 정비사업 단지: 순이익은 �
   <div style="margin-top:2px;font-size:.84rem">분담금 ${known?`<b>${r.bl!=null?eok(r.bl)+'~':''}${eok(r.bu)}억</b> <span class="sub">(조합 공고·보도, 확정 아님)</span>`:'<b>발표 전</b> <span class="sub">(모르는 값은 계산하지 않아요)</span>'}</div>
   <div style="margin-top:2px;font-size:.84rem">실제 들어가는 돈 ${known?`약 <b>${eok(r.p+r.bu)}억</b> + 세금`:'매매가 + 분담금(미정) + 세금'}${r.into?` <span class="sub">· 입주 예정 ${r.into}</span>`:''}</div>
   ${moved?'<div class="sub" style="font-size:.76rem;margin-top:3px">이주·착공 단계라 입주 전까지 살거나 전세를 줄 수 없어요.</div>':''}</div>`;}
-function outK(r,F){return F.it+(r.C-r.p-(r.bu||0))+(GRS(F.sv5)-F.sv5);}   // 5년 동안 나가는 돈: 대출이자 + 사고팔 때 세금·중개 + 보유세
 function better(r,F){   // 09-28 사용자: 좋은 집을 고르면 돈으로 얼마나 차이 나나 — 이자만 떼어 보이면 '1억 더 쓴다'로 오해(오르는 몫이 대부분 메움) → 남는 돈(중앙값) 차이 그대로
  if(!TOP1||r===TOP1||CF.cash==null||r.sc==null||TOP1.sc==null||r.sc<TOP1.sc+5)return '';
  const d=(TOP1.F||fin(TOP1)).p5-F.p5, s=Math.abs(d)<500?'거의 같음':`${eok(Math.abs(d))}억 ${d>0?'적음':'많음'}`;
