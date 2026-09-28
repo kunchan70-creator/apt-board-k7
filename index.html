@@ -1535,12 +1535,14 @@ function rbCard(r){   // 조합설립 이후 정비사업 단지: 순이익은 �
   <div style="margin-top:2px;font-size:.84rem">분담금 ${known?`<b>${r.bl!=null?eok(r.bl)+'~':''}${eok(r.bu)}억</b> <span class="sub">(조합 공고·보도, 확정 아님)</span>`:'<b>발표 전</b> <span class="sub">(모르는 값은 계산하지 않아요)</span>'}</div>
   <div style="margin-top:2px;font-size:.84rem">실제 들어가는 돈 ${known?`약 <b>${eok(r.p+r.bu)}억</b> + 세금`:'매매가 + 분담금(미정) + 세금'}${r.into?` <span class="sub">· 입주 예정 ${r.into}</span>`:''}</div>
   ${moved?'<div class="sub" style="font-size:.76rem;margin-top:3px">이주·착공 단계라 입주 전까지 살거나 전세를 줄 수 없어요.</div>':''}</div>`;}
+function monthly(r,F){return (F.it+(r.hold||0))/Math.max(1,r.T*12);}   // 살면서 매달 나가는 돈: 대출이자 + 보유세(원금 갚는 돈은 내 재산으로 남으니 뺌)
+function mTxt(v){return v>=1e4?(Math.round(v/1e3)/10)+'억':Math.round(v).toLocaleString()+'만 원';}
 function row(r,k){   // 09-28 사용자: 결과판이 지저분 + 순위마다 모양이 달랐다 → 모든 순위 같은 카드 3줄(이름·큰 숫자 / 지역·가격·심각 배지 하나·손실 확률 / 범위 막대)
  const L=lensKey(), F=r.F||fin(r), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', n=L==='safe'?F.p1:F.p5, T=trustOf(r), hi=T.tags.find(x=>x.hi);
  const big=L==='obj'?`<b class="num" style="color:var(--blue)">입지 ${r.sc}</b>`:`<b class="num ${n>=0?'pos':'neg'}">${sg(n)}</b>`;
  return `<details class="card rc${k===1?' r1':''}"><summary>
  <div class="rc1"><span class="rk${k===1?' r1':''}">${k}</span><b class="rcn">${r.n} <span>${r.b}㎡</span></b>${big}</div>
- <div class="rc2"><span>${r.gu} · ${eok(r.p)}억${r.bu?` + 분담금 ${eok(r.bu)}억`:''}${hi?` <em>${hi.t}</em>`:''}</span><span>${L==='obj'?'단지 '+(r.bs??'-'):''}</span></div>
+ <div class="rc2"><span>${r.gu} · ${eok(r.p)}억${r.bu?` + 분담금 ${eok(r.bu)}억`:''}${CF.cash!=null&&CF.useU&&L!=='obj'?` · 매달 <b style="color:var(--ink)">${mTxt(monthly(r,F))}</b>`:''}${hi?` <em>${hi.t}</em>`:''}</span><span>${L==='obj'?'단지 '+(r.bs??'-'):''}</span></div>
  ${L==='obj'?'':`<div class="rng1">${cells(F)}</div>`}
  </summary>${detail(r)}</details>`;}
 let RBV=[], N=10, V=[], RS={lo:-1,hi:1};
@@ -1638,11 +1640,10 @@ function result(){
   ;
  const altH=L==='bal'?`<div class="alts">다른 순서로 보기 <a onclick="CF.lens='safe';CF.sort=null;result()">손실 적은 순</a> · <a onclick="CF.lens='obj';CF.sort=null;result()">입지 점수 순</a></div>`
   :`<div class="alts"><a onclick="CF.lens='bal';CF.sort=null;result()">‹ 순이익 순으로 돌아가기</a></div>`;
- const hvH=L==='obj'||!CF.useU||CF.cash==null?'':`<div class="hv"><button class="${CF.addU?'':'on'}" onclick="CF.addU=false;result()">아껴서 모으기</button><button class="${CF.addU?'on':''}" onclick="CF.addU=true;result()">더 쓰고 누리기</button></div>`
-  +(CF.addU?`<div class="hvn">비싼 집에 더 쓴 돈을 낭비가 아니라 누린 것으로 쳤어요(같은 집에 전세로 살 때 드는 돈만큼).</div>`:'');   // 09-28 사용자: '5천만 원 더 모을까, 좋은 곳에 살까' — 한 번에 비교
+ const hvH='';   // 09-28 사용자: '아껴서 모으기/더 쓰고 누리기'는 '더 쓰는데 더 버나?'로 읽히고, 좋은 곳은 사람마다 다름 → 버튼 대신 카드마다 '매달 드는 돈'을 보여 주고 판단은 사람에게
  N=3; const MD_=midD();
  app.innerHTML=`${DT.alert?`<div class="box warn" style="margin-top:0"><b>주간 과열 경보 발령</b> <span class="sub">과거 과열기에 자주 나타난 신호이며, 적중을 보장하지 않습니다.</span></div>`:''}
- ${cbarH}${V.length?`<div class="hq" style="margin:12px 0 10px">${{bal:'5년 순이익 상위 단지',safe:'5년 손실이 적은 단지',obj:'입지 점수 상위 단지'}[L]}</div>`+altH+hvH+qsRow()+`<div class="rleg">${L==='obj'?'숫자 = 입지 점수(동네 시세·역)':L==='safe'?'숫자 = 나쁠 때 5년 순이익':'숫자·점 = 5년 순이익 중앙값 · 대출이자·세금·중개 뺀 값'}</div>`+V.slice(0,3).map((r,k)=>row(r,k+1)).join(''):'<div class="hq">조건에 맞는 단지 없음</div>'+qsRow()}
+ ${cbarH}${V.length?`<div class="hq" style="margin:12px 0 10px">${{bal:'5년 순이익 상위 단지',safe:'5년 손실이 적은 단지',obj:'입지 점수 상위 단지'}[L]}</div>`+altH+hvH+qsRow()+`<div class="rleg">${L==='obj'?'숫자 = 입지 점수(동네 시세·역)':L==='safe'?'숫자 = 나쁠 때 5년 순이익':'숫자·점 = 5년 순이익 중앙값 · 대출이자·세금·중개 뺀 값'+(CF.cash!=null&&CF.useU?'<br>매달 = 살면서 나가는 대출이자·보유세 (원금 갚는 돈은 빼고)':'')}</div>`+V.slice(0,3).map((r,k)=>row(r,k+1)).join(''):'<div class="hq">조건에 맞는 단지 없음</div>'+qsRow()}
  <div id="list"></div><button class="btn ghost" id="more" style="margin-top:12px" onclick="N+=10;draw()">다음 10곳</button>
  <button class="btn ghost" style="margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px" onclick="trust('r')">${ic('shield',18)}이 셈이 빗나간 곳도 봅니다</button>
  ${(RBV.length||MD_)?fold(`조합설립 이후 정비사업 단지 (${RBV.length+(MD_?+MD_.match(/못 한 곳 (\d+)/)[1]:0)}곳)`,`<p class="sub" style="font-size:.8rem;margin:0 0 8px">분담금에 따라 결과가 크게 달라지는데 아직 확정되지 않아 순위에 넣지 않았어요. 사실만 보여 드립니다. 구역지정·안전진단·추진위 같은 초기 단계는 순위에 그대로 있어요.</p>`+RBV.slice(0,30).map(rbCard).join('')+(RBV.length>30?`<p class="sub" style="font-size:.78rem">외 ${RBV.length-30}곳 — 지역을 좁히면 모두 볼 수 있어요.</p>`:'')+MD_):''}
