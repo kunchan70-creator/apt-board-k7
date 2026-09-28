@@ -218,7 +218,7 @@ details.card[open] .more b:after{content:'접기'}details.card:not([open]) .more
 .opt.rec{border:2px solid var(--blue);background:var(--blue-bg);font-weight:800;padding-top:14px;padding-bottom:14px}.recb{display:inline-block;font-size:.68rem;font-weight:700;color:#fff;background:var(--blue);border-radius:6px;padding:1px 6px;margin-right:6px;vertical-align:2px}
 .opt small{display:block;font-size:.76rem;font-weight:500;color:var(--ink3);margin-top:2px}
 details.rc{padding:0!important;margin:8px 0}details.rc>summary{display:block;padding:12px 14px 12px!important}.rc.r1{border:2px solid var(--blue)}
-.rc1{display:flex;align-items:center;gap:10px}.rc1 .num{margin-left:auto;font-size:1.25rem;white-space:nowrap;line-height:1.1}
+.rc1{display:flex;align-items:center;gap:10px}.rc1 .num{margin-left:auto;font-size:1.25rem;white-space:nowrap;line-height:1.1}.rc1 .bn{margin-left:auto;text-align:right}.rc1 .bn i{display:block;font-style:normal;font-size:.66rem;font-weight:700;color:var(--ink3);margin-bottom:1px}
 .rcn{flex:1;min-width:0;line-height:1.3;word-break:keep-all}.rcn span{white-space:nowrap;font-weight:600;color:var(--ink2)}
 .hv{display:flex;background:var(--surface2);border-radius:999px;padding:3px;margin:4px 0 8px}.hv button{flex:1;border:0;background:none;font:inherit;font-size:.8rem;font-weight:700;color:var(--ink3);padding:7px 6px;border-radius:999px;cursor:pointer}.hv button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}.hvn{font-size:.74rem;color:var(--ink2);margin:0 4px 8px}.rc3{margin:5px 0 0 40px;font-size:.76rem;color:var(--ink2)}.rc3 b{color:var(--ink)}.rc2{display:flex;justify-content:space-between;gap:8px;margin:4px 0 0 40px;font-size:.78rem;color:var(--ink3)}.rc2 span:last-child{white-space:nowrap}
 .rc2 em{font-style:normal;color:var(--tlo);border:1px solid var(--tlo);border-radius:999px;padding:0 7px;margin-left:4px;white-space:nowrap}
@@ -1541,7 +1541,7 @@ function row(r,k){   // 09-28 사용자: 결과판이 지저분 + 순위마다 �
  const L=lensKey(), F=r.F||fin(r), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', n=L==='safe'?F.p1:F.p5, T=trustOf(r), hi=T.tags.find(x=>x.hi);
  const big=L==='obj'?`<b class="num" style="color:var(--blue)">입지 ${r.sc}</b>`:`<b class="num ${n>=0?'pos':'neg'}">${sg(n)}</b>`;
  return `<details class="card rc${k===1?' r1':''}"><summary>
- <div class="rc1"><span class="rk${k===1?' r1':''}">${k}</span><b class="rcn">${r.n} <span>${r.b}㎡</span></b>${big}</div>
+ <div class="rc1"><span class="rk${k===1?' r1':''}">${k}</span><b class="rcn">${r.n} <span>${r.b}㎡</span></b>${L==='obj'?big:`<span class="bn"><i>${L==='safe'?'나쁠 때 5년 순이익':'5년 순이익'}</i>${big}</span>`}</div>
  <div class="rc2"><span>${r.gu} · ${eok(r.p)}억${r.bu?` + 분담금 ${eok(r.bu)}억`:''}${CF.cash!=null&&CF.useU&&L!=='obj'?` · ${monthly(r,F)<1?'대출 없음':`월 이자 <b style="color:var(--ink)">${mTxt(monthly(r,F))}</b>`}`:''}${hi?` <em>${hi.t}</em>`:''}</span><span>${L==='obj'?'단지 '+(r.bs??'-'):''}</span></div>
  ${L==='obj'?'':`<div class="rng1">${cells(F)}</div>`}
  </summary>${detail(r)}</details>`;}
@@ -1643,7 +1643,7 @@ function result(){
  const hvH='';   // 09-28 사용자: '아껴서 모으기/더 쓰고 누리기'는 '더 쓰는데 더 버나?'로 읽히고, 좋은 곳은 사람마다 다름 → 버튼 대신 카드마다 '매달 드는 돈'을 보여 주고 판단은 사람에게
  N=3; const MD_=midD();
  app.innerHTML=`${DT.alert?`<div class="box warn" style="margin-top:0"><b>주간 과열 경보 발령</b> <span class="sub">과거 과열기에 자주 나타난 신호이며, 적중을 보장하지 않습니다.</span></div>`:''}
- ${cbarH}${V.length?`<div class="hq" style="margin:12px 0 10px">${{bal:'5년 순이익 상위 단지',safe:'5년 손실이 적은 단지',obj:'입지 점수 상위 단지'}[L]}</div>`+altH+hvH+qsRow()+`<div class="rleg">${L==='obj'?'숫자 = 입지 점수(동네 시세·역)':L==='safe'?'숫자 = 나쁠 때 5년 순이익':'숫자·점 = 5년 순이익 중앙값 · 대출이자·세금·중개 뺀 값'}</div>`+V.slice(0,3).map((r,k)=>row(r,k+1)).join(''):'<div class="hq">조건에 맞는 단지 없음</div>'+qsRow()}
+ ${cbarH}${V.length?`<div class="hq" style="margin:12px 0 10px">${{bal:'5년 순이익 상위 단지',safe:'5년 손실이 적은 단지',obj:'입지 점수 상위 단지'}[L]}</div>`+altH+hvH+qsRow()+(L==='obj'?`<div class="rleg">숫자 = 입지 점수(동네 시세·역)</div>`:'')+V.slice(0,3).map((r,k)=>row(r,k+1)).join(''):'<div class="hq">조건에 맞는 단지 없음</div>'+qsRow()}
  <div id="list"></div><button class="btn ghost" id="more" style="margin-top:12px" onclick="N+=10;draw()">다음 10곳</button>
  <button class="btn ghost" style="margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px" onclick="trust('r')">${ic('shield',18)}이 셈이 빗나간 곳도 봅니다</button>
  ${(RBV.length||MD_)?fold(`조합설립 이후 정비사업 단지 (${RBV.length+(MD_?+MD_.match(/못 한 곳 (\d+)/)[1]:0)}곳)`,`<p class="sub" style="font-size:.8rem;margin:0 0 8px">분담금에 따라 결과가 크게 달라지는데 아직 확정되지 않아 순위에 넣지 않았어요. 사실만 보여 드립니다. 구역지정·안전진단·추진위 같은 초기 단계는 순위에 그대로 있어요.</p>`+RBV.slice(0,30).map(rbCard).join('')+(RBV.length>30?`<p class="sub" style="font-size:.78rem">외 ${RBV.length-30}곳 — 지역을 좁히면 모두 볼 수 있어요.</p>`:'')+MD_):''}
