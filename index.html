@@ -1589,7 +1589,7 @@ function find(q0){
  el.innerHTML=h+'<div style="height:14px"></div>';}
 function summaryChips(txt){
  const c=[]; c.push(CF.regions.length?(CF.regions.length<=3?CF.regions.map(short).join(' · '):CF.regions.slice(0,2).map(short).join(' · ')+` 외 ${CF.regions.length-2}곳`):'서울·경기·인천 전체');
- if(CF.cash!=null)c.push('자기자본 '+eok(CF.cash)+'억'); if(CF.maxc!=null)c.push('총투입 '+eok(CF.maxc)+'억 이하'); if(CF.first)c.push('생애최초'); if(CF.loan!=null)c.push('대출 '+eok(CF.loan)+'억까지'); if(CF.inc!=null)c.push('소득 '+eok(CF.inc)+'억·DSR'); if(CF.rpt)c.push('수리비 '+CF.rpt.toLocaleString()+'만'); if(CF.addU&&CF.useU)c.push('사는 가치 포함'); if(CF.my!=null&&yearOf(CF.my))c.push(yearOf(CF.my).lbl+' 매수처럼');
+ if(CF.cash!=null)c.push('자기자본 '+eok(CF.cash)+'억'); if(CF.maxc!=null)c.push('총투입 '+eok(CF.maxc)+'억 이하'); if(CF.first)c.push('생애최초'); if(CF.loan!=null)c.push('대출 '+eok(CF.loan)+'억까지'); if(CF.inc!=null)c.push('소득 '+eok(CF.inc)+'억·DSR'); if(CF.rpt)c.push('수리비 '+CF.rpt.toLocaleString()+'만'); if(CF.addU&&CF.useU)c.push('더 쓰고 누리기'); if(CF.my!=null&&yearOf(CF.my))c.push(yearOf(CF.my).lbl+' 매수처럼');
  const SZ={'49':'49㎡↓','59':'59㎡','74':'74㎡','84':'84㎡','101':'101㎡↑'},AG={n:'신축',m:'준신축',o:'구축'};
  if(CF.size.length)c.push(CF.size.map(x=>SZ[x]).join('·')); if(CF.age.length)c.push(CF.age.map(x=>AG[x]).join('·'));
  if(CF.st)c.push(CF.st==='a1'?'역 도보 15분':'급행 2km'); if(CF.hh)c.push(CF.hh+'세대+');
