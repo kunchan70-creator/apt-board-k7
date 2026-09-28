@@ -1523,6 +1523,9 @@ function mpage(k){const P=MP[k]; if(!P)return menu(); TT.forEach(clearTimeout); 
 function fold(t,body,open){return body?`<details class="fold"${open?' open':''}><summary><span>${t}</span></summary><div>${body}</div></details>`:'';}
 // 09-26 사용자: 순이익에 월세 아낀 돈이 들어간 게 안 보인다 → '집값이 그만큼 오른다'로 읽힘. 기준 순이익을 조각으로 풀어 한 줄
 // 세금·비용에 팔 때 중개보수 포함 → '집값 오름' = 결과 큰 숫자(F.q5)와 같게
+// 09-29 사용자: 학군이 순이익을 바꾸는데 결과표에 그 이유가 나오나? → 5년 뒤 시세의 조각(시장 평균 · 구 흐름 · 단지 몫: 학군·역·연식·규모·전세가율 등 %p)을 카드에
+function whyUp(r){if(r.as||r.gt==null)return '';const T=r.T||5, lv=(Math.pow(1+DT.level/100,T)-1)*100, P=(r.pt||[]).slice(0,6), sg=v=>`<b class="${v>=0?'pos':'neg'}">${pp(v)}</b>`;
+ return `<div style="margin:8px 0 2px;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:.8rem;line-height:1.6"><b>5년 뒤 시세는 이렇게 나와요</b><div style="display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:4px"><span style="white-space:nowrap">시장 평균 <b>+${Math.round(lv)}%</b></span><span style="white-space:nowrap">${(r.gu||'').split(' ').pop()} 흐름 ${sg(r.gt)}</span>${P.map(([i,v])=>`<span style="white-space:nowrap">${S[i]} ${sg(v)}</span>`).join('')}</div><div class="sub" style="font-size:.72rem;margin-top:3px">시장 평균 = 과거 20년 5년 상승률 · 구 흐름·단지 몫 = 같은 구·같은 시점 단지들 사이에서 더/덜 오른 몫(%p, 과거 실거래로 추정) · 학군 = 특목·자사고 진학률과 통학구역 프리미엄</div></div>`;}
 function howNum(r,F){const use=CF.useU&&CF.addU?r.U:0, up=F.q5, cost=-(r.C-r.p-r.bu)-(GRS(F.sv5)-F.sv5), it=-F.it, t=v=>(v>=0?'+':'−')+eok(Math.abs(v));
  const P=[[r.bu?'집값 오름(분담금 뺌)':'집값 오름',up],['누린 값(전세로 치면)',use],['세금·중개보수',cost],['대출이자',it],[CF.rpt>0?'수리비':'수리비(어림)',-F.rp]].filter(([_,v])=>Math.abs(v)>=50);
  return `<div style="margin:8px 0 2px;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:.8rem;line-height:1.6"><b>기준 ${t(F.p5)}억은 이렇게 나와요</b><div style="display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:4px">${P.map(([k,v])=>`<span style="white-space:nowrap">${k} <b style="color:${v>=0?'var(--green)':'var(--red)'}">${t(v)}</b></span>`).join('')}</div></div>`;}
@@ -1583,7 +1586,7 @@ function detail(r){   // 09-27 사용자: 이것만 보고 매수를 계획할 �
    +(F.L>0?kv('월 상환','약 '+Math.round(pay).toLocaleString()+'만 원 <span class="sub">('+(CF.yrs||30)+'년 원리금균등 · 연 '+(F.i*100).toFixed(2)+'%)</span>'):'')
    +kv('내 돈','<b>'+eok(F.own)+'억</b>'+(CF.cash!=null?(F.ok?(F.left>=50?' <span class="sub">· 남는 현금 '+eok(F.left)+'억</span>':''):' <span class="neg">· '+eok(F.own-CF.cash)+'억 부족</span>'):''))
    +(CF.inc==null&&F.L>0?'<div class="sub" style="font-size:.74rem;margin-top:2px">연소득을 넣으면 은행 한도(DSR)까지 맞춰 계산합니다.</div>':''));}
- h+=sec('5년 뒤 (추정)',kv('예상 시세','<b>'+eok(GRS(F.sv5))+'억</b> <span class="sub">(비관 '+eok(GRS(F.sv1))+' ~ 낙관 '+eok(GRS(F.sv9))+'억)</span>')+howNum(r,F)+(CF.cash!=null?invBox(r):''));   // 09-28 카드 통일 때 빠졌던 '이 집 대신 가진 돈을 굴린다면 연 N%' 되살림
+ h+=sec('5년 뒤 (추정)',kv('예상 시세','<b>'+eok(GRS(F.sv5))+'억</b> <span class="sub">(비관 '+eok(GRS(F.sv1))+' ~ 낙관 '+eok(GRS(F.sv9))+'억)</span>')+whyUp(r)+howNum(r,F)+(CF.cash!=null?invBox(r):''));   // 09-28 카드 통일 때 빠졌던 '이 집 대신 가진 돈을 굴린다면 연 N%' 되살림
  h+=sec('이 가격에 산다면',`<div class="fr" style="border:0;padding-top:4px"><span><b>매수 예정가</b><em>계약하려는 가격을 넣으면 다시 셈해요</em></span><label><input type="text" inputmode="decimal" autocomplete="off" placeholder="${(r.p/1e4).toFixed(2)}" oninput="ppCalc(${r._i},this)"><i>억</i></label></div><div id="pp-${r._i}"></div>`);
  if(trustOf(r).tags.length)h+=tbox(r);
  let more='';
