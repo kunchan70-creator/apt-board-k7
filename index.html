@@ -1550,7 +1550,8 @@ function row(r,k){   // 09-28 사용자: 결과판이 지저분 + 순위마다 �
  const big=`<b class="num ${n>=0?'pos':'neg'}">${sg(n)}</b>`;   // 어느 순서로 보든 큰 숫자는 5년 순이익(09-28)
  return `<details class="card rc${k===1?' r1':''}"><summary>
  <div class="rc1"><span class="rk${k===1?' r1':''}">${k}</span><b class="rcn">${r.n} <span>${r.b}㎡</span></b><span class="bn"><i>5년 순이익</i>${big}</span></div>
- <div class="rc2"><span>${r.gu} · ${eok(r.p)}억${r.bu?` + 분담금 ${eok(r.bu)}억`:''}${CF.cash!=null&&CF.useU?` · ${monthly(r,F)<1?'대출 없음':`월 이자 <b style="color:var(--ink)">${mTxt(monthly(r,F))}</b>`}`:''}${hi?` <em>${hi.t}</em>`:''}</span><span></span></div>
+ <div class="rc2"><span>${r.gu}${CF.cash!=null&&CF.useU?` · ${monthly(r,F)<1?'대출 없음':`월 이자 <b style="color:var(--ink)">${mTxt(monthly(r,F))}</b>`}`:''}${hi?` <em>${hi.t}</em>`:''}</span><span></span></div>
+ <div class="rc3">시세 ${eok(r.p)}억${r.bu?` + 분담금 ${eok(r.bu)}억`:''} → 5년 뒤 <b>${eok(GRS(F.sv5))}억</b></div>
  <div class="rng1">${cells(F)}</div>
  </summary>${detail(r)}</details>`;}
 let RBV=[], N=10, V=[], RS={lo:-1,hi:1};
