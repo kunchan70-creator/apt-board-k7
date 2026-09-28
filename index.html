@@ -919,6 +919,28 @@ let OWN={loan:null,rate:null}, OWNF={}, OWNI=null;
 try{const s=JSON.parse(localStorage.getItem('jsOwn')||'null');if(s)OWN=s;}catch(e){}
 async function ownLoad(gu){try{if(!OWNI)OWNI=await fetch('own/index.json').then(x=>x.json());const f=OWNI.idx[gu];if(!f)return {};if(!OWNF[f])OWNF[f]=await fetch('own/'+f+'.json').then(x=>x.json());return OWNF[f];}catch(e){return {};}}
 const YMt=t=>Math.floor(t/12)+'.'+String(t%12+1).padStart(2,'0');
+function flInfo(B,r){   // 09-29 층별 정상가: own_data.flband 비율 × 지금 시세(최근 3개월 중앙값)
+ const f=B&&B.fl; if(!f||!f.r)return null; const nm={lo:'저층',mi:'중층',hi:'고층'}, rg={lo:'1~'+f.cut[0]+'층',mi:(f.cut[0]+1)+'~'+(f.cut[1]-1)+'층',hi:f.cut[1]+'~'+f.mx+'층'};
+ const bands=['lo','mi','hi'].map(k=>({k,nm:nm[k],rg:rg[k],n:f.r[k]?f.r[k][1]:0,p:f.r[k]?Math.round(r.p*f.r[k][0]):null})).filter(b=>f.cut[1]>f.cut[0]+1||b.k!=='mi');
+ return {f,bands,bandOf:fl=>fl<=f.cut[0]?'lo':fl>=f.cut[1]?'hi':'mi'};}
+function flVerdict(B,r,fl,v){   // 층(+가격) → 이 층대 정상가·급매 선·판정. 가격 없으면 정상가만
+ const I=flInfo(B,r); if(!I)return ''; fl=Math.round(fl||0); if(!(fl>=1))return '<div class="sub" style="font-size:.78rem">층을 넣으면 그 층대 정상가를 알려 드려요</div>';
+ if(fl>I.f.mx)return `<div class="sub" style="font-size:.78rem">이 단지는 ${I.f.mx}층까지예요</div>`;
+ const k=I.bandOf(fl), b=I.bands.find(x=>x.k===k)||I.bands[0], norm=b.p||r.p, lo=norm*I.f.sp[0], hi=norm*I.f.sp[1];
+ let h=`<div style="font-size:.86rem"><b>${fl}층</b> = ${b.nm}(${b.rg})${b.p?'':' · 이 층대 거래가 적어 단지 전체 기준'} · 정상가 <b>${eok(norm)}억</b></div><div class="sub" style="font-size:.76rem">급매 선 ${eok(lo)}억 아래 · 비싼 선 ${eok(hi)}억 위 <span style="opacity:.8">(최근 ${I.f.m}개월 ${I.f.n}건의 아래·위 10%)</span></div>`;
+ if(v){const d=v/norm-1, pc=(d*100>=0?'+':'')+(d*100).toFixed(1)+'%', j=d<=I.f.sp[0]-1?['pos','급매 수준이에요 — 최근 '+I.f.m+'개월 이 단지 거래 중 아래 10%']:d<-.02?['pos','이 층대 정상가보다 싸게 사는 거예요']:d<=.02?['','이 층대 정상가 수준이에요']:d<I.f.sp[1]-1?['neg','이 층대 정상가보다 비싸요']:['neg','비싼 편이에요 — 최근 '+I.f.m+'개월 거래 중 위 10%'];
+  h+=`<div style="margin-top:6px;font-size:.9rem"><b class="${j[0]}">${eok(v)}억은 정상가 대비 ${pc}</b> · ${j[1]}</div>`;}
+ return h;}
+function flBox(c,r,B){   // 단지 분석 상자
+ const I=flInfo(B,r); if(!I)return '';
+ const cells=I.bands.map(b=>`<div style="flex:1;min-width:88px;padding:8px 10px;border-radius:12px;background:var(--surface)"><div class="sub" style="font-size:.72rem">${b.nm} <span style="opacity:.8">${b.rg}</span></div><b class="num" style="font-size:1.05rem">${b.p?eok(b.p)+'억':'-'}</b><div class="sub" style="font-size:.7rem">${b.n?b.n+'건':'거래 적음'}</div></div>`).join('');
+ const id='fl-'+c.k.replace(/[^a-z0-9]/gi,'');
+ const inp=(x,ph,u)=>`<label style="flex:1;display:flex;align-items:center;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px"><input id="${id}-${x}" type="text" inputmode="decimal" autocomplete="off" placeholder="${ph}" oninput="flCalc('${c.k}',${r.b},'${id}')" style="width:100%;border:0;background:none;font:inherit;color:var(--ink)"><span class="sub">${u}</span></label>`;
+ return `<div style="display:flex;gap:6px;flex-wrap:wrap">${cells}</div><div class="sub" style="font-size:.74rem;margin-top:6px">최근 ${I.f.m}개월 실거래 ${I.f.n}건을 그때 시세로 나눠 층대별로 본 값 · 지금 시세 ${eok(r.p)}억 기준. 순위 1~20위 차이보다 같은 단지 안에서 어느 층을 얼마에 사느냐가 더 크게 갈려요. 향·동은 실거래에 없어 못 봐요.</div>
+ <div style="display:flex;gap:6px;margin-top:10px">${inp('f','층','층')}${inp('v',(r.p/1e4).toFixed(2),'억')}</div><div id="${id}-o" style="margin-top:8px"></div>`;}
+function flCalc(k,b,id){const c=CPXK[k], r=c&&c.rows.find(x=>x.b===b), o=document.getElementById(id+'-o'); if(!r||!o)return;
+ const fl=parseFloat((document.getElementById(id+'-f')||{}).value), v=parseMoney((document.getElementById(id+'-v')||{}).value);
+ ownLoad(c.gu).then(D=>{const B=((D[c.no]||{}).b||{})[String(b)]; o.innerHTML=flVerdict(B,r,fl,(v&&v>r.p*.3&&v<r.p*3)?v:null);});}
 function qchart(Q){   // 09-28: 최근 실거래 숫자 나열 대신 분기별 중위 시세 흐름(6년) — 고점·지금 표시
  if(!Q||Q.length<3)return '';
  const W=300,H=88,x0=6,x1=W-6, vs=Q.map(x=>x[1]), mn=Math.min(...vs), mx=Math.max(...vs), pad=(mx-mn)*.12||mn*.05, Y=v=>10+(1-(v-(mn-pad))/((mx+pad)-(mn-pad)))*(H-10), X=i=>x0+i/(Q.length-1)*(x1-x0);
@@ -952,6 +974,7 @@ function ownHTML(c,r,k,back,X){
  const now=box('지금 우리 집 시세',`<div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><b class="num" style="font-size:2rem">${eok(r.p)}억</b><span class="sub" style="font-size:.8rem">전용 ${r.b}㎡대 · ${r.n3>=3?'최근 3개월 실거래 중앙값':'최근 1년 거래로 환산'}</span></div>`
   +(X?(recT?`<div style="font-size:.84rem;margin-top:6px">${recT}</div>`:'')+`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">${y1T}${pkT}</div>`+(B&&B.q?qchart(B.q):'')
     +(trs?`<details class="fold" style="margin-top:8px"><summary><span style="font-size:.8rem;font-weight:600">거래 내역 ${B.tr.length}건</span></summary><div>${trs}</div></details>`:''):ld));
+ const flb=X&&B&&B.fl?box('층별 정상가 · 이 층 이 가격이면?',flBox(c,r,B)):'';   // 09-29 사용자: 순위 차이보다 좋은 호수를 싸게
  /* ② 계속 살면 5년 뒤 */
  const fut=r.as?box('계속 살면 5년 뒤','<div class="sub" style="font-size:.84rem">입주권 단계라 분담금을 뺀 새 아파트 값으로 따로 셉니다.</div>')
   :box('계속 살면 5년 뒤 시세',`<div style="font-size:.95rem">지금 ${eok(r.p)}억 → 5년 뒤 <b style="font-size:1.25rem">${eok(s5)}억</b> <span class="sub" style="font-size:.74rem">중앙값</span></div>${pbar(r.p,s1,s5,s9)}<div class="sub" style="font-size:.72rem">막대 아래 = 10번 중 1번은 이보다 낮음 / 높음 · 과거 실거래 20년으로 셈한 범위</div>`);
@@ -983,7 +1006,7 @@ function ownHTML(c,r,k,back,X){
  <div style="font-size:.78rem;font-weight:800;color:var(--blue)">단지 분석</div>
  <div style="font-size:1.35rem;font-weight:800;margin:4px 0 2px;word-break:keep-all">${c.n}</div><div class="sub" style="font-size:.82rem">${c.gu}${c.y?' · '+c.y+'년':''}${c.hh?' · '+c.hh.toLocaleString()+'세대':''}</div>
  ${rows.length>1?`<div class="cc" style="margin:10px 0 0">${rows.map(x=>`<button class="${x===r?'on':''}" onclick="rcard('${k}','${back||''}',${x.b})">${x.b}㎡</button>`).join('')}</div>`:''}
- ${now}${fut}${loan}${lc}${kid}${mv}${tax}${c.rb?box('정비사업 분담금',bkTxt(c)):''}${T.tags.length?tbox(r):''}
+ ${now}${flb}${fut}${loan}${lc}${kid}${mv}${tax}${c.rb?box('정비사업 분담금',bkTxt(c)):''}${T.tags.length?tbox(r):''}
  <div style="display:flex;gap:8px;margin-top:14px"><button class="btn" style="flex:1" onclick="CM=['${k}',null];cmp()">다른 단지와 비교</button><button class="btn outline" style="flex:1" onclick="navigator.clipboard&&navigator.clipboard.writeText(location.href).then(()=>this.textContent='링크 복사됨')">링크 복사</button></div>
  <div class="sub" style="font-size:.7rem;margin-top:12px">${PRIN}<br>참고용 산출치이며, 투자 권유가 아닙니다.</div>${missLink('b')}`;}
 function ownCalc(k,b){   /* 내 대출·금리 → 지금 내 몫, 월 이자, 금리 변화, 5년 뒤 늘어나는 재산, 팔고 옮기면 */
@@ -1376,8 +1399,12 @@ function holdT(p,y){const pub=p*.69,b=pub*.43;let t=pub<=90000?(b<=6000?b*.0005:
  t=t*1.2+b*.0014;if(pub>120000)t+=(pub-120000)*.6*.005*1.2;return t*y;}
 function withPrice(r,p2){const fee=acqT(p2,r.b)+brk(p2)+p2*.0015, hold=holdT(p2,r.T||5);   // 전세금은 시장 값이라 그대로(전세가율만 새 가격 기준으로)
  return {...r,p:p2,fee,hold,C:r.C-r.p-r.fee-r.hold+p2+fee+hold,jr:r.jr?r.jr*r.p/p2:r.jr};}
+function ppFl(i,r,v){   // 09-29 층별 정상가(own_data.flband) — 단지 자료를 받아 층·가격 판정
+ const fl=parseFloat((document.getElementById('ppf-'+i)||{}).value); if(!(fl>=1))return;
+ ownLoad(r.gu).then(D=>{const B=((D[r.no]||{}).b||{})[String(r.b)], el=document.getElementById('ppfl-'+i); if(!el)return;
+  el.innerHTML=B&&B.fl?`<div style="margin-top:6px;padding:10px 12px;border-radius:12px;background:var(--surface2)">${flVerdict(B,r,fl,v)}</div>`:'<div class="sub" style="font-size:.78rem;margin-top:4px">이 단지는 최근 실거래가 적어 층별 정상가를 못 셈해요</div>';});}
 function ppCalc(i,el){const r=R[i], out=document.getElementById('pp-'+i); if(!r||!out)return; const v=parseMoney(el.value);
- if(!v||v<r.p*0.3||v>r.p*3){out.innerHTML=el.value.trim()?'<div class="sub" style="font-size:.78rem">가격을 억 단위로 넣어 주세요 (예: 7.5)</div>':'';return;}
+ if(!v||v<r.p*0.3||v>r.p*3){out.innerHTML=(el.value.trim()?'<div class="sub" style="font-size:.78rem">가격을 억 단위로 넣어 주세요 (예: 7.5)</div>':'')+'<div id="ppfl-'+i+'"></div>';ppFl(i,r,null);return;}
  const r2=withPrice(r,v), F=fin(r2), F0=r.F||fin(r), sg=x=>(x>=0?'+':'−')+eok(Math.abs(x))+'억', d=v-r.p, kv=(k,x)=>`<div class="kv"><span class="k">${k}</span><span class="v">${x}</span></div>`;
  out.innerHTML=`<div style="margin-top:6px;padding:10px 12px;border-radius:12px;background:var(--surface2)">`
   +kv('최근 실거래 대비',`${d>=0?'+':'−'}${eok(Math.abs(d))}억 <span class="sub">(${(d/r.p*100>=0?'+':'')+(d/r.p*100).toFixed(1)}%)</span>`)
@@ -1385,7 +1412,7 @@ function ppCalc(i,el){const r=R[i], out=document.getElementById('pp-'+i); if(!r|
   +kv('대출 · 내 돈',(F.L>0?eok(F.L)+'억 · ':'')+'<b>'+eok(F.own)+'억</b>'+(CF.cash!=null&&!F.ok?' <span class="neg">('+eok(F.own-CF.cash)+'억 부족)</span>':''))
   +kv('5년 순이익',`<b class="${F.p5>=0?'pos':'neg'}">${sg(F.p5)}</b> <span class="sub">(비관 ${sg(F.p1)} ~ 낙관 ${sg(F.p9)})</span>`)
   +kv('손실 확률',lossTxt(F).replace('손실 확률 ',''))
-  +`<div class="sub" style="font-size:.74rem;margin-top:4px">실거래 가격으로 셈했을 때보다 순이익 ${sg(F.p5-F0.p5)}</div></div>`;}
+  +`<div class="sub" style="font-size:.74rem;margin-top:4px">실거래 가격으로 셈했을 때보다 순이익 ${sg(F.p5-F0.p5)}</div></div><div id="ppfl-${i}"></div>`; ppFl(i,r,v);}
 function GRS(v){const t=v<5000?.0066:v<20000?.0055:v<90000?.0044:v<120000?.0055:v<150000?.0066:.0077;return v/(1-t);}
 function cash(r){return fin(r).own;}
 function ok(r){
@@ -1588,7 +1615,7 @@ function detail(r){   // 09-27 사용자: 이것만 보고 매수를 계획할 �
    +kv('내 돈','<b>'+eok(F.own)+'억</b>'+(CF.cash!=null?(F.ok?(F.left>=50?' <span class="sub">· 남는 현금 '+eok(F.left)+'억</span>':''):' <span class="neg">· '+eok(F.own-CF.cash)+'억 부족</span>'):''))
    +(CF.inc==null&&F.L>0?'<div class="sub" style="font-size:.74rem;margin-top:2px">연소득을 넣으면 은행 한도(DSR)까지 맞춰 계산합니다.</div>':''));}
  h+=sec('5년 뒤 (추정)',kv('예상 시세','<b>'+eok(GRS(F.sv5))+'억</b> <span class="sub">(비관 '+eok(GRS(F.sv1))+' ~ 낙관 '+eok(GRS(F.sv9))+'억)</span>')+whyUp(r)+howNum(r,F)+(CF.cash!=null?invBox(r):''));   // 09-28 카드 통일 때 빠졌던 '이 집 대신 가진 돈을 굴린다면 연 N%' 되살림
- h+=sec('이 가격에 산다면',`<div class="fr" style="border:0;padding-top:4px"><span><b>매수 예정가</b><em>계약하려는 가격을 넣으면 다시 셈해요</em></span><label><input type="text" inputmode="decimal" autocomplete="off" placeholder="${(r.p/1e4).toFixed(2)}" oninput="ppCalc(${r._i},this)"><i>억</i></label></div><div id="pp-${r._i}"></div>`);
+ h+=sec('이 가격에 산다면',`<div class="fr" style="border:0;padding-top:4px"><span><b>매수 예정가</b><em>계약하려는 가격을 넣으면 다시 셈해요</em></span><label><input type="text" inputmode="decimal" autocomplete="off" placeholder="${(r.p/1e4).toFixed(2)}" oninput="ppCalc(${r._i},this)" id="ppv-${r._i}"><i>억</i></label></div><div class="fr" style="border:0;padding-top:0"><span><b>층</b><em>층을 넣으면 그 층대 정상가와 급매 선을 같이 봐요</em></span><label><input type="text" inputmode="numeric" autocomplete="off" placeholder="예: 12" id="ppf-${r._i}" oninput="ppCalc(${r._i},document.getElementById('ppv-${r._i}'))"><i>층</i></label></div><div id="pp-${r._i}"></div>`);
  if(trustOf(r).tags.length)h+=tbox(r);
  let more='';
  more+=fold('입지 '+r.sc+' · 단지 '+(r.bs??'-')+' — 점수 근거',why(r));
