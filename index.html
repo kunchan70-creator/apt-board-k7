@@ -1544,9 +1544,13 @@ function row(r,k){   // 09-28 사용자: 결과판이 지저분 + 순위마다 �
  return `<details class="card rc${k===1?' r1':''}"><summary>
  <div class="rc1"><span class="rk${k===1?' r1':''}">${k}</span><b class="rcn">${r.n} <span>${r.b}㎡</span></b>${big}</div>
  <div class="rc2"><span>${r.gu} · ${eok(r.p)}억${r.bu?` + 분담금 ${eok(r.bu)}억`:''}${hi?` <em>${hi.t}</em>`:''}</span><span>${L==='obj'?'단지 '+(r.bs??'-'):lossTxt(F)}</span></div>
- ${L==='obj'?'':`<div class="rng1">${rng(F,1)}</div>`}
+ ${L==='obj'?'':`<div class="rng1">${cells(F)}</div>`}
  </summary>${detail(r)}</details>`;}
 let RBV=[], N=10, V=[], RS={lo:-1,hi:1};
+function cells(F){   // 09-28 사용자: 막대가 무슨 뜻인지 한눈에 — 5년을 10번 해 보면, 칸 하나 = 1번. 나쁜 결과부터 좋은 결과 순, 빨간 칸 = 손해(손실 확률만큼, 반 칸까지)
+ const sg=v=>(v>=0?'+':'−')+eok(Math.abs(v)), red=lossP(F)/10;
+ return `<div style="margin-top:10px"><div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--ink3);margin-bottom:4px"><span>나쁠 때 <b style="color:${F.p1<0?'var(--red)':'var(--ink2)'}">${sg(F.p1)}</b></span><span>좋을 때 <b style="color:var(--ink2)">${sg(F.p9)}</b></span></div>
+  <div style="display:grid;grid-template-columns:repeat(10,1fr);gap:3px">${[...Array(10)].map((_,i)=>{const f=Math.max(0,Math.min(1,red-i));return `<i style="height:12px;border-radius:3px;background:${f>=1?'var(--red)':f>0?`linear-gradient(90deg,var(--red) 0 ${f*100}%,var(--blue) ${f*100}% 100%)`:'var(--blue)'};opacity:${i===0||i===9?.5:.85}"></i>`;}).join('')}</div></div>`;}
 function rng(F,lab){   // 막대 = 순이익 범위(비관~낙관), 큰 숫자와 같은 축
  const lo=RS.lo, hi=RS.hi, X=v=>Math.max(0,Math.min(100,(v-lo)/(hi-lo)*100)), z=X(0), a=X(F.p1), b=X(F.p9), m=X(F.p5), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v));
  return `<div style="flex:0 0 100%;margin-top:${lab?10:6}px">${lab?`<div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--ink3);margin-bottom:3px"><span>비관 <b style="color:${F.p1<0?'var(--red)':'var(--ink2)'}">${sg(F.p1)}</b></span><span style="opacity:.8">10번 중 8번은 이 사이</span><span>낙관 <b style="color:var(--ink2)">${sg(F.p9)}</b></span></div>`:''}
@@ -1636,7 +1640,7 @@ function result(){
   :`<div class="alts"><a onclick="CF.lens='bal';CF.sort=null;result()">‹ 순이익 순으로 돌아가기</a></div>`;
  N=3; const MD_=midD();
  app.innerHTML=`${DT.alert?`<div class="box warn" style="margin-top:0"><b>주간 과열 경보 발령</b> <span class="sub">과거 과열기에 자주 나타난 신호이며, 적중을 보장하지 않습니다.</span></div>`:''}
- ${cbarH}${V.length?`<div class="hq" style="margin:12px 0 10px">${{bal:'5년 순이익 상위 단지',safe:'5년 손실이 적은 단지',obj:'입지 점수 상위 단지'}[L]}</div>`+altH+qsRow()+`<div class="rleg">${L==='obj'?'숫자 = 입지 점수(동네 시세·역)':L==='safe'?'숫자 = 나쁠 때 5년 순이익':'숫자 = 5년 순이익(가장 흔한 경우) · 대출이자·세금·중개 뺀 값'}${L==='obj'?'':' · 막대 = 10번 중 8번이 드는 범위'}</div>`+V.slice(0,3).map((r,k)=>row(r,k+1)).join(''):'<div class="hq">조건에 맞는 단지 없음</div>'+qsRow()}
+ ${cbarH}${V.length?`<div class="hq" style="margin:12px 0 10px">${{bal:'5년 순이익 상위 단지',safe:'5년 손실이 적은 단지',obj:'입지 점수 상위 단지'}[L]}</div>`+altH+qsRow()+`<div class="rleg">${L==='obj'?'숫자 = 입지 점수(동네 시세·역)':L==='safe'?'숫자 = 나쁠 때 5년 순이익':'숫자 = 5년 순이익(가장 흔한 경우) · 대출이자·세금·중개 뺀 값'}${L==='obj'?'':'<br>칸 10개 = 5년을 10번 해 보면 · <b style="color:var(--red)">빨간 칸</b> = 손해 본 횟수'}</div>`+V.slice(0,3).map((r,k)=>row(r,k+1)).join(''):'<div class="hq">조건에 맞는 단지 없음</div>'+qsRow()}
  <div id="list"></div><button class="btn ghost" id="more" style="margin-top:12px" onclick="N+=10;draw()">다음 10곳</button>
  <button class="btn ghost" style="margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px" onclick="trust('r')">${ic('shield',18)}이 셈이 빗나간 곳도 봅니다</button>
  ${(RBV.length||MD_)?fold(`조합설립 이후 정비사업 단지 (${RBV.length+(MD_?+MD_.match(/못 한 곳 (\d+)/)[1]:0)}곳)`,`<p class="sub" style="font-size:.8rem;margin:0 0 8px">분담금에 따라 결과가 크게 달라지는데 아직 확정되지 않아 순위에 넣지 않았어요. 사실만 보여 드립니다. 구역지정·안전진단·추진위 같은 초기 단계는 순위에 그대로 있어요.</p>`+RBV.slice(0,30).map(rbCard).join('')+(RBV.length>30?`<p class="sub" style="font-size:.78rem">외 ${RBV.length-30}곳 — 지역을 좁히면 모두 볼 수 있어요.</p>`:'')+MD_):''}
