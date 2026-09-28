@@ -1292,7 +1292,7 @@ function qsRow(){return `<div class="cc qs" style="margin:0 0 10px;gap:5px;flex-
 function qSize(v){if(v==null)CF.size=[];else{const i=CF.size.indexOf(v);i<0?CF.size.push(v):CF.size.splice(i,1);}save();result();}
 function cc(key,opts,multi){return `<div class="cc">${opts.map(([v,l])=>`<button class="${(multi?CF[key].includes(v):CF[key]===v)?'on':''}" onclick='${multi?'multiTog':'one'}(${JSON.stringify(key)},${JSON.stringify(v)})'>${l}</button>`).join('')}</div>`;}
 // 09-26 사용자: 조건 화면(면적·연차 등)을 한 번에 고르기 어려움 → 한 화면에 질문 하나씩(단계별). 끝에 요약 화면에서 항목별로 다시 고칠 수 있다.
-const STEPS=['purpose','cash','region','size','age','inc','sum'];
+const STEPS=['purpose','cash','region','size','age','inc','sum']; let RET=null;   // RET: 내 조건을 고친 뒤 돌아갈 화면(출퇴근)
 let SU=0;
 function uniqN(){return new Set(R.filter(ok).map(r=>r.no||r.n+r.gu)).size;}
 function cntWith(key,v){const k=CF[key];CF[key]=v==null?[]:[v];const n=uniqN();CF[key]=k;return n;}
@@ -1348,7 +1348,7 @@ function setup(i){
  <div class="fl">단지 크기</div><div id="c_hh"></div>
  <div class="fr"><span><b>수리비</b><em>비우면 5년 동안 집 상태를 유지하는 수리비를 어림해 넣어요 · 금액을 넣으면 지은 지 20년 넘은 집에만 · 0이면 빼요</em></span><label><input type="number" inputmode="numeric" step="500" placeholder="어림" value="${CF.rpt==null?'':CF.rpt}" oninput="CF.rpt=this.value===''?null:Math.max(0,+this.value);count();refresh()"><i>만원</i></label></div>
  </div></details>`;
-  cta=`<div class="cta"><button class="btn" id="go" onclick="CF.done=true;CF.lens='bal';CF.sort=null;save();result()">결과 보기</button></div>`;}
+  cta=`<div class="cta"><button class="btn" id="go" onclick="CF.done=true;CF.lens='bal';CF.sort=null;save();if(RET==='commute'){RET=null;jres();}else result()">결과 보기</button></div>`;}
  app.innerHTML=head+body+cta;
  refresh(); window.scrollTo(0,0);}
 function refresh(){
@@ -1666,13 +1666,13 @@ function rbCard(r){   // 조합설립 이후 정비사업 단지: 순이익은 �
   ${moved?'<div class="sub" style="font-size:.76rem;margin-top:3px">이주·착공 단계라 입주 전까지 살거나 전세를 줄 수 없어요.</div>':''}</div>`;}
 function monthly(r,F){return F.it/Math.max(1,r.T*12);}   // 09-28 사용자: '매달 N만 원'은 월세·원리금으로 헷갈림 → 누구나 아는 '월 이자'만(보유세는 5년 순이익에 이미 들어 있음)
 function mTxt(v){return v>=1e4?(Math.round(v/1e3)/10)+'억':Math.round(v).toLocaleString()+'만 원';}
-function row(r,k){   // 09-28 사용자: 결과판이 지저분 + 순위마다 모양이 달랐다 → 모든 순위 같은 카드 3줄(이름·큰 숫자 / 지역·가격·심각 배지 하나·손실 확률 / 범위 막대)
+function row(r,k,ex){   // 09-28 사용자: 결과판이 지저분 + 순위마다 모양이 달랐다 → 모든 순위 같은 카드 3줄(이름·큰 숫자 / 지역·가격·심각 배지 하나·손실 확률 / 범위 막대)
  const L=lensKey(), F=r.F||fin(r), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', n=F.p5, T=trustOf(r), hi=T.tags.find(x=>x.hi);
  const big=`<b class="num ${n>=0?'pos':'neg'}">${sg(n)}</b>`;   // 어느 순서로 보든 큰 숫자는 5년 순이익(09-28)
  return `<details class="card rc${k===1?' r1':''}" ontoggle="if(this.open)ppFb(${r._i})"><summary>
  <div class="rc1"><span class="rk${k===1?' r1':''}">${k}</span><b class="rcn">${r.n} <span>${r.b}㎡</span></b><span class="bn"><i>5년 순이익</i>${big}</span></div>
  <div class="rc2"><span>${r.gu}${CF.cash!=null&&CF.useU?` · ${monthly(r,F)<1?'대출 없음':`월 이자 <b style="color:var(--ink)">${mTxt(monthly(r,F))}</b>`}`:''}${hi?` <em>${hi.t}</em>`:''}</span><span></span></div>
- <div class="rc3">시세 ${eok(r.p)}억${r.bu?` + 분담금 ${eok(r.bu)}억`:''} → 5년 뒤 <b>${eok(GRS(F.sv5))}억</b></div>
+ ${ex||''}<div class="rc3">시세 ${eok(r.p)}억${r.bu?` + 분담금 ${eok(r.bu)}억`:''} → 5년 뒤 <b>${eok(GRS(F.sv5))}억</b></div>
  <div class="rng1">${cells(F)}</div>
  </summary>${detail(r)}</details>`;}
 let RBV=[], N=10, V=[], RS={lo:-1,hi:1};
@@ -2002,25 +2002,22 @@ function jgu(la,lo){let g=null,bd=3;CPX.forEach(c=>{if(!c.xy)return;const d=jkm(
 function jrun(){const box=$('#jlist');if(!box)return;box.innerHTML='<p class="sub">계산 중…</p>';
  jbload().then(()=>setTimeout(()=>{const PS=JB.P.slice(0,JB.n).map(P=>Object.assign({},P,{mode:P.mode==='car'&&JCAR?'car':'pt'})),Ds=PS.map(P=>P.mode==='car'?null:jlab(P));
   const HC=CF.cash!=null; R.forEach(r=>r.F=null);   // 다른 화면에서 셈한 값이 섞이지 않게
-  const jbest=c=>{let rs=c.rows.filter(r=>!r.as&&(!JB.pmax||r.p<=JB.pmax*1e4)&&(!(JB.size||[]).length||JB.size.includes(szOf(r.b))));if(HC)rs=rs.filter(r=>(r.F=fin(r)).ok);return rs.length?rs.slice().sort((x,y)=>Math.abs(x.b-84)-Math.abs(y.b-84))[0]:null;};
-  const KEY=r=>{const F=r.F||(r.F=fin(r));return HC?(F.p5+F.p1)/2:UPK(r);};
+  // 09-29 사용자: 매수 분석과 같은 셈이어야 — 필터는 ok()(지역·면적 조건만 통근 화면의 것으로), 정비사업 진행 단지 제외(isMid), 정렬은 순이익(lscore 보통 순), 카드는 row()
+  const okc=r=>{const g=CF.regions,z=CF.size;CF.regions=[];CF.size=[];try{return ok(r);}finally{CF.regions=g;CF.size=z;}};
+  const jbest=c=>{const rs=c.rows.filter(r=>!r.as&&!isMid(r)&&(!JB.pmax||r.p<=JB.pmax*1e4)&&(!(JB.size||[]).length||JB.size.includes(szOf(r.b)))&&okc(r));return rs.length?rs.slice().sort((x,y)=>Math.abs(x.b-84)-Math.abs(y.b-84))[0]:null;};
+  const KEY=r=>{const F=r.F||(r.F=fin(r));if(CF.cash==null){const an=v=>Math.pow(Math.max(1e-6,1+v/(r.C+F.rp)),1/r.T)-1;return an(F.p5);}return F.p5;};
   let L=[];CPX.forEach(c=>{if(!c.xy)return;const r=jbest(c);if(!r)return;
    const ts=PS.map((P,k)=>P.mode==='car'?jcar(c.xy,[P.lat,P.lon]):jtime(c.xy,[P.lat,P.lon],Ds[k],P.hr));if(ts.some((t,k)=>t==null||t>PS[k].max))return;L.push({c,r,ts});});
   const so=JB.sort;L.sort(so==='t'?(a,b)=>Math.max(...a.ts)-Math.max(...b.ts):so==='sc'?(a,b)=>b.c.sc-a.c.sc:(a,b)=>KEY(b.r)-KEY(a.r));
-  const sgm=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억';
-  const row=({c,r,ts},i)=>{const F=r.F||(r.F=fin(r));return `<div class="card" onclick="rcard('${c.k}')" style="cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 14px;margin:8px 0">
-   <span class="rk${i===0?' r1':''}" style="flex:0 0 auto">${i+1}</span>
-   <span style="flex:1;min-width:0"><b style="display:block;line-height:1.3;word-break:keep-all">${c.n} <span style="white-space:nowrap;font-weight:600;color:var(--ink3)">${r.b}㎡</span></b>
-    <span class="sub" style="font-size:.76rem">${c.gu}${c.y?' · '+c.y+'년':''}${c.hh?' · '+c.hh.toLocaleString()+'세대':''}</span>
-    <span style="display:block;margin-top:3px;font-size:.8rem;font-weight:700;color:var(--blue)">${ts.map((t,k)=>(JB.n===2?JWHO[k]+' ':'')+jband(t)).join(' · ')}</span>
-    <span style="display:block;margin-top:3px">${tpill(r)}</span></span>
-   <span style="text-align:right;white-space:nowrap">${HC?`<span style="display:block;font-size:.66rem;color:var(--ink3);font-weight:700">5년 순이익</span><b class="num ${F.p5>=0?'pos':'neg'}" style="font-size:1.1rem">${sgm(F.p5)}</b><span class="sub" style="display:block;font-size:.7rem">시세 ${eok(r.p)}억</span><span class="sub" style="display:block;font-size:.7rem">${CF.useU?(monthly(r,F)<1?'대출 없음':'월 이자 '+mTxt(monthly(r,F))):''}</span>`
-    :`<span style="display:block;font-size:.66rem;color:var(--ink3);font-weight:700">지금 시세</span><b class="num" style="font-size:1.1rem">${eok(r.p)}억</b><span class="sub" style="display:block;font-size:.7rem">5년 뒤 ${eok(GRS(F.sv5))}억</span>`}</span></div>`;};
+  {const W=L.slice(0,40).map(x=>x.r.F||(x.r.F=fin(x.r)));RS={lo:Math.min(0,...W.map(F=>F.p1)),hi:Math.max(1,...W.map(F=>F.p9))};}   // 범위 막대 눈금(매수 분석과 같은 방식)
+  const jrow=({c,r,ts},i)=>row(r,i+1,`<div class="rc2" style="margin-top:2px"><span style="color:var(--blue);font-weight:700">통근 ${ts.map((t,k)=>(JB.n===2?JWHO[k]+' ':'')+jband(t)).join(' · ')}</span></div>`);
+  const cbar=`<div class="cbar"><span><em>내 조건</em>${HC?'자기자본 '+eok(CF.cash)+'억 · '+(CF.useU?'실거주':'전세 놓기'):'자기자본 없음 — 전액 자기 돈 기준'}</span><button onclick="RET='commute';setup()">내 조건 바꾸기</button></div>`
+   +(HC?'':`<div class="tip" style="margin:0 0 8px"><span>자기자본을 넣으면 <b>살 수 있는 범위 안</b>에서만 통근 조건에 맞춰 순이익 순으로 보여 드려요.</span><button class="linkbtn" style="white-space:nowrap" onclick="RET='commute';setup(1)">자기자본 넣기 →</button></div>`);
   const sz=JB.size||[];
   box.innerHTML=`<div class="sub" style="font-size:.74rem;margin:0 2px 4px">매매가</div><div class="cc" style="margin-bottom:6px">${[[0,'제한 없음'],[6,'6억 이하'],[9,'9억 이하'],[12,'12억 이하'],[15,'15억 이하']].map(([v,t])=>jchip((JB.pmax||0)===v,`JB.pmax=${v};JB.shown=30;jsave();jrun()`,t)).join('')}</div>
    <div class="sub" style="font-size:.74rem;margin:0 2px 4px">면적</div><div class="cc" style="margin-bottom:6px">${Object.keys(SZL).map(k=>jchip(sz.includes(k),`JB.size=(JB.size||[]).includes('${k}')?JB.size.filter(x=>x!=='${k}'):(JB.size||[]).concat('${k}');JB.shown=30;jsave();jrun()`,SZL[k])).join('')}</div>
-   <div class="sub" style="font-size:.74rem;margin:0 2px 4px">정렬</div><div class="cc" style="margin-bottom:6px">${[['up',CF.cash!=null?'5년 순이익 순':'5년 뒤 시세 순'],['t','통근 짧은 순'],['sc','입지 좋은 순']].map(([k,t])=>jchip(JB.sort===k,`JB.sort='${k}';jsave();jrun()`,t)).join('')}</div>`
-   +(L.length?`<div class="sub" style="font-size:.74rem">${L.length.toLocaleString()}개 단지${HC?' · 자기자본 '+eok(CF.cash)+'억으로 살 수 있는 곳':''} · 통근 시간은 10분 단위 대략값(실제와 ±10분 안팎)</div>`+L.slice(0,JB.shown||30).map(row).join('')
+   <div class="sub" style="font-size:.74rem;margin:0 2px 4px">정렬</div><div class="cc" style="margin-bottom:6px">${[['up','5년 순이익 순'],['t','통근 짧은 순'],['sc','입지 좋은 순']].map(([k,t])=>jchip(JB.sort===k,`JB.sort='${k}';jsave();jrun()`,t)).join('')}</div>`
+   +cbar+(L.length?`<div class="sub" style="font-size:.74rem;margin-bottom:6px">${L.length.toLocaleString()}개 단지${HC?' · 자기자본 '+eok(CF.cash)+'억으로 살 수 있는 곳':''} · 통근 시간은 10분 단위 대략값(실제와 ±10분 안팎) · 순이익은 매수 분석과 같은 셈</div>`+L.slice(0,JB.shown||30).map(jrow).join('')
      +(L.length>(JB.shown||30)?`<button class="btn ghost" style="margin-top:8px" onclick="JB.shown=(JB.shown||30)+30;jrun()">30개 단지 더 보기</button>`:'')
     :'<p class="sub">조건에 맞는 단지가 없습니다. 편도 최대 시간을 늘려 보세요.</p>');},30)).catch(()=>{box.innerHTML='<p class="sub">버스 노선 자료를 불러오지 못했습니다. 새로고침해 주세요.</p>';});}
 
