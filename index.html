@@ -220,7 +220,7 @@ details.card[open] .more b:after{content:'접기'}details.card:not([open]) .more
 details.rc{padding:0!important;margin:8px 0}details.rc>summary{display:block;padding:12px 14px 12px!important}.rc.r1{border:2px solid var(--blue)}
 .rc1{display:flex;align-items:center;gap:10px}.rc1 .num{margin-left:auto;font-size:1.25rem;white-space:nowrap;line-height:1.1}
 .rcn{flex:1;min-width:0;line-height:1.3;word-break:keep-all}.rcn span{white-space:nowrap;font-weight:600;color:var(--ink2)}
-.rc3{margin:5px 0 0 40px;font-size:.76rem;color:var(--ink2)}.rc3 b{color:var(--ink)}.rc2{display:flex;justify-content:space-between;gap:8px;margin:4px 0 0 40px;font-size:.78rem;color:var(--ink3)}.rc2 span:last-child{white-space:nowrap}
+.hv{display:flex;background:var(--surface2);border-radius:999px;padding:3px;margin:4px 0 8px}.hv button{flex:1;border:0;background:none;font:inherit;font-size:.8rem;font-weight:700;color:var(--ink3);padding:7px 6px;border-radius:999px;cursor:pointer}.hv button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}.hvn{font-size:.74rem;color:var(--ink2);margin:0 4px 8px}.rc3{margin:5px 0 0 40px;font-size:.76rem;color:var(--ink2)}.rc3 b{color:var(--ink)}.rc2{display:flex;justify-content:space-between;gap:8px;margin:4px 0 0 40px;font-size:.78rem;color:var(--ink3)}.rc2 span:last-child{white-space:nowrap}
 .rc2 em{font-style:normal;color:var(--tlo);border:1px solid var(--tlo);border-radius:999px;padding:0 7px;margin-left:4px;white-space:nowrap}
 .rc .rng1{margin-left:40px}.rleg{font-size:.74rem;color:var(--ink3);margin:2px 2px 8px}
 .rk{flex:0 0 30px;height:30px;border-radius:50%;background:var(--surface2);color:var(--ink2);font-weight:800;display:flex;align-items:center;justify-content:center}.rk.r1{background:var(--blue);color:#fff}
@@ -259,7 +259,7 @@ const DEF={done:false,sort:'money',my:null,regions:[],cash:DT.my.cash,maxc:DT.my
 function load(){try{return Object.assign({},DEF,JSON.parse(localStorage.getItem('v2cfg')||'{}'),{trust:false,keep:true,lens:'bal',sort:null})}catch(e){return Object.assign({},DEF)}}
 function save(){try{if(CF.keep===false){localStorage.removeItem('v2cfg');return;}localStorage.setItem('v2cfg',JSON.stringify(CF))}catch(e){}}
 function hasSaved(){try{const j=JSON.parse(localStorage.getItem('v2cfg')||'null');return !!(j&&j.done&&j.keep!==false);}catch(e){return false;}}
-let CF=load(); CF.my=null; CF.mv=3; if((CF.size||[]).some(x=>'sml'.includes(x))){CF.size=[...new Set(CF.size.flatMap(x=>({s:['49','59'],m:['74','84'],l:['101']})[x]||[x]))];}   // 09-24: 시장은 늘 과거 확률대로(고르는 질문·버튼 없앰). 경우별 숫자는 단지 상세에 참고로만
+let CF=load(); CF.my=null; CF.addU=false; CF.mv=3; if((CF.size||[]).some(x=>'sml'.includes(x))){CF.size=[...new Set(CF.size.flatMap(x=>({s:['49','59'],m:['74','84'],l:['101']})[x]||[x]))];}   // 09-24: 시장은 늘 과거 확률대로(고르는 질문·버튼 없앰). 경우별 숫자는 단지 상세에 참고로만
 // ---------------- ① 질문 ----------------
 const q5=DT.q5||[], Q_TOP=q5[4]||{}, Q_BOT=q5[0]||{};   // top·bottom은 window 예약 이름이라 쓰면 스크립트가 죽는다
 function nAff(K){return R.filter(r=>r.p+r.fee+r.bu+repair(r)-Math.min(r.p*r.ltv,lcap(r.p))<=K).length;}
@@ -1227,7 +1227,6 @@ function setup(i){
  <div class="fr"><span><b>최대 매수 비용</b><em>세금·수리비까지 합친 금액</em></span><label><input id="i_max" type="text" inputmode="decimal" autocomplete="off" placeholder="없음" value="${CF.maxc==null?'':(CF.maxc/1e4)}" oninput="CF.maxc=parseMoney(this.value);count()"><i>억</i></label></div>
  <div class="fl">역까지 거리</div><div id="c_st"></div>
  <div class="fl">단지 크기</div><div id="c_hh"></div>
- <div class="tg" style="border:0;margin-top:6px"><span><b>더 좋은 집에 사는 가치도 넣기</b><br><span class="hint">비싼 집은 이자가 더 들지만, 그만큼 더 좋은 집에 살아요. 그 가치를 '같은 집에 전세로 살 때 드는 돈'으로 셉니다(전세 실거래 × 지역 전환율 어림 — 층·집 상태에 따라 차이 있음). 실거주일 때만.</span></span><label class="sw"><input type="checkbox" ${CF.addU?'checked':''} onchange="CF.addU=this.checked;refresh()"><i></i></label></div>
  <div class="fr"><span><b>수리비</b><em>넣으면 지은 지 20년 넘은 집에만 더해요</em></span><label><input type="number" inputmode="numeric" step="500" placeholder="안 넣음" value="${CF.rpt==null?'':CF.rpt}" oninput="CF.rpt=this.value===''||+this.value<=0?null:+this.value;count();refresh()"><i>만원</i></label></div>
  </div></details>`;
   cta=`<div class="cta"><button class="btn" id="go" onclick="CF.done=true;CF.lens='bal';CF.sort=null;save();result()">결과 보기</button></div>`;}
@@ -1536,10 +1535,10 @@ function rbCard(r){   // 조합설립 이후 정비사업 단지: 순이익은 �
   <div style="margin-top:2px;font-size:.84rem">분담금 ${known?`<b>${r.bl!=null?eok(r.bl)+'~':''}${eok(r.bu)}억</b> <span class="sub">(조합 공고·보도, 확정 아님)</span>`:'<b>발표 전</b> <span class="sub">(모르는 값은 계산하지 않아요)</span>'}</div>
   <div style="margin-top:2px;font-size:.84rem">실제 들어가는 돈 ${known?`약 <b>${eok(r.p+r.bu)}억</b> + 세금`:'매매가 + 분담금(미정) + 세금'}${r.into?` <span class="sub">· 입주 예정 ${r.into}</span>`:''}</div>
   ${moved?'<div class="sub" style="font-size:.76rem;margin-top:3px">이주·착공 단계라 입주 전까지 살거나 전세를 줄 수 없어요.</div>':''}</div>`;}
-function better(r,F){   // 09-28 사용자: 좋은 집을 고르면 돈으로 얼마나 차이 나나 — 이자만 떼어 보이면 '1억 더 쓴다'로 오해(오르는 몫이 대부분 메움) → 남는 돈(중앙값) 차이 그대로
+function better(r,F){   // 09-28 사용자: 처음 보는 사람이 바로 알아듣게 — '1위보다 좋은 동네인데, 5년 뒤 남는 돈은 이만큼 차이'
  if(!TOP1||r===TOP1||CF.cash==null||r.sc==null||TOP1.sc==null||r.sc<TOP1.sc+5)return '';
- const d=(TOP1.F||fin(TOP1)).p5-F.p5, s=Math.abs(d)<500?'거의 같음':`${eok(Math.abs(d))}억 ${d>0?'적음':'많음'}`;
- return `<div class="rc3">1위보다 입지 <b>+${r.sc-TOP1.sc}점</b> · 남는 돈 <b>${s}</b></div>`;}
+ const d=(TOP1.F||fin(TOP1)).p5-F.p5;
+ return `<div class="rc3">1위보다 좋은 동네${Math.abs(d)<500?' · 5년 뒤 남는 돈은 <b>비슷해요</b>':d>0?` · 대신 5년 뒤 <b>${eok(d)}억 덜</b> 남아요`:` · 5년 뒤 남는 돈도 <b>${eok(-d)}억 더</b>`}</div>`;}
 function row(r,k){   // 09-28 사용자: 결과판이 지저분 + 순위마다 모양이 달랐다 → 모든 순위 같은 카드 3줄(이름·큰 숫자 / 지역·가격·심각 배지 하나·손실 확률 / 범위 막대)
  const L=lensKey(), F=r.F||fin(r), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', n=L==='safe'?F.p1:F.p5, T=trustOf(r), hi=T.tags.find(x=>x.hi);
  const big=L==='obj'?`<b class="num" style="color:var(--blue)">입지 ${r.sc}</b>`:`<b class="num ${n>=0?'pos':'neg'}">${sg(n)}</b>`;
@@ -1643,9 +1642,11 @@ function result(){
   ;
  const altH=L==='bal'?`<div class="alts">다른 순서로 보기 <a onclick="CF.lens='safe';CF.sort=null;result()">손실 적은 순</a> · <a onclick="CF.lens='obj';CF.sort=null;result()">입지 점수 순</a></div>`
   :`<div class="alts"><a onclick="CF.lens='bal';CF.sort=null;result()">‹ 순이익 순으로 돌아가기</a></div>`;
+ const hvH=L==='obj'||!CF.useU||CF.cash==null?'':`<div class="hv"><button class="${CF.addU?'':'on'}" onclick="CF.addU=false;result()">남는 돈만 보기</button><button class="${CF.addU?'on':''}" onclick="CF.addU=true;result()">좋은 집에 사는 값도 넣기</button></div>`
+  +(CF.addU?`<div class="hvn">같은 집에 전세로 산다면 5년 동안 들 돈만큼을 이익에 더했어요. 좋은 집일수록 더 커요.</div>`:'');   // 09-28 사용자: '5천만 원 더 모을까, 좋은 곳에 살까' — 한 번에 비교
  N=3; const MD_=midD();
  app.innerHTML=`${DT.alert?`<div class="box warn" style="margin-top:0"><b>주간 과열 경보 발령</b> <span class="sub">과거 과열기에 자주 나타난 신호이며, 적중을 보장하지 않습니다.</span></div>`:''}
- ${cbarH}${V.length?`<div class="hq" style="margin:12px 0 10px">${{bal:'5년 순이익 상위 단지',safe:'5년 손실이 적은 단지',obj:'입지 점수 상위 단지'}[L]}</div>`+altH+qsRow()+`<div class="rleg">${L==='obj'?'숫자 = 입지 점수(동네 시세·역)':L==='safe'?'숫자 = 나쁠 때 5년 순이익':'숫자·점 = 5년 순이익 중앙값 · 대출이자·세금·중개 뺀 값'}</div>`+V.slice(0,3).map((r,k)=>row(r,k+1)).join(''):'<div class="hq">조건에 맞는 단지 없음</div>'+qsRow()}
+ ${cbarH}${V.length?`<div class="hq" style="margin:12px 0 10px">${{bal:'5년 순이익 상위 단지',safe:'5년 손실이 적은 단지',obj:'입지 점수 상위 단지'}[L]}</div>`+altH+hvH+qsRow()+`<div class="rleg">${L==='obj'?'숫자 = 입지 점수(동네 시세·역)':L==='safe'?'숫자 = 나쁠 때 5년 순이익':'숫자·점 = 5년 순이익 중앙값 · 대출이자·세금·중개 뺀 값'}</div>`+V.slice(0,3).map((r,k)=>row(r,k+1)).join(''):'<div class="hq">조건에 맞는 단지 없음</div>'+qsRow()}
  <div id="list"></div><button class="btn ghost" id="more" style="margin-top:12px" onclick="N+=10;draw()">다음 10곳</button>
  <button class="btn ghost" style="margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px" onclick="trust('r')">${ic('shield',18)}이 셈이 빗나간 곳도 봅니다</button>
  ${(RBV.length||MD_)?fold(`조합설립 이후 정비사업 단지 (${RBV.length+(MD_?+MD_.match(/못 한 곳 (\d+)/)[1]:0)}곳)`,`<p class="sub" style="font-size:.8rem;margin:0 0 8px">분담금에 따라 결과가 크게 달라지는데 아직 확정되지 않아 순위에 넣지 않았어요. 사실만 보여 드립니다. 구역지정·안전진단·추진위 같은 초기 단계는 순위에 그대로 있어요.</p>`+RBV.slice(0,30).map(rbCard).join('')+(RBV.length>30?`<p class="sub" style="font-size:.78rem">외 ${RBV.length-30}곳 — 지역을 좁히면 모두 볼 수 있어요.</p>`:'')+MD_):''}
