@@ -1259,7 +1259,7 @@ function dsrMax(){if(CF.inc==null)return 1e12;const r=((CF.irate==null?DT.rate.l
 //   → 수리비 대부분은 되팔 때 돌아오지 않는다. 기본 어림 = 수리 안 된 집을 살 확률 × (올수리 공사비 − 5년 뒤 팔 때 더 받는 몫).
 //   확률: 20년+ 절반, 10~19년 4분의 1(부분 수리), 10년 미만 0. 공사비 전용㎡당 70만 원(공급 평당 약 170만 원, 가정).
 const RPU=70, RQ=a=>a>=20?[.5,.03]:a>=10?[.25,.018]:[0,0];
-function repair(r){if(!r.y||r.as||CF.rpt===0)return 0; const age=YEAR-r.y;   // 새로 짓는 집(완공 경로)은 수리비 없음
+function repair(r){if(!r.y||r.as||CF.rpt===0||(!CF.useU&&!(CF.rpt>0)))return 0; const age=YEAR-r.y;   // 전세 끼고 사 두는 경우(세입자가 삶)는 기본 어림 없음   // 새로 짓는 집(완공 경로)은 수리비 없음
  if(CF.rpt>0)return age>=20?CF.rpt:0;   // 직접 넣은 금액은 지은 지 20년 넘은 집에만
  const [q,pr]=RQ(age); return Math.max(0,Math.round(q*((r.b||59)*RPU-pr*(r.v5||r.p))));}   // 기본 어림(실측 수리 효과 반영)
 function LB(){const k=CF.my;return k==null?['비관','낙관']:k==='up'?['덜 오르면','더 오르면']:k==='dn'?['더 내리면','덜 내리면']:['덜 풀리면','더 풀리면'];}
