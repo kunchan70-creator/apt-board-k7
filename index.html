@@ -1537,10 +1537,10 @@ function rbCard(r){   // 조합설립 이후 정비사업 단지: 순이익은 �
   <div style="margin-top:2px;font-size:.84rem">실제 들어가는 돈 ${known?`약 <b>${eok(r.p+r.bu)}억</b> + 세금`:'매매가 + 분담금(미정) + 세금'}${r.into?` <span class="sub">· 입주 예정 ${r.into}</span>`:''}</div>
   ${moved?'<div class="sub" style="font-size:.76rem;margin-top:3px">이주·착공 단계라 입주 전까지 살거나 전세를 줄 수 없어요.</div>':''}</div>`;}
 function outK(r,F){return F.it+(r.C-r.p-(r.bu||0))+(GRS(F.sv5)-F.sv5);}   // 5년 동안 나가는 돈: 대출이자 + 사고팔 때 세금·중개 + 보유세
-function better(r,F){   // 09-28 사용자: '좋은 집에 살지만 5년간 쓰는 비용은 이만큼' — 1위보다 입지가 좋은 집에만
+function better(r,F){   // 09-28 사용자: 좋은 집을 고르면 돈으로 얼마나 차이 나나 — 이자만 떼어 보이면 '1억 더 쓴다'로 오해(오르는 몫이 대부분 메움) → 남는 돈(중앙값) 차이 그대로
  if(!TOP1||r===TOP1||CF.cash==null||r.sc==null||TOP1.sc==null||r.sc<TOP1.sc+5)return '';
- const T1=TOP1.F||fin(TOP1), d=outK(r,F)-outK(TOP1,T1);
- return `<div class="rc3">1위보다 입지 <b>+${r.sc-TOP1.sc}점</b> · 5년 이자·세금 <b>${eok(Math.abs(d))}억 ${d>=0?'더':'덜'}</b></div>`;}
+ const d=(TOP1.F||fin(TOP1)).p5-F.p5, s=Math.abs(d)<500?'거의 같음':`${eok(Math.abs(d))}억 ${d>0?'적음':'많음'}`;
+ return `<div class="rc3">1위보다 입지 <b>+${r.sc-TOP1.sc}점</b> · 남는 돈 <b>${s}</b></div>`;}
 function row(r,k){   // 09-28 사용자: 결과판이 지저분 + 순위마다 모양이 달랐다 → 모든 순위 같은 카드 3줄(이름·큰 숫자 / 지역·가격·심각 배지 하나·손실 확률 / 범위 막대)
  const L=lensKey(), F=r.F||fin(r), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', n=L==='safe'?F.p1:F.p5, T=trustOf(r), hi=T.tags.find(x=>x.hi);
  const big=L==='obj'?`<b class="num" style="color:var(--blue)">입지 ${r.sc}</b>`:`<b class="num ${n>=0?'pos':'neg'}">${sg(n)}</b>`;
