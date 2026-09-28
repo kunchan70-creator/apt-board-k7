@@ -638,7 +638,10 @@ function detail(a) {
   const up = [], dn = [];
   PARTS.forEach((k, i) => { const d = a.dirs[i]; if (d === '0') return; const t = lvText(k, a); (d === '+' ? up : dn).push(`<li><span class="m">${d === '+' ? '▲' : '▼'}</span><span>${PLAB[k]}${t ? `<small>${esc(t)}</small>` : ''}</span></li>`); });
   const gN = GU_N[a.gu] || 0;
-  const st = a.an.name && a.an.km != null ? `${esc(a.an.name)}역 <b>도보 ${a.an.walk ? '' : '약 '}${Math.max(1, Math.round(WKM(a.an) * 15))}분</b> <small>${a.an.walk ? '도보 경로' : '직선 추정'} ${a.an.km}km</small>` : '-';
+  // 09-28 사용자: '도보 89분'은 뜻이 없다 → 25분까지만 걷기, 그 밖은 km·차로 몇 분(시속 25km 어림)
+  const _wm = a.an.km != null ? Math.max(1, Math.round(WKM(a.an) * 15)) : null;
+  const st = a.an.name && a.an.km != null ? (_wm <= 25 ? `${esc(a.an.name)}역 <b>도보 ${a.an.walk ? '' : '약 '}${_wm}분</b>${_wm <= 10 ? ' <small style="color:var(--blue);font-weight:700">역세권</small>' : ''} <small>${a.an.walk ? '도보 경로' : '직선 추정'} ${a.an.km}km</small>`
+    : `${esc(a.an.name)}역 <b>${(Math.round(WKM(a.an) * 10) / 10).toFixed(1)}km</b> <small>차로 약 ${Math.max(3, Math.round(WKM(a.an) / 25 * 60))}분 · 걸어서 가긴 멀어요</small>`) : '-';
   const xs = a.ex.name && a.ex.km != null && a.ex.km <= 8 ? `${esc(a.ex.name)}역 <small>${a.ex.walk ? '도보 경로' : '직선 환산'} ${a.ex.km}km</small>` : '8km 이내 없음';
   const bands = a.price.map(p => p[0]);
   const bandTxt = bands.length ? bands.map(b => b + '㎡').join(' · ') : '-';
