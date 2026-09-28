@@ -1399,6 +1399,10 @@ function holdT(p,y){const pub=p*.69,b=pub*.43;let t=pub<=90000?(b<=6000?b*.0005:
  t=t*1.2+b*.0014;if(pub>120000)t+=(pub-120000)*.6*.005*1.2;return t*y;}
 function withPrice(r,p2){const fee=acqT(p2,r.b)+brk(p2)+p2*.0015, hold=holdT(p2,r.T||5);   // 전세금은 시장 값이라 그대로(전세가율만 새 가격 기준으로)
  return {...r,p:p2,fee,hold,C:r.C-r.p-r.fee-r.hold+p2+fee+hold,jr:r.jr?r.jr*r.p/p2:r.jr};}
+function ppFb(i){   // 09-29 사용자: 층을 안 넣어도 층별 정상가 세 줄은 바로 보여야
+ const r=R[i], el=document.getElementById('ppfb-'+i); if(!r||!el||el.dataset.done)return; el.dataset.done=1;
+ ownLoad(r.gu).then(D=>{const B=((D[r.no]||{}).b||{})[String(r.b)], I=flInfo(B,r); if(!I){el.innerHTML='<div class="sub" style="font-size:.76rem">층별 정상가: 최근 실거래가 적어 못 셈해요</div>';return;}
+  el.innerHTML=`<div style="font-size:.86rem;margin-bottom:6px"><b>층별 정상가</b> <span class="sub" style="font-size:.74rem">(최근 ${I.f.m}개월 ${I.f.n}건 · 지금 시세 ${eok(r.p)}억 기준)</span></div><div style="display:flex;gap:6px;flex-wrap:wrap">${I.bands.map(b=>`<div style="flex:1;min-width:84px;padding:8px 10px;border-radius:12px;background:var(--surface2)"><div class="sub" style="font-size:.72rem">${b.nm} <span style="opacity:.8">${b.rg}</span></div><b class="num" style="font-size:1.05rem">${b.p?eok(b.p)+'억':'-'}</b><div class="sub" style="font-size:.7rem">${b.n?b.n+'건':'거래 적음'}</div></div>`).join('')}</div><div class="sub" style="font-size:.74rem;margin-top:4px">급매 선 = 층대 정상가의 ${((1-I.f.sp[0])*100).toFixed(1)}% 아래 · 층과 가격을 넣으면 그 호수 기준으로 판정해요</div>`;});}
 function ppFl(i,r,v){   // 09-29 층별 정상가(own_data.flband) — 단지 자료를 받아 층·가격 판정
  const fl=parseFloat((document.getElementById('ppf-'+i)||{}).value); if(!(fl>=1))return;
  ownLoad(r.gu).then(D=>{const B=((D[r.no]||{}).b||{})[String(r.b)], el=document.getElementById('ppfl-'+i); if(!el)return;
@@ -1615,7 +1619,7 @@ function detail(r){   // 09-27 사용자: 이것만 보고 매수를 계획할 �
    +kv('내 돈','<b>'+eok(F.own)+'억</b>'+(CF.cash!=null?(F.ok?(F.left>=50?' <span class="sub">· 남는 현금 '+eok(F.left)+'억</span>':''):' <span class="neg">· '+eok(F.own-CF.cash)+'억 부족</span>'):''))
    +(CF.inc==null&&F.L>0?'<div class="sub" style="font-size:.74rem;margin-top:2px">연소득을 넣으면 은행 한도(DSR)까지 맞춰 계산합니다.</div>':''));}
  h+=sec('5년 뒤 (추정)',kv('예상 시세','<b>'+eok(GRS(F.sv5))+'억</b> <span class="sub">(비관 '+eok(GRS(F.sv1))+' ~ 낙관 '+eok(GRS(F.sv9))+'억)</span>')+whyUp(r)+howNum(r,F)+(CF.cash!=null?invBox(r):''));   // 09-28 카드 통일 때 빠졌던 '이 집 대신 가진 돈을 굴린다면 연 N%' 되살림
- h+=sec('이 가격에 산다면',`<div class="fr" style="border:0;padding-top:4px"><span><b>매수 예정가</b><em>계약하려는 가격을 넣으면 다시 셈해요</em></span><label><input type="text" inputmode="decimal" autocomplete="off" placeholder="${(r.p/1e4).toFixed(2)}" oninput="ppCalc(${r._i},this)" id="ppv-${r._i}"><i>억</i></label></div><div class="fr" style="border:0;padding-top:0"><span><b>층</b><em>층을 넣으면 그 층대 정상가와 급매 선을 같이 봐요</em></span><label><input type="text" inputmode="numeric" autocomplete="off" placeholder="예: 12" id="ppf-${r._i}" oninput="ppCalc(${r._i},document.getElementById('ppv-${r._i}'))"><i>층</i></label></div><div id="pp-${r._i}"></div>`);
+ h+=sec('이 가격에 산다면',`<div id="ppfb-${r._i}" style="margin-bottom:8px"></div><div class="fr" style="border:0;padding-top:4px"><span><b>매수 예정가</b><em>계약하려는 가격을 넣으면 다시 셈해요</em></span><label><input type="text" inputmode="decimal" autocomplete="off" placeholder="${(r.p/1e4).toFixed(2)}" oninput="ppCalc(${r._i},this)" id="ppv-${r._i}"><i>억</i></label></div><div class="fr" style="border:0;padding-top:0"><span><b>층</b><em>층을 넣으면 그 층대 정상가와 급매 선을 같이 봐요</em></span><label><input type="text" inputmode="numeric" autocomplete="off" placeholder="예: 12" id="ppf-${r._i}" oninput="ppCalc(${r._i},document.getElementById('ppv-${r._i}'))"><i>층</i></label></div><div id="pp-${r._i}"></div>`);
  if(trustOf(r).tags.length)h+=tbox(r);
  let more='';
  more+=fold('입지 '+r.sc+' · 단지 '+(r.bs??'-')+' — 점수 근거',why(r));
@@ -1659,7 +1663,7 @@ function mTxt(v){return v>=1e4?(Math.round(v/1e3)/10)+'억':Math.round(v).toLoca
 function row(r,k){   // 09-28 사용자: 결과판이 지저분 + 순위마다 모양이 달랐다 → 모든 순위 같은 카드 3줄(이름·큰 숫자 / 지역·가격·심각 배지 하나·손실 확률 / 범위 막대)
  const L=lensKey(), F=r.F||fin(r), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', n=F.p5, T=trustOf(r), hi=T.tags.find(x=>x.hi);
  const big=`<b class="num ${n>=0?'pos':'neg'}">${sg(n)}</b>`;   // 어느 순서로 보든 큰 숫자는 5년 순이익(09-28)
- return `<details class="card rc${k===1?' r1':''}"><summary>
+ return `<details class="card rc${k===1?' r1':''}" ontoggle="if(this.open)ppFb(${r._i})"><summary>
  <div class="rc1"><span class="rk${k===1?' r1':''}">${k}</span><b class="rcn">${r.n} <span>${r.b}㎡</span></b><span class="bn"><i>5년 순이익</i>${big}</span></div>
  <div class="rc2"><span>${r.gu}${CF.cash!=null&&CF.useU?` · ${monthly(r,F)<1?'대출 없음':`월 이자 <b style="color:var(--ink)">${mTxt(monthly(r,F))}</b>`}`:''}${hi?` <em>${hi.t}</em>`:''}</span><span></span></div>
  <div class="rc3">시세 ${eok(r.p)}억${r.bu?` + 분담금 ${eok(r.bu)}억`:''} → 5년 뒤 <b>${eok(GRS(F.sv5))}억</b></div>
