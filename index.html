@@ -644,10 +644,10 @@ function origin(entry){
  const L=[['집은 대부분에게<br>생애 가장 큰 거래입니다.','font-size:clamp(1.45rem,6.4vw,1.8rem);font-weight:800;line-height:1.4;color:var(--ink)'],
   ['모은 자기자본에 대출까지 더하는 결정.<br>그런데 판단의 근거는 늘<br><b style="color:var(--ink)">“주변에서 그러더라”</b>였습니다.','font-size:1.02rem;line-height:1.75;color:var(--ink2)'],
   ['그래서 국토교통부 실거래 20년 치로<br>직접 셈해 보기로 했습니다.','font-size:1.02rem;line-height:1.75;color:var(--ink2)'],
-  ['집값을 맞히지는 않습니다.<br>확률로 보여 드립니다.','font-size:1.15rem;font-weight:800;line-height:1.6;color:var(--blue)']];
+  ['집값을 맞히지는 않습니다.<br>손해 볼 확률을 %로 보여 드립니다.','font-size:1.15rem;font-weight:800;line-height:1.6;color:var(--blue)']];
  let t=500;const d=L.map(([h])=>{const v=t;t+=750+h.replace(/<[^>]+>/g,'').length*55;return v;});   // 글자 수만큼 머문 뒤 다음 줄
  app.innerHTML=`<div id="opw" onclick="document.querySelectorAll('#opw .op').forEach(e=>e.style.animationDelay='0ms')" style="min-height:70vh;display:flex;flex-direction:column;justify-content:center;padding:10px 2px 0">
-  ${entry?'':HOME}<div class="op" style="font-size:.8rem;font-weight:700;color:var(--blue);margin-bottom:18px;${D_(100)}">집셈을 만든 이유</div>
+  ${entry?'':HOME}
   ${L.map(([h,st],j)=>`<div class="op" style="${st};margin:0 0 22px;${D_(d[j])}">${h}</div>`).join('')}
   <div class="op" style="margin-top:8px;${D_(t)}"><button class="btn" onclick="philo(${entry?1:0})">집셈을 보기 전에 ›</button>
    <button class="btn ghost" style="margin-top:8px" onclick="${entry?nextStep():'hub()'}">${entry?'바로 알아보기 ›':'홈으로'}</button>${entry?noAgain('jsNoOrigin'):''}</div></div>`;}
@@ -1549,7 +1549,7 @@ function row(r,k){   // 09-28 사용자: 결과판이 지저분 + 순위마다 �
 let RBV=[], N=10, V=[], RS={lo:-1,hi:1};
 function rng(F,lab){   // 막대 = 순이익 범위(비관~낙관), 큰 숫자와 같은 축
  const lo=RS.lo, hi=RS.hi, X=v=>Math.max(0,Math.min(100,(v-lo)/(hi-lo)*100)), z=X(0), a=X(F.p1), b=X(F.p9), m=X(F.p5), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v));
- return `<div style="flex:0 0 100%;margin-top:${lab?10:6}px">${lab?`<div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--ink3);margin-bottom:3px"><span>비관 <b style="color:${F.p1<0?'var(--red)':'var(--ink2)'}">${sg(F.p1)}</b></span><span>${lab===2?'10번 중 8번은 이 사이':''}</span><span>낙관 <b style="color:var(--ink2)">${sg(F.p9)}</b></span></div>`:''}
+ return `<div style="flex:0 0 100%;margin-top:${lab?10:6}px">${lab?`<div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--ink3);margin-bottom:3px"><span>비관 <b style="color:${F.p1<0?'var(--red)':'var(--ink2)'}">${sg(F.p1)}</b></span><span style="opacity:.8">${lab===2?'10번 중 8번은 이 사이':'10번 중 8번'}</span><span>낙관 <b style="color:var(--ink2)">${sg(F.p9)}</b></span></div>`:''}
  <div style="position:relative;height:${lab?10:6}px;border-radius:6px;background:var(--line2)">
   <i style="position:absolute;top:0;bottom:0;left:${a}%;width:${Math.max(1,b-a)}%;border-radius:6px;background:linear-gradient(90deg,${F.p1<0?'var(--red) 0 '+Math.max(0,Math.min(100,(z-a)/Math.max(.01,b-a)*100))+'%,':''}var(--band) ${F.p1<0?Math.max(0,Math.min(100,(z-a)/Math.max(.01,b-a)*100)):0}%,var(--band))"></i>
   <i style="position:absolute;top:-3px;bottom:-3px;left:${z}%;width:1.5px;background:var(--ink3);opacity:.6"></i>
