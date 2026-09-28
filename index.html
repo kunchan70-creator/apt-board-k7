@@ -905,31 +905,74 @@ function ownList(){
  if(!q){el.innerHTML='<p class="sub" style="font-size:.8rem">예: 원천주공, 광교, 매교역</p>';return;}
  const L=CPX.filter(c=>nz(c.n+' '+(c.al2||'')+' '+c.gu).includes(q)).slice(0,30);
  el.innerHTML=L.length?L.map(c=>`<div class="card" onclick="rcard('${c.k}','own')" style="cursor:pointer;padding:12px 14px;margin:8px 0"><b style="display:block;word-break:keep-all">${c.n}</b><span class="sub" style="font-size:.76rem">${c.gu}${c.y?' · '+c.y+'년':''}${c.hh?' · '+c.hh.toLocaleString()+'세대':''}</span></div>`).join(''):'<p class="sub">찾는 단지가 없어요</p>';}
+/* 09-28 사용자: 단지 분석이 너무 별거 없다 — 집 가진 사람의 욕구·고민(지금 얼마·올랐나·고점 대비·내 대출과 금리·순위와 입지·아이 학교와 학원·팔고 옮기면·전세 놓으면·세금·재건축)을 한 화면에서.
+   무거운 자료(최근 실거래·1년 변화·고점·학원 수)는 구별 파일 own/<구>.json 을 열 때만 받는다. */
+let OWN={loan:null,rate:null}, OWNF={}, OWNI=null;
+try{const s=JSON.parse(localStorage.getItem('jsOwn')||'null');if(s)OWN=s;}catch(e){}
+async function ownLoad(gu){try{if(!OWNI)OWNI=await fetch('own/index.json').then(x=>x.json());const f=OWNI.idx[gu];if(!f)return {};if(!OWNF[f])OWNF[f]=await fetch('own/'+f+'.json').then(x=>x.json());return OWNF[f];}catch(e){return {};}}
+const YMt=t=>Math.floor(t/12)+'.'+String(t%12+1).padStart(2,'0');
 function rcard(k,back,bb){
  const c=(window.CPXK||{})[k]; if(!c)return; TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
  const rows=c.rows.slice().sort((a,b)=>a.b-b.b), r=(bb&&rows.find(x=>x.b===bb))||rows.slice().sort((x,y)=>Math.abs(x.b-84)-Math.abs(y.b-84))[0];
- const F=fin(r), s1=GRS(F.sv1), s5=GRS(F.sv5), s9=GRS(F.sv9), sch=(DT.sch||{})[c.no], age=r.y?YEAR-r.y:null;
- const kv=(a,b)=>`<div class="kv"><span class="k">${a}</span><span class="v">${b}</span></div>`, box=(h,b)=>`<div style="margin-top:12px;padding:14px;border-radius:16px;background:var(--surface2)"><div class="sub" style="font-size:.76rem;font-weight:800;margin-bottom:6px">${h}</div>${b}</div>`;
- const T=trustOf(r), nb=r.q&&r.q[0]?null:null, loc=(r.nb&&r.nb[0]!=null)?r.nb[0]:null;
  try{history.replaceState(null,'','#c='+encodeURIComponent(k));}catch(e){}
- app.innerHTML=`<button class="linkbtn" style="padding:0;margin:0 0 8px;font-size:.84rem;color:var(--ink3)" onclick="history.replaceState(null,'',location.pathname);${back==='own'?'ownFind()':'board()'}">‹ 뒤로</button>
+ app.innerHTML=`<div id="own">${ownHTML(c,r,k,back,null)}</div>`;
+ ownLoad(c.gu).then(D=>{const el=document.getElementById('own');if(el&&CPXK[k]===c)el.innerHTML=ownHTML(c,r,k,back,D[c.no]||{});ownCalc(c.k,r.b);});}
+function ownHTML(c,r,k,back,X){
+ const F=fin(r), s1=GRS(F.sv1), s5=GRS(F.sv5), s9=GRS(F.sv9), sch=(DT.sch||{})[c.no], age=r.y?YEAR-r.y:null, rows=c.rows.slice().sort((a,b)=>a.b-b.b);
+ const kv=(a,b)=>`<div class="kv"><span class="k">${a}</span><span class="v">${b}</span></div>`, box=(h,b,id)=>`<div ${id?`id="${id}"`:''} style="margin-top:12px;padding:14px;border-radius:16px;background:var(--surface2)"><div class="sub" style="font-size:.76rem;font-weight:800;margin-bottom:6px">${h}</div>${b}</div>`;
+ const B=X&&X.b?X.b[String(r.b)]:null, pc=v=>(v>=0?'+':'')+v+'%', ld='<span class="sub" style="font-size:.76rem">불러오는 중…</span>';
+ const T=trustOf(r), loc=(r.nb&&r.nb[0]!=null)?r.nb[0]:null, N=CPX.length, tpp=Math.max(1,Math.round(c.ra/N*100)), gtop=Math.max(1,Math.round(c.rg/c.ng*100));
+ const jd=r.jr?Math.round(r.p*r.jr/100):null;
+ /* ① 지금 얼마 */
+ const trs=B&&B.tr?B.tr.slice(0,6).map(x=>`<div style="display:flex;justify-content:space-between;font-size:.8rem;padding:3px 0"><span class="sub">${YMt(x[0])} · ${x[1]}층</span><b>${eok(x[2])}억</b></div>`).join(''):'';
+ const pk=B&&B.pk?Math.round((r.p/B.pk[0]-1)*100):null;
+ const now=box('지금 우리 집 시세',`<div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><b class="num" style="font-size:2rem">${eok(r.p)}억</b><span class="sub" style="font-size:.8rem">전용 ${r.b}㎡대 · ${r.n3>=3?'최근 3개월 실거래 '+r.n3+'건':'최근 1년 실거래 기준'}</span></div>`
+  +(X?`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">${B&&B.y1!=null?`<span class="tag gray">1년 전보다 <b>${pc(B.y1)}</b></span>`:''}${pk!=null?`<span class="tag gray">2021~22 고점(${YMt(B.pk[1])} ${eok(B.pk[0])}억)의 <b>${100+pk}%</b></span>`:''}</div>`
+    +(trs?`<div style="margin-top:10px"><div class="sub" style="font-size:.72rem;font-weight:700">최근 실거래</div>${trs}</div>`:''):ld));
+ /* ② 계속 살면 5년 뒤 */
+ const fut=r.as?box('계속 살면 5년 뒤','<div class="sub" style="font-size:.84rem">입주권 단계라 분담금을 뺀 새 아파트 값으로 따로 셉니다.</div>')
+  :box('계속 살면 5년 뒤 시세',`<div style="font-size:.95rem">지금 ${eok(r.p)}억 → 5년 뒤 <b style="font-size:1.25rem">${eok(s5)}억</b> <span class="sub" style="font-size:.74rem">중앙값</span></div>${pbar(r.p,s1,s5,s9)}<div class="sub" style="font-size:.72rem">막대 아래 = 10번 중 1번은 이보다 낮음 / 높음 · 과거 실거래 20년으로 셈한 범위</div>`);
+ /* ③ 내 대출·금리 */
+ const inp=(id,ph,v,u)=>`<label style="flex:1;display:flex;align-items:center;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px"><input id="${id}" type="number" inputmode="decimal" step="0.1" placeholder="${ph}" value="${v==null?'':v}" oninput="ownCalc('${c.k}',${r.b})" style="width:100%;border:0;background:none;font:inherit;color:var(--ink)"><span class="sub">${u}</span></label>`;
+ const loan=box('내 대출로 계산해 보기',`<div style="display:flex;gap:8px">${inp('owL','남은 대출',OWN.loan,'억')}${inp('owR',DT.rate.loan,OWN.rate,'%')}</div><div id="owCalc" style="margin-top:8px"></div>`);
+ /* ④ 입지와 순위 */
+ const lc=box('우리 단지 입지와 순위',kv('입지 좋은 순',`${c.gu} ${c.ng}곳 중 <b>${c.rg}번째</b><br><span class="sub">서울·경기·인천 ${N.toLocaleString()}곳 중 ${c.ra.toLocaleString()}번째 · 주변 시세와 역 접근성 기준</span>`)
+   +(loc!=null?kv('동네 시세',`주변 단지들이 받는 값이 서울·경기·인천 평균보다 <b>${loc>=0?'+':''}${Math.round(loc)}%</b>`):'')
+   +kv('가까운 역',r.ka==null?'-':(r.sn?r.sn+'역 · ':'')+WTXT(r))
+   +(r.mk!=null?kv('이 단지만의 몫',`동네·역·연식·규모가 같은 곳보다 ㎡당 <b>${r.mk>=0?'+':''}${Math.round(r.mk)}%</b> ${r.mk>=0?'더':'덜'} 받아요 <span class="sub">(브랜드·조망·층·학군·기대 등이 섞인 몫)</span>`):'')
+   +kv('준공 · 규모',[r.y?r.y+'년 ('+age+'년차)':null,r.hh?r.hh.toLocaleString()+'세대':null,r.hi?'최고 '+r.hi+'층':null].filter(Boolean).join(' · ')||'-')
+   +(c.dd!=null?kv('지난 하락기',`2021 고점 → 2022~23 저점 실거래 <b>${c.dd>0?'+':''}${Math.round(c.dd)}%</b>`):''));
+ /* ⑤ 아이 키우기 */
+ const kid=(sch||(X&&X.hg!=null))?box('아이 키우기',(sch?kv('학교',schTxt(sch,1)):'')+(X&&X.hg!=null?kv('학원',`반경 1km 안 <b>${X.hg}곳</b> <span class="sub">(교육청 등록 학원·교습소)</span>`):(X?'':kv('학원',ld)))+'<div class="sub" style="font-size:.7rem;margin-top:4px">배정은 해마다 바뀔 수 있어요 · 교육청 학구도 기준</div>'):'';
+ /* ⑥ 팔고 옮기면 */
+ const mv=box('팔고 옮기면 어떨까?',`<div id="owMove" class="sub" style="font-size:.8rem">대출을 넣으면 같은 기준으로 비교해요</div><button class="btn ghost" style="margin-top:8px" onclick="MV.k='${k}';MV.b=${r.b};MV.loan=OWN.loan!=null?OWN.loan*1e4:null;move();if(MV.loan!=null)mvRun()">갈아타기 자세히 계산</button>`);
+ /* ⑦ 전세·세금 */
+ const tax=box('전세 놓거나 팔 때',(jd?kv('전세 놓으면',`약 <b>${eok(jd)}억</b> <span class="sub">(전세가율 ${r.jr}%, 최근 전세 실거래)</span>`):'')
+   +(r.hold?kv('보유세',`연 약 <b>${Math.round(r.hold/Math.max(1,r.T)).toLocaleString()}만 원</b> <span class="sub">(재산세·종부세 어림)</span>`):'')
+   +kv('팔 때 중개보수',`약 ${Math.round(r.p*.004).toLocaleString()}만 원 <span class="sub">(0.4% 어림)</span>`)
+   +'<div class="sub" style="font-size:.7rem;margin-top:4px">1주택 양도세 비과세는 2년 보유(조정대상지역은 2년 거주) 요건 · 12억 넘는 부분은 과세</div>');
+ return `<button class="linkbtn" style="padding:0;margin:0 0 8px;font-size:.84rem;color:var(--ink3)" onclick="history.replaceState(null,'',location.pathname);${back==='own'?'ownFind()':'board()'}">‹ 뒤로</button>
  <div style="font-size:.78rem;font-weight:800;color:var(--blue)">단지 분석</div>
  <div style="font-size:1.35rem;font-weight:800;margin:4px 0 2px;word-break:keep-all">${c.n}</div><div class="sub" style="font-size:.82rem">${c.gu}${c.y?' · '+c.y+'년':''}${c.hh?' · '+c.hh.toLocaleString()+'세대':''}</div>
  ${rows.length>1?`<div class="cc" style="margin:10px 0 0">${rows.map(x=>`<button class="${x===r?'on':''}" onclick="rcard('${k}','${back||''}',${x.b})">${x.b}㎡</button>`).join('')}</div>`:''}
- ${box('지금 우리 집 시세',`<div style="display:flex;align-items:baseline;gap:8px"><b class="num" style="font-size:2rem">${eok(r.p)}억</b><span class="sub" style="font-size:.8rem">전용 ${r.b}㎡대 · ${r.n3>=3?'최근 3개월 실거래 '+r.n3+'건':'최근 1년 실거래 기준'}</span></div>`)}
- ${r.as?box('계속 살면 5년 뒤','<div class="sub" style="font-size:.84rem">입주권 단계라 분담금을 뺀 새 아파트 값으로 따로 셉니다. 매수 분석의 상세에서 확인하세요.</div>')
-  :box('계속 살면 5년 뒤 시세',`<div style="font-size:.95rem">지금 ${eok(r.p)}억 → 5년 뒤 <b style="font-size:1.25rem">${eok(s5)}억</b> <span class="sub" style="font-size:.74rem">중앙값</span></div>${pbar(r.p,s1,s5,s9)}<div class="sub" style="font-size:.72rem">막대 아래 = 10번 중 1번은 이보다 낮음 / 높음 · 과거 실거래 20년으로 셈한 범위</div>`)}
- ${box('우리 단지',kv('가까운 역',r.ka==null?'-':(r.sn?r.sn+'역 · ':'')+WTXT(r))
-   +(sch?kv('학교',schTxt(sch,1)):'')
-   +kv('준공 · 규모',[r.y?r.y+'년 ('+age+'년차)':null,r.hh?r.hh.toLocaleString()+'세대':null,r.hi?'최고 '+r.hi+'층':null].filter(Boolean).join(' · ')||'-')
-   +(loc!=null?kv('동네 시세',`주변 단지들이 받는 값이 서울·경기·인천 평균보다 <b>${loc>=0?'+':''}${Math.round(loc)}%</b>`):'')
-   +(c.dd!=null?kv('지난 하락기',`2021 고점 → 2022~23 저점 실거래 <b>${c.dd>0?'+':''}${Math.round(c.dd)}%</b>`):''))}
- ${c.rb?box('정비사업 분담금',bkTxt(c)):''}
- ${T.tags.length?tbox(r):''}
- <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
-  <button class="btn" onclick="MV.k='${k}';MV.b=${r.b};move()">팔고 옮기면 어떨까? 갈아타기 계산</button>
-  <div style="display:flex;gap:8px"><button class="btn ghost" style="flex:1" onclick="CM=['${k}',null];cmp()">다른 단지와 비교</button><button class="btn ghost" style="flex:1" onclick="navigator.clipboard&&navigator.clipboard.writeText(location.href).then(()=>this.textContent='링크 복사됨')">링크 복사</button></div></div>
+ ${now}${fut}${loan}${lc}${kid}${mv}${tax}${c.rb?box('정비사업 분담금',bkTxt(c)):''}${T.tags.length?tbox(r):''}
+ <div style="display:flex;gap:8px;margin-top:14px"><button class="btn ghost" style="flex:1" onclick="CM=['${k}',null];cmp()">다른 단지와 비교</button><button class="btn ghost" style="flex:1" onclick="navigator.clipboard&&navigator.clipboard.writeText(location.href).then(()=>this.textContent='링크 복사됨')">링크 복사</button></div>
  <div class="sub" style="font-size:.7rem;margin-top:12px">${PRIN}<br>참고용 산출치이며, 투자 권유가 아닙니다.</div>${missLink('b')}`;}
+function ownCalc(k,b){   /* 내 대출·금리 → 지금 내 몫, 월 이자, 금리 변화, 5년 뒤 늘어나는 재산, 팔고 옮기면 */
+ const c=CPXK[k]; if(!c)return; const r=c.rows.find(x=>x.b===b)||c.rows[0], el=document.getElementById('owCalc'); if(!el)return;
+ const lv=$('#owL')?$('#owL').value:'', rv=$('#owR')?$('#owR').value:''; OWN.loan=lv===''?null:+lv; OWN.rate=rv===''?null:+rv; try{localStorage.setItem('jsOwn',JSON.stringify(OWN));}catch(e){}
+ const L=(OWN.loan||0)*1e4, i=(OWN.rate!=null?OWN.rate:DT.rate.loan)/100, T=r.T||5, F=fin(r), s1=GRS(F.sv1), s5=GRS(F.sv5), s9=GRS(F.sv9), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', mm=v=>Math.round(v).toLocaleString()+'만 원';
+ const kc=CF.useU; CF.useU=true; const rp=repair(r); CF.useU=kc; const hold=r.hold||0, it=L*i*T, g=v=>v-r.p-hold-it-rp;
+ const mo=L*i/12, up=L*(i+.01)/12-mo, dn=mo-L*Math.max(0,i-.005)/12;
+ el.innerHTML=`<div class="kv"><span class="k">지금 내 몫</span><span class="v"><b>${eok(r.p-L)}억</b> <span class="sub">(시세 − 대출)</span></span></div>`
+  +(L>0?`<div class="kv"><span class="k">월 이자</span><span class="v"><b>${mm(mo)}</b> <span class="sub">(원금 빼고, 연 ${(i*100).toFixed(2)}%)</span></span></div>
+   <div class="kv"><span class="k">금리가 바뀌면</span><span class="v">1%p 오르면 월 <b style="color:var(--red)">+${mm(up)}</b><br>0.5%p 내리면 월 <b style="color:var(--blue)">−${mm(dn)}</b> <span class="sub">(대출 갈아타기로 5년 약 ${mm(dn*60)} 덜 냄)</span></span></div>`:'')
+  +(r.as?'':`<div class="kv"><span class="k">5년 동안 늘어나는 내 재산</span><span class="v"><b class="${g(s5)>=0?'pos':'neg'}">${sg(g(s5))}</b> <span class="sub">중앙값</span><br><span class="sub">나쁠 때 ${sg(g(s1))} · 좋을 때 ${sg(g(s9))} · 이자·보유세·수리비 뺀 값</span></span></div>`);
+ const mvEl=document.getElementById('owMove'); if(!mvEl||r.as)return;
+ const K=Math.round(r.p*(1-.004)-L), keep=g(s5), kcash=CF.cash, ku=CF.useU; CF.cash=K; CF.useU=true;
+ const best=R.filter(x=>x.no!==c.no&&!x.as).filter(ok).map(x=>(x.F=fin(x),x)).filter(x=>x.F.ok).map(x=>({x,m:x.F.p5-Math.round(r.p*.004),w:x.F.p1-Math.round(r.p*.004)})).sort((a,b)=>(b.m+b.w)-(a.m+a.w))[0];
+ CF.cash=kcash; CF.useU=ku; R.forEach(x=>x.F=null);
+ mvEl.innerHTML=`팔면 손에 쥐는 돈 <b>${eok(K)}억</b> <span class="sub">(대출·중개보수 뺀 값)</span>`+(best?`<br>계속 살면 5년 <b>${sg(keep)}</b> · 그 돈으로 옮기면 가장 나은 곳 <b>${best.x.n} ${best.x.b}㎡</b> <b>${sg(best.m)}</b> <span class="sub">(지금 설정한 지역·면적, 같은 기준)</span>`:'');}
 // ---------------- 두 단지 비교 ----------------
 let CM=[null,null];
 function cmp(){
