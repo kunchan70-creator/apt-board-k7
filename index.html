@@ -854,7 +854,7 @@ function blist(){
   :L_==='def'?`<span style="display:block;font-size:.66rem;color:var(--ink3);font-weight:700">2022 하락기 변동</span><b class="num" style="font-size:1.15rem;color:${c.dd>-10?'var(--blue)':c.dd<-25?'var(--red)':'var(--ink)'}">${c.dd>0?'+':''}${Math.round(c.dd)}%</b><span class="sub" style="display:block;font-size:.7rem">지금 ${eok(r.p)}억</span>`
   :L_==='rb'?bkTxt(c,1)
   :`<span style="display:block;font-size:.66rem;color:var(--ink3);font-weight:700">입지 점수</span><b class="num" style="font-size:1.2rem;color:var(--blue)">${c.sc}</b><span class="sub" style="display:block;font-size:.7rem">${r.b}㎡ ${eok(r.p)}억</span>`;
- const row=x=>{const {c,r,k}=x;return `<div class="card" onclick="rcard('${c.k}')" style="cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 14px;margin:8px 0">
+ const rowOld=x=>{const {c,r,k}=x;return `<div class="card" onclick="rcard('${c.k}')" style="cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 14px;margin:8px 0">
   <span class="rk${k===1&&!q?' r1':''}" style="flex:0 0 auto">${k}</span>
   <span style="flex:1;min-width:0"><b style="display:block;line-height:1.3;word-break:keep-all">${c.n}${up||L_==='rb'?` <span style="white-space:nowrap;font-weight:600;color:var(--ink3)">${(L_==='rb'?c.rb:r).b}㎡</span>`:''}</b>
    <span class="sub" style="font-size:.76rem">${c.gu}${c.y?' · '+c.y+'년':''}${c.hh?' · '+c.hh.toLocaleString()+'세대':''}</span>
@@ -862,8 +862,16 @@ function blist(){
    ${L_==='obj'?`<span class="sub" style="display:block;font-size:.74rem">${STXT(r)}</span>`:''}
    ${q&&L_==='obj'?`<span class="sub" style="display:block;font-size:.74rem;color:var(--blue)">입지 좋은 순 ${c.ra.toLocaleString()}번째 · ${c.gu.split(' ').pop()} 안 ${c.rg}번째</span>`:''}</span>
   <span style="text-align:right;white-space:nowrap">${right(x)}</span></div>`;};
- $('#blist').innerHTML=(L.length?`<div class="sub" style="font-size:.74rem">${L.length.toLocaleString()}개 단지</div>`+L.slice(0,BF.n).map(row).join(''):'<p class="sub">조건에 맞는 단지 없음</p>')
-  +(L.length>BF.n?`<button class="btn ghost" style="margin-top:8px" onclick="BF.n+=30;blist()">30개 단지 더 보기</button>`:'');}
+ // 09-29 사용자: 입지·5년 뒤 시세·하락기 순위도 매수 분석과 같은 카드(row) — 큰 숫자만 그 순위의 값. 순이익 막대는 전액 자기 돈 기준(내 조건과 무관한 판이라 CF.cash를 잠깐 비움)
+ const rowB=x=>{const {c,r,k}=x; if(L_==='rb')return rowOld(x);
+  const o=up?(()=>{const F=r.F||(r.F=fin(r)),s1=GRS(F.sv1),s5=GRS(F.sv5),s9=GRS(F.sv9),lo=Math.round(belowP(s1,s5,s9,r.p)*100);return {lbl:'5년 뒤 시세',big:`<b class="num">${eok(s5)}억</b>`,l3:`지금 ${eok(r.p)}억 → 5년 뒤 <b>${eok(s5)}억</b> · 지금보다 낮을 확률 ${lo}%`};})()
+   :L_==='def'?{lbl:'2022 하락기 변동',big:`<b class="num" style="color:${c.dd>-10?'var(--blue)':c.dd<-25?'var(--red)':'var(--ink)'}">${c.dd>0?'+':''}${Math.round(c.dd)}%</b>`}
+   :{lbl:'입지 점수',big:`<b class="num" style="color:var(--blue)">${c.sc}</b>`,l2:STXT(r)};
+  const ex=q&&L_==='obj'?`<div class="rc2"><span style="color:var(--blue);font-weight:700">입지 좋은 순 ${c.ra.toLocaleString()}번째 · ${c.gu.split(' ').pop()} 안 ${c.rg}번째</span><span></span></div>`:'';
+  return row(r,k,ex,o);};
+ const kc=CF.cash, ku=CF.useU; CF.cash=null; CF.useU=true; R.forEach(r=>r.F=null);
+ try{$('#blist').innerHTML=(L.length?`<div class="sub" style="font-size:.74rem">${L.length.toLocaleString()}개 단지 · 누르면 자세히</div>`+L.slice(0,BF.n).map(rowB).join(''):'<p class="sub">조건에 맞는 단지 없음</p>')
+  +(L.length>BF.n?`<button class="btn ghost" style="margin-top:8px" onclick="BF.n+=30;blist()">30개 단지 더 보기</button>`:'');}finally{CF.cash=kc;CF.useU=ku;}}
 
 // 지역 불확실성(09-25): 집셈 5년 모델은 지역 방향에 베팅하지 않는다(과거 기간마다 뒤집힘). 대신 그 지역에서 과거 예측이 빗나간 폭과 최근 1년 시세를 보여 준다.
 function gyof(gu){const Y=DT.gyoy||{},G=Y.g||{};return G[gu]!=null?G[gu]:G['인천 '+gu]!=null?G['인천 '+gu]:G[(gu||'').split(' ')[0]];}
@@ -1686,15 +1694,17 @@ function rbCard(r){   // 조합설립 이후 정비사업 단지: 순이익은 �
   ${moved?'<div class="sub" style="font-size:.76rem;margin-top:3px">이주·착공 단계라 입주 전까지 살거나 전세를 줄 수 없어요.</div>':''}</div>`;}
 function monthly(r,F){return F.it/Math.max(1,r.T*12);}   // 09-28 사용자: '매달 N만 원'은 월세·원리금으로 헷갈림 → 누구나 아는 '월 이자'만(보유세는 5년 순이익에 이미 들어 있음)
 function mTxt(v){return v>=1e4?(Math.round(v/1e3)/10)+'억':Math.round(v).toLocaleString()+'만 원';}
-function row(r,k,ex){   // 09-28 사용자: 결과판이 지저분 + 순위마다 모양이 달랐다 → 모든 순위 같은 카드 3줄(이름·큰 숫자 / 지역·가격·심각 배지 하나·손실 확률 / 범위 막대)
- const L=lensKey(), F=r.F||fin(r), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', n=F.p5, T=trustOf(r), hi=T.tags.find(x=>x.hi);
- const big=`<b class="num ${n>=0?'pos':'neg'}">${sg(n)}</b>`;   // 어느 순서로 보든 큰 숫자는 5년 순이익(09-28)
+function row(r,k,ex,o){   // 09-28 사용자: 결과판이 지저분 + 순위마다 모양이 달랐다 → 모든 순위 같은 카드 3줄(이름·큰 숫자 / 지역·가격·심각 배지 하나·손실 확률 / 범위 막대)
+ // 09-29 사용자: 입지·5년 뒤 시세·하락기 순위판도 같은 카드 → o={lbl,big,l2,l3}로 큰 숫자와 줄만 바꾼다(없으면 5년 순이익). 펼치면 맨 아래 '단지 분석 보기'
+ o=o||{};
+ const L=lensKey(), F=r.F||fin(r), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', n=F.p5, T=trustOf(r), hi=T.tags.find(x=>x.hi), key=r.no||(r.n+'|'+r.gu);
+ const big=o.big||`<b class="num ${n>=0?'pos':'neg'}">${sg(n)}</b>`;   // 어느 순서로 보든 큰 숫자는 5년 순이익(09-28)
  return `<details class="card rc${k===1?' r1':''}" ontoggle="if(this.open)ppFb(${r._i})"><summary>
- <div class="rc1"><span class="rk${k===1?' r1':''}">${k}</span><b class="rcn">${r.n} <span>${r.b}㎡</span></b><span class="bn"><i>5년 순이익</i>${big}</span></div>
- <div class="rc2"><span>${r.gu}${CF.cash!=null&&CF.useU?` · ${monthly(r,F)<1?'대출 없음':`월 이자 <b style="color:var(--ink)">${mTxt(monthly(r,F))}</b>`}`:''}${hi?` <em>${hi.t}</em>`:''}</span><span></span></div>
- ${ex||''}<div class="rc3">시세 ${eok(r.p)}억${r.bu?` + 분담금 ${eok(r.bu)}억`:''} → 5년 뒤 <b>${eok(GRS(F.sv5))}억</b></div>
+ <div class="rc1"><span class="rk${k===1?' r1':''}"${String(k).length>3?' style="font-size:.7rem"':''}>${k}</span><b class="rcn">${r.n} <span>${r.b}㎡</span></b><span class="bn"><i>${o.lbl||'5년 순이익'}</i>${big}</span></div>
+ <div class="rc2"><span>${r.gu}${CF.cash!=null&&CF.useU?` · ${monthly(r,F)<1?'대출 없음':`월 이자 <b style="color:var(--ink)">${mTxt(monthly(r,F))}</b>`}`:''}${o.l2?' · '+o.l2:''}${hi?` <em>${hi.t}</em>`:''}</span><span></span></div>
+ ${ex||''}<div class="rc3">${o.l3||`시세 ${eok(r.p)}억${r.bu?` + 분담금 ${eok(r.bu)}억`:''} → 5년 뒤 <b>${eok(GRS(F.sv5))}억</b>`}</div>
  <div class="rng1">${cells(F)}</div>
- </summary>${detail(r)}</details>`;}
+ </summary>${detail(r)}<button class="btn ghost" style="width:100%;margin:10px 0 2px" onclick="rcard('${key}')">단지 분석 보기 — 강점·약점 · 층별 정상가 · 학교</button></details>`;}
 let RBV=[], N=10, V=[], RS={lo:-1,hi:1};
 function cells(F){   // 09-28 사용자: 막대를 보자마자 '손해 몇 %, 이익 몇 %, 나쁠 때·좋을 때 얼마'가 읽혀야 한다 → 가로축 = 확률(10번 해 보면 나쁜 순→좋은 순). 빨강 = 손해 몫, 파랑 = 이익 몫, 양끝 옅은 곳 = 10번 중 1번꼴, 점 = 가운데(큰 숫자), 아래 숫자 = 10%·90% 지점의 순이익
  const sg=v=>(v>=0?'+':'−')+eok(Math.abs(v)), L=lossP(F), lt=L<1?'1% 미만':L>99?'99% 이상':L+'%', gt=L<1?'99% 이상':L>99?'1% 미만':(100-L)+'%';
