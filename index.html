@@ -1227,7 +1227,7 @@ function setup(i){
  <div class="fr"><span><b>최대 매수 비용</b><em>세금·수리비까지 합친 금액</em></span><label><input id="i_max" type="text" inputmode="decimal" autocomplete="off" placeholder="없음" value="${CF.maxc==null?'':(CF.maxc/1e4)}" oninput="CF.maxc=parseMoney(this.value);count()"><i>억</i></label></div>
  <div class="fl">역까지 거리</div><div id="c_st"></div>
  <div class="fl">단지 크기</div><div id="c_hh"></div>
- <div class="fr"><span><b>수리비</b><em>넣으면 지은 지 20년 넘은 집에만 더해요</em></span><label><input type="number" inputmode="numeric" step="500" placeholder="안 넣음" value="${CF.rpt==null?'':CF.rpt}" oninput="CF.rpt=this.value===''||+this.value<=0?null:+this.value;count();refresh()"><i>만원</i></label></div>
+ <div class="fr"><span><b>수리비</b><em>비우면 5년 동안 집 상태를 유지하는 수리비를 어림해 넣어요 · 금액을 넣으면 지은 지 20년 넘은 집에만 · 0이면 빼요</em></span><label><input type="number" inputmode="numeric" step="500" placeholder="어림" value="${CF.rpt==null?'':CF.rpt}" oninput="CF.rpt=this.value===''?null:Math.max(0,+this.value);count();refresh()"><i>만원</i></label></div>
  </div></details>`;
   cta=`<div class="cta"><button class="btn" id="go" onclick="CF.done=true;CF.lens='bal';CF.sort=null;save();result()">결과 보기</button></div>`;}
  app.innerHTML=head+body+cta;
@@ -1238,7 +1238,7 @@ function refresh(){
  if(pk)pk.innerHTML=CF.regions.length?PG.map(([n_,l])=>`<span onclick='togAll(${JSON.stringify(l)})'>${n_} 전체 ✕</span>`).join('')+CF.regions.filter(g=>!PGL.includes(g)).map(g=>`<span onclick='tog(${JSON.stringify(g)})'>${g} ✕</span>`).join('')+(CF.regions.length>1?`<span style="background:var(--surface2);color:var(--ink3)" onclick="CF.regions=[];refresh()">모두 지우기</span>`:''):'<span style="background:var(--surface2);color:var(--ink3)">선택 안 함 = 서울·경기·인천 전체</span>';
  if($('#c_st'))$('#c_st').innerHTML=cc('st',[['','상관없음'],['a1','역 걸어서 15분 이내'],['x2','신분당·GTX 2km 이내']],false);
  if($('#c_hh'))$('#c_hh').innerHTML=cc('hh',[[0,'상관없음'],[300,'300세대 이상'],[1000,'1,000세대 이상']],false);
- {const rp=CF.rpt?'수리비 '+CF.rpt.toLocaleString()+'만 원':'수리비 안 넣음',
+ {const rp=CF.rpt===0?'수리비 안 넣음':CF.rpt?'수리비 '+CF.rpt.toLocaleString()+'만 원':'수리비 어림',
    a=[CF.loan!=null?'대출 '+eok(CF.loan)+'억':'대출 최대 한도','금리 '+(CF.irate!=null?CF.irate:DT.rate.loan)+'%',rp];
   if(CF.maxc!=null)a.push('최대 '+eok(CF.maxc)+'억');if(CF.addU&&CF.useU)a.push('더 쓰고 누리기');if(CF.st)a.push(CF.st==='a1'?'역 걸어서 15분 이내':'신분당·GTX 2km 이내');if(CF.hh)a.push(CF.hh.toLocaleString()+'세대 이상');
   const e=$('#advsum');if(e)e.innerHTML='지금 계산: <b style="color:var(--ink)">'+a.join(' · ')+'</b>';}
@@ -1253,7 +1253,15 @@ function refresh(){
 const RU=DT.rules||{}, STRESS=RU.stress??3.0;
 function lcap(p){const C=RU.caps||[[150000,60000],[250000,40000],[1e12,20000]];for(const [u,c] of C)if(p<=u)return c;return C[C.length-1][1];}
 function dsrMax(){if(CF.inc==null)return 1e12;const r=((CF.irate==null?DT.rate.loan:CF.irate)+STRESS)/100/12,n=(CF.yrs||30)*12,room=CF.inc*0.4-(CF.debt||0);if(room<=0)return 0;return room/12*(1-Math.pow(1+r,-n))/r;}
-function repair(r){if(!CF.rpt||!r.y||r.as)return 0; return YEAR-r.y>=20?CF.rpt:0;}   // 새로 짓는 집(완공 경로)은 수리비 없음
+// ★수리비(09-28 사용자: 수리비를 안 넣어 오래된 단지가 올라와 보인다 — 수리 여부는 실거래에 없다)
+//   실측(국토부 실거래 2015~, 3층 이상): 같은 단지·평형·분기 안 ㎡가 사분위 폭 — 5~9년 3.9% · 10~19년 4.3% · 20년+ 4.9%.
+//   새 단지보다 넓어진 몫 = 수리한 집과 안 한 집의 값 차이 ≈ 20년+ 값의 3%, 10~19년 1.8% (√(4.9²−3.9²), √(4.3²−3.9²)).
+//   → 수리비 대부분은 되팔 때 돌아오지 않는다. 기본 어림 = 수리 안 된 집을 살 확률 × (올수리 공사비 − 5년 뒤 팔 때 더 받는 몫).
+//   확률: 20년+ 절반, 10~19년 4분의 1(부분 수리), 10년 미만 0. 공사비 전용㎡당 70만 원(공급 평당 약 170만 원, 가정).
+const RPU=70, RQ=a=>a>=20?[.5,.03]:a>=10?[.25,.018]:[0,0];
+function repair(r){if(!r.y||r.as||CF.rpt===0)return 0; const age=YEAR-r.y;   // 새로 짓는 집(완공 경로)은 수리비 없음
+ if(CF.rpt>0)return age>=20?CF.rpt:0;   // 직접 넣은 금액은 지은 지 20년 넘은 집에만
+ const [q,pr]=RQ(age); return Math.max(0,Math.round(q*((r.b||59)*RPU-pr*(r.v5||r.p))));}   // 기본 어림(실측 수리 효과 반영)
 function LB(){const k=CF.my;return k==null?['비관','낙관']:k==='up'?['덜 오르면','더 오르면']:k==='dn'?['더 내리면','덜 내리면']:['덜 풀리면','더 풀리면'];}
 function fin(r){   // 현금을 모르면 대출 없이(투입금 대비 효율만). 입주권(r.be)은 주택담보대출이 안 나와 대출 0
  const rp=repair(r), l=Math.max(r.ltv,CF.first?0.7:0), cap=r.be?0:Math.min(r.p*l,lcap(r.p),CF.loan==null?1e12:CF.loan,dsrMax()), up=r.p+r.fee+r.bu+rp, K=CF.cash;
@@ -1427,7 +1435,7 @@ function fold(t,body,open){return body?`<details class="fold"${open?' open':''}>
 // 09-26 사용자: 순이익에 월세 아낀 돈이 들어간 게 안 보인다 → '집값이 그만큼 오른다'로 읽힘. 기준 순이익을 조각으로 풀어 한 줄
 // 세금·비용에 팔 때 중개보수 포함 → '집값 오름' = 결과 큰 숫자(F.q5)와 같게
 function howNum(r,F){const use=CF.useU&&CF.addU?r.U:0, up=F.q5, cost=-(r.C-r.p-r.bu)-(GRS(F.sv5)-F.sv5), it=-F.it, t=v=>(v>=0?'+':'−')+eok(Math.abs(v));
- const P=[[r.bu?'집값 오름(분담금 뺌)':'집값 오름',up],['누린 값(전세로 치면)',use],['세금·중개보수',cost],['대출이자',it],['수리비',-F.rp]].filter(([_,v])=>Math.abs(v)>=50);
+ const P=[[r.bu?'집값 오름(분담금 뺌)':'집값 오름',up],['누린 값(전세로 치면)',use],['세금·중개보수',cost],['대출이자',it],[CF.rpt>0?'수리비':'수리비(어림)',-F.rp]].filter(([_,v])=>Math.abs(v)>=50);
  return `<div style="margin:8px 0 2px;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:.8rem;line-height:1.6"><b>기준 ${t(F.p5)}억은 이렇게 나와요</b><div style="display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:4px">${P.map(([k,v])=>`<span style="white-space:nowrap">${k} <b style="color:${v>=0?'var(--green)':'var(--red)'}">${t(v)}</b></span>`).join('')}</div></div>`;}
 // 곁다리(09-26 사용자): 이 집을 사는 대신 가진 돈을 굴리면 연 몇 %를 벌어야 같아지나 — 사는 방식은 고를 수 있게(사용자: 반드시 이 집에 산다는 가정 말고 선택지로).
 //   ① 월세로 살면: (가진 돈 − 보증금)을 연 x%로 굴린 이익 − 5년 월세 = 이 집을 사서 살 때 순이익(월세 아낌은 뺌 — 산 사람은 월세를 안 내니까)
@@ -1591,7 +1599,7 @@ function find(q0){
  el.innerHTML=h+'<div style="height:14px"></div>';}
 function summaryChips(txt){
  const c=[]; c.push(CF.regions.length?(CF.regions.length<=3?CF.regions.map(short).join(' · '):CF.regions.slice(0,2).map(short).join(' · ')+` 외 ${CF.regions.length-2}곳`):'서울·경기·인천 전체');
- if(CF.cash!=null)c.push('자기자본 '+eok(CF.cash)+'억'); if(CF.maxc!=null)c.push('총투입 '+eok(CF.maxc)+'억 이하'); if(CF.first)c.push('생애최초'); if(CF.loan!=null)c.push('대출 '+eok(CF.loan)+'억까지'); if(CF.inc!=null)c.push('소득 '+eok(CF.inc)+'억·DSR'); if(CF.rpt)c.push('수리비 '+CF.rpt.toLocaleString()+'만'); if(CF.addU&&CF.useU)c.push('더 쓰고 누리기'); if(CF.my!=null&&yearOf(CF.my))c.push(yearOf(CF.my).lbl+' 매수처럼');
+ if(CF.cash!=null)c.push('자기자본 '+eok(CF.cash)+'억'); if(CF.maxc!=null)c.push('총투입 '+eok(CF.maxc)+'억 이하'); if(CF.first)c.push('생애최초'); if(CF.loan!=null)c.push('대출 '+eok(CF.loan)+'억까지'); if(CF.inc!=null)c.push('소득 '+eok(CF.inc)+'억·DSR'); if(CF.rpt)c.push('수리비 '+CF.rpt.toLocaleString()+'만');if(CF.rpt===0)c.push('수리비 뺌'); if(CF.addU&&CF.useU)c.push('더 쓰고 누리기'); if(CF.my!=null&&yearOf(CF.my))c.push(yearOf(CF.my).lbl+' 매수처럼');
  const SZ={'49':'49㎡↓','59':'59㎡','74':'74㎡','84':'84㎡','101':'101㎡↑'},AG={n:'신축',m:'준신축',o:'구축'};
  if(CF.size.length)c.push(CF.size.map(x=>SZ[x]).join('·')); if(CF.age.length)c.push(CF.age.map(x=>AG[x]).join('·'));
  if(CF.st)c.push(CF.st==='a1'?'역 도보 15분':'급행 2km'); if(CF.hh)c.push(CF.hh+'세대+');
@@ -1643,7 +1651,7 @@ function result(){
  const hvH='';   // 09-28 사용자: '아껴서 모으기/더 쓰고 누리기'는 '더 쓰는데 더 버나?'로 읽히고, 좋은 곳은 사람마다 다름 → 버튼 대신 카드마다 '매달 드는 돈'을 보여 주고 판단은 사람에게
  N=3; const MD_=midD();
  app.innerHTML=`${DT.alert?`<div class="box warn" style="margin-top:0"><b>주간 과열 경보 발령</b> <span class="sub">과거 과열기에 자주 나타난 신호이며, 적중을 보장하지 않습니다.</span></div>`:''}
- ${cbarH}${V.length?`<div class="hq" style="margin:12px 0 10px">${{bal:'5년 순이익 상위 단지',safe:'5년 손실이 적은 단지',obj:'입지 좋은 순'}[L]}</div>`+altH+hvH+qsRow()+(L==='obj'?`<div class="rleg">동네 시세·역까지 거리로 본 입지 순서예요. 입지가 좋다고 남는 돈이 많은 건 아니에요.</div>`:'')+V.slice(0,3).map((r,k)=>row(r,k+1)).join(''):'<div class="hq">조건에 맞는 단지 없음</div>'+qsRow()}
+ ${cbarH}${V.length?`<div class="hq" style="margin:12px 0 10px">${{bal:'5년 순이익 상위 단지',safe:'5년 손실이 적은 단지',obj:'입지 좋은 순'}[L]}</div>`+altH+hvH+qsRow()+(L==='obj'?`<div class="rleg">주변 시세와 역 접근성으로 본 입지 순이에요. 입지가 좋다고 순이익이 반드시 큰 건 아니에요.</div>`:'')+V.slice(0,3).map((r,k)=>row(r,k+1)).join(''):'<div class="hq">조건에 맞는 단지 없음</div>'+qsRow()}
  <div id="list"></div><button class="btn ghost" id="more" style="margin-top:12px" onclick="N+=10;draw()">다음 10곳</button>
  <button class="btn ghost" style="margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px" onclick="trust('r')">${ic('shield',18)}이 셈이 빗나간 곳도 봅니다</button>
  ${(RBV.length||MD_)?fold(`조합설립 이후 정비사업 단지 (${RBV.length+(MD_?+MD_.match(/못 한 곳 (\d+)/)[1]:0)}곳)`,`<p class="sub" style="font-size:.8rem;margin:0 0 8px">분담금에 따라 결과가 크게 달라지는데 아직 확정되지 않아 순위에 넣지 않았어요. 사실만 보여 드립니다. 구역지정·안전진단·추진위 같은 초기 단계는 순위에 그대로 있어요.</p>`+RBV.slice(0,30).map(rbCard).join('')+(RBV.length>30?`<p class="sub" style="font-size:.78rem">외 ${RBV.length-30}곳 — 지역을 좁히면 모두 볼 수 있어요.</p>`:'')+MD_):''}
