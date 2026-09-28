@@ -1013,7 +1013,7 @@ function ownHTML(c,r,k,back,X){
  <div style="font-size:.78rem;font-weight:800;color:var(--blue)">단지 분석</div>
  <div style="font-size:1.35rem;font-weight:800;margin:4px 0 2px;word-break:keep-all">${c.n}</div><div class="sub" style="font-size:.82rem">${c.gu}${c.y?' · '+c.y+'년':''}${c.hh?' · '+c.hh.toLocaleString()+'세대':''}</div>
  ${rows.length>1?`<div class="cc" style="margin:10px 0 0">${rows.map(x=>`<button class="${x===r?'on':''}" onclick="rcard('${k}','${back||''}',${x.b})">${x.b}㎡</button>`).join('')}</div>`:''}
- ${now}${lc}${flb}${kid}${fut}${loan}${mv}${tax}${c.rb?box('정비사업 분담금',bkTxt(c)):''}${T.tags.length?tbox(r):''}
+ ${now}${fut}${lc}${flb}${kid}${loan}${mv}${tax}${c.rb?box('정비사업 분담금',bkTxt(c)):''}${T.tags.length?tbox(r):''}
  <div style="display:flex;gap:8px;margin-top:14px"><button class="btn" style="flex:1" onclick="CM=['${k}',null];cmp()">다른 단지와 비교</button><button class="btn outline" style="flex:1" onclick="navigator.clipboard&&navigator.clipboard.writeText(location.href).then(()=>this.textContent='링크 복사됨')">링크 복사</button></div>
  <div class="sub" style="font-size:.7rem;margin-top:12px">${PRIN}<br>참고용 산출치이며, 투자 권유가 아닙니다.</div>${missLink('b')}`;}
 function ownCalc(k,b){   /* 내 대출·금리 → 지금 내 몫, 월 이자, 금리 변화, 5년 뒤 늘어나는 재산, 팔고 옮기면 */
@@ -1049,20 +1049,13 @@ function gapWhy(A,B,ra,rb){
  const it=[['동네 시세','주변 단지 실거래 — 같은 초등학교 통학구역 이웃에 더 무게(학군은 여기에)',L(ra.nb[0])-L(rb.nb[0])],['역','가장 가까운 역까지',L(Pa[2][1])-L(Pb[2][1])],['연식','새 아파트일수록',L(Pa[4][1])-L(Pb[4][1])],['단지 규모','대단지일수록',L(Pa[5][1])-L(Pb[5][1])],['면적','같은 평형 비교가 아닐 때',L(ra.q[1])-L(rb.q[1])]].filter(x=>Math.abs(x[2])>=0.5);
  const un=L(ra.mk)-L(rb.mk), mx=Math.max(8,...it.map(x=>Math.abs(x[2])),Math.abs(un)), gp=Math.round((Math.exp(gap/100)-1)*100);
  const nm=v=>v>=0?A.n:B.n, ex=it.reduce((s_,x)=>s_+x[2],0), ok=Math.abs(un)<=Math.max(5,Math.abs(gap)*0.4);
- // 09-29 사용자: 가운데서 양쪽으로 뻗는 막대는 딱 보고 이해가 안 된다 → 계단 그림(B 단지 100에서 출발, 이유마다 오르내려 A 단지 값에 닿음) + 이유를 말로
- const why={'동네 시세':['동네 시세가 높아서','동네 시세가 낮아서'],'역':['역이 가까워서','역이 멀어서'],'연식':['더 새것이라서','더 오래돼서'],'단지 규모':['더 큰 단지라서','더 작은 단지라서'],'면적':['평형이 넓어서','평형이 좁아서']};
- const steps=[...it.map(x=>[x[0],x[2],(why[x[0]]||[x[0],x[0]])[x[2]>=0?0:1]]),['그 밖에',un,'조건으로 설명 안 되는 몫(브랜드·조망·학군·개발 기대)']];
- const W=320,H=150,tp=24,bot=30,n=steps.length+2,cw=(W-8)/n, cum=[100]; steps.forEach(x=>cum.push(cum[cum.length-1]+x[1]));
- const lo=Math.min(...cum)-6, hi=Math.max(...cum)+6, Y=v=>tp+(1-(v-lo)/(hi-lo))*(H-tp-bot), sh=x=>x.length>6?x.slice(0,5)+'…':x, cx=i=>4+i*cw+cw/2;
- const col=(i,y0,y1,color,lab,lb,bold)=>`<rect x="${4+i*cw+cw*.18}" y="${Math.min(y0,y1)}" width="${cw*.64}" height="${Math.max(1.5,Math.abs(y1-y0))}" rx="3" fill="${color}"/><text x="${cx(i)}" y="${Math.min(y0,y1)-4}" font-size="9.5" font-weight="${bold?800:700}" text-anchor="middle" fill="var(--ink)">${lab}</text><text x="${cx(i)}" y="${H-bot+12}" font-size="8.5" text-anchor="middle" fill="var(--ink3)">${lb}</text>`;
- let svg=col(0,Y(lo),Y(100),'var(--ink3)','100',sh(B.n),1);
- steps.forEach((x,i)=>{svg+=`<line x1="${4+i*cw+cw*.82}" x2="${4+(i+1)*cw+cw*.18}" y1="${Y(cum[i])}" y2="${Y(cum[i])}" stroke="var(--ink3)" stroke-dasharray="2 2"/>`+col(i+1,Y(cum[i]),Y(cum[i+1]),x[1]>=0?'var(--blue)':'var(--red)',(x[1]>=0?'+':'−')+Math.abs(Math.round(x[1]))+'%',sh(x[0]));});
- svg+=`<line x1="${4+(n-2)*cw+cw*.82}" x2="${4+(n-1)*cw+cw*.18}" y1="${Y(cum[n-2])}" y2="${Y(cum[n-2])}" stroke="var(--ink3)" stroke-dasharray="2 2"/>`+col(n-1,Y(lo),Y(cum[n-2]),'var(--blue)',Math.round(cum[n-2]),sh(A.n),1);
- const words=steps.filter(x=>Math.abs(x[1])>=0.5).map(x=>`<span style="white-space:nowrap"><b class="${x[1]>=0?'pos':'neg'}">${(x[1]>=0?'+':'−')+Math.abs(Math.round(x[1]))}%</b> ${x[0]==='그 밖에'?'그 밖에':x[2]}</span>`).join(' · ');
+ // 09-29 사용자: 계단 그림은 더 모르겠다, 전의 가운데 막대를 정갈하게 → 줄마다 [이유] [가운데서 뻗는 막대] [+N% 말로 된 이유], 파랑 = A 가 비싼 이유, 빨강 = B 가 비싼 이유
+ const why={'동네 시세':['동네 시세가 높아서','동네 시세가 낮아서'],'역':['역이 가까워서','역이 멀어서'],'연식':['더 새것이라서','더 오래돼서'],'단지 규모':['더 큰 단지라서','더 작은 단지라서'],'면적':['평형이 넓어서','평형이 좁아서'],'그 밖에':['브랜드·조망·학군·개발 기대 등','브랜드·조망·학군·개발 기대 등']};
+ const steps=[...it.map(x=>[x[0],x[2]]),['그 밖에',un]];
+ const rowH=x=>`<div style="display:grid;grid-template-columns:58px 1fr auto;gap:8px;align-items:center;margin:7px 0;font-size:.8rem"><span style="color:var(--ink3)">${x[0]}</span><span style="position:relative;display:block;height:10px;background:var(--line2);border-radius:5px"><i style="position:absolute;top:0;bottom:0;${x[1]>=0?'left:50%':'right:50%'};width:${Math.abs(x[1])/mx*50}%;background:${x[1]>=0?'var(--blue)':'var(--red)'};border-radius:5px"></i><i style="position:absolute;top:-2px;bottom:-2px;left:50%;width:1px;background:var(--ink3)"></i></span><span style="white-space:nowrap;text-align:right"><b style="color:${x[1]>=0?'var(--blue)':'var(--red)'}">${(x[1]>=0?'+':'−')+Math.abs(Math.round(x[1]))}%</b> <span class="sub" style="font-size:.72rem">${(why[x[0]]||[x[0],x[0]])[x[1]>=0?0:1]}</span></span></div>`;
  return `<div class="card" style="padding:14px 16px;margin-top:12px"><div style="font-weight:800;font-size:.95rem">${gp===0?`㎡당 실거래가가 거의 같아요`:`<span style="color:var(--blue)">${A.n}</span>${JO(A.n,'이','가')} ${B.n}보다 ㎡당 <b>${Math.abs(gp)}% ${gp>0?'비싸요':'싸요'}</b>`}</div>
-  <div style="font-size:.8rem;line-height:1.7;margin-top:6px">${words}</div>
-  <svg viewBox="0 0 ${W} ${H}" style="width:100%;margin-top:8px;overflow:visible">${svg}</svg>
-  <div class="sub" style="font-size:.7rem;text-align:center">${B.n}${JO(B.n,'을','를')} 100으로 놓고, 이유마다 오르내려 ${A.n} 값에 닿아요 (㎡당 실거래가)</div>
+  <div class="sub" style="font-size:.76rem;margin-top:2px">그 차이를 이유별로 나눴어요 · <span style="color:var(--blue);font-weight:700">파랑</span> = ${A.n}${JO(A.n,'이','가')} 비싼 이유 · <span style="color:var(--red);font-weight:700">빨강</span> = ${B.n}${JO(B.n,'이','가')} 비싼 이유</div>
+  <div style="margin-top:8px">${steps.map(rowH).join('')}</div>
   <div style="margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--surface2);font-size:.8rem;line-height:1.6">${ok?`값 차이는 대부분 <b>동네·역·연식·규모</b>로 설명돼요. 남는 몫은 ${Math.round(Math.abs(un))}%로 작아요.`:`조건(동네·역·연식·규모)만 보면 ${Math.abs(ex)<1?'두 단지 값이 비슷해야 하는데':`<b>${nm(ex)}</b>${JO(nm(ex),'이','가')} ${Math.round(Math.abs(ex))}% 비싸야 하는데`}, <b>${nm(un)}</b>에 조건으로 설명 안 되는 ${Math.round(Math.abs(un))}%가 더 붙어 있어요 — 사람들이 말하는 '그 단지만의 무언가'(브랜드·조망·학군·개발 기대)예요. 유행 따라 커지거나 줄 수 있어요.`}</div></div>`;}
 function cmpRes(){
  if(!CM[0]||!CM[1])return '';
