@@ -630,7 +630,7 @@ function hello(){   // 09-25 사용자: '안녕하세요'로 시작 + 고민을 
  <div class="sr" style="margin:26px 0 8px;font-weight:800;${D_(1000)}">어떤 고민으로 오셨나요?</div>
  ${O.map(([n,t,k],j)=>`<button class="sr" onclick="startPath('${k}')" style="width:100%;display:flex;align-items:center;gap:12px;margin:8px 0;padding:14px;border:1.5px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;font-weight:700;text-align:left;cursor:pointer;${D_(1200+j*120)}">${ic(n,38,1)}<span style="flex:1">${t}</span><span style="color:var(--ink3)">›</span></button>`).join('')}
  <div class="sr" style="margin:24px 0 8px;font-size:.84rem;font-weight:700;color:var(--ink2);${D_(1700)}">이런 것도 바로 볼 수 있어요</div>
- <div class="sr" style="display:flex;flex-wrap:wrap;gap:6px;${D_(1850)}">${APPS.filter(a=>['podium','tag','map','crane'].includes(a[0])).map(([n,t,go])=>`<button onclick="${go}" style="display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:.8rem;font-weight:700;cursor:pointer"><span style="color:var(--blue);display:inline-flex">${ic(n,15)}</span>${t}</button>`).join('')}</div>
+ <div class="sr" style="display:flex;flex-wrap:wrap;gap:6px;${D_(1850)}">${APPS.filter(a=>['podium','vs','map','crane'].includes(a[0])).map(([n,t,go])=>`<button onclick="${go}" style="display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:.8rem;font-weight:700;cursor:pointer"><span style="color:var(--blue);display:inline-flex">${ic(n,15)}</span>${t}</button>`).join('')}</div>
  <p class="sr" style="text-align:center;margin:14px 0 0;${D_(2000)}"><button class="linkbtn" onclick="hub()">기능 ${APPS.length}가지 전체 보기 ›</button><br><button class="linkbtn" style="font-size:.82rem;color:var(--ink3)" onclick="origin()">집셈을 만든 이유 ›</button></p>${noAgain('jsNoHello')}</div>`;}
 // 만든 계기(09-27 사용자 말 그대로 — 집은 물건·입지는 정해져 있다·확률만이라도·평생 최대 소비·다들 하는 고민을 데이터로)
 // 첫 화면(09-27 사용자: 너무 빨리 다 보임 → 읽는 속도에 맞춰 한 줄씩, 공감+전문성) — 끝에 '바로 알아보기' / '철학 자세히'
@@ -778,7 +778,7 @@ function story(i){
  const w=$('#stw'); let x0=null; w.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;},{passive:true}); w.addEventListener('touchend',e=>{if(x0==null)return;const d=e.changedTouches[0].clientX-x0;if(Math.abs(d)>60)story(SI+(d<0?1:-1));x0=null;});}
 // ---------------- 메인 화면(09-25 사용자: 기능이 여러 개 — 앱처럼 아이콘) ----------------
 const APPS=[['swap','갈아타기',"move()"],['bag','출퇴근',"jobv()"],['podium','입지 순위',"board('obj')"],['up','상승 여력',"board('up')"],
- ['guard','하락 방어',"board('def')"],['vs','단지 비교',"cmp()"],['map','단지 지도',"location.href='map.html'"],['tag','급매 단지',"board('deal')"],
+ ['guard','하락 방어',"board('def')"],['vs','단지 비교',"cmp()"],['map','단지 지도',"location.href='map.html'"],
  ['crane','재건축 분담금',"board('rb')"]];   // 09-25 사용자: 시장·믿을 수 있나·산출 방법은 '기능'이 아니라 따로 자리
 function hub(){   // 09-25 사용자: 기능이 많아 다 별것 아닌 듯 보임 -> 대표 기능 하나를 크게, 나머지는 작게
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); topIntro();
@@ -811,10 +811,7 @@ const CPX=(()=>{const m=new Map();R.forEach(r=>{const k=r.no||(r.n+'|'+r.gu);let
   const w=c.rows.flatMap(r=>(r.why||[]).map(i=>S[i]||''));c.deal=w.some(x=>/1년 흐름/.test(x))?'최근 거래가 추세보다 낮음':'';/* 09-27: 호가(매물) 기준 폐기, 실거래만 */c.xy=(DT.xy||{})[c.no];c.bkc=(DT.bkc||{})[c.n+'|'+c.gu]||null;});
   const HB={};L.forEach(c=>HB[c.k]=c);window.CPXK=HB;
   return L;})();
-function upProb(r,x){   // x(만원) 초과 확률. 세 점 (v1,.1)(v5,.5)(v9,.9) 사이는 직선, 바깥은 같은 기울기로 연장
- const a=r.v1,b=r.v5,c=r.v9; let F;
- if(x<=a)F=.1-(a-x)/Math.max(1,b-a)*.4; else if(x<=b)F=.1+(x-a)/Math.max(1,b-a)*.4; else if(x<=c)F=.5+(x-b)/Math.max(1,c-b)*.4; else F=.9+(x-c)/Math.max(1,c-b)*.4;
- return Math.round(Math.min(.99,Math.max(.01,1-F))*100);}
+function upProb(r,x){return Math.round(Math.min(.99,Math.max(.01,1-belowP(r.v1,r.v5,r.v9,x)))*100);}   // x(만원) 초과 확률 — 손실 확률과 같은 방식
 const PC=r=>({p1:(r.v1/r.p-1)*100,p5:(r.v5/r.p-1)*100,p9:(r.v9/r.p-1)*100,h:(r.U||0)/r.p*100,up:upProb(r,r.p)});
 const UPK=r=>BF.hv?r.ce:((r.v5/r.p-1)+(r.v1/r.p-1))/2;   // 상승 여력 정렬: 기본=시세(기준·비관 평균), 주거비 포함을 켜면 총수익(ce)
 function bestRow(c){const rs=BF.size.length?c.rows.filter(r=>BF.size.includes(szOf(r.b))):c.rows;return rs.length?rs.reduce((a,r)=>UPK(r)>UPK(a)?r:a):null;}
@@ -826,8 +823,7 @@ const MORE=(t,s)=>t?`<details class="more"><summary>${s||'자세히'}</summary><
 const LZ={obj:['입지 순위','주변 실거래로 본 동네 시세 + 역 순',['동네 시세·역 (단지 점수는 따로)',['오를 순서가 아니라 입지의 급','gray']]],
  up:['5년 상승 여력 순위','5년 뒤 시세가 많이 오를 순',['가운데 값 기준','취득세·중개보수 제외','입주권 단지 제외']],
  def:['하락장 방어력 순위','지난 하락기에 덜 떨어진 순',['2021 고점 → 2022~23 저점','300세대 이상',['다음에도 같다는 보장 없음','amber']]],
- rb:['재건축 분담금','새 아파트를 받을 때 더 낼 돈 · 돌려받을 돈',[['부담 = 조합원이 더 냄','red'],['환급 = 오히려 돌려받음','green'],'조합 발표값 우선']],
- deal:['급매 단지','최근 거래가가 1년 흐름보다 낮은 단지',['국토부 실거래 기준',['저층·하자 거래일 수 있음 → 현장 확인','amber']]]};
+ rb:['재건축 분담금','새 아파트를 받을 때 더 낼 돈 · 돌려받을 돈',[['부담 = 조합원이 더 냄','red'],['환급 = 오히려 돌려받음','green'],'조합 발표값 우선']]};   // 09-28 '급매 단지' 삭제(지금 나온 매물 이야기 — 호가 없이는 못 찾음)
 function board(lens,focus){
  BF.lens=lens||BF.lens; TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
  const L_=BF.lens, Q=DT.q5||[], qt=Q[Q.length-1]||{}, qb=Q[0]||{};
@@ -1332,8 +1328,6 @@ const FLAG=[[/입주권 단계/,'입주권·분담금 추정','분담금이 추�
  [/분양권·입주권/,'분양권 거래','등기 전 거래라 실제 시세와 다를 수 있음','hi'],
  [/리모델링 .*분담금/,'분담금 보도값','분담금이 확정 전 보도값','hi'],
  [/공식 자료:/,'정비사업 진행','사업 속도·분담금에 따라 크게 갈림','hi'],
- [/호가 하위.*높음/,'호가 높음','지금 매물이 실거래보다 비쌈','hi'],
- [/호가 하위.*낮음/,'급매 섞임','급매·하자 매물일 수 있음','hi'],
  [/1년 흐름/,'급매 섞임','최근 거래가 급매 가격일 수 있음','hi'],
  [/매도 매물/,'매물 많음','파는 매물이 유독 많음','hi'],
  [/3건 미만/,'거래 적음','최근 거래가 적어 1년 실거래로 계산','lo'],
@@ -1515,8 +1509,10 @@ function gain(r){const F=r.F||fin(r), base=CF.cash!=null?Math.max(1,CF.cash):(r.
  pct=g/base, yrs=r.T;
  return {g,pct,ann:Math.pow(Math.max(1e-6,1+pct),1/yrs)-1,base,yrs,bad:F.p1};}
 function finAt(r,k){const s0=CF.my;CF.my=k;const f=fin(r);CF.my=s0;return f;}
-function lossP(F){const a=F.p1,b=F.p5,c=F.p9;let p=a>=0?5:b>=0?10+40*(-a)/Math.max(1,b-a):c>=0?50+40*(-b)/Math.max(1,c-b):95;return Math.max(5,Math.min(95,Math.round(p/5)*5));}
-function lossTxt(F){const p=lossP(F);return p<=5?'손실 확률 10% 미만':p>=95?'손실 확률 90% 초과':'손실 확률 '+p+'%';}
+function NCDF(z){const t=1/(1+.2316419*Math.abs(z)),d=.3989423*Math.exp(-z*z/2),p=d*t*(.3193815+t*(-.3565638+t*(1.781478+t*(-1.821256+t*1.330274))));return z>0?1-p:p;}
+function belowP(a,b,c,x){const s=(x<b?b-a:c-b)/1.2816;return s>0?NCDF((x-b)/s):(x<b?0:1);}   // 10·50·90% 세 값에서 x 아래일 확률: 가운데 아래·위를 각각 정규분포로(세 점을 정확히 지남)
+function lossP(F){return Math.max(0,Math.min(100,Math.round(belowP(F.p1,F.p5,F.p9,0)*100)));}   // 09-28 사용자: '왜 5% 단위로 딱딱 떨어지나' → 1% 단위
+function lossTxt(F){const p=lossP(F);return p<1?'손실 확률 1% 미만':p>99?'손실 확률 99% 초과':'손실 확률 '+p+'%';}
 function costLine(r,F,v,n){const u=CF.useU&&CF.addU?r.U:0, tx=v-n-F.it-F.rp+u, e=x=>eok(Math.abs(x))+'억';
  return `집값 ${v>=0?'+':'−'}${e(v)}${r.bu?'(분담금 뺌)':''} · 대출이자 −${e(F.it)} · 세금·중개 −${e(tx)}${F.rp?' · 수리비 −'+e(F.rp):''}${u?' · 월세 +'+e(u):''}`;}
 function cline(r,L){if(L==='obj')return '';const F=r.F||fin(r), v=L==='safe'?F.q1:F.q5, n=L==='safe'?F.p1:F.p5;return `<div style="flex:0 0 100%;text-align:right;font-size:.72rem;color:var(--ink3);margin-top:-6px;word-break:keep-all">${costLine(r,F,v,n)}</div>`;}
@@ -1548,7 +1544,7 @@ function row(r,k){   // 09-28 사용자: 결과판이 지저분 + 순위마다 �
  </summary>${detail(r)}</details>`;}
 let RBV=[], N=10, V=[], RS={lo:-1,hi:1};
 function cells(F){   // 09-28 사용자: 막대를 보자마자 '손해 몇 %, 이익 몇 %, 나쁠 때·좋을 때 얼마'가 읽혀야 한다 → 가로축 = 확률(10번 해 보면 나쁜 순→좋은 순). 빨강 = 손해 몫, 파랑 = 이익 몫, 양끝 옅은 곳 = 10번 중 1번꼴, 점 = 가운데(큰 숫자), 아래 숫자 = 10%·90% 지점의 순이익
- const sg=v=>(v>=0?'+':'−')+eok(Math.abs(v)), L=lossP(F), lt=L<=5?'10% 미만':L>=95?'90% 이상':L+'%', gt=L<=5?'90% 이상':L>=95?'10% 미만':(100-L)+'%';
+ const sg=v=>(v>=0?'+':'−')+eok(Math.abs(v)), L=lossP(F), lt=L<1?'1% 미만':L>99?'99% 이상':L+'%', gt=L<1?'99% 이상':L>99?'1% 미만':(100-L)+'%';
  return `<div style="margin-top:10px"><div style="display:flex;justify-content:space-between;font-size:.72rem;font-weight:800"><span style="color:var(--red)">손해 ${lt}</span><span style="color:var(--blue)">이익 ${gt}</span></div>
   <div style="position:relative;margin-top:4px"><div style="height:8px;border-radius:4px;overflow:hidden;position:relative;background:linear-gradient(90deg,var(--red) 0 ${L}%,var(--blue) ${L}% 100%);opacity:.85">
    <i style="position:absolute;left:0;top:0;bottom:0;width:10%;background:var(--surface);opacity:.5"></i><i style="position:absolute;right:0;top:0;bottom:0;width:10%;background:var(--surface);opacity:.5"></i></div>
