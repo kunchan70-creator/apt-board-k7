@@ -148,6 +148,7 @@ ul.plain{padding-left:18px}
 .oh{margin:18px 0 0}.oh span{display:block;font-size:.86rem;color:var(--ink3)}.oh b{display:block;font-size:2.2rem;font-weight:800;letter-spacing:-.03em;margin:2px 0}.oh em{display:block;font-style:normal;font-size:.86rem;color:var(--ink2)}
 .ost{display:flex;gap:8px;margin:14px 0 4px}.ost div{flex:1;padding:10px 12px;border-radius:14px;background:var(--surface2)}.ost span{display:block;font-size:.74rem;color:var(--ink3)}.ost b{font-size:1.02rem;font-weight:800}
 .obig b{display:block;font-size:1.7rem;font-weight:800;letter-spacing:-.03em}.obig span{display:block;font-size:.84rem;color:var(--ink3);margin-bottom:4px}
+.olead{margin:-4px 0 10px;font-size:.92rem;line-height:1.6;color:var(--ink2);word-break:keep-all}
 .ofold{margin-top:8px}.ofold summary{font-size:.86rem;font-weight:600;color:var(--ink2);padding:10px 0}
 .cmpg{margin-top:22px}.cmpg .ch,.cmpg .cr{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;align-items:center}.cmpg .ch{position:sticky;top:0;background:var(--surface);padding:10px 0;z-index:2;border-bottom:1px solid var(--line2)}
 .cmpg .ch b{font-size:.86rem;font-weight:800;text-align:center;word-break:keep-all;line-height:1.3}.cmpg .cs{margin:20px 0 4px;font-weight:800;font-size:.98rem}
@@ -1209,33 +1210,31 @@ function mvRun(){
  $('#mvr').innerHTML=H; const el=$('#mvr'); if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
 
 // ---------------- 이 결과, 어떻게 믿나요 ----------------
-function trust(from){   // 09-29 사용자: 그동안 업데이트가 없었다 → 검증 설계·지표·상시 점검까지, 전문가가 읽어도 납득할 구성으로(식은 안 씀)
- TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
+function trust(from){   // 09-29 사용자: 토스식 — 아이콘·태그·잔글씨 걷어내고 [큰 결론 → 큰 숫자 → 섹션(굵은 제목 + 이름·값 줄)]. 제목 '맞히지 않고, 셉니다'는 유지
+ TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); shClose();
  const Q=DT.q5p||DT.q5||[], a=Q[0]||{}, b=Q[Q.length-1]||{}, L=DT.ev5||[], lo=L.reduce((x,y)=>y[1]<x[1]?y:x,L[0]||[0,0]), hi=L.reduce((x,y)=>y[1]>x[1]?y:x,L[0]||[0,0]);
  const IC=(DT.ic||{}).v2||[], icf=v=>v==null?'-':(v>=0?'+':'')+v.toFixed(2), EVN=(DT.evn||0).toLocaleString();
- const sec=(n,t,body)=>`<div style="margin:18px 0 0;padding-top:14px;border-top:1px solid var(--line2)"><div style="display:flex;gap:10px;align-items:center;margin-bottom:6px">${ic_(n)}<b style="font-size:1rem">${t}</b></div>${body}</div>`, ic_=n=>ic(n,34,1);
- const kv=(k,v)=>`<div class="kv"><span class="k">${k}</span><span class="v">${v}</span></div>`;
+ const kv=(k,v)=>`<div class="kv"><span class="k">${k}</span><span class="v">${v}</span></div>`, box=(h,lead,body)=>`<section class="os"><h4>${h}</h4>${lead?`<p class="olead">${lead}</p>`:''}${body}</section>`;
  const BK={r:['result()','결과로'],b:['board()','순위로']}[from], M=DT.miss;
  app.innerHTML=(BK?`<button class="linkbtn" style="padding:0;margin:0 0 8px;font-size:.84rem;color:var(--ink3)" onclick="${BK[0]}">‹ ${BK[1]}</button>`:HOME)
- +`<div class="sub" style="font-size:.78rem;font-weight:800;letter-spacing:.04em">이 결과, 어떻게 믿나요</div><div class="hq" style="margin:2px 0 4px">맞히지 않고,<br>셉니다.</div>${TAGS(['표본 밖 검증','실거래 '+EVN+'건','매주 재적합 · 스냅샷 대조'])}
- <div style="font-size:.9rem;line-height:1.65;margin:6px 0 2px">집셈은 앞날을 맞히지 않습니다. 대신 <b>같은 셈을 과거에 했다면 어떤 결과였는지</b>를 잽니다. 모델을 만들 때 쓰지 않은 매수 시기의 실거래로 5년 뒤를 대조했고, 맞은 쪽과 빗나간 쪽을 모두 그대로 보여 드립니다.</div>`
- +(M?`<div id="tmiss">`+sec('fog','빗나간 곳부터 보여 드립니다',`<div style="font-size:.9rem;line-height:1.6">높게 본 집도 <b>100곳 중 약 ${Math.round(M.pct)}곳</b>은 5년 뒤 시세가 내렸습니다.${M.yrs&&M.yrs[0]?` 그중 ${M.yrs[0][1]}%는 ${M.yrs[0][0]}년, 집값이 가장 높을 때 산 경우였어요.`:''}</div>`
-   +`<div class="mini" style="flex-direction:column">${(M.ex||[]).map(e=>`<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:.8rem;color:var(--ink2)">${e[1].split(' ').pop()} ${e[0]} · ${e[2]}년 매수</span><b class="neg" style="font-size:.9rem">5년 −${Math.abs(e[3])}%</b></div>`).join('')}</div>${TAGS(['점수 상위 20%였던 집의 실제 5년 시세'])}`)+`</div>`:'')
- +sec('shield','검증은 이렇게 설계했습니다',kv('방식','<b>표본 밖(out-of-sample)</b> — 모델 적합에 쓰지 않은 매수 시기의 실거래로, 매수 5년 뒤 실제 총수익과 집셈 순위를 대조')
-   +kv('표본',`서울·경기·인천 실거래 <b>${EVN}건</b> · 2011~2021년 매수, 반기마다`)
-   +kv('지표','순위상관(스피어만) · 5분위별 실제 5년 총수익 · 원금 손실 비율 · 같은 구 안 상·하위 1/3 차이')
-   +(IC.length?kv('순위상관',`2011~15년 매수 <b>${icf(IC[0])}</b> · 2016~21년 매수 <b>${icf(IC[1])}</b> <span class="sub">(1이면 순서를 완벽히 맞힌 것, 0이면 무작위와 같음)</span>`):'')
-   +`<div class="sub" style="font-size:.76rem;margin-top:8px;line-height:1.55">모델에 넣는 단지 특성은 두 시험 구간에서 모두 성적이 좋아질 때만 채택하고, 매달 같은 시험을 다시 돌려 통과하지 못하면 뺍니다. 세대당 주차·최고층·병원 거리처럼 그럴듯해도 검증을 통과하지 못한 항목은 넣지 않았습니다.</div>`)
- +sec('podium','과거로 돌아가 검증했습니다',`<div class="mini"><div><span>상위 20% · 5년 실제</span><b class="pos">+${b.med}%</b></div><div><span>하위 20% · 5년 실제</span><b>+${a.med}%</b></div></div>${TAGS(['모델에 안 쓴 과거 매수 '+EVN+'건',(b.loss!=null?'상위 20% 원금 손실 '+b.loss+'% · 하위 20% '+a.loss+'%':'')].filter(Boolean))}`
-   +qbars(Q.map((x,n)=>[n===0?'하위 20%':n===Q.length-1?'상위 20%':'','+'+x.med+'%',x.med,n===0||n===Q.length-1]).reverse(),Math.ceil((b.med||60)/10)*10)+`<div class="sub" style="font-size:.7rem;text-align:center">집셈 평가 5분위별 실제 5년 총수익(중위) · 대출 없이 전액 자기 돈 기준</div>`)
- +sec('pair','같은 동네 안에서도 갈립니다',`<div class="mini"><div><span>상위 1/3 − 하위 1/3 · 5년 총수익</span><b class="pos">+${DT.ter}%p</b></div></div>${TAGS(['같은 구 · 같은 시점 매수끼리 비교','지역 방향과 무관한 단지 차이만'])}`)
- +sec('fog','맞히지 못하는 것도 있습니다',`<div style="font-weight:700;font-size:.9rem">시장 전체 방향은 못 맞힙니다</div><div class="mini"><div><span>${lo[0]}년 매수 · 5년</span><b class="neg">${lo[1]}%</b></div><div><span>${hi[0]}년 매수 · 5년</span><b class="pos">+${hi[1]}%</b></div></div>${TAGS([['그래서 한 값 대신 비관~낙관 범위','blue']])}`+colbars(L,x=>x[1]<0||x[0]===hi[0])
-   +`<div class="sub" style="font-size:.78rem;line-height:1.6;margin-top:8px">· 시장 수준은 과거 매수 시점 ${L.length}번의 5년 결과를 그 비율대로 섞어 범위로만 둡니다.<br>· 같은 단지 안 동·층·향 차이, 정책·세제 변화, 정비사업의 속도와 분담금 확정값은 셈에 없습니다.<br>· 범위(10~90%)는 과거 시험 구간에서 실제값이 그 안에 든 비율이 80%가 되도록 맞췄습니다.</div>`)
- +sec('guard','매일 다시 확인합니다',kv('매일','실거래·지수 갱신 · 상위 300곳과 시·구별 상위 20곳은 매물 문구·호가와 실거래 차이를 자동 점검해 이상하면 등급을 내림')
-   +kv('매주 월요일','모델 재적합 · 그날의 평가를 스냅샷으로 저장')
-   +kv('12·24·60개월 뒤','저장한 스냅샷을 실제 실거래와 대조해 이 화면의 수치를 갱신'))
- +sec('book','숫자의 출처',TAGS(['국토부 실거래가(매매 2006~ · 전월세 2011~)','KB 매매지수','한국은행 ECOS 금리','금융위 대출 규제','K-apt · 건축물대장 단지 정보','교육청 학구도 · 학교알리미','공공 버스·지하철 노선망','사람이 매긴 점수 없음']))
- +`<div style="display:flex;gap:10px;margin-top:18px"><a class="btn ghost" href="evidence.html" style="flex:1;text-align:center">상세 검증</a><a class="btn ghost" href="guide.html" style="flex:1;text-align:center">산출 방법</a></div>`;}
+ +`<div style="font-size:.86rem;font-weight:700;color:var(--blue)">이 결과, 어떻게 믿나요</div><div class="hq" style="margin:4px 0 0">맞히지 않고,<br>셉니다.</div>
+ <p class="olead" style="margin-top:12px">앞날을 맞히는 대신, <b>같은 셈을 과거에 했다면 어땠는지</b> 실거래 ${EVN}건으로 쟀어요. 맞은 곳도 빗나간 곳도 그대로 보여 드려요.</p>`
+ +box('과거로 돌아가 검증했어요','집셈이 높게 본 곳과 낮게 본 곳, 5년 뒤 실제로 얼마나 올랐나',
+   `<div class="ost" style="margin-top:4px"><div><span>높게 본 상위 20%</span><b style="color:var(--green);font-size:1.4rem">+${b.med}%</b></div><div><span>낮게 본 하위 20%</span><b style="font-size:1.4rem">+${a.med}%</b></div></div>`
+   +(b.loss!=null?kv('원금 손실 · 상위 20%',`<b>${b.loss}%</b>`)+kv('원금 손실 · 하위 20%',`${a.loss}%`):'')
+   +qbars(Q.map((x,n)=>[n===0?'하위 20%':n===Q.length-1?'상위 20%':'','+'+x.med+'%',x.med,n===0||n===Q.length-1]).reverse(),Math.ceil((b.med||60)/10)*10))
+ +box('같은 동네 안에서도 갈려요','같은 구, 같은 시점에 산 단지끼리만 비교',`<div class="obig"><b class="num" style="color:var(--green)">+${DT.ter}%p</b><span>집셈 상위 1/3과 하위 1/3의 5년 총수익 차이</span></div>`)
+ +(M?`<div id="tmiss">`+box('빗나간 곳도 있어요',`높게 본 집도 100곳 중 약 <b>${Math.round(M.pct)}곳</b>은 5년 뒤 값이 내렸어요${M.yrs&&M.yrs[0]?`. 그중 ${M.yrs[0][1]}%는 집값이 가장 높던 ${M.yrs[0][0]}년에 산 경우예요`:''}.`,
+   (M.ex||[]).map(e=>`<div class="tl" style="cursor:default"><div class="m"><b>${e[0]}</b><span>${e[1].split(' ').pop()} · ${e[2]}년에 샀다면</span></div><div class="v"><b style="color:var(--red)">−${Math.abs(e[3])}%</b><span>5년 뒤</span></div></div>`).join(''))+`</div>`:'')
+ +box('시장 전체 방향은 못 맞혀요','그래서 한 숫자 대신 나쁠 때~좋을 때 범위로 보여 드려요',`<div class="ost" style="margin-top:4px"><div><span>${lo[0]}년에 샀다면 · 5년</span><b style="color:var(--red)">${lo[1]}%</b></div><div><span>${hi[0]}년에 샀다면 · 5년</span><b style="color:var(--green)">+${hi[1]}%</b></div></div>`+colbars(L,x=>x[1]<0||x[0]===hi[0])
+   +kv('범위는','과거 실제값의 80%가 그 안에 들도록 맞춤')+kv('셈에 없는 것','동·층·향, 정책·세제 변화, 정비사업 속도'))
+ +box('어떻게 검증했나요','',kv('방식','<b>표본 밖 검증</b><br><span class="sub">만들 때 안 쓴 시기의 실거래로 대조</span>')
+   +kv('표본',`실거래 <b>${EVN}건</b><br><span class="sub">2011~2021년 매수, 반기마다</span>`)
+   +(IC.length?kv('순위상관',`<b>${icf(IC[0])}</b> · <b>${icf(IC[1])}</b><br><span class="sub">2011~15 · 2016~21년 매수 (1 = 순서 완벽, 0 = 무작위)</span>`):'')
+   +kv('특성 채택','두 시험 구간 모두 좋아질 때만<br><span class="sub">매달 다시 시험해 떨어지면 뺌</span>'))
+ +box('매일 다시 확인해요','',kv('매일','실거래·지수 갱신, 이상한 값 자동 점검')+kv('매주 월요일','모델 재적합, 그날 평가 저장')+kv('12·24·60개월 뒤','저장한 평가를 실제와 대조해 이 화면 갱신'))
+ +box('숫자의 출처','',`<p class="olead" style="margin:0">국토부 실거래가 · KB 매매지수 · 한국은행 금리 · 금융위 대출 규제 · K-apt·건축물대장 · 교육청 학구도·학교알리미 · 공공 버스·지하철 노선망<br><b>사람이 손으로 매긴 점수는 없어요.</b></p>`)
+ +`<section class="os"><div style="display:flex;gap:8px"><a class="tmore" href="evidence.html" style="flex:1;margin:0;text-align:center;text-decoration:none">상세 검증 보기</a><a class="tmore" href="guide.html" style="flex:1;margin:0;text-align:center;text-decoration:none">산출 방법</a></div></section>`;}
 function chat(){   // 09-24 사용자: 고민 말풍선(취지) 원복 → 결국 한 질문 → 시작
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
  app.innerHTML=HOME+`<div class="chat"><button class="skip" onclick="talkAll()">건너뛰기 ›</button>
