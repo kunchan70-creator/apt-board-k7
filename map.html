@@ -45,7 +45,7 @@ button{font-family:inherit;color:inherit}
 #bar .ttl{display:flex;align-items:center;gap:8px;font-weight:700;font-size:1.02rem;white-space:nowrap;padding-left:6px;border-left:1px solid var(--line)}
 #bar .ttl small{font-weight:500;font-size:.74rem;color:var(--ink3)}
 .srch{position:relative;flex:1 1 auto;max-width:440px;margin-left:auto}
-.srch .box{display:flex;align-items:center;gap:6px;height:40px;padding:0 10px 0 12px;border-radius:12px;background:var(--surface2);border:1px solid var(--line);color:var(--ink3)}
+.srch .box{display:flex;align-items:center;gap:6px;height:42px;padding:0 10px 0 12px;border-radius:12px;background:var(--surface2);border:1.5px solid transparent;color:var(--ink3)}
 .srch .box:focus-within{border-color:var(--blue);background:var(--surface);color:var(--blue)}
 .srch input{flex:1;min-width:0;border:0;background:transparent;outline:0;color:var(--ink);font:inherit;font-size:16px;height:100%}
 .srch input::placeholder{color:var(--ink3)}
@@ -118,10 +118,10 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
 /* ---------- 필터 칩 ---------- */
 #chips{position:absolute;left:0;right:0;top:10px;z-index:1000;display:flex;gap:6px;padding:0 12px;overflow-x:auto;scrollbar-width:none;pointer-events:none}
 #chips::-webkit-scrollbar{display:none}
-#chips button{pointer-events:auto;flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;height:36px;padding:0 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink2);
+#chips button{pointer-events:auto;flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;height:36px;padding:0 13px;border-radius:999px;border:0;background:var(--surface);color:var(--ink2);
  font-size:.85rem;font-weight:600;cursor:pointer;box-shadow:var(--float);white-space:nowrap}
 #chips button .ic{width:17px;height:17px}
-#chips button.on{background:var(--blue-bg);border-color:var(--blue);color:var(--blue)}
+#chips button.on{background:var(--blue-bg);color:var(--blue);font-weight:700}
 #chips button .cv{width:14px;height:14px;opacity:.7}
 #status{position:absolute;left:12px;top:54px;z-index:999;font-size:.76rem;color:var(--ink2);background:var(--surface);border-radius:999px;padding:4px 10px;box-shadow:var(--float);pointer-events:none;white-space:nowrap;max-width:calc(100% - 80px);overflow:hidden;text-overflow:ellipsis}
 #status b{color:var(--ink);font-weight:700}
@@ -142,7 +142,7 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
 #legend .sw{display:inline-flex;align-items:center;gap:0}
 #legend .sw i{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:18px;padding:0 4px;font-style:normal;font-size:10.5px;font-weight:700;background:var(--c);color:var(--f);font-variant-numeric:tabular-nums}
 #legend .sw i:first-child{border-radius:9px 0 0 9px}#legend .sw i:last-child{border-radius:0 9px 9px 0}
-#legend .d{margin-top:4px;color:var(--ink3);font-size:.7rem}
+#legend .d{display:none}
 
 /* ---------- 바닥 시트(모바일) / 왼쪽 패널(데스크톱) ---------- */
 .sheet{position:absolute;left:0;right:0;bottom:0;z-index:1150;background:var(--surface);border-radius:20px 20px 0 0;box-shadow:0 -6px 28px rgba(0,0,0,.18);
@@ -151,7 +151,7 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
 .sheet.peek{max-height:min(300px,48vh)}
 .sheet .grab{flex:0 0 auto;padding:8px 0 4px;cursor:grab;touch-action:none;display:flex;justify-content:center}
 .sheet .grab i{width:40px;height:5px;border-radius:3px;background:var(--line)}
-.sheet .x{position:absolute;right:10px;top:10px;width:36px;height:36px;border-radius:10px;border:0;background:var(--surface2);color:var(--ink2);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.sheet .x{position:absolute;right:10px;top:10px;width:36px;height:36px;border-radius:10px;border:0;background:none;color:var(--ink3);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
 .sheet .body{overflow:auto;padding:4px 20px calc(20px + var(--safe-b));overscroll-behavior:contain}
 .sheet h2{font-size:1.28rem;font-weight:800;letter-spacing:-.02em;margin:4px 44px 2px 0;line-height:1.3;text-wrap:balance}
 .sheet .sub{color:var(--ink3);font-size:.86rem;margin:0}
@@ -191,10 +191,11 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
 .note{font-size:.76rem;color:var(--ink3);line-height:1.6;margin:14px 0 0}
 /* 필터 시트 */
 #fsheet h3:first-child{margin-top:6px}
-#fsheet .ttl{font-size:1.1rem;font-weight:800;margin:4px 44px 0 0}
+#fsheet .ttl{font-size:1.25rem;font-weight:800;margin:4px 44px 0 0;letter-spacing:-.02em}
+#fsheet h3{font-size:.92rem;font-weight:700;color:var(--ink);margin:22px 0 10px}
 .opts{display:flex;flex-wrap:wrap;gap:7px}
-.opts button{padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink2);font-size:.88rem;font-weight:600;cursor:pointer}
-.opts button[aria-pressed=true]{background:var(--blue-bg);border-color:var(--blue);color:var(--blue)}
+.opts button{padding:10px 14px;border-radius:999px;border:0;background:var(--surface2);color:var(--ink2);font-size:.9rem;font-weight:600;cursor:pointer}
+.opts button[aria-pressed=true]{background:var(--blue-bg);color:var(--blue);font-weight:700}
 .opts button small{font-weight:500;opacity:.8;margin-left:3px}
 .fhint{font-size:.74rem;color:var(--ink3);margin:6px 0 0}
 .ffoot{display:flex;gap:8px;margin-top:22px}
@@ -276,7 +277,7 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
   <div class="grp"><button type="button" id="lyr" aria-pressed="true" aria-label="지하철 노선·역 표시" title="지하철 노선·역"><svg class="ic"><use href="#i-train"/></svg></button><button type="button" id="loc" aria-label="내 위치" title="내 위치"><svg class="ic"><use href="#i-locate"/></svg></button></div>
  </div>
  <div id="legend">
-  <div class="r"><b>입지</b><span class="sw"><i class="s1">~29</i><i class="s2">30</i><i class="s3">50</i><i class="s4">70</i><i class="s5">85+</i></span><span>서울·경기·인천 단지 간 상대 순위(5~95)</span></div>
+  <div class="r"><b>입지 점수</b><span class="sw"><i class="s1">~29</i><i class="s2">30</i><i class="s3">50</i><i class="s4">70</i><i class="s5">85+</i></span></div>
   <div class="d">참고용 산출치이며 투자 권유가 아닙니다.</div>
  </div>
  <div id="toast" role="status"></div>
@@ -289,10 +290,9 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
   <div class="body">
    <div class="ttl">필터</div>
    <h3 id="fg-sc">입지</h3><div class="opts" data-f="sc"><button type="button" data-v="0">전체</button><button type="button" data-v="50">50 이상</button><button type="button" data-v="70">70 이상</button><button type="button" data-v="85">85 이상</button></div>
-   <h3 id="fg-band">전용면적 <small>(복수 선택)</small></h3><div class="opts" data-f="band" data-multi="1"><button type="button" data-v="1">49㎡ 이하</button><button type="button" data-v="2">59㎡</button><button type="button" data-v="4">74㎡</button><button type="button" data-v="8">84㎡</button><button type="button" data-v="16">101㎡ 이상</button></div>
-   <h3 id="fg-age">준공 연차 <small>(복수 선택)</small></h3><div class="opts" data-f="age" data-multi="1"><button type="button" data-v="n">신축<small>10년 이내</small></button><button type="button" data-v="m">준신축<small>10~20년</small></button><button type="button" data-v="o">구축<small>20년 초과</small></button></div>
+   <h3 id="fg-band">전용면적</h3><div class="opts" data-f="band" data-multi="1"><button type="button" data-v="1">49㎡ 이하</button><button type="button" data-v="2">59㎡</button><button type="button" data-v="4">74㎡</button><button type="button" data-v="8">84㎡</button><button type="button" data-v="16">101㎡ 이상</button></div>
+   <h3 id="fg-age">준공 연차</h3><div class="opts" data-f="age" data-multi="1"><button type="button" data-v="n">신축<small>10년 이내</small></button><button type="button" data-v="m">준신축<small>10~20년</small></button><button type="button" data-v="o">구축<small>20년 초과</small></button></div>
    <h3 id="fg-st">역세권</h3><div class="opts" data-f="st"><button type="button" data-v="0">전체</button><button type="button" data-v="1">역 걸어서 15분 이내</button></div>
-   <p class="fhint">가장 가까운 전철역까지의 도보 경로 거리 기준이며, 경로 정보가 없는 단지는 직선거리 환산값을 씁니다.</p>
    <h3 id="fg-hh">단지 규모</h3><div class="opts" data-f="hh"><button type="button" data-v="0">전체</button><button type="button" data-v="300">300세대 이상</button><button type="button" data-v="1000">1,000세대 이상</button></div>
    <div class="ffoot"><button type="button" class="ghost" id="freset">초기화</button><button type="button" class="pri" id="fapply"></button></div>
   </div>
@@ -554,8 +554,8 @@ function refresh() {
     } else if (m._html !== w.html) { m.setIcon(icon(w.html)); m.setZIndexOffset(w.z); m._html = w.html; }
   }
   // 상태 줄
-  const tot = active() ? `<b>${fmt(FILT.length)}</b>곳 / 전체 ${fmt(N)}곳` : `단지 <b>${fmt(N)}</b>곳`;
-  const hint = md !== 'cx' ? (md === 'si' ? ' · 시·군별 중앙값' : ' · 시·구별 중앙값') + (hidden ? ', 일부는 확대하면 표시' : '') : (hidden ? ' · 점수 높은 단지 우선 표시, 확대하면 전체' : '');
+  const tot = active() ? `<b>${fmt(FILT.length)}</b>곳 / ${fmt(N)}곳` : `<b>${fmt(N)}</b>곳`;
+  const hint = md !== 'cx' ? (md === 'si' ? ' · 시·군별 가운데 값' : ' · 구별 가운데 값') : (hidden ? ' · 확대하면 더 보여요' : '');   // 09-29 토스식: 설명 꼬리 짧게
   $('#status').innerHTML = tot + hint;
   saveHash();
 }
