@@ -782,9 +782,9 @@ function story(i){
  stCount();
  const w=$('#stw'); let x0=null; w.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;},{passive:true}); w.addEventListener('touchend',e=>{if(x0==null)return;const d=e.changedTouches[0].clientX-x0;if(Math.abs(d)>60)story(SI+(d<0?1:-1));x0=null;});}
 // ---------------- 메인 화면(09-25 사용자: 기능이 여러 개 — 앱처럼 아이콘) ----------------
-const APPS=[['swap','갈아타기',"move()"],['bag','출퇴근',"jobv()"],['podium','입지 좋은 순',"board('obj')"],['up','5년 뒤 시세',"board('up')"],
- ['guard','지난 하락기',"board('def')"],['vs','단지 비교',"cmp()"],['map','단지 지도',"location.href='map.html'"],
- ['crane','재건축 분담금',"board('rb')"],['home','단지 분석',"ownFind()"]];   // 09-25 사용자: 시장·믿을 수 있나·산출 방법은 '기능'이 아니라 따로 자리
+const APPS=[['swap','갈아타기',"move()"],['bag','직장 근처 찾기',"jobv()"],['podium','입지 점수 순위',"board('obj')"],['up','5년 뒤 시세 순위',"board('up')"],
+ ['guard','하락기 방어 순위',"board('def')"],['vs','두 단지 비교',"cmp()"],['map','지도로 보기',"location.href='map.html'"],
+ ['crane','분담금 순위',"board('rb')"],['home','우리 단지 분석',"ownFind()"]];   // 09-29 사용자: 이름은 기능(무엇을 해 주나)이 읽히게   // 09-25 사용자: 시장·믿을 수 있나·산출 방법은 '기능'이 아니라 따로 자리
 function hub(){   // 09-25 사용자: 기능이 많아 다 별것 아닌 듯 보임 -> 대표 기능 하나를 크게, 나머지는 작게
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); topIntro(); FF.force=false;
  const nc=new Set(R.map(r=>r.no||r.n)).size;
@@ -825,10 +825,10 @@ const TAGS=a=>`<div class="tags">${a.map(t=>Array.isArray(t)?`<span class="tag $
 const MORE=(t,s)=>t?`<details class="more"><summary>${s||'자세히'}</summary><div>${t}</div></details>`:'';
 // 09-26 사용자: 입지 순위에 '신뢰도 낮음'이 줄줄이 붙으면 시스템이 이상해 보인다. 그 신뢰도는 5년 수익 숫자(최근 시세 추정)용이고
 //   입지 점수는 시세를 안 쓴다(지역·동네·역·연식·세대로 계산, 서울·경기·인천 1.5만 곳 설명력 92%) → 수익 숫자가 나오는 '상승 여력'에만 단다.
-const LZ={obj:['입지 좋은 순','주변 시세와 역 접근성으로 본 순서',['초등학교 통학구역 반영',['입지가 좋다고 순이익이 반드시 큰 건 아니에요','gray']]],
- up:['5년 뒤 시세 순','5년 뒤 시세 범위(중앙값·나쁠 때)가 지금보다 높은 순',['시세만 — 대출이자·세금은 매수 분석에서','입주권·분담금 단지 제외']],
- def:['지난 하락기 실제 변동','2021 고점 → 2022~23 저점, 실거래로 덜 떨어진 순',['300세대 이상',['지난번 기록일 뿐 다음에도 같다는 보장 없음','amber']]],
- rb:['재건축 분담금','새 아파트를 받을 때 더 낼 돈 · 돌려받을 돈',[['부담 = 조합원이 더 냄','red'],['환급 = 오히려 돌려받음','green'],'조합 발표값 우선']]};   // 09-28 '급매 단지' 삭제(지금 나온 매물 이야기 — 호가 없이는 못 찾음)
+const LZ={obj:['입지 점수 순위','주변 시세와 역 접근성으로 본 순서',['초등학교 통학구역 반영',['입지가 좋다고 순이익이 반드시 큰 건 아니에요','gray']]],
+ up:['5년 뒤 시세 순위','5년 뒤 시세 범위(중앙값·나쁠 때)가 지금보다 높은 순',['시세만 — 대출이자·세금은 매수 분석에서','입주권·분담금 단지 제외']],
+ def:['하락기 방어 순위','2021 고점 → 2022~23 저점, 실거래로 덜 떨어진 순',['300세대 이상',['지난번 기록일 뿐 다음에도 같다는 보장 없음','amber']]],
+ rb:['분담금 순위','새 아파트를 받을 때 더 낼 돈 · 돌려받을 돈',[['부담 = 조합원이 더 냄','red'],['환급 = 오히려 돌려받음','green'],'조합 발표값 우선']]};   // 09-28 '급매 단지' 삭제(지금 나온 매물 이야기 — 호가 없이는 못 찾음)
 function board(lens,focus){
  BF.lens=lens||BF.lens; TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
  const L_=BF.lens, Q=DT.q5||[], qt=Q[Q.length-1]||{}, qb=Q[0]||{};
@@ -839,7 +839,7 @@ function board(lens,focus){
  const more=L_==='up'?`<b>중앙값</b>: 이보다 높을 확률과 낮을 확률이 반반인 값.<br><b>지금보다 낮을 확률</b>: 과거 실거래 20년으로 셈한 범위에서 5년 뒤 시세가 지금보다 낮은 몫.<br>같은 지역 안 단지 비교에 강하고, 지역 전체의 방향은 예측하지 않아 그 폭을 범위에 넣었습니다.`
   :L_==='rb'?`조합 발표값이 없는 단지는 발표 사례로 보정한 공식의 추정치입니다${DT.bk?` (사례 ${DT.bk.n}건 · 오차 중앙 옛 집 시세의 ${DT.bk.err}%, 강남 고가 단지는 4~6억까지 벗어난 사례 있음)`:''}. 실제 분담금은 조합 공지로 확인하세요.`
   :L_==='def'?'거래가 적어 튀는 값은 뺐습니다.':'';
- app.innerHTML=HOME+`<div class="hq" style="margin:0 0 2px">${Z[0]}</div><div style="font-weight:700;font-size:.92rem">${Z[1]}</div>${L_==='up'?prin('4px 0 0','b'):''}${TAGS(Z[2])}${vis}${MORE(more)}
+ app.innerHTML=HOME+`<div class="hq" style="margin:0 0 2px">${Z[0]}</div><div style="font-weight:700;font-size:.92rem">${Z[1]}</div>${L_==='up'?prin('4px 0 0','b'):''}${TAGS([['내 조건과 무관 · 서울·경기·인천 전체','blue']].concat(Z[2]))}${vis}${MORE(more)}
  
  <div style="display:flex;gap:8px;margin-bottom:8px"><select onchange="BF.gu=this.value;BF.n=30;blist()" style="flex:1;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit"><option value="">서울·경기·인천 전체</option>${gus.map(g=>`<option ${BF.gu===g?'selected':''}>${g}</option>`).join('')}</select></div>
  <div class="cc" id="bsz" style="margin-bottom:8px"></div>
@@ -860,13 +860,13 @@ function blist(){
  // 09-29 사용자: 입지·5년 뒤 시세·하락기 순위도 매수 분석과 같은 카드(row) — 큰 숫자만 그 순위의 값. 순이익 막대는 전액 자기 돈 기준(내 조건과 무관한 판이라 CF.cash를 잠깐 비움)
  // 09-29 사용자: 재건축 분담금 판도 같은 카드 — 큰 숫자 = 분담금(조합 발표가 있으면 발표값), 셋째 줄 = 종전→새 면적·출처 또는 추정 범위
  const rbO=c=>{const k=c.bkc, r=c.rb, est=r.rb[5], e=Math.round(r.p*((DT.bk&&DT.bk.err)||10)/100), col=v=>v>=0?'var(--red)':'var(--green)';
-  if(k){const s=k.find(x=>Math.abs(x[0]-x[1])<=6)||k[0];return {lbl:'분담금 · 조합 발표',big:`<b class="num" style="color:${col(s[2])}">${BKW(s[2])}</b>`,l3:`${Math.round(s[0])}→${Math.round(s[1])}㎡ · ${s[3]}${s[4]?' · '+s[4]:''}`};}
+  if(k){const s=k.find(x=>Math.abs(x[0]-x[1])<=6)||k[0];return {noRng:true,lbl:'분담금 · 조합 발표',big:`<b class="num" style="color:${col(s[2])}">${BKW(s[2])}</b>`,l3:`${Math.round(s[0])}→${Math.round(s[1])}㎡ · ${s[3]}${s[4]?' · '+s[4]:''}`};}
   const lo=est-e, hi=est+e, RG=lo>=0?`부담 ${eok(lo)}~${eok(hi)}억`:hi<=0?`환급 ${eok(-hi)}~${eok(-lo)}억`:`환급 ${eok(-lo)}억 ~ 부담 ${eok(hi)}억`;
-  return {lbl:'분담금 · 추정(동일 평형)',big:`<b class="num" style="color:${col(est)}">${BKW(est)}</b>`,l3:`추정 범위 ${RG} · 시세 ${eok(r.p)}억 <span class="sub">(사례 보정 공식, 조합 공지로 확인)</span>`};};
+  return {noRng:true,lbl:'분담금 · 추정(동일 평형)',big:`<b class="num" style="color:${col(est)}">${BKW(est)}</b>`,l3:`추정 범위 ${RG} · 시세 ${eok(r.p)}억 <span class="sub">(사례 보정 공식, 조합 공지로 확인)</span>`};};
  const rowB=x=>{const {c,r,k}=x; if(L_==='rb')return row(c.rb,k,'',rbO(c));
-  const o=up?(()=>{const F=r.F||(r.F=fin(r)),s1=GRS(F.sv1),s5=GRS(F.sv5),s9=GRS(F.sv9),lo=Math.round(belowP(s1,s5,s9,r.p)*100);return {lbl:'5년 뒤 시세',big:`<b class="num">${eok(s5)}억</b>`,l3:`지금 ${eok(r.p)}억 → 5년 뒤 <b>${eok(s5)}억</b> · 지금보다 낮을 확률 ${lo}%`};})()
-   :L_==='def'?{lbl:'2022 하락기 변동',big:`<b class="num" style="color:${c.dd>-10?'var(--blue)':c.dd<-25?'var(--red)':'var(--ink)'}">${c.dd>0?'+':''}${Math.round(c.dd)}%</b>`}
-   :{lbl:'입지 점수',big:`<b class="num" style="color:var(--blue)">${c.sc}</b>`,l2:STXT(r)};
+  const o=up?(()=>{const F=r.F||(r.F=fin(r)),s1=GRS(F.sv1),s5=GRS(F.sv5),s9=GRS(F.sv9),lo=Math.round(belowP(s1,s5,s9,r.p)*100);return {noRng:true,lbl:'5년 뒤 시세',big:`<b class="num">${eok(s5)}억</b>`,l3:`지금 ${eok(r.p)}억 → 5년 뒤 <b>${eok(s5)}억</b> · 지금보다 낮을 확률 ${lo}%`};})()
+   :L_==='def'?{noRng:true,lbl:'2022 하락기 변동',big:`<b class="num" style="color:${c.dd>-10?'var(--blue)':c.dd<-25?'var(--red)':'var(--ink)'}">${c.dd>0?'+':''}${Math.round(c.dd)}%</b>`}
+   :{noRng:true,lbl:'입지 점수',big:`<b class="num" style="color:var(--blue)">${c.sc}</b>`,l2:STXT(r)};
   const ex=q&&L_==='obj'?`<div class="rc2"><span style="color:var(--blue);font-weight:700">입지 좋은 순 ${c.ra.toLocaleString()}번째 · ${c.gu.split(' ').pop()} 안 ${c.rg}번째</span><span></span></div>`:'';
   return row(r,k,ex,o);};
  const kc=CF.cash, ku=CF.useU; CF.cash=null; CF.useU=true; R.forEach(r=>r.F=null);
@@ -1722,9 +1722,9 @@ function row(r,k,ex,o){   // 09-28 사용자: 결과판이 지저분 + 순위마
  const big=o.big||`<b class="num ${n>=0?'pos':'neg'}">${sg(n)}</b>`;   // 어느 순서로 보든 큰 숫자는 5년 순이익(09-28)
  return `<details class="card rc${k===1?' r1':''}" ontoggle="if(this.open)ppFb(${r._i})"><summary>
  <div class="rc1"><span class="rk${k===1?' r1':''}"${String(k).length>3?' style="font-size:.7rem"':''}>${k}</span><b class="rcn">${r.n} <span>${r.b}㎡</span></b><span class="bn"><i>${o.lbl||'5년 순이익'}</i>${big}</span></div>
- <div class="rc2"><span>${r.gu}${CF.cash!=null&&CF.useU?` · ${monthly(r,F)<1?'대출 없음':`월 이자 <b style="color:var(--ink)">${mTxt(monthly(r,F))}</b>`}`:''}${o.l2?' · '+o.l2:''}${hi?` <em>${hi.t}</em>`:''}</span><span></span></div>
+ <div class="rc2"><span>${r.gu}${CF.cash!=null&&CF.useU&&!o.noRng?` · ${monthly(r,F)<1?'대출 없음':`월 이자 <b style="color:var(--ink)">${mTxt(monthly(r,F))}</b>`}`:''}${o.l2?' · '+o.l2:''}${hi?` <em>${hi.t}</em>`:''}</span><span></span></div>
  ${ex||''}<div class="rc3">${o.l3||`시세 ${eok(r.p)}억${r.bu?` + 분담금 ${eok(r.bu)}억`:''} → 5년 뒤 <b>${eok(GRS(F.sv5))}억</b>`}</div>
- <div class="rng1">${cells(F)}</div>
+ ${o.noRng?'':`<div class="rng1">${cells(F)}</div>`}
  </summary>${detail(r)}<button class="btn ghost" style="width:100%;margin:10px 0 2px" onclick="rcard('${key}')">단지 분석 보기 — 강점·약점 · 층별 정상가 · 학교</button></details>`;}
 let RBV=[], N=10, V=[], RS={lo:-1,hi:1};
 function cells(F){   // 09-28 사용자: 막대를 보자마자 '손해 몇 %, 이익 몇 %, 나쁠 때·좋을 때 얼마'가 읽혀야 한다 → 가로축 = 확률(10번 해 보면 나쁜 순→좋은 순). 빨강 = 손해 몫, 파랑 = 이익 몫, 양끝 옅은 곳 = 10번 중 1번꼴, 점 = 가운데(큰 숫자), 아래 숫자 = 10%·90% 지점의 순이익
@@ -1993,7 +1993,7 @@ function jcount(ps){return CPX.filter(c=>c.xy&&ps.every(P=>{const t=P.mode==='ca
 function jnearst(p){let b=null,bd=1e9;NET.stations.forEach(s=>{const d=jkm([p.lat,p.lon],[s[1],s[2]]);if(d<bd){bd=d;b=s[0];}});return [b,bd];}
 function jpers(a,k){return {lab:a['J'+k].lab,lat:a['J'+k].lat,lon:a['J'+k].lon,hr:8,max:a['M'+k]||60,mode:a['C'+k]||'pt'};}
 function jasync(id,fn){setTimeout(()=>jbload().then(()=>setTimeout(()=>{const e=document.getElementById(id);if(e)e.textContent=fn();},20)).catch(()=>{const e=document.getElementById(id);if(e)e.textContent='-';}),30);}
-CSTEP.commute={title:'출퇴근 단지 찾기',note:'통근 시간은 공공 버스·지하철 노선으로 계산한 대략값입니다(실제와 ±10분 안팎). 다음 화면에서 매매가·면적으로 더 좁힐 수 있습니다.',done:'통근 조건에 맞는<br>단지를 찾았습니다',
+CSTEP.commute={title:'직장 근처 단지 찾기',note:'통근 시간은 공공 버스·지하철 노선으로 계산한 대략값입니다(실제와 ±10분 안팎). 다음 화면에서 매매가·면적으로 더 좁힐 수 있습니다.',done:'통근 조건에 맞는<br>단지를 찾았습니다',
  init:()=>{const a={n:JB.n};JB.P.forEach((P,k)=>{if(P.lat!=null)a['J'+k]={lab:P.lab,lat:P.lat,lon:P.lon};a['M'+k]=P.max||60;if(JCAR)a['C'+k]=P.mode||'pt';});return a;},
  get steps(){const n=CN.a.n||1,S=[{id:'n',q:'출근하는 사람은<br>몇 명인가요?',h:'맞벌이면 두 사람의 직장을 각각 넣고, 둘 다 조건에 맞는 단지만 찾습니다.',
    opts:[['혼자','나만 출근해요',1],['둘 (맞벌이)','두 사람이 각자 다른 직장에 출근해요',2]],
@@ -2036,7 +2036,7 @@ function jvw(q){return new Promise(res=>{const key='4B38CCC2-121A-444D-B11B-E6F3
 function cnPlacePick(lab,la,lo){CN.a[CSTEP[CN.k].steps[CN.i].id]={lab,lat:la,lon:lo};$('#cnq').value=lab;$('#cnr').innerHTML='';cnShow();}
 function jres(){TT.forEach(clearTimeout);TT=[];window.scrollTo(0,0);
  const ck=NET.cv||NET.check||{},PS=JB.P.slice(0,JB.n);
- app.innerHTML=HOME+`<div class="hq" style="margin:0 0 2px">출퇴근</div><div style="font-weight:700;font-size:.92rem">통근 조건에 맞는 단지</div>
+ app.innerHTML=HOME+`<div class="hq" style="margin:0 0 2px">직장 근처 찾기</div><div style="font-weight:700;font-size:.92rem">통근 시간 조건에 맞는 단지</div>
  ${TAGS(['지하철·버스 기준',ck.within10!=null?['실제와 10분 안 '+ck.within10+'%','gray']:null].filter(Boolean))}
  <div class="card" style="padding:12px 14px;margin:10px 0">${PS.map((P,k)=>`<div style="display:flex;justify-content:space-between;gap:10px;font-size:.84rem;margin:3px 0"><span class="sub" style="white-space:nowrap">${jwho(k)}직장</span><b style="text-align:right;word-break:keep-all">${P.lab} · 편도 ${P.max}분 이내</b></div>`).join('')}
   <button class="btn ghost" style="margin-top:10px" onclick="JB.done=false;jsave();consult('commute')">조건 바꾸기</button></div>
