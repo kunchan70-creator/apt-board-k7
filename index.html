@@ -936,22 +936,6 @@ function gyof(gu){const Y=DT.gyoy||{},G=Y.g||{};return G[gu]!=null?G[gu]:G['인�
 function gsigf(gu){const G=DT.gsig||{};return G[gu]||G['인천 '+gu]||G[(gu||'').split(' ')[0]];}
 // 09-29 방향 판정기 v1: 최근 6개월 추세 + 수요 열기(부호 고정, 학습 없음). 5년 값과 별개인 짧은 방향 — 과거 적중을 같이 보여 준다
 function tmf(gu){const G=(DT.tm||{}).g||{};return G[gu]||G['인천 '+gu]||G[(gu||'').split(' ')[0]];}
-// 09-29 토스식: 제목(ⓘ) + 이름·값 줄만. 이유·적중률·계산 방법은 ⓘ 시트로
-function tmBody(r){const T=tmf(r.gu), A=(DT.tm||{}).acc||{}, W=(DT.tm||{}).wait||{};if(!T||!A['6'])return '';
- const kv=(k,v)=>`<div class="kv"><span class="k">${k}</span><span class="v">${v}</span></div>`, lab=c=>c>0?'<b class="pos">오름</b>':c<0?'<b class="neg">내림</b>':'<b>횡보</b>';
- const w=(W['6']||{})[String(T[0])], man=v=>(Math.round(Math.abs(v)/100)*100).toLocaleString()+'만 원';
- const wt=w?(Math.abs(w[0])<1?'비슷함':'약 '+man(r.p*w[0]/100)+(w[0]>0?' 비싸짐':' 싸짐')):'-';
- return kv('앞으로 6개월',lab(T[0]))+kv('앞으로 1년',lab(T[1]))+kv('6개월 기다리면',wt)
-  +(T[3]!=null?kv('구입 부담','소득의 '+Math.round(T[3]*100)+'%'+(T[4]!=null?` <span class="sub">(10년 평균보다 ${T[4]>0?'+':''}${Math.round(T[4]*100)}%)</span>`:'')):'');}
-function tmInfo(gu){const T=tmf(gu), A=(DT.tm||{}).acc||{}, W=(DT.tm||{}).wait||{};if(!T)return;
- const up=T[2].filter(x=>x[1]>0).map(x=>x[0]), dn=T[2].filter(x=>x[1]<0).map(x=>x[0]), a6=A['6']['2010~'], a12=A['12']['2010~'], w=(W['6']||{})[String(T[0])];
- sheet('단기 방향은 이렇게 판정해요',`<ul style="margin:0;padding-left:18px;color:var(--ink2);font-size:.9rem;line-height:1.8;word-break:keep-all">
-  <li>최근 6개월 시세 흐름에 수요 신호(주택가격전망 심리·매수우위·거래량·외지인 매입·오르는 지역 확산·전세·금리·미분양)를 더해 오름·횡보·내림 중 하나로 판정해요. 1년 판정은 금리가 오르는 시기에만 구입 부담을 더 봐요</li>
-  ${up.length||dn.length?`<li>지금 ${(gu||'').split(' ').pop()}: ${up.length?'올리는 쪽 '+up.join(', '):''}${up.length&&dn.length?' · ':''}${dn.length?'누르는 쪽 '+dn.join(', '):''}</li>`:''}
-  <li>2010년부터 매달 그때 나와 있던 자료만으로 판정해 맞힌 비율은 6개월 ${a6[0]}% · 1년 ${a12[0]}%예요. 최근 흐름만 따르면 ${a6[1]}% · ${a12[1]}%예요</li>
-  ${w?`<li>'6개월 기다리면'은 과거에 같은 판정이 나온 뒤 실제 시세가 움직인 평균이에요. 기다려서 더 싸게 매수한 경우는 ${w[1]}%였어요</li>`:''}
-  <li>구입 부담은 이 구 84㎡ 중위 실거래가를 60% 대출·30년 원리금균등으로 매수할 때 월 상환액을 전국 중위 가구 월소득으로 나눈 값이에요</li>
-  <li>구 전체 기준이라 단지마다 다를 수 있고, 5년 뒤 시세와는 따로 셈해요</li></ul>`);}
 function regWarn(gu,short){   // 09-25: 지역 방향은 과거 국면마다 뒤집혀(구 지수 워크포워드) 예측하지 않고, 그 오차 폭은 이미 비관~낙관 범위에 들어 있다 → 경고가 아닌 사실 한 줄
  if(short)return '';
  const y=gyof(gu), Y=DT.gyoy||{}, f=v=>(v>0?'+':'')+v;
@@ -1807,7 +1791,7 @@ function detail(r){   // 09-27 사용자: 이것만 보고 매수를 계획할 �
    +kv('자기자본','<b>'+eok(F.own)+'억</b>'+(CF.cash!=null?(F.ok?(F.left>=50?' <span class="sub">· 잔여 현금 '+eok(F.left)+'억</span>':''):' <span class="neg">· '+eok(F.own-CF.cash)+'억 부족</span>'):''))
    +(CF.inc==null&&F.L>0?'<div class="sub" style="font-size:.74rem;margin-top:2px">연소득을 넣으면 은행 한도(DSR)까지 맞춰 계산합니다.</div>':''));}
  h+=sec('5년 뒤 (추정)',kv('예상 시세','<b>'+eok(GRS(F.sv5))+'억</b> <span class="sub">(비관 '+eok(GRS(F.sv1))+' ~ 낙관 '+eok(GRS(F.sv9))+'억)</span>')+whyUp(r)+howNum(r,F)+(CF.cash!=null?invBox(r):''));
- {const t=tmBody(r);if(t)h+=sec('단기 방향 · '+(r.gu||'').split(' ').pop()+`<button class="ibi" onclick="tmInfo('${r.gu}')" aria-label="어떻게 판정하나요">ⓘ</button>`,t);}   // 09-29 방향 판정기 v1(구 단위, 5년 값과 별개)   // 09-28 카드 통일 때 빠졌던 '이 집 대신 가진 돈을 굴린다면 연 N%' 되살림
+ {if(tmf(r.gu))h+=sec('단기 국면',`<a class="kv" style="text-decoration:none;color:inherit" href="market.html#a=${encodeURIComponent(r.gu)}"><span class="k">${(r.gu||'').split(' ').pop()} 국면 해석기</span><span class="v">시장에서 보기 ›</span></a>`);}   // 09-29 사용자: 단지에 '오름'이라 단정하지 않고, 시장 화면 국면 해석기(과거 비슷한 상태의 결과 비율)로 안내
  h+=sec('이 가격에 매수한다면',`<div id="ppfb-${r._i}" style="margin-bottom:8px"></div><div class="fr" style="border:0;padding-top:4px"><span><b>매수 예정가</b><em>계약하려는 가격을 넣으면 다시 셈해요</em></span><label><input type="text" inputmode="decimal" autocomplete="off" placeholder="${(r.p/1e4).toFixed(2)}" oninput="ppCalc(${r._i},this)" id="ppv-${r._i}"><i>억</i></label></div><div class="fr" style="border:0;padding-top:0"><span><b>층</b><em>층을 넣으면 그 층대 정상가와 급매 선을 같이 봐요</em></span><label><input type="text" inputmode="numeric" autocomplete="off" placeholder="예: 12" id="ppf-${r._i}" oninput="ppCalc(${r._i},document.getElementById('ppv-${r._i}'))"><i>층</i></label></div><div id="pp-${r._i}"></div>`);
  if(trustOf(r).tags.length)h+=tbox(r);
  let more='';
