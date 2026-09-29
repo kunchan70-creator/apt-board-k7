@@ -109,8 +109,8 @@ ul.plain{padding-left:18px}
 .eyebrow{font-size:.8rem;font-weight:700;color:var(--blue);letter-spacing:.02em}
 .hq{word-break:keep-all;font-size:clamp(1.35rem,5.6vw,1.65rem);font-weight:800;line-height:1.32;letter-spacing:-.03em;margin:10px 0 8px;text-wrap:balance}
 .prog{height:4px;background:var(--line);border-radius:4px;overflow:hidden;margin:4px 0 22px}.prog i{display:block;height:100%;background:var(--blue);transition:width .3s}
-.opt{display:block;width:100%;text-align:left;padding:18px;border-radius:16px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:1.02rem;font-weight:600;margin:10px 0;cursor:pointer}
-.opt:hover{border-color:var(--blue)}.opt.on{border-color:var(--blue);background:var(--blue-bg);color:var(--blue)}
+.opt{display:block;width:100%;text-align:left;padding:18px;border-radius:16px;border:0;background:var(--surface2);color:var(--ink);font:inherit;font-size:1.02rem;font-weight:600;margin:8px 0;cursor:pointer}
+.opt.on{background:var(--blue-bg);color:var(--blue);box-shadow:inset 0 0 0 1.5px var(--blue)}
 .fact{word-break:keep-all;background:var(--surface2);border-radius:16px;padding:18px;margin-top:16px;line-height:1.6}
 .fact b.k{display:block;font-size:.8rem;color:var(--ink3);margin-bottom:6px}
 .fact .n{font-size:1.9rem;font-weight:800;color:var(--blue);letter-spacing:-.03em;display:block;margin:4px 0}
@@ -132,15 +132,15 @@ ul.plain{padding-left:18px}
 .tmore{display:block;width:100%;margin-top:10px;padding:14px;border:0;border-radius:14px;background:var(--surface2);color:var(--ink2);font:inherit;font-weight:700;cursor:pointer}
 .bs-bg{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:90;animation:shF .2s}
 .bs{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:0 auto;background:var(--surface);border-radius:24px 24px 0 0;padding:10px 22px calc(22px + env(safe-area-inset-bottom));z-index:91;max-height:78vh;display:flex;flex-direction:column;animation:shU .28s cubic-bezier(.2,.8,.2,1)}
-.bs i.h{display:block;width:36px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 16px}.bs h3{margin:0 0 6px;font-size:1.2rem;font-weight:800;letter-spacing:-.02em}.bs .ls{overflow-y:auto}
+.bs i.h{display:block;width:36px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 16px}.bs h3{margin:0 0 6px;font-size:1.2rem;font-weight:800;letter-spacing:-.02em}.bs .ls{overflow-y:auto;scrollbar-width:none}.bs .ls::-webkit-scrollbar{display:none}
 .bs .o{display:flex;justify-content:space-between;align-items:center;width:100%;padding:14px 2px;border:0;background:none;color:var(--ink);font:inherit;font-size:1rem;font-weight:600;text-align:left;cursor:pointer}
 .bs .o small{display:block;font-size:.78rem;color:var(--ink3);font-weight:500;margin-top:3px}.bs .o.on{color:var(--blue);font-weight:700}.bs .o.on::after{content:'✓';font-weight:800}
 .bs .g{font-size:.78rem;font-weight:700;color:var(--ink3);margin:16px 2px 8px}
 .bs .gg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.bs .gg button{padding:11px 4px;border:0;border-radius:12px;background:var(--surface2);color:var(--ink);font:inherit;font-size:.86rem;font-weight:600;cursor:pointer;word-break:keep-all;line-height:1.3}.bs .gg button.on{background:var(--blue-bg);color:var(--blue);font-weight:700}
 @keyframes shU{from{transform:translateY(100%)}to{transform:none}}@keyframes shF{from{opacity:0}}
-.frs{margin:18px 0 6px}.fr{display:flex;align-items:center;gap:8px;width:100%;padding:16px 2px;border:0;border-bottom:1px solid var(--line2);background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
-.fr>span{flex:1;min-width:0;white-space:nowrap;color:var(--ink2);font-size:.95rem}.fr>b{font-weight:700;font-size:.98rem;max-width:62%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fr>b.ph{color:var(--blue)}.fr>svg{color:var(--ink3);flex-shrink:0}
-.fr input{flex:0 0 110px;width:110px!important;min-width:0;border:0;background:none;color:var(--ink);font:inherit;font-size:1.05rem;font-weight:700;text-align:right;outline:none;padding:0}.fr input::placeholder{color:var(--ink3)}.fr em{font-style:normal;font-weight:700;color:var(--ink2)}
+.frs{margin:18px 0 6px}.frw{display:flex;align-items:center;gap:8px;width:100%;padding:16px 2px;border:0;border-bottom:1px solid var(--line2);background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.frw>span{flex:1;min-width:0;color:var(--ink2);font-size:.95rem;word-break:keep-all}.frw>span small{display:block;font-size:.76rem;color:var(--ink3);margin-top:2px}.frw>b{font-weight:700;font-size:.98rem;max-width:62%;text-align:right;word-break:keep-all;overflow:hidden;text-overflow:ellipsis}.frw>b.ph{color:var(--blue)}.frw>svg{color:var(--ink3);flex-shrink:0}
+.frw input{flex:0 0 100px;width:100px!important;min-width:0;border:0;background:none;color:var(--ink);font:inherit;font-size:1.05rem;font-weight:700;text-align:right;outline:none;padding:0}.frw input::placeholder{color:var(--ink3);font-weight:500}.frw em{font-style:normal;font-weight:700;color:var(--ink2);white-space:nowrap}
 .res-h{margin:26px 0 4px}.kvs{margin:16px 0 8px;padding:6px 16px;border-radius:16px;background:var(--surface2)}
 .kvs .kv{display:flex;justify-content:space-between;align-items:center;padding:11px 0;font-size:.93rem}.kvs .kv+.kv{border-top:1px solid var(--line2)}.kvs .kv span{color:var(--ink2)}.kvs .kv b{font-weight:800;font-size:1rem}
 .os{margin:22px -20px 0;padding:22px 20px 6px;border-top:10px solid var(--surface2)}.os h4{margin:0 0 12px;font-size:1.1rem;font-weight:800;letter-spacing:-.02em}
@@ -156,8 +156,8 @@ ul.plain{padding-left:18px}
 .sec2{margin:24px 0 4px;font-weight:800;font-size:1.05rem}.sec2 span{font-weight:500;font-size:.8rem;color:var(--ink3);margin-left:4px}
 .mvh{padding:12px 0;border-bottom:1px solid var(--line2)}.mvh>div:first-child{margin-bottom:8px}.mvh b{font-weight:700}.mvh span{font-size:.8rem;color:var(--ink3);margin-left:6px}
 .cc{display:flex;flex-wrap:wrap;gap:7px}
-.cc button{padding:9px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink2);font:inherit;font-size:.9rem;font-weight:600;cursor:pointer}
-.cc button.on{background:var(--blue);color:#fff;border-color:var(--blue)}.cc button.on::before{content:'✓ '}
+.cc button{padding:9px 14px;border-radius:999px;border:0;background:var(--surface2);color:var(--ink2);font:inherit;font-size:.9rem;font-weight:600;cursor:pointer}
+.cc button.on{background:var(--blue-bg);color:var(--blue);font-weight:700}
 .cc button.all{border-style:dashed}
 .grp{margin:12px 0 4px;font-size:.84rem;font-weight:700;color:var(--ink3)}
 .picked{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
@@ -167,10 +167,10 @@ ul.plain{padding-left:18px}
 .rtab button.on{background:var(--surface);color:var(--blue);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .rtab button span{display:block;font-size:.72rem;font-weight:500;color:var(--ink3)}
 .rgd{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.rgd>button{padding:10px 4px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:.9rem;font-weight:700;cursor:pointer;line-height:1.25;word-break:keep-all}
+.rgd>button{padding:10px 4px;border-radius:12px;border:0;background:var(--surface2);color:var(--ink);font:inherit;font-size:.9rem;font-weight:700;cursor:pointer;line-height:1.25;word-break:keep-all}
 .rgd>button span{display:block;font-size:.7rem;font-weight:500;color:var(--ink3);margin-top:2px}
-.rgd>button.on{background:var(--blue);border-color:var(--blue);color:#fff}.rgd>button.on span{color:#fff;opacity:.85}
-.rgd>button.part{border-color:var(--blue);color:var(--blue)}.rgd>button.open{border-color:var(--blue);border-width:2px}
+.rgd>button.on{background:var(--blue-bg);color:var(--blue);box-shadow:inset 0 0 0 1.5px var(--blue)}.rgd>button.on span{color:var(--blue);opacity:.8}
+.rgd>button.part{color:var(--blue);box-shadow:inset 0 0 0 1.5px var(--blue)}.rgd>button.open{box-shadow:inset 0 0 0 2px var(--blue)}
 .rgd>button.z{opacity:.45}
 .rgd .rsub{grid-column:1/-1;background:var(--blue-bg);border-radius:12px;padding:10px;margin:2px 0}
 .inp{display:flex;align-items:center;gap:10px;background:var(--surface2);border-radius:14px;padding:6px 14px}
@@ -1060,7 +1060,7 @@ function ownHTML(c,r,k,back,X){
  const fut=r.as?box('계속 살면 5년 뒤','<div style="font-size:.92rem;color:var(--ink2)">입주권 단계라 분담금을 뺀 새 아파트 값으로 따로 셉니다.</div>')
   :box('계속 살면 5년 뒤',`<div class="obig"><b class="num">${eok(s5)}억</b><span>지금 ${eok(r.p)}억에서 · 보통일 때</span></div>${pbar(r.p,s1,s5,s9)}`);
  /* ③ 내 대출·금리 */
- const inp=(id,ph,v,u,l)=>`<label class="fr"><span>${l}</span><input id="${id}" type="number" inputmode="decimal" step="0.1" placeholder="${ph}" value="${v==null?'':v}" oninput="ownCalc('${c.k}',${r.b})"><em>${u}</em></label>`;
+ const inp=(id,ph,v,u,l)=>`<label class="frw"><span>${l}</span><input id="${id}" type="number" inputmode="decimal" step="0.1" placeholder="${ph}" value="${v==null?'':v}" oninput="ownCalc('${c.k}',${r.b})"><em>${u}</em></label>`;
  const loan=box('내 대출로 셈하기',`<div style="font-size:.84rem;color:var(--ink3);margin:-4px 0 2px">갖고 있으면 남은 대출, 살 생각이면 받을 대출</div>${inp('owL','0',OWN.loan,'억','대출')}${inp('owR',DT.rate.loan,OWN.rate,'%','금리')}<div id="owCalc" style="margin-top:6px"></div>`);
  /* ④ 입지와 순위 */
  const GB=goodBad(c), chip=(x,col,bg)=>`<span style="padding:6px 10px;border-radius:999px;background:${bg};color:${col};font-size:.8rem;font-weight:700">${x}</span>`;
@@ -1157,8 +1157,8 @@ function mvK(){const c=MV.k&&CPXK[MV.k], h=c&&c.rows.find(r=>r.b===MV.b); return
 function mvWrap(fn){const s={cash:CF.cash,useU:CF.useU,regions:CF.regions,size:CF.size,age:CF.age}; CF.cash=mvK(); CF.useU=true; CF.regions=MV.regions||[]; CF.size=MV.size||[]; CF.age=MV.age||[];
  try{return fn();}finally{CF.cash=s.cash;CF.useU=s.useU;CF.regions=s.regions;CF.size=s.size;CF.age=s.age;}}   // 갈아타기 조건을 잠깐 CF에 실어 매수 분석과 같은 함수(ok·fin·drawReg·row)를 그대로 쓴다
 // 09-29 사용자: 매수 분석·직장 근처 찾기 말고는 전부 토스식 → 입력은 '항목 줄'(누르면 바텀시트), 결과는 결론 한 문장 + 비교 두 줄 + 목록(이름·숫자)
-const FR=(l,v,js,ph)=>`<button class="fr" onclick="${js}"><span>${l}</span><b class="${v?'':'ph'}">${v||ph||'선택'}</b>${CHV.replace('m6 9 6 6 6-6','m9 6 6 6-6 6')}</button>`;
-const FRI=(l,v,js)=>`<label class="fr"><span>${l}</span><input type="text" inputmode="decimal" autocomplete="off" placeholder="0" value="${v==null?'':v/1e4}" oninput="${js}"><em>억</em></label>`;
+const FR=(l,v,js,ph)=>`<button class="frw" onclick="${js}"><span>${l}</span><b class="${v?'':'ph'}">${v||ph||'선택'}</b>${CHV.replace('m6 9 6 6 6-6','m9 6 6 6-6 6')}</button>`;
+const FRI=(l,v,js)=>`<label class="frw"><span>${l}</span><input type="text" inputmode="decimal" autocomplete="off" placeholder="0" value="${v==null?'':v/1e4}" oninput="${js}"><em>억</em></label>`;
 function mvSel(k,b){MV.k=k;MV.b=b;MV.size=null;MV.regions=null;shClose();move();}
 function mvSheet(w){
  if(w==='home'){sheet('지금 사는 집',`<input id="mvq" class="tsearch" style="margin:4px 0 6px" type="search" placeholder="단지 이름으로 찾기" oninput="mvFind(this.value)"><div id="mvf"></div>`);setTimeout(()=>{const e=$('#mvq');e&&e.focus();},50);}
@@ -1407,8 +1407,17 @@ const AGD=[['n','신축 (10년 이내)','비싸지만 수리할 곳이 거의 �
 function optList(key,D){
  const none=!CF[key].length;
  return `<button class="opt${none?' on':''}" onclick="pickOpt('${key}',null)"><b>상관없어요</b><span class="sub" style="display:block;font-size:.8rem;font-weight:500;margin-top:2px">전부 보고 비교할게요</span></button>`
- +D.map(([v,t,d])=>{const on=CF[key].includes(v), n=cntWith(key,v);return `<button class="opt${on?' on':''}" style="${n?'':'opacity:.5'}" onclick="pickOpt('${key}','${v}')"><span style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>${on?'✓ ':''}${t}</b><span style="font-size:.78rem;font-weight:600;color:var(--ink3);white-space:nowrap">${n.toLocaleString()}곳</span></span><span class="sub" style="display:block;font-size:.8rem;font-weight:500;margin-top:2px">${d}</span></button>`;}).join('')
- +`<div class="hint" style="margin-top:4px">여러 개 고를 수 있어요 · 오른쪽 숫자 = 앞에서 고른 조건으로 매수 가능한 단지 수</div>`;}
+ +D.map(([v,t,d])=>{const on=CF[key].includes(v), n=cntWith(key,v);return `<button class="opt${on?' on':''}" style="${n?'':'opacity:.5'}" onclick="pickOpt('${key}','${v}')"><span style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>${t}</b><span style="font-size:.78rem;font-weight:600;color:var(--ink3);white-space:nowrap">${n.toLocaleString()}곳</span></span><span class="sub" style="display:block;font-size:.8rem;font-weight:500;margin-top:2px">${d}</span></button>`;}).join('')
+ +`<div class="hint" style="margin-top:4px">여러 개 고를 수 있어요 · 숫자 = 살 수 있는 단지 수</div>`;}
+function advSheet(){   // 09-29 토스식: 세부 조건은 요약 화면의 한 줄 → 바텀시트
+ const F_=(l,h,ph,v,js,u,t)=>`<label class="frw"><span>${l}<small>${h}</small></span><input type="${t||'text'}" inputmode="decimal" autocomplete="off" placeholder="${ph}" value="${v}" oninput="${js}"><em>${u}</em></label>`;
+ sheet('대출·금리·수리비',`<p class="sub" style="margin:0 0 4px;font-size:.84rem">내 사정과 다른 것만 고치세요</p>`
+  +F_('받을 대출','비우면 은행 최대 한도','최대',CF.loan==null?'':CF.loan/1e4,'CF.loan=parseMoney(this.value);count()','억')
+  +F_('대출 금리','기본 = 요즘 평균',DT.rate.loan,CF.irate==null?'':CF.irate,"CF.irate=this.value===''?null:+this.value;count()",'%','number')
+  +F_('최대 매수 비용','세금·수리비까지 합친 금액','없음',CF.maxc==null?'':CF.maxc/1e4,'CF.maxc=parseMoney(this.value);count()','억')
+  +F_('수리비','비우면 어림 · 0이면 빼요','어림',CF.rpt==null?'':CF.rpt,"CF.rpt=this.value===''?null:Math.max(0,+this.value);count()",'만원','number')
+  +`<div style="margin:18px 2px 8px;font-size:.84rem;font-weight:700;color:var(--ink2)">역까지 거리</div><div id="c_st"></div><div style="margin:16px 2px 8px;font-size:.84rem;font-weight:700;color:var(--ink2)">단지 크기</div><div id="c_hh"></div>
+  <button class="btn" style="margin-top:18px" onclick="shClose();setup(SU)">확인</button>`);refresh();}
 function sumVal(k){
  if(k==='purpose')return CF.useU?'직접 거주(실거주)':'전세 놓고 보유(임대)';
  if(k==='cash')return CF.cash==null?'입력 안 함':eok(CF.cash)+'억'+(CF.first?' · 생애최초':'');
@@ -1421,39 +1430,30 @@ function setup(i){
  MVON=false;
  if(i==null)i=CF.done?STEPS.length-1:0;
  SU=i; const k=STEPS[i], last=STEPS.length-1, nx=`setup(${i+1})`;
- const head=`<div style="display:flex;align-items:center;justify-content:space-between"><button class="linkbtn" style="padding:0;font-size:.88rem;color:var(--ink3)" onclick="${i?`setup(${i-1})`:'hub()'}">‹ 이전</button><span class="sub" style="font-size:.8rem">${k==='sum'?'마지막 확인':(i+1)+' / '+last}</span></div><div class="prog" style="margin:8px 0 18px"><i style="width:${(i+1)/(last+1)*100}%"></i></div>`;
+ const head=`<button class="ib" style="margin:-4px 0 0 -8px" aria-label="뒤로" onclick="${i?`setup(${i-1})`:'hub()'}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><div class="prog" style="height:3px;margin:6px 0 20px"><i style="width:${(i+1)/(last+1)*100}%"></i></div>`;
  const Q=(t,h)=>`<div class="hq" style="margin:0 0 6px;word-break:keep-all">${t}</div>${h?`<div class="hint" style="margin-bottom:14px">${h}</div>`:''}`;
  let body='', cta=`<div class="cta"><button class="btn" id="go" onclick="${nx}">다음</button></div>`;
  if(k==='purpose'){
-  body=Q('산 집에 직접 사실 건가요?')+[[true,'네, 직접 살 거예요','실거주 · 주택담보대출을 받아 들어가 사는 것으로 계산해요'],[false,'아니요, 전세를 놓을 거예요','임대 · 전세금만큼 자기자본이 덜 들어요 (토지거래허가구역 제외)']].map(([v,t,d])=>`<button class="opt${CF.useU===v?' on':''}" onclick="CF.useU=${v};save();${nx}"><b>${CF.useU===v?'✓ ':''}${t}</b><span class="sub" style="display:block;font-size:.82rem;font-weight:500;margin-top:3px">${d}</span></button>`).join('');}
+  body=Q('산 집에 직접 사실 건가요?')+[[true,'네, 직접 살 거예요','실거주 · 주택담보대출을 받아 들어가 사는 것으로 계산해요'],[false,'아니요, 전세를 놓을 거예요','임대 · 전세금만큼 자기자본이 덜 들어요 (토지거래허가구역 제외)']].map(([v,t,d])=>`<button class="opt${CF.useU===v?' on':''}" onclick="CF.useU=${v};save();${nx}"><b>${t}</b><span class="sub" style="display:block;font-size:.82rem;font-weight:500;margin-top:3px">${d}</span></button>`).join('');}
  else if(k==='cash'){
-  body=Q('집 사는 데 쓸 수 있는 현금은 얼마인가요?','대출은 빼고 지금 가진 돈만요. 세금·중개보수도 여기서 나가요. 갈아타기라면 지금 집을 팔고 대출을 갚은 뒤 남는 돈까지 더하세요.')
+  body=Q('집 사는 데 쓸 수 있는<br>현금은 얼마인가요?','대출은 빼고, 지금 가진 돈만 적어 주세요')
   +`<div class="inp"><input id="i_cash" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 3" value="${CF.cash==null?'':(CF.cash/1e4)}" oninput="CF.cash=parseMoney(this.value);document.querySelectorAll('#qcash button').forEach(b=>b.classList.toggle('on',+b.dataset.v===CF.cash));count()"><b>억</b></div>
   <div class="cc" id="qcash" style="margin:10px 0 4px">${[1,2,3,4,5,7,10].map(v=>`<button data-v="${v*1e4}" class="${CF.cash===v*1e4?'on':''}" onclick="CF.cash=${v*1e4};$('#i_cash').value=${v};document.querySelectorAll('#qcash button').forEach(b=>b.classList.toggle('on',b===this));count()">${v}억</button>`).join('')}</div>
   <div class="tg" style="margin-top:14px"><span><b>처음 집을 사시나요?</b><br><span class="hint">생애최초면 대출을 집값의 70%까지 계산해요</span></span><label class="sw"><input type="checkbox" id="i_first" ${CF.first?'checked':''} onchange="CF.first=this.checked;count()"><i></i></label></div>`;}
  else if(k==='region'){
-  body=Q('어디에 사고 싶으세요?','누르면 선택, 다시 누르면 해제 · 여러 곳 가능 · 안 고르면 서울·경기·인천 전체')
+  body=Q('어디에 사고 싶으세요?','여러 곳 고를 수 있어요 · 안 고르면 전체')
   +`<div class="picked" id="picked"></div><div class="rtab" id="rtab"></div><div id="rl"></div>
   <input id="rq" type="search" placeholder="이름으로 찾기 (예: 수원, 강동, 분당)" oninput="drawReg()" style="width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit;margin-top:10px">`;}
- else if(k==='size')body=Q('원하는 집 크기는요?','전용면적 기준이에요(괄호는 흔히 부르는 평수).')+optList('size',SZD);
- else if(k==='age')body=Q('몇 년 된 아파트까지 괜찮으세요?','오래된 집은 수리 비용을 계산에 넣어요.')+optList('age',AGD);
+ else if(k==='size')body=Q('원하는 집 크기는요?','전용면적 기준이에요')+optList('size',SZD);
+ else if(k==='age')body=Q('몇 년 된 아파트까지<br>괜찮으세요?','오래된 집은 수리비를 셈에 넣어요')+optList('age',AGD);
  else if(k==='inc'){
-  body=Q('연소득을 알려 주시겠어요?','은행 대출 한도(DSR 40%)까지 맞춰 계산해요. 부부라면 합산 소득 · 몰라도 괜찮아요.')
+  body=Q('연소득을<br>알려 주시겠어요?','은행 대출 한도까지 맞춰 셈해요 · 부부는 합산')
   +`<div class="inp"><input type="text" inputmode="decimal" autocomplete="off" placeholder="예: 0.6 (6천만 원)" value="${CF.inc==null?'':(CF.inc/1e4)}" oninput="CF.inc=parseMoney(this.value);count()"><b>억/년</b></div>
-  <div class="fr" style="margin-top:12px"><span><b>이미 갚고 있는 대출</b><em>1년에 갚는 원금+이자 · 없으면 비워 두세요</em></span><label><input type="number" inputmode="decimal" step="100" placeholder="없음" value="${CF.debt==null?'':CF.debt}" oninput="CF.debt=this.value===''?null:+this.value;count()"><i>만원</i></label></div>`;
+  <label class="frw" style="margin-top:8px"><span>이미 갚고 있는 대출<small>1년에 갚는 원금+이자</small></span><input type="number" inputmode="decimal" step="100" placeholder="없음" value="${CF.debt==null?'':CF.debt}" oninput="CF.debt=this.value===''?null:+this.value;count()"><em>만원</em></label>`;
   cta=`<div class="cta"><button class="btn" id="go" onclick="${nx}">다음</button><button class="btn ghost" style="margin-top:8px" onclick="CF.inc=null;save();${nx}">건너뛰기</button></div>`;}
  else{
-  body=Q('이 조건으로 찾을게요','바꾸고 싶은 항목을 누르세요.')
-  +`<div class="card" style="padding:4px 14px">${STEPS.slice(0,-1).map((s_,j)=>`<div onclick="setup(${j})" style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 0;${j?'border-top:1px solid var(--line2);':''}cursor:pointer"><span class="sub" style="font-size:.84rem;white-space:nowrap">${SUL[s_]}</span><span style="text-align:right"><b style="font-size:.92rem;word-break:keep-all">${sumVal(s_)}</b> <span style="color:var(--blue);font-size:.84rem;white-space:nowrap">변경 ›</span></span></div>`).join('')}</div>
-  <details class="fold adv"><summary><span><b>${ic('gear',18)}대출·수리비·역 거리 <span style="font-weight:600;font-size:.8rem;opacity:.75">(안 바꿔도 돼요)</span></b><span class="sub" id="advsum" style="display:block;font-weight:400;font-size:.8rem;margin-top:2px"></span></span></summary><div>
- <div class="hint" style="margin:2px 0 4px">내 사정과 다른 것만 고치세요.</div>
- <div class="fr"><span><b>받을 대출</b><em>비우면 은행 최대 한도</em></span><label><input type="text" inputmode="decimal" autocomplete="off" placeholder="최대" value="${CF.loan==null?'':(CF.loan/1e4)}" oninput="CF.loan=parseMoney(this.value);count()"><i>억</i></label></div>
- <div class="fr"><span><b>대출 금리</b><em>기본 = 요즘 평균</em></span><label><input type="number" inputmode="decimal" step="0.05" placeholder="${DT.rate.loan}" value="${CF.irate==null?'':CF.irate}" oninput="CF.irate=this.value===''?null:+this.value;count()"><i>%</i></label></div>
- <div class="fr"><span><b>최대 매수 비용</b><em>세금·수리비까지 합친 금액</em></span><label><input id="i_max" type="text" inputmode="decimal" autocomplete="off" placeholder="없음" value="${CF.maxc==null?'':(CF.maxc/1e4)}" oninput="CF.maxc=parseMoney(this.value);count()"><i>억</i></label></div>
- <div class="fl">역까지 거리</div><div id="c_st"></div>
- <div class="fl">단지 크기</div><div id="c_hh"></div>
- <div class="fr"><span><b>수리비</b><em>비우면 5년 동안 집 상태를 유지하는 수리비를 어림해 넣어요 · 금액을 넣으면 지은 지 20년 넘은 집에만 · 0이면 빼요</em></span><label><input type="number" inputmode="numeric" step="500" placeholder="어림" value="${CF.rpt==null?'':CF.rpt}" oninput="CF.rpt=this.value===''?null:Math.max(0,+this.value);count();refresh()"><i>만원</i></label></div>
- </div></details>`;
+  body=Q('이 조건으로 찾을게요','바꾸고 싶은 항목을 누르세요')
+  +`<div class="frs">${STEPS.slice(0,-1).map((s_,j)=>FR(SUL[s_],sumVal(s_),`setup(${j})`)).join('')}${FR('대출·금리·수리비','<span id="advsum"></span>','advSheet()')}</div>`;
   cta=`<div class="cta"><button class="btn" id="go" onclick="CF.done=true;CF.lens='bal';CF.sort=null;save();if(RET==='commute'){RET=null;jres();}else result()">결과 보기</button></div>`;}
  app.innerHTML=head+body+cta;
  refresh(); window.scrollTo(0,0);}
@@ -1468,7 +1468,8 @@ function refresh(){
  {const rp=CF.rpt===0?'수리비 안 넣음':CF.rpt?'수리비 '+CF.rpt.toLocaleString()+'만 원':'수리비 어림',
    a=[CF.loan!=null?'대출 '+eok(CF.loan)+'억':'대출 최대 한도','금리 '+(CF.irate!=null?CF.irate:DT.rate.loan)+'%',rp];
   if(CF.maxc!=null)a.push('최대 '+eok(CF.maxc)+'억');if(CF.addU&&CF.useU)a.push('더 쓰고 누리기');if(CF.st)a.push(CF.st==='a1'?'역 걸어서 15분 이내':'신분당·GTX 2km 이내');if(CF.hh)a.push(CF.hh.toLocaleString()+'세대 이상');
-  const e=$('#advsum');if(e)e.innerHTML='지금 계산: <b style="color:var(--ink)">'+a.join(' · ')+'</b>';}
+  const ch=[CF.loan!=null?'대출 '+eok(CF.loan)+'억':'',CF.irate!=null?'금리 '+CF.irate+'%':'',CF.rpt!=null?(CF.rpt===0?'수리비 뺌':'수리비 '+CF.rpt.toLocaleString()+'만'):'',CF.maxc!=null?'최대 '+eok(CF.maxc)+'억':'',CF.st?(CF.st==='a1'?'역 15분':'급행 2km'):'',CF.hh?CF.hh.toLocaleString()+'세대↑':''].filter(Boolean);
+  const e=$('#advsum');if(e)e.textContent=ch.length?ch.join(' · '):'기본값';}   // 09-29 토스식: 요약 줄엔 바꾼 것만(안 바꿨으면 '기본값')
  count();}
 // ---------------- 거르기 ----------------
 // 금액 기준(2026-09-23 사용자 지시): %가 아니라 '5년 뒤 내 돈이 얼마나 늘었나'로 줄세운다.
