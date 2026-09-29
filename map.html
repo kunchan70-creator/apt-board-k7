@@ -826,13 +826,15 @@ function saveHash() {
   clearTimeout(hashT);
   hashT = setTimeout(() => {
     if (!map._loaded) return;
-    const c = map.getCenter(), h = '#' + map.getZoom() + '/' + c.lat.toFixed(5) + '/' + c.lng.toFixed(5) + (sel && openId === '#sheet' ? '/c' + sel.no : '');
+    const c = map.getCenter(), h = '#' + map.getZoom() + '/' + c.lat.toFixed(5) + '/' + c.lng.toFixed(5) + (sel && openId === '#sheet' ? '/' + sel.no : '');
     try { history.replaceState(history.state, '', h); } catch (e) {}
   }, 250);
 }
 function readHash() {
-  const m = /^#([\d.]+)\/([\d.]+)\/([\d.]+)(?:\/c(\d+))?/.exec(location.hash || '');
-  if (!m) return null; return { z: +m[1], lat: +m[2], lon: +m[3], c: m[4] ? +m[4] : null };
+  const m = /^#([\d.]+)\/([\d.]+)\/([\d.]+)(?:\/(c[0-9a-z]{8}))?/.exec(location.hash || '');   // 09-30 공개 ID('c'+8자)로 바뀐 뒤 단지 열기가 깨졌던 것 수정
+  if (m) return { z: +m[1], lat: +m[2], lon: +m[3], c: m[4] || null };
+  const k = /^#(c[0-9a-z]{8})$/.exec(location.hash || '');   // 집셈 결과 카드 '지도에서 보기'(map.html#c…): 좌표 없이 단지 ID만
+  return k ? { c: k[1] } : null;
 }
 
 // ---------- 토스트 ----------
@@ -841,10 +843,10 @@ function toast(t) { const el = $('#toast'); el.textContent = t; el.classList.add
 
 // ---------- 시작 ----------
 const h0 = readHash();
-if (h0 && bb.pad(0.3).contains([h0.lat, h0.lon])) map.setView([h0.lat, h0.lon], Math.min(18, Math.max(8, h0.z)));
+if (h0 && h0.lat != null && bb.pad(0.3).contains([h0.lat, h0.lon])) map.setView([h0.lat, h0.lon], Math.min(18, Math.max(8, h0.z)));
 else map.fitBounds(bb, { padding: [20, 20] });
 railVis(); applyF(true);
-if (h0 && h0.c && BYNO.has(h0.c)) select(BYNO.get(h0.c), false);
+if (h0 && h0.c && BYNO.has(h0.c)) select(BYNO.get(h0.c), h0.lat == null);
 window.addEventListener('resize', later);
 })();
 </script>
