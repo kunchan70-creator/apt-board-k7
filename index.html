@@ -2095,16 +2095,25 @@ function jvw(q){return new Promise(res=>{const key='4B38CCC2-121A-444D-B11B-E6F3
  s.onerror=()=>{fin();res([]);};
  s.src='https://api.vworld.kr/req/search?service=search&request=search&version=2.0&crs=EPSG:4326&size=8&page=1&type=place&format=json&errorformat=json&key='+key+'&callback='+cb+'&query='+encodeURIComponent(q);document.head.appendChild(s);});}
 function cnPlacePick(lab,la,lo){CN.a[CSTEP[CN.k].steps[CN.i].id]={lab,lat:la,lon:lo};$('#cnq').value=lab;$('#cnr').innerHTML='';cnShow();}
-function jres(){TT.forEach(clearTimeout);TT=[];window.scrollTo(0,0);
- const ck=NET.cv||NET.check||{},PS=JB.P.slice(0,JB.n);
- app.innerHTML=HOME+`<div class="hq" style="margin:0 0 2px">직장 근처 찾기</div><div style="font-weight:700;font-size:.92rem">통근 시간 조건에 맞는 단지</div>
- ${TAGS(['지하철·버스 기준',ck.within10!=null?['실제와 10분 안 '+ck.within10+'%','gray']:null].filter(Boolean))}
- <div class="card" style="padding:12px 14px;margin:10px 0">${PS.map((P,k)=>`<div style="display:flex;justify-content:space-between;gap:10px;font-size:.84rem;margin:3px 0"><span class="sub" style="white-space:nowrap">${jwho(k)}직장</span><b style="text-align:right;word-break:keep-all">${P.lab} · 편도 ${P.max}분 이내</b></div>`).join('')}
-  <button class="btn ghost" style="margin-top:10px" onclick="JB.done=false;jsave();consult('commute')">조건 바꾸기</button></div>
- <div id="jlist" style="margin-top:12px"></div>
- ${MORE(`통근 시간은 공공 자료(서울 열린데이터광장·경기데이터드림의 버스 노선·정류장, 오픈스트리트맵 철도 노선)로 만든 노선망에서 걷기·대기·환승을 규칙으로 더해 계산한 <b>대략값</b>입니다. 10분 단위 구간으로 보여 드리며 실제와 ±10분 안팎 차이가 날 수 있습니다. 평일 8시 출발 실제 길찾기 결과 ${ck.n||0}건(규칙 맞출 때 쓰지 않은 표본)과 비교하면 평균 ${ck.mae}분 차이, ${ck.within10}%가 10분 안입니다(실제 100분 이하 통근 기준).<br>버스 도착 정보(실시간)나 도로 정체는 반영하지 않습니다. 정확한 시간은 쓰시는 지도 앱에서 확인하세요. ${JCAR?`자가용은 평일 출근 시각 실측 ${JCAR.n}건에 맞춘 계산으로, 평균 ${JCAR.mae}분 차이(${JCAR.within10}%가 10분 안)입니다.`:'자가용은 평일 출근길 실측을 모으는 중입니다(평일 아침에 모아 다음 날 켜집니다).'}`)}
- <p class="sub" style="margin:14px 2px 0;font-size:.74rem">참고용 산출치 · 투자 권유 아님 · 투자 판단과 책임은 본인에게 있습니다</p>`;
+function jres(){TT.forEach(clearTimeout);TT=[];window.scrollTo(0,0);shClose();   // 09-29 사용자: 토스식 — 버튼 줄 3겹 → 한 줄 필터(누르면 바텀시트), 결과 카드(row)는 그대로
+ const PS=JB.P.slice(0,JB.n);
+ app.innerHTML=HOME+`<div class="hq" style="margin:0">직장 근처 찾기</div><div class="bsub">통근 시간 조건에 맞는 단지<button class="ibi" onclick="jInfo()" aria-label="통근 시간 기준">ⓘ</button></div>
+ <div class="frs" style="margin-bottom:0">${PS.map((P,k)=>FR(jwho(k)+'직장',P.lab+' · '+P.max+'분 이내',"JB.done=false;jsave();consult('commute')")).join('')}</div>
+ <div id="jlist" style="margin-top:4px"></div>
+ <p class="sub" style="margin:18px 2px 0;font-size:.72rem;text-align:center">참고용 산출치 · 투자 권유 아님</p>`;
  jrun();}
+function jInfo(){const ck=NET.cv||NET.check||{};
+ sheet('통근 시간은 이렇게 셌어요',`<ul style="margin:0;padding-left:18px;color:var(--ink2);font-size:.88rem;line-height:1.75;word-break:keep-all">
+ <li>공공 자료(서울 열린데이터광장·경기데이터드림의 버스 노선·정류장, 오픈스트리트맵 철도)로 만든 노선망에서 걷기·대기·환승을 더한 <b>대략값</b>이에요</li>
+ <li>10분 단위로 보여 드려요. 평일 8시 실제 길찾기 ${ck.n||0}건과 비교하면 평균 ${ck.mae}분 차이, ${ck.within10}%가 10분 안이에요</li>
+ <li>실시간 버스 도착·도로 정체는 반영하지 않아요. 정확한 시간은 지도 앱에서 확인하세요</li>
+ <li>${JCAR?`자가용은 평일 출근 시각 실측 ${JCAR.n}건에 맞춘 계산이에요(평균 ${JCAR.mae}분 차이)`:'자가용은 평일 출근길 실측을 모으는 중이에요'}</li>
+ <li>순이익은 매수 분석과 같은 셈이에요. 재건축·리모델링 진행 중인 단지는 뺐어요</li></ul>`);}
+const JPB=[[0,'전체'],[6,'6억 이하'],[9,'9억 이하'],[12,'12억 이하'],[15,'15억 이하']], JSO={up:'5년 순이익 순',t:'통근 짧은 순',sc:'입지 좋은 순'};
+function jSheet(w){const go=js=>js+';JB.shown=30;jsave();jrun()';
+ if(w==='pb')sheet('매매가',JPB.map(([v,t])=>SHO((JB.pmax||0)===v,t,go('JB.pmax='+v))).join(''));
+ if(w==='sz')sheet('평형',SHO(!(JB.size||[]).length,'전체',go('JB.size=[]'))+Object.keys(SZL).map(k=>SHO((JB.size||[])[0]===k&&JB.size.length===1,SZL[k],go(`JB.size=['${k}']`))).join(''));
+ if(w==='so')sheet('정렬',Object.keys(JSO).map(k=>SHO(JB.sort===k,JSO[k],go(`JB.sort='${k}'`))).join(''));}
 // 건물·회사 이름 목록(places.py: 오픈스트리트맵 서울·경기·인천 7만여 곳, 필요할 때만 받음). 부분 일치 + 글자쌍 유사도로 오타도 찾는다
 // (09-26 '에슴타워프라임'·'에스타워 프라임' -> '고덕에스타워프라임'; 주소 검색은 단어 단위라 붙여 쓴 이름의 일부로는 못 찾았다).
 let JPN=null;
@@ -2132,15 +2141,12 @@ function jrun(){const box=$('#jlist');if(!box)return;box.innerHTML='<p class="su
   const so=JB.sort;L.sort(so==='t'?(a,b)=>Math.max(...a.ts)-Math.max(...b.ts):so==='sc'?(a,b)=>b.c.sc-a.c.sc:(a,b)=>KEY(b.r)-KEY(a.r));
   {const W=L.slice(0,40).map(x=>x.r.F||(x.r.F=fin(x.r)));RS={lo:Math.min(0,...W.map(F=>F.p1)),hi:Math.max(1,...W.map(F=>F.p9))};}   // 범위 막대 눈금(매수 분석과 같은 방식)
   const jrow=({c,r,ts},i)=>row(r,i+1,`<div class="rc2" style="margin-top:2px"><span style="color:var(--blue);font-weight:700">통근 ${ts.map((t,k)=>(JB.n===2?JWHO[k]+' ':'')+jband(t)).join(' · ')}</span></div>`);
-  const cbar=`<div class="cbar"><span><em>내 조건</em>${HC?'자기자본 '+eok(CF.cash)+'억 · '+(CF.useU?'실거주':'전세 놓기'):'자기자본 없음 — 전액 자기 돈 기준'}</span><button onclick="RET='commute';setup()">내 조건 바꾸기</button></div>`
-   +(HC?'':`<div class="tip" style="margin:0 0 8px"><span>자기자본을 넣으면 <b>살 수 있는 범위 안</b>에서만 통근 조건에 맞춰 순이익 순으로 보여 드려요.</span><button class="linkbtn" style="white-space:nowrap" onclick="RET='commute';setup(1)">자기자본 넣기 →</button></div>`);
-  const sz=JB.size||[];
-  box.innerHTML=`<div class="sub" style="font-size:.74rem;margin:0 2px 4px">매매가</div><div class="cc" style="margin-bottom:6px">${[[0,'제한 없음'],[6,'6억 이하'],[9,'9억 이하'],[12,'12억 이하'],[15,'15억 이하']].map(([v,t])=>jchip((JB.pmax||0)===v,`JB.pmax=${v};JB.shown=30;jsave();jrun()`,t)).join('')}</div>
-   <div class="sub" style="font-size:.74rem;margin:0 2px 4px">면적</div><div class="cc" style="margin-bottom:6px">${Object.keys(SZL).map(k=>jchip(sz.includes(k),`JB.size=(JB.size||[]).includes('${k}')?JB.size.filter(x=>x!=='${k}'):(JB.size||[]).concat('${k}');JB.shown=30;jsave();jrun()`,SZL[k])).join('')}</div>
-   <div class="sub" style="font-size:.74rem;margin:0 2px 4px">정렬</div><div class="cc" style="margin-bottom:6px">${[['up','5년 순이익 순'],['t','통근 짧은 순'],['sc','입지 좋은 순']].map(([k,t])=>jchip(JB.sort===k,`JB.sort='${k}';jsave();jrun()`,t)).join('')}</div>`
-   +cbar+(L.length?`<div class="sub" style="font-size:.74rem;margin-bottom:6px">${L.length.toLocaleString()}개 단지${HC?' · 자기자본 '+eok(CF.cash)+'억으로 살 수 있는 곳':''} · 통근 시간은 10분 단위 대략값(실제와 ±10분 안팎) · 순이익은 매수 분석과 같은 셈</div>`+L.slice(0,JB.shown||30).map(jrow).join('')
-     +(L.length>(JB.shown||30)?`<button class="btn ghost" style="margin-top:8px" onclick="JB.shown=(JB.shown||30)+30;jrun()">30개 단지 더 보기</button>`:'')
-    :'<p class="sub">조건에 맞는 단지가 없습니다. 편도 최대 시간을 늘려 보세요.</p>');},30)).catch(()=>{box.innerHTML='<p class="sub">버스 노선 자료를 불러오지 못했습니다. 새로고침해 주세요.</p>';});}
+  const fp=(js,on,t)=>`<button class="fp${on?' on':''}" onclick="${js}">${t}${CHV}</button>`, sz=JB.size||[];
+  const pills=fp("RET='commute';setup()",HC,HC?'내 돈 '+eok(CF.cash)+'억 · '+(CF.useU?'실거주':'전세'):'내 조건')+fp("jSheet('pb')",!!JB.pmax,JB.pmax?JB.pmax+'억 이하':'매매가')+fp("jSheet('sz')",sz.length>0,sz.length?SZL[sz[0]]+(sz.length>1?' 외 '+(sz.length-1):''):'평형')+fp("jSheet('so')",JB.sort&&JB.sort!=='up',JSO[JB.sort]||JSO.up);
+  const cbar=`<div class="fbar">${pills}</div>`+(HC?'':`<div class="tip" style="margin:0 0 8px"><span>내 돈을 넣으면 <b>살 수 있는 곳만</b> 보여 드려요</span><button class="linkbtn" style="white-space:nowrap" onclick="RET='commute';setup(1)">넣기 ›</button></div>`);
+  box.innerHTML=cbar+(L.length?`<div class="sub" style="font-size:.8rem;margin:2px 2px 8px">${L.length.toLocaleString()}개 단지 · ${JSO[JB.sort]||JSO.up}</div>`+L.slice(0,JB.shown||30).map(jrow).join('')
+     +(L.length>(JB.shown||30)?`<button class="tmore" onclick="JB.shown=(JB.shown||30)+30;jrun()">더 보기</button>`:'')
+    :'<p class="sub" style="text-align:center;padding:30px 0">조건에 맞는 단지가 없어요 · 편도 시간을 늘려 보세요</p>');},30)).catch(()=>{box.innerHTML='<p class="sub">버스 노선 자료를 불러오지 못했습니다. 새로고침해 주세요.</p>';});}
 
 
 (function(){var EP='',LOC=/^(127\.0\.0\.1|localhost)$/.test(location.hostname);if(!EP&&!LOC){window.jsTrack=function(){};return;}
