@@ -79,7 +79,7 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
 /* ---------- 지도 ---------- */
 #wrap{position:relative;flex:1 1 auto;min-height:0}
 #map{position:absolute;inset:0;z-index:0;background:var(--mapbg)}
-#nmap{position:absolute;inset:0;z-index:0;pointer-events:none}.nbase.leaflet-container{background:transparent}
+#nmap{position:absolute!important;top:0;left:0;width:100%!important;height:100%!important;z-index:0;pointer-events:none}.nbase.leaflet-container{background:transparent}
 .leaflet-container{font-family:inherit;background:var(--mapbg);outline:0}
 .leaflet-control-attribution{font-size:10.5px;background:rgba(255,255,255,.78)!important;color:#6b717c;border-radius:8px 0 0 0;padding:1px 7px!important}
 .leaflet-control-attribution a{color:#4c5566}
@@ -510,6 +510,7 @@ async function nBase() {
   nmap = new naver.maps.Map(el, { center: new naver.maps.LatLng(c.lat, c.lng), zoom: map.getZoom(), draggable: false, pinchZoom: false, scrollWheel: false,
     keyboardShortcuts: false, disableDoubleTapZoom: true, disableDoubleClickZoom: true, disableTwoFingerTapZoom: true, disableKineticPan: true,
     zoomControl: false, mapTypeControl: false, scaleControl: false, mapDataControl: false, logoControl: true, minZoom: 6, maxZoom: 21 });
+  nmap.setSize(new naver.maps.Size(box.clientWidth, box.clientHeight));   // N 지도가 칸 크기를 덮어써 높이 0이 되는 것 방지
   const sync = () => { if (!nmap) return; const p = map.getCenter(); nmap.setCenter(new naver.maps.LatLng(p.lat, p.lng)); nmap.setZoom(map.getZoom(), false); };
   map.on('move zoom moveend zoomend', sync);
   map.on('resize', () => { if (nmap) { nmap.setSize(new naver.maps.Size(box.clientWidth, box.clientHeight)); sync(); } });
