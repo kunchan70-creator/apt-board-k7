@@ -163,4 +163,18 @@ ul.plain{padding-left:18px}
 <p class="sub" style="margin:4px 0 0;line-height:1.6;font-size:.84rem">집셈은 공개 자료를 바탕으로 과거 데이터를 분석한 참고 자료입니다. 특정 부동산의 매수·매도를 권유하거나 자문하지 않습니다. 모든 수치는 가정에 기반한 추정치로 오차가 있을 수 있으며, 과거 실적이 미래 수익을 보장하지 않습니다. 투자 판단과 그 결과에 대한 책임은 본인에게 있습니다. 계약 전 실거래가·등기사항증명서·현장을 직접 확인하고, 필요하면 전문가와 상담하십시오.</p>
 </div>
 <div class="disc"><b>유의사항</b><br>집셈은 공개 자료(국토교통부 실거래·KB부동산 등)를 바탕으로 과거 데이터를 분석한 <b>참고 자료</b>입니다. 특정 부동산의 매수·매도를 권유하거나 자문하지 않습니다. 모든 수치는 가정에 기반한 추정치로 오차가 있을 수 있으며, 과거 실적이 미래 수익을 보장하지 않습니다. <b>투자 판단과 그 결과에 대한 책임은 본인에게 있습니다.</b> 계약 전 실거래가·등기사항증명서·현장을 직접 확인하고, 필요 시 전문가와 상담하십시오.</div><p class="foot">공개 데이터 기반 · 매일 자동 갱신</p>
-</div></body></html>
+</div><script>
+(function(){var EP='',LOC=/^(127\.0\.0\.1|localhost)$/.test(location.hostname);if(!EP&&!LOC){window.jsTrack=function(){};return;}
+ function rid(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);}
+ var uid,sid;try{uid=localStorage.getItem('jsUid')||(localStorage.setItem('jsUid',rid()),localStorage.getItem('jsUid'));}catch(e){uid='x'+rid();}
+ try{sid=sessionStorage.getItem('jsSid')||(sessionStorage.setItem('jsSid',rid()),sessionStorage.getItem('jsSid'));}catch(e){sid='s'+rid();}
+ var Q=[],T=null,PG=(location.pathname.split('/').pop()||'index.html').replace(/\.html$/,'')||'index';
+ function send(beacon){if(!Q.length)return;var body=JSON.stringify({u:uid,s:sid,p:PG,w:innerWidth,r:(document.referrer||'').replace(/^https?:\/\//,'').slice(0,80),t:Date.now(),ev:Q.splice(0)});
+  var url=EP||'/ev';try{if(beacon&&navigator.sendBeacon&&navigator.sendBeacon(url,body))return;}catch(e){}
+  try{fetch(url,{method:'POST',body:body,keepalive:true,mode:EP?'no-cors':'same-origin',credentials:'omit'}).catch(function(){});}catch(e){}}
+ window.jsTrack=function(e,p){try{Q.push([Date.now(),String(e),p==null?null:p]);if(Q.length>=12)send();else{clearTimeout(T);T=setTimeout(send,2500);}}catch(x){}};
+ addEventListener('visibilitychange',function(){if(document.hidden)send(true);});addEventListener('pagehide',function(){send(true);});
+ var sv=false;try{var j=JSON.parse(localStorage.getItem('v2cfg')||'null');sv=!!(j&&j.done);}catch(e){}
+ jsTrack('view',{saved:sv,dark:!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)});
+ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(a&&/\.html/.test(a.getAttribute('href')||''))jsTrack('nav',{to:(a.getAttribute('href')||'').split('#')[0].split('?')[0].replace(/\.html$/,'')});},true);
+})();</script></body></html>
