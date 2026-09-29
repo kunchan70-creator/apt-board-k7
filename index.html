@@ -687,7 +687,7 @@ function origin(entry){
  const L=[['집은 대부분에게<br>생애 가장 큰 거래입니다.','font-size:clamp(1.45rem,6.4vw,1.8rem);font-weight:800;line-height:1.4;color:var(--ink)'],
   ['모은 자기자본에 대출까지 더하는 결정.<br>그런데 판단의 근거는 늘<br><b style="color:var(--ink)">“주변에서 그러더라”</b>였습니다.','font-size:1.02rem;line-height:1.75;color:var(--ink2)'],
   ['그래서 국토교통부 실거래 20년 치로<br>직접 셈해 보기로 했습니다.','font-size:1.02rem;line-height:1.75;color:var(--ink2)'],
-  ['내 돈으로 살 수 있는 집 가운데<br>5년 뒤 가장 많이 남는 곳을 셉니다.','font-size:1.15rem;font-weight:800;line-height:1.6;color:var(--blue)']];
+  ['내 돈으로 살 수 있는 집 가운데<br>5년 뒤 가장 많이 남는 곳을 셈해 드립니다.','font-size:1.15rem;font-weight:800;line-height:1.6;color:var(--blue)']];
  let t=500;const d=L.map(([h])=>{const v=t;t+=750+h.replace(/<[^>]+>/g,'').length*55;return v;});   // 글자 수만큼 머문 뒤 다음 줄
  app.innerHTML=`<div id="opw" onclick="document.querySelectorAll('#opw .op').forEach(e=>e.style.animationDelay='0ms')" style="min-height:70vh;display:flex;flex-direction:column;justify-content:center;padding:10px 2px 0">
   ${entry?'':HOME}
@@ -788,7 +788,7 @@ function philo(entry,i){
    ${a1?`<div style="margin:10px 0 0;font-size:1.02rem;font-weight:800;line-height:1.55;word-break:keep-all">${a1}</div>`:''}<div style="margin:6px 0 0;font-size:.92rem;line-height:1.7;color:var(--ink2);word-break:keep-all">${a2}</div>
    ${C[c]||''}<div style="margin-top:6px;padding:12px 14px;border-radius:14px;background:var(--blue-bg);color:var(--blue);font-size:.9rem;font-weight:700;line-height:1.6;word-break:keep-all">${j}</div>`)(P[k])
   :`<div style="min-height:46vh;display:flex;flex-direction:column;justify-content:center;text-align:center">
-    <div style="font-weight:800;font-size:clamp(1.5rem,7vw,1.9rem);line-height:1.4">맞히지 않고,<br>셉니다.</div>
+    <div style="font-weight:800;font-size:clamp(1.5rem,7vw,1.9rem);line-height:1.4">맞히지 않고,<br>셈합니다.</div>
     <div style="margin:18px auto 0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
      <div style="background:var(--surface2);border-radius:14px;padding:10px 14px"><b class="num" style="font-size:1.25rem;color:var(--blue)">${IN.n?Math.round(IN.n/1e4).toLocaleString()+'만 건':'-'}</b><div class="sub" style="font-size:.74rem">실제로 팔린 아파트 (2006년~)</div></div>
      <div style="background:var(--surface2);border-radius:14px;padding:10px 14px"><b class="num" style="font-size:1.25rem;color:var(--blue)">${(DT.q5p||[]).reduce((a,q)=>a+q.n,0)?Math.round((DT.q5p||[]).reduce((a,q)=>a+q.n,0)/1e4)+'만 건':'-'}</b><div class="sub" style="font-size:.74rem">과거로 되돌아가 검증</div></div></div>
@@ -890,7 +890,7 @@ function bSheet(w){
    :L_==='rb'?`조합 발표값이 없는 단지는 발표 사례로 보정한 공식의 추정치예요${DT.bk?` (사례 ${DT.bk.n}건 · 오차 중앙 옛 집 시세의 ${DT.bk.err}%)`:''}. 실제 분담금은 조합 공지로 확인하세요.`
    :L_==='def'?'2021 고점에서 2022~23 저점까지 실거래로 잰 변동이에요. 거래가 적어 튀는 값과 300세대 미만은 뺐어요. 지난번 기록일 뿐 다음에도 같다는 보장은 없어요.'
    :'역까지 거리·동네 시세·학군(초등 통학구역)으로 매긴 점수예요. 입지가 좋다고 순이익이 반드시 큰 건 아니에요.';
-  sheet('이 순위는 이렇게 셌어요',`<p style="margin:0 0 10px;line-height:1.6;color:var(--ink2);font-size:.92rem;word-break:keep-all">${more}</p><ul style="margin:0;padding-left:18px;color:var(--ink3);font-size:.84rem;line-height:1.7">${tg.map(t=>`<li>${t}</li>`).join('')}</ul>${vis}${L_==='up'?missLink('b'):''}`);}
+  sheet('이 순위는 이렇게 셈했어요',`<p style="margin:0 0 10px;line-height:1.6;color:var(--ink2);font-size:.92rem;word-break:keep-all">${more}</p><ul style="margin:0;padding-left:18px;color:var(--ink3);font-size:.84rem;line-height:1.7">${tg.map(t=>`<li>${t}</li>`).join('')}</ul>${vis}${L_==='up'?missLink('b'):''}`);}
 }
 function board(lens,focus){
  BF.lens=lens||BF.lens; TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); shClose();
@@ -1031,7 +1031,7 @@ function rcard(k,back,bb){
  app.innerHTML=`<div id="own">${ownHTML(c,r,k,back,null)}</div>`;
  ownLoad(c.gu).then(D=>{const el=document.getElementById('own');if(el&&CPXK[k]===c)el.innerHTML=ownHTML(c,r,k,back,D[c.no]||{});ownCalc(c.k,r.b);});}
 // 09-29 사용자: 토스식 — 회색 상자·작은 머리글·줄마다 붙은 잔글씨를 걷어내고 [큰 숫자 → 굵은 소제목 섹션 → 이름·값 줄]. 잔글씨(기준·출처·요건)는 제목 옆 ⓘ 하나에
-function ownInfo(){sheet('이 화면 숫자는 이렇게 셌어요',`<ul style="margin:0;padding-left:18px;color:var(--ink2);font-size:.88rem;line-height:1.75;word-break:keep-all">
+function ownInfo(){sheet('이 화면 숫자는 이렇게 셈했어요',`<ul style="margin:0;padding-left:18px;color:var(--ink2);font-size:.88rem;line-height:1.75;word-break:keep-all">
  <li><b>지금 시세</b>: 최근 3개월 실거래 중앙값(거래가 적으면 최근 1년 거래로 환산). 그림은 분기별 실거래 중위, 최근 6년, 거래 없는 분기는 건너뜀</li>
  <li><b>5년 뒤</b>: 과거 실거래 20년으로 셈한 범위의 가운데 값. 막대 양끝 = 10번 중 1번은 이보다 낮음·높음</li>
  <li><b>입지 점수</b>: 주변 단지 실거래로 본 동네 시세 + 역 접근성, 5~95. 수익 예측이 아니에요</li>
@@ -1057,7 +1057,7 @@ function ownHTML(c,r,k,back,X){
   +(trs?`<details class="fold ofold"><summary>거래 내역 ${B.tr.length}건</summary><div>${trs}</div></details>`:'');
  const flb=X&&B&&B.fl?box('층별 정상가',flBox(c,r,B)):'';   // 09-29 사용자: 순위 차이보다 좋은 호수를 싸게
  /* ② 계속 살면 5년 뒤 */
- const fut=r.as?box('계속 살면 5년 뒤','<div style="font-size:.92rem;color:var(--ink2)">입주권 단계라 분담금을 뺀 새 아파트 값으로 따로 셉니다.</div>')
+ const fut=r.as?box('계속 살면 5년 뒤','<div style="font-size:.92rem;color:var(--ink2)">입주권 단계라 분담금을 뺀 새 아파트 값으로 따로 셈합니다.</div>')
   :box('계속 살면 5년 뒤',`<div class="obig"><b class="num">${eok(s5)}억</b><span>지금 ${eok(r.p)}억에서 · 보통일 때</span></div>${pbar(r.p,s1,s5,s9)}`);
  /* ③ 내 대출·금리 */
  const inp=(id,ph,v,u,l)=>`<label class="frw"><span>${l}</span><input id="${id}" type="number" inputmode="decimal" step="0.1" placeholder="${ph}" value="${v==null?'':v}" oninput="ownCalc('${c.k}',${r.b})"><em>${u}</em></label>`;
@@ -1210,14 +1210,14 @@ function mvRun(){
  $('#mvr').innerHTML=H; const el=$('#mvr'); if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
 
 // ---------------- 이 결과, 어떻게 믿나요 ----------------
-function trust(from){   // 09-29 사용자: 토스식 — 아이콘·태그·잔글씨 걷어내고 [큰 결론 → 큰 숫자 → 섹션(굵은 제목 + 이름·값 줄)]. 제목 '맞히지 않고, 셉니다'는 유지
+function trust(from){   // 09-29 사용자: 토스식 — 아이콘·태그·잔글씨 걷어내고 [큰 결론 → 큰 숫자 → 섹션(굵은 제목 + 이름·값 줄)]. 제목 '맞히지 않고, 셈합니다'(09-29 '셉니다'는 숫자 세기로 들려 셈합니다로)는 유지
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); shClose();
  const Q=DT.q5p||DT.q5||[], a=Q[0]||{}, b=Q[Q.length-1]||{}, L=DT.ev5||[], lo=L.reduce((x,y)=>y[1]<x[1]?y:x,L[0]||[0,0]), hi=L.reduce((x,y)=>y[1]>x[1]?y:x,L[0]||[0,0]);
  const IC=(DT.ic||{}).v2||[], icf=v=>v==null?'-':(v>=0?'+':'')+v.toFixed(2), EVN=(DT.evn||0).toLocaleString();
  const kv=(k,v)=>`<div class="kv"><span class="k">${k}</span><span class="v">${v}</span></div>`, box=(h,lead,body)=>`<section class="os"><h4>${h}</h4>${lead?`<p class="olead">${lead}</p>`:''}${body}</section>`;
  const BK={r:['result()','결과로'],b:['board()','순위로']}[from], M=DT.miss;
  app.innerHTML=(BK?`<button class="linkbtn" style="padding:0;margin:0 0 8px;font-size:.84rem;color:var(--ink3)" onclick="${BK[0]}">‹ ${BK[1]}</button>`:HOME)
- +`<div style="font-size:.86rem;font-weight:700;color:var(--blue)">이 결과, 어떻게 믿나요</div><div class="hq" style="margin:4px 0 0">맞히지 않고,<br>셉니다.</div>
+ +`<div style="font-size:.86rem;font-weight:700;color:var(--blue)">이 결과, 어떻게 믿나요</div><div class="hq" style="margin:4px 0 0">맞히지 않고,<br>셈합니다.</div>
  <p class="olead" style="margin-top:12px">앞날을 맞히는 대신, <b>같은 셈을 과거에 했다면 어땠는지</b> 실거래 ${EVN}건으로 쟀어요. 맞은 곳도 빗나간 곳도 그대로 보여 드려요.</p>`
  +box('과거로 돌아가 검증했어요','집셈이 높게 본 곳과 낮게 본 곳, 5년 뒤 실제로 얼마나 올랐나',
    `<div class="ost" style="margin-top:4px"><div><span>높게 본 상위 20%</span><b style="color:var(--green);font-size:1.4rem">+${b.med}%</b></div><div><span>낮게 본 하위 20%</span><b style="font-size:1.4rem">+${a.med}%</b></div></div>`
@@ -1596,7 +1596,7 @@ function tpill(r,n){const T=trustOf(r), k=n||2, t=T.tags;return `<span class="tp
 function tlist(T){return T.tags.map(x=>`<div class="shr"><i class="${x.hi?'hi':''}"></i><b>${x.t}</b><span>${x.d}</span></div>`).join('');}
 function tbox(r){const T=trustOf(r);return `<div style="margin:10px 0 2px;padding:10px 12px;border-radius:12px;border:1.5px solid ${T.col}"><div style="font-size:.86rem"><b style="color:${T.col}">${T.lv}</b></div><div class="sub" style="font-size:.78rem;margin-top:3px;line-height:1.5">${T.mean}</div>${tlist(T)}</div>`;}
 // 예측 표시 공용(09-27 사용자: 가격을 맞히는 앱으로 비치지 않게 — 예측이 나오는 곳엔 같은 장치, 단 어려워 보이면 안 됨)
-const PRIN='5년 뒤 집값은 아무도 모릅니다. 그래서 한 숫자 대신 범위로 셉니다.';
+const PRIN='5년 뒤 집값은 아무도 모릅니다. 그래서 한 숫자 대신 범위로 셈합니다.';
 function prin(m,from){return `<div style="margin:${m||'0 0 6px'};font-size:.8rem;color:var(--ink2);line-height:1.5">${PRIN}${from!=null?` <a onclick="trust('${from}')" style="color:var(--blue);font-weight:700;cursor:pointer;white-space:nowrap">빗나간 곳 보기 ›</a>`:''}</div>`;}
 function missLink(from){return `<button class="linkbtn" style="display:block;margin:10px auto 0;font-size:.82rem;font-weight:600;color:var(--ink3)" onclick="trust('${from||''}')">이 셈이 빗나간 곳도 봅니다 ›</button>`;}
 function jsSeen(k){try{return !!localStorage.getItem(k);}catch(e){return false;}}
@@ -2103,7 +2103,7 @@ function jres(){TT.forEach(clearTimeout);TT=[];window.scrollTo(0,0);shClose();  
  <p class="sub" style="margin:18px 2px 0;font-size:.72rem;text-align:center">참고용 산출치 · 투자 권유 아님</p>`;
  jrun();}
 function jInfo(){const ck=NET.cv||NET.check||{};
- sheet('통근 시간은 이렇게 셌어요',`<ul style="margin:0;padding-left:18px;color:var(--ink2);font-size:.88rem;line-height:1.75;word-break:keep-all">
+ sheet('통근 시간은 이렇게 셈했어요',`<ul style="margin:0;padding-left:18px;color:var(--ink2);font-size:.88rem;line-height:1.75;word-break:keep-all">
  <li>공공 자료(서울 열린데이터광장·경기데이터드림의 버스 노선·정류장, 오픈스트리트맵 철도)로 만든 노선망에서 걷기·대기·환승을 더한 <b>대략값</b>이에요</li>
  <li>10분 단위로 보여 드려요. 평일 8시 실제 길찾기 ${ck.n||0}건과 비교하면 평균 ${ck.mae}분 차이, ${ck.within10}%가 10분 안이에요</li>
  <li>실시간 버스 도착·도로 정체는 반영하지 않아요. 정확한 시간은 지도 앱에서 확인하세요</li>
