@@ -148,7 +148,7 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
 .sheet{position:absolute;left:0;right:0;bottom:0;z-index:1150;background:var(--surface);border-radius:20px 20px 0 0;box-shadow:0 -6px 28px rgba(0,0,0,.18);
  max-height:78%;display:flex;flex-direction:column;transform:translateY(105%);transition:transform .26s cubic-bezier(.2,.8,.2,1);visibility:hidden}
 .sheet.open{transform:none;visibility:visible}
-.sheet.peek{max-height:48%}
+.sheet.peek{max-height:min(300px,48vh)}
 .sheet .grab{flex:0 0 auto;padding:8px 0 4px;cursor:grab;touch-action:none;display:flex;justify-content:center}
 .sheet .grab i{width:40px;height:5px;border-radius:3px;background:var(--line)}
 .sheet .x{position:absolute;right:10px;top:10px;width:36px;height:36px;border-radius:10px;border:0;background:var(--surface2);color:var(--ink2);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
@@ -185,6 +185,9 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
 .nbtn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:18px;padding:14px;border-radius:14px;background:var(--blue);color:#fff;font-weight:700;font-size:.95rem}
 :root[data-dark] .nbtn{color:#0c1233}
 .nbtn .ic{width:18px;height:18px}
+.mhero{margin:14px 0 0}.mhero span{display:block;font-size:.8rem;color:var(--ink3)}.mhero b{display:block;font-size:1.9rem;font-weight:800;letter-spacing:-.03em;line-height:1.2}.mhero em{display:block;font-style:normal;font-size:.86rem;color:var(--ink2)}.mhero em small{color:var(--ink3);font-size:.76rem}
+.mchips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}.mchips span{padding:6px 10px;border-radius:999px;background:var(--surface2,#f2f4f6);font-size:.8rem;font-weight:600;color:var(--ink2)}
+.mgo{display:block;text-align:center;margin:14px 0 4px;padding:13px;border-radius:14px;background:var(--blue,#4263eb);color:#fff;font-weight:800;text-decoration:none}
 .note{font-size:.76rem;color:var(--ink3);line-height:1.6;margin:14px 0 0}
 /* 필터 시트 */
 #fsheet h3:first-child{margin-top:6px}
@@ -648,8 +651,9 @@ function detail(a) {
   const pl = a.price.map(p => kv(p[0] + '㎡', `${eok(p[1])}${p[2] ? ` → 5년 뒤 <b>${eok(p[2])}</b>` : ''}`)).join('');
   const pc = v => v == null ? '' : (v > 0 ? '+' : '') + Math.round(v) + '%';
   return `<div class="mc1"><h2>${esc(a.name)}${rep ? ` <small>${rep[0]}㎡</small>` : ''}</h2><span class="mbn"><i>입지 점수</i><b>${a.score}</b></span></div>
-<p class="sub">${esc(a.gu)} ${esc(a.emd)}</p>
-<p class="sub" style="margin-top:3px;color:var(--blue);font-weight:700">입지 좋은 순 ${esc(a.guS)} 안 ${fmt(a.rg)}번째 / ${fmt(gN)}곳</p>
+<p class="sub">${esc(a.gu)} ${esc(a.emd)} · 입지 ${esc(a.guS)} ${fmt(a.rg)}위 / ${fmt(gN)}곳</p>
+${rep ? `<div class="mhero"><span>시세 · ${rep[0]}㎡</span><b>${eok(rep[1])}</b>${rep[2] ? `<em>5년 뒤 ${eok(rep[2])} <small>보통일 때</small></em>` : ''}</div>` : ''}
+<div class="mchips">${[a.built ? a.built + '년' : '', a.hh ? fmt(a.hh) + '세대' : '', a.an.name && _wm != null && _wm <= 25 ? esc(a.an.name) + '역 ' + _wm + '분' : ''].filter(Boolean).map(t => `<span>${t}</span>`).join('')}</div>
 <h3>단지 정보</h3>
 ${kv('준공', a.built ? `${a.built}년 <small>(${a.age < 1 ? '1년 미만' : a.age + '년차'})</small>` : '')}
 ${kv('세대 · 동', [a.hh ? fmt(a.hh) + '세대' : '', x.dong ? x.dong + '개동' : ''].filter(Boolean).join(' · '))}
@@ -665,7 +669,7 @@ ${kv('전세', rep && x.jr ? `약 ${eok(rep[1] * x.jr / 100)} <small>(${rep[0]}�
 ${kv('최근 1년 거래', x.n12 ? fmt(x.n12) + '건' : '')}
 ${kv('지난 하락기 (2022)', x.dd != null ? `<b style="color:${x.dd > -10 ? 'var(--blue)' : x.dd < -25 ? 'var(--red)' : 'inherit'}">${pc(x.dd)}</b>` : '')}
 ${kv('최근 5년 상승', x.h5c != null || x.h5g != null ? `단지 <b>${pc(x.h5c) || '-'}</b> · ${esc(a.guS)} ${pc(x.h5g) || '-'}` : '')}
-<a class="btn" href="index.html#c=${encodeURIComponent(a.no)}" onclick='window.jsTrack&&jsTrack("map_detail",{n:${JSON.stringify(a.name)}})' style="display:block;text-align:center;margin:14px 0 4px;padding:12px;border-radius:12px;background:var(--blue,#4263eb);color:#fff;font-weight:800;text-decoration:none">세부 분석 보기 — 강점·약점 · 5년 뒤 범위 · 순이익</a>
+<a class="mgo" href="index.html#c=${encodeURIComponent(a.no)}" onclick='window.jsTrack&&jsTrack("map_detail",{n:${JSON.stringify(a.name)}})' style="margin-top:18px">세부 분석 보기</a>
 <p class="note">입지 = 주변 단지 실거래로 본 동네 시세 + 역 접근성. 5년 뒤는 기준 시나리오 중앙값. 참고용 · 투자 권유 아님.</p>`;
 }
 function select(a, fly) {
