@@ -117,6 +117,27 @@ ul.plain{padding-left:18px}
 .cta{position:sticky;bottom:12px;margin-top:18px}
 .sec{margin:22px 0 6px;font-weight:800;font-size:1.02rem}
 .hint{font-size:.84rem;color:var(--ink3);margin:2px 0 10px}
+.tl{display:flex;align-items:center;gap:12px;padding:13px 4px;margin:0 -4px;border-radius:12px;cursor:pointer;-webkit-tap-highlight-color:transparent}.tl:active{background:var(--surface2)}
+.tl .k{width:22px;flex-shrink:0;text-align:center;font-weight:700;font-size:.92rem;color:var(--ink3)}.tl .k.t{color:var(--blue);font-weight:800}
+.tl .m{flex:1;min-width:0}.tl .m b{display:block;font-size:1rem;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tl .m span{display:block;font-size:.8rem;color:var(--ink3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tl .v{text-align:right;flex-shrink:0}.tl .v b{display:block;font-size:1.06rem;font-weight:800;letter-spacing:-.02em}.tl .v span{display:block;font-size:.74rem;color:var(--ink3);margin-top:3px}
+.bsub{display:flex;align-items:center;gap:2px;margin:6px 0 0;font-size:.88rem;color:var(--ink3)}
+.ibi{border:0;background:none;color:var(--ink3);font-size:1rem;padding:2px 4px;cursor:pointer}
+.ib{border:0;background:none;color:var(--ink2);padding:6px;margin:-2px -6px 0 0;cursor:pointer;border-radius:10px}
+.tsearch{width:100%;margin-top:14px;padding:12px 14px;border:0;border-radius:12px;background:var(--surface2);color:var(--ink);font:inherit;font-size:.95rem;outline:none}
+.fbar{display:flex;gap:6px;overflow-x:auto;margin:16px 0 8px;scrollbar-width:none}.fbar::-webkit-scrollbar{display:none}
+.fp{flex-shrink:0;display:inline-flex;align-items:center;gap:4px;padding:8px 12px;border:0;border-radius:999px;background:var(--surface2);color:var(--ink2);font:inherit;font-size:.86rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.fp.on{background:var(--blue-bg);color:var(--blue);font-weight:700}
+.tmore{display:block;width:100%;margin-top:10px;padding:14px;border:0;border-radius:14px;background:var(--surface2);color:var(--ink2);font:inherit;font-weight:700;cursor:pointer}
+.bs-bg{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:90;animation:shF .2s}
+.bs{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:0 auto;background:var(--surface);border-radius:24px 24px 0 0;padding:10px 22px calc(22px + env(safe-area-inset-bottom));z-index:91;max-height:78vh;display:flex;flex-direction:column;animation:shU .28s cubic-bezier(.2,.8,.2,1)}
+.bs i.h{display:block;width:36px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 16px}.bs h3{margin:0 0 6px;font-size:1.2rem;font-weight:800;letter-spacing:-.02em}.bs .ls{overflow-y:auto}
+.bs .o{display:flex;justify-content:space-between;align-items:center;width:100%;padding:14px 2px;border:0;background:none;color:var(--ink);font:inherit;font-size:1rem;font-weight:600;text-align:left;cursor:pointer}
+.bs .o small{display:block;font-size:.78rem;color:var(--ink3);font-weight:500;margin-top:3px}.bs .o.on{color:var(--blue);font-weight:700}.bs .o.on::after{content:'✓';font-weight:800}
+.bs .g{font-size:.78rem;font-weight:700;color:var(--ink3);margin:16px 2px 8px}
+.bs .gg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.bs .gg button{padding:11px 4px;border:0;border-radius:12px;background:var(--surface2);color:var(--ink);font:inherit;font-size:.86rem;font-weight:600;cursor:pointer;word-break:keep-all;line-height:1.3}.bs .gg button.on{background:var(--blue-bg);color:var(--blue);font-weight:700}
+@keyframes shU{from{transform:translateY(100%)}to{transform:none}}@keyframes shF{from{opacity:0}}
 .cc{display:flex;flex-wrap:wrap;gap:7px}
 .cc button{padding:9px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink2);font:inherit;font-size:.9rem;font-weight:600;cursor:pointer}
 .cc button.on{background:var(--blue);color:#fff;border-color:var(--blue)}.cc button.on::before{content:'✓ '}
@@ -831,52 +852,62 @@ const LZ={obj:['입지 점수 순위','주변 시세와 역 접근성으로 본 
  up:['5년 뒤 시세 순위','5년 뒤 시세가 지금보다 많이 오를 순서(상승률)',['시세만 — 대출이자·세금은 매수 분석에서','입주권·분담금 단지 제외']],
  def:['하락기 방어 순위','2021 고점 → 2022~23 저점, 실거래로 덜 떨어진 순',['300세대 이상',['지난번 기록일 뿐 다음에도 같다는 보장 없음','amber']]],
  rb:['분담금 순위','새 아파트를 받을 때 더 낼 돈 · 돌려받을 돈',[['부담 = 조합원이 더 냄','red'],['환급 = 오히려 돌려받음','green'],'조합 발표값 우선']]};   // 09-28 '급매 단지' 삭제(지금 나온 매물 이야기 — 호가 없이는 못 찾음)
+// 09-29 사용자: 순위판이 'AI가 막 만든 앱' 같다 — 칩·태그·설명 상자가 목록 앞을 두 화면이나 가림 → 토스식: 제목 한 줄 + 필터 한 줄(누르면 바텀시트) + 목록(이름·숫자만). 설명은 ⓘ 하나에 모음
+const LSUB={obj:'역·동네 시세·학군으로 매긴 점수 순',up:'보통일 때 5년 상승률 순',def:'2022 하락기에 덜 떨어진 순',rb:'새 아파트 받을 때 더 낼 돈이 적은 순'};
+const SDO=g=>/^(중구|동구|서구|남구|연수구|부평구|계양구|미추홀구|강화군|옹진군|검단구|영종구|제물포구)$/.test(g)?'인천':/^[^ ]+구$/.test(g)?'서울':'경기';
+const CHV='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+function sheet(title,body){shClose();document.body.insertAdjacentHTML('beforeend',`<div id="shbg" class="bs-bg" onclick="shClose()"></div><div id="sh" class="bs" role="dialog"><i class="h"></i><h3>${title}</h3><div class="ls">${body}</div></div>`);}
+function shClose(){['sh','shbg'].forEach(i=>{const e=document.getElementById(i);if(e)e.remove();});}
+const SHO=(on,t,js,s)=>`<button class="o${on?' on':''}" onclick="${js};shClose()"><span>${t}${s?`<small>${s}</small>`:''}</span></button>`;
+function bSheet(w){
+ const set=(k,v)=>`BF.${k}=${v};BF.n=30;board()`;
+ if(w==='gu'){const gus=[...new Set(CPX.map(c=>c.gu))].sort(), grp=['서울','경기','인천'];
+  sheet('지역',SHO(!BF.gu,'서울·경기·인천 전체',set('gu',"''"))+grp.map(s=>`<div class="g">${s}</div><div class="gg">`+gus.filter(g=>SDO(g)===s).map(g=>`<button class="${BF.gu===g?'on':''}" onclick="${set('gu',`'${g}'`)};shClose()">${g}</button>`).join('')+'</div>').join(''));}
+ if(w==='sz')sheet('평형',SHO(!BF.size.length,'전체',set('size','[]'))+Object.keys(SZL).map(k=>SHO(BF.size[0]===k,SZL[k],set('size',`['${k}']`))).join(''));
+ if(w==='pb')sheet('지금 가격',SHO(!BF.pb,'전체',set('pb',"''"))+Object.keys(PBL).map(k=>SHO(BF.pb===k,PBL[k],set('pb',`'${k}'`))).join(''));
+ if(w==='us')sheet('정렬',SHO(BF.us==='m','많이 오를 순',set('us',"'m'"),'시장이 보통일 때 5년 상승률')+SHO(BF.us==='s','덜 위험한 순',set('us',"'s'"),'시장이 나쁠 때까지 함께 따져서'));
+ if(w==='info'){const L_=BF.lens, Z=LZ[L_], QP=DT.q5p||[], pt=QP[QP.length-1]||{}, pb=QP[0]||{};
+  const tg=['내 조건과 무관 — 서울·경기·인천 전체 단지'].concat(Z[2].map(t=>Array.isArray(t)?t[0]:t));
+  const vis=L_==='up'&&pt.med!=null?`<div class="mini" style="margin:12px 0 0"><div><span>과거 검증 · 5년 실제 시세</span><b><span style="font-size:1rem;color:var(--red)">+${pt.med}%</span> <span style="font-size:.72rem;color:var(--ink3)">상위 20%</span></b><span>하위 20%는 +${pb.med}%</span></div><div><span>과거 검증 · 손실 비율</span><b>${pt.loss}% <span style="font-size:.72rem;color:var(--ink3)">상위 20%</span></b><span>하위 20%는 ${pb.loss}%</span></div></div>`:'';
+  const more=L_==='up'?`<b>보통일 때</b>는 이보다 더 오를 확률과 덜 오를 확률이 반반인 값이에요. <b>하락 확률</b>은 과거 실거래 20년으로 셈한 범위에서 5년 뒤 시세가 지금보다 낮을 몫이에요. 같은 지역 안 비교에 강하고, 지역 전체의 방향은 맞히려 하지 않아 그 폭을 범위에 넣었어요.`
+   :L_==='rb'?`조합 발표값이 없는 단지는 발표 사례로 보정한 공식의 추정치예요${DT.bk?` (사례 ${DT.bk.n}건 · 오차 중앙 옛 집 시세의 ${DT.bk.err}%)`:''}. 실제 분담금은 조합 공지로 확인하세요.`
+   :L_==='def'?'2021 고점에서 2022~23 저점까지 실거래로 잰 변동이에요. 거래가 적어 튀는 값과 300세대 미만은 뺐어요. 지난번 기록일 뿐 다음에도 같다는 보장은 없어요.'
+   :'역까지 거리·동네 시세·학군(초등 통학구역)으로 매긴 점수예요. 입지가 좋다고 순이익이 반드시 큰 건 아니에요.';
+  sheet('이 순위는 이렇게 셌어요',`<p style="margin:0 0 10px;line-height:1.6;color:var(--ink2);font-size:.92rem;word-break:keep-all">${more}</p><ul style="margin:0;padding-left:18px;color:var(--ink3);font-size:.84rem;line-height:1.7">${tg.map(t=>`<li>${t}</li>`).join('')}</ul>${vis}${L_==='up'?missLink('b'):''}`);}
+}
 function board(lens,focus){
- BF.lens=lens||BF.lens; TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
- const L_=BF.lens, Q=DT.q5||[], qt=Q[Q.length-1]||{}, qb=Q[0]||{};
- const gus=[...new Set(CPX.map(c=>c.gu))].sort();
- const QP=DT.q5p||[], pt=QP[QP.length-1]||{}, pb=QP[0]||{};
- const Z=LZ[L_];
- const vis=L_==='up'&&pt.med!=null?`<div class="mini" style="margin:0 0 8px"><div><span>과거 검증 · 5년 실제 시세</span><b><span class="pos" style="font-size:1rem;color:var(--green)">+${pt.med}%</span> <span style="font-size:.72rem;color:var(--ink3)">상위 20%</span></b><span>하위 20%는 +${pb.med}%</span></div><div><span>과거 검증 · 손실 비율</span><b>${pt.loss}% <span style="font-size:.72rem;color:var(--ink3)">상위 20%</span></b><span>하위 20%는 ${pb.loss}%</span></div></div>`:'';
- const more=L_==='up'?`<b>중앙값</b>: 이보다 높을 확률과 낮을 확률이 반반인 값.<br><b>지금보다 낮을 확률</b>: 과거 실거래 20년으로 셈한 범위에서 5년 뒤 시세가 지금보다 낮은 몫.<br>같은 지역 안 단지 비교에 강하고, 지역 전체의 방향은 예측하지 않아 그 폭을 범위에 넣었습니다.`
-  :L_==='rb'?`조합 발표값이 없는 단지는 발표 사례로 보정한 공식의 추정치입니다${DT.bk?` (사례 ${DT.bk.n}건 · 오차 중앙 옛 집 시세의 ${DT.bk.err}%, 강남 고가 단지는 4~6억까지 벗어난 사례 있음)`:''}. 실제 분담금은 조합 공지로 확인하세요.`
-  :L_==='def'?'거래가 적어 튀는 값은 뺐습니다.':'';
- app.innerHTML=HOME+`<div class="hq" style="margin:0 0 2px">${Z[0]}</div><div style="font-weight:700;font-size:.92rem">${Z[1]}</div>${L_==='up'?prin('4px 0 0','b'):''}${TAGS([['내 조건과 무관 · 서울·경기·인천 전체','blue']].concat(Z[2]))}${vis}${MORE(more)}
- 
- <div style="display:flex;gap:8px;margin-bottom:8px"><select onchange="BF.gu=this.value;BF.n=30;blist()" style="flex:1;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit"><option value="">서울·경기·인천 전체</option>${gus.map(g=>`<option ${BF.gu===g?'selected':''}>${g}</option>`).join('')}</select></div>
- <div class="cc" id="bsz" style="margin-bottom:8px"></div>${L_!=='rb'?`<div class="cc" id="bpb" style="margin-bottom:8px"></div>`:''}${L_==='up'?`<div class="cc" id="bus" style="margin-bottom:8px"></div>`:''}
- <input id="bq" type="search" placeholder="단지 검색 (단지명·동) — 누르면 성적표" value="${BF.q}" oninput="BF.q=this.value;blist()" style="width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit">
- <div id="blist" style="margin-top:10px"></div>${L_==='up'?missLink('b'):''}
- <p class="sub" style="margin:14px 2px 0;font-size:.74rem">참고용 산출치 · 투자 권유 아님 · 투자 판단과 책임은 본인에게 있습니다</p>`;
- $('#bsz').innerHTML=Object.keys(SZL).map(k=>`<button class="${BF.size.includes(k)?'on':''}" onclick="BF.size=BF.size.includes('${k}')?BF.size.filter(x=>x!=='${k}'):BF.size.concat('${k}');BF.n=30;board()">${SZL[k]}</button>`).join('');
- if($('#bpb'))$('#bpb').innerHTML=Object.keys(PBL).map(k=>`<button class="${BF.pb===k?'on':''}" onclick="BF.pb=BF.pb==='${k}'?'':'${k}';BF.n=30;board()">${PBL[k]}</button>`).join('');
- if($('#bus'))$('#bus').innerHTML=[['m','보통일 때 많이 오를 순'],['s','나쁠 때까지 따진 순']].map(([k,t])=>`<button class="${BF.us===k?'on':''}" onclick="BF.us='${k}';BF.n=30;board()">${t}</button>`).join('');
- blist(); if(focus){const q=$('#bq');q.focus();}}
+ BF.lens=lens||BF.lens; TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); shClose();
+ const L_=BF.lens, Z=LZ[L_];
+ const fp=(w,on,t)=>`<button class="fp${on?' on':''}" onclick="bSheet('${w}')">${t}${CHV}</button>`;
+ const pills=fp('gu',!!BF.gu,BF.gu||'지역')+fp('sz',BF.size.length>0,BF.size.length?SZL[BF.size[0]]:'평형')+(L_!=='rb'?fp('pb',!!BF.pb,BF.pb?PBL[BF.pb]:'가격'):'')+(L_==='up'?fp('us',BF.us==='s',BF.us==='s'?'덜 위험한 순':'많이 오를 순'):'');
+ app.innerHTML=HOME+`<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px"><div class="hq" style="margin:0">${Z[0]}</div>
+  <button class="ib" aria-label="단지 검색" onclick="const e=document.getElementById('bqw');e.hidden=!e.hidden;if(!e.hidden)document.getElementById('bq').focus()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></button></div>
+ <div class="bsub"><span id="bcnt"></span><button class="ibi" onclick="bSheet('info')" aria-label="어떻게 셌나요">ⓘ</button></div>
+ <div id="bqw" ${BF.q||focus?'':'hidden'}><input id="bq" class="tsearch" type="search" placeholder="단지 이름으로 찾기" value="${BF.q}" oninput="BF.q=this.value;blist()"></div>
+ <div class="fbar">${pills}</div>
+ <div id="blist"></div>
+ <p class="sub" style="margin:18px 2px 0;font-size:.72rem;text-align:center">참고용 산출치 · 투자 권유 아님</p>`;
+ blist(); if(focus){const q=$('#bq');q&&q.focus();}}
 function blist(){
- const L_=BF.lens, up=L_==='up', sg=v=>(v>=0?'+':'')+Math.round(v)+'%';
+ const L_=BF.lens, up=L_==='up', sg=v=>(v>=0?'+':'−')+Math.abs(Math.round(v))+'%';
  let L=CPX.map(c=>({c,r:bestRow(c)})).filter(x=>x.r&&(!BF.gu||x.c.gu===BF.gu));
- if(L_==='def')L=L.filter(x=>x.c.dd!=null&&x.c.dd<10&&(x.c.hh||0)>=300);
+ if(L_==='def')L=L.filter(x=>x.c.dd!=null&&x.c.dd<10&&(x.c.hh||0)>=300);   // 하락기에 +10% 넘게 오른 값은 거래가 적은 곳의 튀는 값 — 300세대 미만과 함께 뺀다
  if(BF.pb&&L_!=='rb')L=L.filter(x=>PBF[BF.pb](x.r.p));
- if(up)L=L.filter(x=>!x.r.as&&!(x.r.bu>0));   // 입주권(이주·착공) 단계는 완공 후 값이라 분담금을 빼기 전엔 시세 비교가 안 된다(09-25: +107% 오류)   // 하락기에 +10% 넘게 오른 값은 거래가 적은 곳의 튀는 값 — 300세대 미만과 함께 뺀다
- if(L_==='rb'){L=L.filter(x=>x.c.rb);L.sort((a,b)=>(b.c.bkc?1:0)-(a.c.bkc?1:0)||BKV(a.c)-BKV(b.c)); /* 09-28: 입지 점수 순 → 분담금 적은 순(발표값 있으면 발표값) */}
- if(L_!=='rb')L.sort(up?(a,b)=>UPK(b.r)-UPK(a.r):L_==='def'?(a,b)=>b.c.dd-a.c.dd:(a,b)=>b.c.sc-a.c.sc||b.r.ce-a.r.ce);
+ if(up)L=L.filter(x=>!x.r.as&&!(x.r.bu>0));   // 입주권(이주·착공) 단계는 완공 후 값이라 분담금을 빼기 전엔 시세 비교가 안 된다(09-25: +107% 오류)
+ if(L_==='rb'){L=L.filter(x=>x.c.rb);L.sort((a,b)=>(b.c.bkc?1:0)-(a.c.bkc?1:0)||BKV(a.c)-BKV(b.c)); /* 09-28: 분담금 적은 순(발표값 있으면 발표값) */}
+ else L.sort(up?(a,b)=>UPK(b.r)-UPK(a.r):L_==='def'?(a,b)=>b.c.dd-a.c.dd:(a,b)=>b.c.sc-a.c.sc||b.r.ce-a.r.ce);
  L.forEach((x,i)=>x.k=L_==='obj'?(BF.gu?x.c.rg:x.c.ra):i+1);
  const q=nz(BF.q); if(q)L=L.filter(x=>nz(x.c.n+' '+(x.c.al2||'')).includes(q));
- // 09-29 사용자: 입지·5년 뒤 시세·하락기 순위도 매수 분석과 같은 카드(row) — 큰 숫자만 그 순위의 값. 순이익 막대는 전액 자기 돈 기준(내 조건과 무관한 판이라 CF.cash를 잠깐 비움)
- // 09-29 사용자: 재건축 분담금 판도 같은 카드 — 큰 숫자 = 분담금(조합 발표가 있으면 발표값), 셋째 줄 = 종전→새 면적·출처 또는 추정 범위
- const rbO=c=>{const k=c.bkc, r=c.rb, est=r.rb[5], e=Math.round(r.p*((DT.bk&&DT.bk.err)||10)/100), col=v=>v>=0?'var(--red)':'var(--green)';
-  if(k){const s=k.find(x=>Math.abs(x[0]-x[1])<=6)||k[0];return {noRng:true,lbl:'분담금 · 조합 발표',big:`<b class="num" style="color:${col(s[2])}">${BKW(s[2])}</b>`,l3:`${Math.round(s[0])}→${Math.round(s[1])}㎡ · ${s[3]}${s[4]?' · '+s[4]:''}`};}
-  const lo=est-e, hi=est+e, RG=lo>=0?`부담 ${eok(lo)}~${eok(hi)}억`:hi<=0?`환급 ${eok(-hi)}~${eok(-lo)}억`:`환급 ${eok(-lo)}억 ~ 부담 ${eok(hi)}억`;
-  return {noRng:true,lbl:'분담금 · 추정(동일 평형)',big:`<b class="num" style="color:${col(est)}">${BKW(est)}</b>`,l3:`추정 범위 ${RG} · 시세 ${eok(r.p)}억 <span class="sub">(사례 보정 공식, 조합 공지로 확인)</span>`};};
- const rowB=x=>{const {c,r,k}=x; if(L_==='rb')return row(c.rb,k,'',rbO(c));
-  const o=up?(()=>{const F=r.F||(r.F=fin(r)),s1=GRS(F.sv1),s5=GRS(F.sv5),s9=GRS(F.sv9),lo=Math.round(belowP(s1,s5,s9,r.p)*100);const m=(s5/r.p-1)*100, w=(s1/r.p-1)*100;return {noRng:true,lbl:'5년 뒤 상승률 · 보통일 때',big:`<b class="num" style="color:${m>=0?'var(--red)':'var(--blue)'}">${sg(m)}</b>`,l3:`지금 ${eok(r.p)}억 → 5년 뒤 <b>${eok(s5)}억</b> · 나쁠 때 ${sg(w)} · 지금보다 낮을 확률 ${lo}%`};})()
-   :L_==='def'?{noRng:true,lbl:'2022 하락기 변동',big:`<b class="num" style="color:${c.dd>-10?'var(--blue)':c.dd<-25?'var(--red)':'var(--ink)'}">${c.dd>0?'+':''}${Math.round(c.dd)}%</b>`}
-   :{noRng:true,lbl:'입지 점수',big:`<b class="num" style="color:var(--blue)">${c.sc}</b>`,l2:STXT(r)};
-  const ex=q&&L_==='obj'?`<div class="rc2"><span style="color:var(--blue);font-weight:700">입지 좋은 순 ${c.ra.toLocaleString()}번째 · ${c.gu.split(' ').pop()} 안 ${c.rg}번째</span><span></span></div>`:'';
-  return row(r,k,ex,o);};
- const kc=CF.cash, ku=CF.useU; CF.cash=null; CF.useU=true; R.forEach(r=>r.F=null);
- try{$('#blist').innerHTML=(L.length?`<div class="sub" style="font-size:.74rem">${L.length.toLocaleString()}개 단지 · 누르면 자세히</div>`+L.slice(0,BF.n).map(rowB).join(''):'<p class="sub">조건에 맞는 단지 없음</p>')
-  +(L.length>BF.n?`<button class="btn ghost" style="margin-top:8px" onclick="BF.n+=30;blist()">30개 단지 더 보기</button>`:'');}finally{CF.cash=kc;CF.useU=ku;}}
+ const kc=CF.cash, ku=CF.useU; CF.cash=null; CF.useU=true;
+ const it=x=>{const {c,k}=x, r=L_==='rb'?c.rb:x.r, key=r.no||(r.n+'|'+r.gu); let v,vs,col='var(--ink)';
+  if(L_==='rb'){const bk=c.bkc, s=bk&&(bk.find(y=>Math.abs(y[0]-y[1])<=6)||bk[0]), w=s?s[2]:(r.rb[5]||0); col=w>=0?'var(--red)':'var(--green)'; v=(w>=0?'부담 ':'환급 ')+eok(Math.abs(w))+'억'; vs=s?'조합 발표':'추정';}
+  else if(up){const F=r.F||(r.F=fin(r)), s1=GRS(F.sv1), s5=GRS(F.sv5), s9=GRS(F.sv9), m=(s5/r.p-1)*100; col=m>=0?'var(--red)':'var(--blue)'; v=sg(m); vs='하락 확률 '+Math.round(belowP(s1,s5,s9,r.p)*100)+'%';}
+  else if(L_==='def'){col=c.dd>-10?'var(--blue)':c.dd<-25?'var(--red)':'var(--ink)'; v=(c.dd>0?'+':c.dd<0?'−':'')+Math.abs(Math.round(c.dd))+'%'; vs='2022 하락기';}
+  else {col='var(--blue)'; v=c.sc+'점'; vs=BF.gu?'':c.gu.split(' ').pop()+' '+c.rg+'위';}
+  return `<div class="tl" onclick="rcard('${key}')"><span class="k${k<=3?' t':''}">${k}</span><div class="m"><b>${r.n}</b><span>${r.gu} · ${r.b}㎡ · ${eok(r.p)}억</span></div><div class="v"><b style="color:${col}">${v}</b>${vs?`<span>${vs}</span>`:''}</div></div>`;};
+ try{$('#bcnt').textContent=`${L.length.toLocaleString()}개 단지 · ${up&&BF.us==='s'?'나쁠 때까지 따진 순':LSUB[L_]}`;
+  $('#blist').innerHTML=(L.length?L.slice(0,BF.n).map(it).join(''):'<p class="sub" style="text-align:center;padding:30px 0">조건에 맞는 단지가 없어요</p>')
+  +(L.length>BF.n?`<button class="tmore" onclick="BF.n+=30;blist()">더 보기</button>`:'');}finally{CF.cash=kc;CF.useU=ku;}}
 
 // 지역 불확실성(09-25): 집셈 5년 모델은 지역 방향에 베팅하지 않는다(과거 기간마다 뒤집힘). 대신 그 지역에서 과거 예측이 빗나간 폭과 최근 1년 시세를 보여 준다.
 function gyof(gu){const Y=DT.gyoy||{},G=Y.g||{};return G[gu]!=null?G[gu]:G['인천 '+gu]!=null?G['인천 '+gu]:G[(gu||'').split(' ')[0]];}
@@ -2104,7 +2135,7 @@ function jrun(){const box=$('#jlist');if(!box)return;box.innerHTML='<p class="su
 // ---- 앞페이지 훅(usage_js.py): 화면 함수를 감싸 이름·구간 인자만 기록 ----
 (function(){if(!window.jsTrack)return;
  var B=function(v){return v==null?'없음':v<10000?'1억↓':v<20000?'1~2억':v<30000?'2~3억':v<50000?'3~5억':v<80000?'5~8억':'8억↑';};
- var sido=function(g){var s={};(g||[]).forEach(function(x){var c=x.split(' ')[0];s[/구$/.test(c)?'서울':/^(중구|동구|서구|남구|연수구|부평구|계양구|미추홀구|강화군|옹진군)$/.test(c)?'인천':'경기']=1;});return Object.keys(s).join('·')||'전체';};
+ var sido=function(g){var s={};(g||[]).forEach(function(x){var c=x.split(' ')[0];s[/구$/.test(c)?'서울':/^(중구|동구|서구|남구|연수구|부평구|계양구|미추홀구|강화군|옹진군|검단구|영종구|제물포구)$/.test(c)?'인천':'경기']=1;});return Object.keys(s).join('·')||'전체';};
  var cond=function(){try{return {cash:B(CF.cash),reg:(CF.regions||[]).length,sido:sido(CF.regions),size:(CF.size||[]).join(','),age:(CF.age||[]).join(','),useU:!!CF.useU,first:!!CF.first,lens:CF.lens||'bal',inc:CF.inc!=null,st:CF.st||'',hh:CF.hh||0};}catch(e){return null;}};
  var HK={hello:'hello',hub:'hub',origin:'origin',philo:function(e,i){return {i:i||0};},firstFlow:function(i,f){return {i:i||0,force:!!f};},story:function(i){return {i:i||0,path:window.SPATH};},chat:'chat',why3:function(i){return {i:i||0};},bridge:'bridge',
   consult:function(k,i){return {k:k,i:i||0};},setup:function(i){return {i:i==null?-1:i};},result:cond,board:function(l){return {lens:l||(window.BF&&BF.lens)};},move:'move',
