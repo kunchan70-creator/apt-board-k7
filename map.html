@@ -491,7 +491,7 @@ async function themeBase() {
 }
 // ---------- N 지도 바탕(09-29 사용자: 익숙한 국내 지도로) ----------
 // 말풍선·노선·조작은 지금처럼 Leaflet 이 맡고, 그 아래에 NCP Web Dynamic Map 을 깔아 화면(중심·줌)만 맞춘다.
-// 사이트 주소가 등록되지 않았거나 인증이 실패하면 스스로 걷어내고 기존 컬러 지도로 돌아간다. 다크 모드는 기존 어두운 지도.
+// 사이트 주소가 등록되지 않았거나 인증이 실패하면 스스로 걷어내고 기존 컬러 지도로 돌아간다.
 const NVK = 'oeq5r2o6gg';
 let nmap = null;
 function nFail() {
@@ -518,7 +518,7 @@ async function nBase() {
   map.attributionControl.addAttribution('노선 &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>');
   baseKind = 'nmap'; sync();
 }
-if (NVK && !isDark()) nBase().catch(() => nFail()); else initBase();
+if (NVK) nBase().catch(() => nFail()); else initBase();   // 09-29 사용자: 다크 모드에서도 N 지도 그대로
 const mq = matchMedia('(prefers-color-scheme: dark)');
 (mq.addEventListener ? mq.addEventListener('change', themeBase) : mq.addListener(themeBase));
 map.createPane('stlab'); map.getPane('stlab').style.zIndex = 590; map.getPane('stlab').style.pointerEvents = 'none';

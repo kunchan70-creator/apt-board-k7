@@ -1069,7 +1069,6 @@ function rcard(k,back,bb){
  const c=(window.CPXK||{})[k]; if(!c)return; LASTV=DL?null:()=>rcard(k,back,bb); TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
  if(!document.getElementById('stcss'))document.head.insertAdjacentHTML('beforeend',STCSS);
  const rows=c.rows.slice().sort((a,b)=>a.b-b.b), r=(bb&&rows.find(x=>x.b===bb))||rows.slice().sort((x,y)=>Math.abs(x.b-84)-Math.abs(y.b-84))[0];
- try{history.replaceState(null,'','#c='+encodeURIComponent(k));}catch(e){}
  app.innerHTML=`<div id="own">${ownHTML(c,r,k,back,null)}</div>`;
  ownLoad(c.gu).then(D=>{const el=document.getElementById('own');if(el&&CPXK[k]===c)el.innerHTML=ownHTML(c,r,k,back,D[c.no]||{});ownCalc(c.k,r.b);});}
 // 09-29 사용자: 토스식 — 회색 상자·작은 머리글·줄마다 붙은 잔글씨를 걷어내고 [큰 숫자 → 굵은 소제목 섹션 → 이름·값 줄]. 잔글씨(기준·출처·요건)는 제목 옆 ⓘ 하나에
@@ -1122,7 +1121,7 @@ function ownHTML(c,r,k,back,X){
  const tax=box('임대하거나 매도할 때',(jd?kv('전세로 임대하면',`약 <b>${eok(jd)}억</b> <span class="sub">(전세가율 ${r.jr}%)</span>`):'')
    +(r.hold?kv('보유세',`연 약 <b>${Math.round(r.hold/Math.max(1,r.T)).toLocaleString()}만 원</b>`):'')
    +kv('매도 중개보수',`약 ${Math.round(r.p*.004).toLocaleString()}만 원`));
- return `<button class="linkbtn" style="padding:0;margin:0 0 8px;font-size:.84rem;color:var(--ink3)" onclick="history.replaceState(null,'',location.pathname);${back==='own'?'ownFind()':'board()'}">‹ 뒤로</button>
+ return `<button class="linkbtn" style="padding:0;margin:0 0 8px;font-size:.84rem;color:var(--ink3)" onclick="navBack(()=>${back==='own'?'ownFind()':'board()'})">‹ 뒤로</button>
  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px"><div class="hq" style="margin:0;word-break:keep-all">${c.n}</div><button class="ib" aria-label="이 단지 공유" onclick="shareCx('${k}',this)"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></button></div><div class="bsub">${c.gu}${c.y?' · '+c.y+'년':''}${c.hh?' · '+c.hh.toLocaleString()+'세대':''}<button class="ibi" onclick="ownInfo()" aria-label="숫자 기준">ⓘ</button></div>
  ${rows.length>1?`<div class="fbar" style="margin:14px 0 4px">${rows.map(x=>`<button class="fp${x===r?' on':''}" onclick="rcard('${k}','${back||''}',${x.b})">${x.b}㎡</button>`).join('')}</div>`:''}
  ${hero}${box('한눈에 보기',rvBox(c,r))}${fut}${lc}${flb}${kid}${T.tags.length?box('확인할 점',`<div style="font-weight:800;color:${T.col}">${T.lv}</div><div style="font-size:.86rem;color:var(--ink2);margin:4px 0 2px;line-height:1.55">${T.mean}</div>${tlist(T)}`):''}${c.rb?box('정비사업 분담금',bkTxt(c)):''}${loan}${mv}${tax}
@@ -1472,7 +1471,7 @@ function setup(i){
  MVON=false;
  if(i==null)i=CF.done?STEPS.length-1:0;
  SU=i; const k=STEPS[i], last=STEPS.length-1, nx=`setup(${i+1})`;
- const head=`<button class="ib" style="margin:-4px 0 0 -8px" aria-label="뒤로" onclick="${i?`setup(${i-1})`:'hub()'}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><div class="prog" style="height:3px;margin:6px 0 20px"><i style="width:${(i+1)/(last+1)*100}%"></i></div>`;
+ const head=`<div style="display:flex;justify-content:space-between;align-items:center"><button class="ib" style="margin:-4px 0 0 -8px" aria-label="뒤로" onclick="navBack(()=>${i?`setup(${i-1})`:'hub()'})"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><button class="linkbtn" style="padding:4px 2px;font-size:.88rem;color:var(--ink3)" onclick="hub()">홈</button></div><div class="prog" style="height:3px;margin:6px 0 20px"><i style="width:${(i+1)/(last+1)*100}%"></i></div>`;
  const Q=(t,h)=>`<div class="hq" style="margin:0 0 6px;word-break:keep-all">${t}</div>${h?`<div class="hint" style="margin-bottom:14px">${h}</div>`:''}`;
  let body='', cta=`<div class="cta"><button class="btn" id="go" onclick="${nx}">다음</button></div>`;
  if(k==='purpose'){
@@ -1917,7 +1916,7 @@ function result(){
   :`<div class="alts"><a onclick="CF.lens='bal';CF.sort=null;result()">‹ 순이익 순으로 돌아가기</a></div>`;
  const hvH='';   // 09-28 사용자: '아껴서 모으기/더 쓰고 누리기'는 '더 쓰는데 더 버나?'로 읽히고, 좋은 곳은 사람마다 다름 → 버튼 대신 카드마다 '매달 드는 돈'을 보여 주고 판단은 사람에게
  N=3; const MD_=midD();
- app.innerHTML=`${DT.alert?`<div class="box warn" style="margin-top:0"><b>주간 과열 경보 발령</b> <span class="sub">과거 과열기에 자주 나타난 신호이며, 적중을 보장하지 않습니다.</span></div>`:''}
+ app.innerHTML=HOME+`${DT.alert?`<div class="box warn" style="margin-top:0"><b>주간 과열 경보 발령</b> <span class="sub">과거 과열기에 자주 나타난 신호이며, 적중을 보장하지 않습니다.</span></div>`:''}
  ${cbarH}${V.length?`<div class="hq" style="margin:12px 0 10px">${{bal:'5년 순이익 상위 단지',safe:'5년 손실이 적은 단지',obj:'입지 좋은 순'}[L]}</div>`+altH+hvH+qsRow()+(L==='obj'?`<div class="rleg">주변 시세와 역 접근성으로 본 입지 순이에요. 입지가 좋다고 순이익이 반드시 큰 건 아니에요.</div>`:'')+V.slice(0,3).map((r,k)=>row(r,k+1)).join(''):'<div class="hq">조건에 맞는 단지 없음</div>'+qsRow()}
  <div id="list"></div><button class="btn ghost" id="more" style="margin-top:12px" onclick="N+=10;draw()">다음 10곳</button>
  <button class="btn ghost" style="margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px" onclick="trust('r')">${ic('shield',18)}이 셈이 빗나간 곳도 봅니다</button>
@@ -2191,6 +2190,28 @@ function jrun(){const box=$('#jlist');if(!box)return;box.innerHTML='<p class="su
      +(L.length>(JB.shown||30)?`<button class="tmore" onclick="JB.shown=(JB.shown||30)+30;jrun()">더 보기</button>`:'')
     :'<p class="sub" style="text-align:center;padding:30px 0">조건에 맞는 단지가 없어요 · 편도 시간을 늘려 보세요</p>');},30)).catch(()=>{box.innerHTML='<p class="sub">버스 노선 자료를 불러오지 못했습니다. 새로고침해 주세요.</p>';});}
 
+
+// ---- 09-29 사용자: 안드로이드 뒤로가기·아이폰 왼쪽 끝 쓸어 넘기기(둘 다 브라우저 '뒤로')가 앱 밖으로 나가지 말고 이전 화면으로 ----
+//   화면 함수(hub·result·board…)를 부를 때마다 방문 기록에 {화면, 인자}를 쌓고, 뒤로가면 그 화면을 다시 그린다.
+//   화면 안에서 다른 화면을 부르면(jobv→jres) 마지막에 그려진 화면 하나만 쌓는다. 바텀시트가 열린 채 뒤로가면 시트만 닫는다.
+(function(){
+ const SCR=['hub','result','setup','board','move','cmp','ownFind','rcard','jobv','jres','trust','menu','mpage','consult','hello','origin','firstFlow'];
+ let POP=false, DEP=0, LAST=null, CUR=null;
+ const url=st=>location.pathname+location.search+(st.s==='rcard'&&st.a[0]?'#c='+encodeURIComponent(st.a[0]):'');
+ const same=(a,b)=>a&&b&&a.s===b.s&&(!b.a.length||JSON.stringify(a.a)===JSON.stringify(b.a));
+ SCR.forEach(fn=>{const o=window[fn]; if(typeof o!=='function')return;
+  window[fn]=function(){const args=[].slice.call(arguments).map(x=>typeof x==='function'||typeof x==='object'&&x!==null&&!Array.isArray(x)?null:x);
+   LAST={s:fn,a:args}; DEP++; let r; try{r=o.apply(this,arguments);}finally{DEP--;}
+   if(!DEP&&!POP){const st=LAST, i=CUR?(CUR.i||0):0;
+    try{if(!CUR){st.i=0;history.replaceState(st,'',url(st));} else if(same(CUR,st)){st.i=i;history.replaceState(st,'',url(st));} else {st.i=i+1;history.pushState(st,'',url(st));}}catch(e){}
+    CUR=st;}
+   return r;};});
+ window.navBack=f=>{if(CUR&&CUR.i>0)history.back(); else f();};   // 화면 안 '뒤로' 버튼: 기록이 있으면 브라우저 뒤로와 같게, 처음 들어온 화면이면 f
+ addEventListener('popstate',e=>{
+  if(document.getElementById('sh')){shClose(); try{history.pushState(CUR,'',url(CUR));}catch(x){} return;}   // 시트만 닫고 제자리
+  const st=e.state; if(!st||!st.s||typeof window[st.s]!=='function'){POP=true;try{hub();}finally{POP=false;} CUR={s:'hub',a:[],i:0};return;}
+  POP=true; try{window[st.s].apply(null,st.a||[]);}finally{POP=false;} CUR=st;});
+})();
 
 (function(){var EP='',LOC=/^(127\.0\.0\.1|localhost)$/.test(location.hostname);if(!EP&&!LOC){window.jsTrack=function(){};return;}
  function rid(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);}
