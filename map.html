@@ -79,6 +79,7 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
 /* ---------- 지도 ---------- */
 #wrap{position:relative;flex:1 1 auto;min-height:0}
 #map{position:absolute;inset:0;z-index:0;background:var(--mapbg)}
+#nmap{position:absolute;inset:0;z-index:0;pointer-events:none}.nbase.leaflet-container{background:transparent}
 .leaflet-container{font-family:inherit;background:var(--mapbg);outline:0}
 .leaflet-control-attribution{font-size:10.5px;background:rgba(255,255,255,.78)!important;color:#6b717c;border-radius:8px 0 0 0;padding:1px 7px!important}
 .leaflet-control-attribution a{color:#4c5566}
@@ -482,11 +483,39 @@ async function initBase() {
   esri(dk);
 }
 async function themeBase() {
+  if (baseKind === 'nmap') return;   // N 지도 바탕은 밝은 지도 하나라 테마를 따라 바꾸지 않는다
   const dk = isDark(); document.documentElement.toggleAttribute('data-dark', dk);
   if (baseKind === 'gl') { try { base.getMaplibreMap().setStyle(await glStyle(dk)); } catch (e) {} }
   else if (baseKind === 'raster') esri(dk);
 }
-initBase();
+// ---------- N 지도 바탕(09-29 사용자: 익숙한 국내 지도로) ----------
+// 말풍선·노선·조작은 지금처럼 Leaflet 이 맡고, 그 아래에 NCP Web Dynamic Map 을 깔아 화면(중심·줌)만 맞춘다.
+// 사이트 주소가 등록되지 않았거나 인증이 실패하면 스스로 걷어내고 기존 컬러 지도로 돌아간다. 다크 모드는 기존 어두운 지도.
+const NVK = 'oeq5r2o6gg';
+let nmap = null;
+function nFail() {
+  if (nmap) { try { nmap.destroy(); } catch (e) {} nmap = null; }
+  const el = document.getElementById('nmap'); if (el) el.remove();
+  map.getContainer().classList.remove('nbase');
+  if (baseKind === 'nmap' || !baseKind) { baseKind = ''; map.options.zoomSnap = 0.5; initBase(); }
+}
+async function nBase() {
+  await new Promise((ok, no) => { window.navermap_authFailure = () => { no(new Error('auth')); nFail(); }; loadJs('https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=' + NVK).then(ok, no); });
+  if (!window.naver || !naver.maps) throw new Error('nolib');
+  const box = map.getContainer(), el = document.createElement('div'); el.id = 'nmap'; el.setAttribute('aria-hidden', 'true');
+  box.insertBefore(el, box.firstChild); box.classList.add('nbase');
+  map.options.zoomSnap = 1; map.options.zoomDelta = 1; map._zoomAnimated = false;   // 바탕은 정수 줌·즉시 이동이라 위 레이어도 같게(어긋남 방지)
+  if (map.getZoom() % 1) map.setZoom(Math.round(map.getZoom()), { animate: false });
+  const c = map.getCenter();
+  nmap = new naver.maps.Map(el, { center: new naver.maps.LatLng(c.lat, c.lng), zoom: map.getZoom(), draggable: false, pinchZoom: false, scrollWheel: false,
+    keyboardShortcuts: false, disableDoubleTapZoom: true, disableDoubleClickZoom: true, disableTwoFingerTapZoom: true, disableKineticPan: true,
+    zoomControl: false, mapTypeControl: false, scaleControl: false, mapDataControl: false, logoControl: true, minZoom: 6, maxZoom: 21 });
+  const sync = () => { if (!nmap) return; const p = map.getCenter(); nmap.setCenter(new naver.maps.LatLng(p.lat, p.lng)); nmap.setZoom(map.getZoom(), false); };
+  map.on('move zoom moveend zoomend', sync);
+  map.on('resize', () => { if (nmap) { nmap.setSize(new naver.maps.Size(box.clientWidth, box.clientHeight)); sync(); } });
+  baseKind = 'nmap'; sync();
+}
+if (NVK && !isDark()) nBase().catch(() => nFail()); else initBase();
 const mq = matchMedia('(prefers-color-scheme: dark)');
 (mq.addEventListener ? mq.addEventListener('change', themeBase) : mq.addListener(themeBase));
 map.createPane('stlab'); map.getPane('stlab').style.zIndex = 590; map.getPane('stlab').style.pointerEvents = 'none';
