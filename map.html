@@ -264,6 +264,7 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
  <div id="map" role="application" aria-label="단지 입지 지도"></div>
  <div id="noleaf">지도 라이브러리를 불러오지 못했습니다. 네트워크 연결을 확인한 뒤 새로고침하십시오.</div>
  <div id="chips" aria-label="필터">
+  <button type="button" data-g="mt"></button>
   <button type="button" data-g="all"><svg class="ic"><use href="#i-filter"/></svg>필터</button>
   <button type="button" data-g="sc"></button>
   <button type="button" data-g="band"></button>
@@ -289,6 +290,7 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
   <div class="grab"><i></i></div><button class="x" type="button" aria-label="닫기"><svg class="ic"><use href="#i-x"/></svg></button>
   <div class="body">
    <div class="ttl">필터</div>
+   <h3 id="fg-mt">지도에 표시</h3><div class="opts" data-f="mt"><button type="button" data-v="sc">입지 점수</button><button type="button" data-v="p">시세</button><button type="button" data-v="pp">평당가</button><button type="button" data-v="up">5년 상승</button><button type="button" data-v="age">연식</button><button type="button" data-v="hh">세대수</button></div>
    <h3 id="fg-sc">입지</h3><div class="opts" data-f="sc"><button type="button" data-v="0">전체</button><button type="button" data-v="50">50 이상</button><button type="button" data-v="70">70 이상</button><button type="button" data-v="85">85 이상</button></div>
    <h3 id="fg-band">전용면적</h3><div class="opts" data-f="band" data-multi="1"><button type="button" data-v="1">49㎡ 이하</button><button type="button" data-v="2">59㎡</button><button type="button" data-v="4">74㎡</button><button type="button" data-v="8">84㎡</button><button type="button" data-v="16">101㎡ 이상</button></div>
    <h3 id="fg-age">준공 연차</h3><div class="opts" data-f="age" data-multi="1"><button type="button" data-v="n">신축<small>10년 이내</small></button><button type="button" data-v="m">준신축<small>10~20년</small></button><button type="button" data-v="o">구축<small>20년 초과</small></button></div>
@@ -330,6 +332,24 @@ const A = DATA.rows.map((r, i) => {
 const N = A.length, GU_N = DATA.gu_n || {};
 const BYNO = new Map(A.map(a => [a.no, a]));
 const cls = s => s == null ? 's1' : s >= 85 ? 's5' : s >= 70 ? 's4' : s >= 50 ? 's3' : s >= 30 ? 's2' : 's1';
+// 09-29 사용자: 다른 부동산 지도는 정보가 더 많다 → 말풍선에 띄울 값을 고른다(색은 늘 입지 점수)
+const MTL = { sc: '입지 점수', p: '시세', pp: '평당가', up: '5년 상승', age: '연식', hh: '세대수' };
+let MT = 'sc'; try { const m = localStorage.getItem('jipsem.map.mt'); if (m && MTL[m]) MT = m; } catch (e) {}
+const repP = a => a.price.length ? a.price.slice().sort((p, q) => Math.abs(p[0] - 84) - Math.abs(q[0] - 84))[0] : null;
+function mval(a) {
+  if (MT === 'sc') return a.score;
+  if (MT === 'age') return a.age; if (MT === 'hh') return a.hh || null;
+  const r = repP(a); if (!r) return null;
+  return MT === 'p' ? r[1] : MT === 'pp' ? r[1] / (r[0] / 3.3058) : MT === 'up' ? (r[2] ? (r[2] / r[1] - 1) * 100 : null) : null;
+}
+function mtxt(v) {
+  if (v == null) return '-';
+  if (MT === 'p') { const x = v / 100; return (x >= 10 ? x.toFixed(1) : x.toFixed(2)).replace(/\.?0+$/, '') + '억'; }
+  if (MT === 'pp') return fmt(Math.round(v * 100 / 10) * 10) + '만';
+  if (MT === 'up') return (v >= 0 ? '+' : '') + Math.round(v) + '%';
+  if (MT === 'age') return Math.round(v) + '년';
+  return fmt(Math.round(v));
+}
 
 // ---------- 구역(시·구) 묶음: 좌표는 소속 단지 좌표의 중앙값 ----------
 const med = xs => { if (!xs.length) return null; const s = xs.slice().sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
@@ -363,14 +383,16 @@ const active = () => !!(F.sc || F.band || F.age.length || F.st || F.hh);
 let FILT = A;                                   // A는 빌드에서 순위(점수 높은 순)로 정렬돼 있다
 function aggregate() {
   for (const lv of ['si', 'gu']) for (const g of GROUPS[lv]) {
-    const sc = []; for (const a of g.items) if (a._ok) sc.push(a.score);
-    g.n = sc.length; g.med = sc.length ? Math.round(med(sc)) : null;
+    const sc = [], mv = []; for (const a of g.items) if (a._ok) { sc.push(a.score); const v = mval(a); if (v != null) mv.push(v); }
+    g.n = sc.length; g.med = sc.length ? Math.round(med(sc)) : null; g.mv = mv.length ? med(mv) : null;
   }
 }
 const BAND_L = { 1: '49', 2: '59', 4: '74', 8: '84', 16: '101+' };
 const AGE_L = { n: '신축', m: '준신축', o: '구축' };
 function chipText() {
   const set = (g, txt, on) => { const b = document.querySelector('#chips [data-g="' + g + '"]'); b.innerHTML = txt + (g === 'st' ? '' : '<svg class="ic cv"><use href="#i-down"/></svg>'); b.classList.toggle('on', !!on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); };
+  set('mt', '표시 · ' + MTL[MT], MT !== 'sc');
+  { const lb = document.querySelector('#legend .r b'); if (lb) lb.textContent = MT === 'sc' ? '입지 점수' : '색 = 입지 점수'; }
   set('sc', F.sc ? '입지 ' + F.sc + '+' : '입지', F.sc);
   const bl = [1, 2, 4, 8, 16].filter(v => F.band & v).map(v => BAND_L[v]);
   set('band', bl.length ? (bl.length > 2 ? '면적 ' + bl.length + '개' : bl.join('·') + '㎡') : '전용면적', bl.length);
@@ -382,7 +404,7 @@ function chipText() {
     const f = o.dataset.f;
     o.querySelectorAll('button').forEach(b => {
       const v = b.dataset.v; let on;
-      if (f === 'band') on = !!(F.band & +v); else if (f === 'age') on = F.age.indexOf(v) >= 0; else on = String(F[f]) === v;
+      if (f === 'mt') on = MT === v; else if (f === 'band') on = !!(F.band & +v); else if (f === 'age') on = F.age.indexOf(v) >= 0; else on = String(F[f]) === v;
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
   });
@@ -397,6 +419,7 @@ function applyF(quiet) {
 }
 document.querySelectorAll('#fsheet .opts').forEach(o => o.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return; const f = o.dataset.f, v = b.dataset.v;
+  if (f === 'mt') { MT = v; try { localStorage.setItem('jipsem.map.mt', v); } catch (e2) {} for (const k of [...cur.keys()]) { map.removeLayer(cur.get(k)); cur.delete(k); } applyF(true); return; }
   if (f === 'band') F.band ^= +v;
   else if (f === 'age') { const i = F.age.indexOf(v); if (i >= 0) F.age.splice(i, 1); else F.age.push(v); }
   else F[f] = +v;
@@ -429,19 +452,20 @@ const loadJs = src => new Promise((ok, no) => { const s = document.createElement
 const loadCss = href => new Promise(ok => { const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = href; l.onload = ok; l.onerror = ok; document.head.appendChild(l); });
 const hasGL = () => { try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl'))); } catch (e) { return false; } };
 async function glStyle(dk) {
-  const k = dk ? 'dark' : 'positron'; if (styles[k]) return styles[k];
+  const k = dk ? 'dark' : 'liberty'; if (styles[k]) return styles[k];   // 09-29 사용자: 지도가 칙칙하다(다른 앱은 알록달록) → 밝은 모드는 컬러 지도
   const st = await (await fetch(GL.style + k)).json();
   for (const l of st.layers) {           // 지명은 한글 이름 우선(없으면 현지 이름), 도로 번호 표지는 그대로
     if (l.type !== 'symbol' || !l.layout || !l.layout['text-field']) continue;
     if (JSON.stringify(l.layout['text-field']).indexOf('name') >= 0) l.layout['text-field'] = ['coalesce', ['get', 'name:ko'], ['get', 'name']];
     if (/name-path|name-minor|name_other|oneway/.test(l.id)) l.layout.visibility = 'none';   // 골목·일방통행 표시는 점수 말풍선을 가려서 끈다
   }
+  for (const l of st.layers) if (/^(poi_r20|poi_r7|poi_transit|road_one_way_arrow.*|building-3d)$/.test(l.id)) { l.layout = l.layout || {}; l.layout.visibility = 'none'; }   // 작은 가게·버스 정류장·3D 건물은 말풍선을 가려서 끔(역은 우리 노선 그림이 따로 있음)
   return (styles[k] = st);
 }
 function esri(dk) {
   if (base) map.removeLayer(base);
-  base = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_' + (dk ? 'Dark' : 'Light') + '_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-    { maxNativeZoom: 13, maxZoom: 20, attribution: ATTR_ESRI }).addTo(map);
+  base = L.tileLayer(dk ? 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}' : 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+    { maxNativeZoom: dk ? 13 : 18, maxZoom: 20, attribution: ATTR_ESRI }).addTo(map);
   base.bringToBack(); baseKind = 'raster';
 }
 async function initBase() {
@@ -493,8 +517,9 @@ const icon = (html, cl) => L.divIcon({ className: 'mk', html, iconSize: [0, 0], 
 const short = s => s.length > 9 ? s.slice(0, 8) + '…' : s;
 function mode(z) { return z < 9.75 ? 'si' : z < 11.75 ? 'gu' : 'cx'; }
 function cxHtml(a, wl, on) {
-  return wl ? `<div class="bb wl ${cls(a.score)}${on ? ' on' : ''}"><i>${a.score}</i><em>${esc(short(a.name))}</em></div>`
-            : `<div class="bb ${cls(a.score)}${on ? ' on' : ''}">${a.score}</div>`;
+  const t = mtxt(mval(a));
+  return wl ? `<div class="bb wl ${cls(a.score)}${on ? ' on' : ''}"><i>${t}</i><em>${esc(short(a.name))}</em></div>`
+            : `<div class="bb ${cls(a.score)}${on ? ' on' : ''}">${t}</div>`;
 }
 function refresh() {
   if (!map._loaded) return;
@@ -511,13 +536,13 @@ function refresh() {
     // 구역 말풍선은 '면적 이름표'라 조금 비켜 놓아도 된다: 제자리 → 위 → 아래 → 오른쪽 → 왼쪽 순으로 빈자리를 찾는다(단지 수 많은 구역부터)
     const gs = GROUPS[md].filter(g => g.n && inb(g.lat, g.lon)).sort((x, y) => y.n - x.n);
     for (const g of gs) {
-      const p = map.latLngToContainerPoint([g.lat, g.lon]), sm = md === 'si', w = sm ? g.label.length * 11.5 + 44 : Math.max(56, g.label.length * 11 + 20), h = sm ? 28 : 50;
+      const gt = mtxt(g.mv), p = map.latLngToContainerPoint([g.lat, g.lon]), sm = md === 'si', w = sm ? g.label.length * 11.5 + 20 + gt.length * 8.5 : Math.max(56, g.label.length * 11 + 20, gt.length * 10 + 20), h = sm ? 28 : 50;
       const offs = [[0, 0], [0, -(h + 3)], [0, h + 3], [w * 0.7, 0], [-w * 0.7, 0], [w * 0.6, -(h + 3)], [-w * 0.6, h + 3]];
       const o = offs.find(([dx, dy]) => free(p.x + dx - w / 2, p.y + dy - h / 2, w, h));
       if (!o) { hidden++; continue; }
       take(p.x + o[0] - w / 2, p.y + o[1] - h / 2, w, h);
       const st = o[0] || o[1] ? ` style="margin-left:${Math.round(o[0])}px;margin-top:${Math.round(o[1])}px"` : '';
-      want.set('g:' + md + ':' + g.key, { ll: [g.lat, g.lon], z: g.n, html: `<div class="dg${sm ? ' sm' : ''} ${cls(g.med)}"${st} role="button" aria-label="${esc(g.label)} 입지 점수 중앙값 ${g.med}, 단지 ${g.n}곳"><span class="n">${esc(g.label)}</span><b>${g.med}</b>${sm ? '' : `<span class="k">${fmt(g.n)}곳</span>`}</div>`, grp: g });
+      want.set('g:' + md + ':' + g.key, { ll: [g.lat, g.lon], z: g.n, html: `<div class="dg${sm ? ' sm' : ''} ${cls(g.med)}"${st} role="button" aria-label="${esc(g.label)} ${MTL[MT]} 가운데 값 ${gt}, 단지 ${g.n}곳"><span class="n">${esc(g.label)}</span><b>${gt}</b>${sm ? '' : `<span class="k">${fmt(g.n)}곳</span>`}</div>`, grp: g });
     }
   } else {
     // 점수 높은 순(FILT 순서)으로 놓되 이미 놓인 말풍선과 겹치면 건너뛴다 → 중간 줌에선 '상위 단지만', 16.5 이상은 전부
@@ -530,7 +555,7 @@ function refresh() {
       if (j > 0 && a === sel) continue;
       if (!inb(a.lat, a.lon)) continue;
       const p = map.latLngToContainerPoint([a.lat, a.lon]);
-      const w = wl ? 40 + Math.min(a.name.length, 9) * 11.5 : 34, h = wl ? 28 : 24;
+      const tl = MT === 'sc' ? 2 : mtxt(mval(a)).length, w = wl ? 34 + tl * 8 + Math.min(a.name.length, 9) * 11.5 : Math.max(34, 16 + tl * 8.5), h = wl ? 28 : 24;
       if (a === sel) fits(p.x - w / 2, p.y - h - 7, w, h);
       else if (!all && !fits(p.x - w / 2 - pad, p.y - h - 7 - pad, w + 2 * pad, h + 2 * pad)) { hidden++; continue; }
       if (++n > cap) break;
