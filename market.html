@@ -467,7 +467,7 @@ function tScreens0(){const T=MD.t[RG],o=T.o26||{n:0},P=MD.p[RG==='인천'?'인�
    v:`<div class="concl">${verdict(T,BT)}</div>`+(L?`<div class="concl"><b>지켜볼 것</b> — 매물. 1년 새 ${L.hi}% 넘게 늘면 첫 경고예요 (지금 ${pc(L.now,0)}).</div>`:''),
    line:`${V&&V.all_ok?'이 해석은 매달 다시 검증해요':'해석을 다시 검토하고 있어요'}${V?` · 마지막 검증 ${V.date.slice(5).replace('-','/')} · ${V.items.filter(x=>x.ok).length}/${V.items.length} 유효`:''}`}].filter(Boolean);}
 function tGo(){$m('rtab').innerHTML=Object.keys(MD.t).map(r=>`<button class="${r===RG?'on':''}" onclick="RG='${r}';tGo()">${r}</button>`).join('')+`<button onclick="const t=document.getElementById('areatop');t.scrollIntoView({behavior:'smooth'});setTimeout(()=>{const q=$m('aq');if(q)q.focus();},400)">우리 동네 ›</button>`;
- Object.keys(ANM).forEach(k=>{anStop(k);delete ANM[k];});mountAll($m('temp'),tScreens());setTimeout(anInit,0);}
+ if(ANM.anm){anStop('anm');delete ANM.anm;}mountAll($m('temp'),tScreens());setTimeout(anInit,0);}   /* 시·도 지도만 지움(동네 지도 ana 는 그대로) */
 function mInfo(){const V=MD.val,el=$m('minfo');el.hidden=!el.hidden;}
 function norm(s){return (s||'').replace(/\s+/g,'');}
 function findArea(q){const box=$m('asug');q=norm(q);if(!q){box.innerHTML='';return;}
@@ -491,7 +491,7 @@ function aScreens(){const a=MD.a.find(x=>x.n===AN);if(!a)return [];
   areaPhase(a),
   /* 09-30: 점검 항목(부담 신호·입주)은 국면 지도로 대체 */
   {q:'거래량',big:a.v==null?'-':`1년 전보다 ${pc(a.v,0)}`,c:'',sub:'월별 아파트 매매',v:bars(a.vol,MD.vy.map(y=>y.slice(2,4)+'.'+y.slice(4)),{lab:6,dim:2}),line:'회색 = 신고가 아직 덜 들어온 최근 달'}];}
-function aGo(){const sc=aScreens().filter(Boolean);if(!sc.length)return;if(ANM.ana){anStop('ana');delete ANM.ana;}mountAll($m('areabox'),sc);setTimeout(anInit,0);}
+function aGo(){if(ANM.ana){anStop('ana');delete ANM.ana;}const sc=aScreens().filter(Boolean);if(!sc.length)return;mountAll($m('areabox'),sc);setTimeout(anInit,0);}   /* 09-30: 지우기를 새로 그리기 전에(뒤에 두면 방금 만든 애니메이션 상태까지 지워 동네 지도가 안 그려짐) */
 function show(n){AN=n;$m('asug').innerHTML='';$m('aq').value=n;try{localStorage.setItem('mkArea',n);}catch(e){}aGo();}
 tGo();(function(){let sv='';try{sv=localStorage.getItem('mkArea')||'';}catch(e){} const hm=/[#&]a=([^&]+)/.exec(location.hash||'');if(hm){try{sv=decodeURIComponent(hm[1]);}catch(e){}}   // 09-29 단지 상세 '단기 국면 보기' 링크(market.html#a=구 이름)
  if(sv&&MD.a.some(a=>a.n===sv)){show(sv);if(hm)setTimeout(()=>{const el=document.getElementById('areatop');if(el)el.scrollIntoView();},50);}})();
