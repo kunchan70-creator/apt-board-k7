@@ -372,20 +372,20 @@ function anBlock(id,P0,px,marks){const P=P0.map((p,i)=>{const w=P0.slice(Math.ma
  const qn=(k,x,y,a)=>{const [t,,c]=STG[k];return `<text x="${x}" y="${y}" font-size="10" font-weight="800" fill="${c}" text-anchor="${a}">${'①②③④'[k-1]} ${t}</text>`;};
  const pv=P.map(p=>pxm.get(p[0])),pm=Math.max(5,...pv.filter(x=>x!=null).map(Math.abs));
  /* 선 조각: k-1 → k, 그달 집값 색, 진하기 = 변화 크기 */
- const segs=P.map((p,k)=>{if(!k)return '';const a=P[k-1],v=pv[k],op=v==null?.25:(.35+.65*Math.min(1,Math.abs(v)/pm));return `<line class="${id}-sg" data-i="${k}" x1="${X(a[1]).toFixed(1)}" y1="${Y(a[2]).toFixed(1)}" x2="${X(p[1]).toFixed(1)}" y2="${Y(p[2]).toFixed(1)}" stroke="${pxCol(v)}" stroke-opacity="${op.toFixed(2)}" stroke-width="2.4" stroke-linecap="round" style="display:none"/>`;}).join('');
+ const segs=P.map((p,k)=>{if(!k)return '';const a=P[k-1],v=pv[k],m=v==null?0:Math.min(1,Math.abs(v)/pm),op=v==null?.25:(.3+.7*m),sw=(1+5*m).toFixed(1);return `<line class="${id}-sg" data-i="${k}" data-w="${sw}" x1="${X(a[1]).toFixed(1)}" y1="${Y(a[2]).toFixed(1)}" x2="${X(p[1]).toFixed(1)}" y2="${Y(p[2]).toFixed(1)}" stroke="${pxCol(v)}" stroke-opacity="${op.toFixed(2)}" stroke-width="${sw}" stroke-linecap="round" style="display:none"/>`;}).join('');
  const mk=(marks||[]).map(m=>{const k=P.findIndex(p=>p[0]===m.ym);if(k<0)return '';const hi=m.lab.endsWith('고점'),r=X(P[k][1])>W-100;return `<g class="${id}-mk" data-i="${k}" style="display:none"><path d="M${X(P[k][1]).toFixed(1)},${(Y(P[k][2])-6).toFixed(1)}l5,6l-5,6l-5,-6z" fill="${hi?'var(--red)':'var(--green)'}"/><text x="${(r?X(P[k][1])-8:X(P[k][1])+8).toFixed(1)}" y="${(Y(P[k][2])+4).toFixed(1)}" font-size="9.5" font-weight="800" text-anchor="${r?'end':'start'}" fill="${hi?'var(--red)':'var(--green)'}">${m.lab}</text></g>`;}).join('');
  /* 사실 한 줄: 집값이 내리던 달은 어느 칸이었나 */
  const qc={},qd={};P.forEach((p,k)=>{const v=pv[k];if(v==null)return;const q=(p[1]>=50?'R':'L')+(p[2]>=50?'T':'B');qc[q]=(qc[q]||0)+1;if(v<0)qd[q]=(qd[q]||0)+1;});
  const nd=Object.values(qd).reduce((a,b)=>a+b,0),r34=nd?Math.round(((qd.RB||0)+(qd.LB||0))/nd*100):null,r3=nd?Math.round((qd.RB||0)/nd*100):null;
  ANM[id].pm=pm;
- return `<div style="margin-top:4px"><div style="font-size:.86rem;line-height:1.6;margin:2px 0 8px">선 색 = 그때 집값(최근 6개월) <b style="color:var(--green)">오름</b>·<b style="color:var(--red)">내림</b>${nd?` · 흐름에는 최근 시세 변화가 들어 있어, 집값이 내리던 달의 ${r34}%가 ③·④ 칸이었어요`:''}</div>
+ return `<div style="margin-top:4px"><div style="font-size:.86rem;line-height:1.6;margin:2px 0 8px">선 = 그때 집값(최근 6개월) <b style="color:var(--green)">오름</b>·<b style="color:var(--red)">내림</b>, 굵을수록 크게${nd?` · 흐름에는 최근 시세 변화가 들어 있어, 집값이 내리던 달의 ${r34}%가 ③·④ 칸이었어요`:''}</div>
  <svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:420px;display:block;margin:0 auto" id="${id}-svg">
   ${qr(1,pd,pd)}${qr(2,X(50),pd)}${qr(3,X(50),Y(50))}${qr(4,pd,Y(50))}
   <rect x="${pd}" y="${pd}" width="${W-2*pd}" height="${H-2*pd}" rx="10" fill="none" stroke="var(--line)"/><line x1="${X(50)}" x2="${X(50)}" y1="${pd}" y2="${H-pd}" stroke="var(--line)"/><line y1="${Y(50)}" y2="${Y(50)}" x1="${pd}" x2="${W-pd}" stroke="var(--line)"/>
   ${qn(1,pd+8,pd+15,'start')}${qn(2,W-pd-8,pd+15,'end')}${qn(4,pd+8,H-pd-8,'start')}${qn(3,W-pd-8,H-pd-8,'end')}
   <text id="${id}-ym" x="${W/2}" y="${Y(50)-4}" font-size="20" font-weight="800" fill="var(--ink)" opacity=".12" text-anchor="middle"></text>
   <text id="${id}-pxb" x="${W/2}" y="${Y(50)+18}" font-size="15" font-weight="800" text-anchor="middle" opacity=".55"></text>
-  ${segs}<path id="${id}-tip" fill="none" stroke-width="2.4" stroke-linecap="round"/>${mk}
+  ${segs}<path id="${id}-tip" fill="none" stroke-width="3" stroke-linecap="round"/>${mk}
   <circle id="${id}-halo" r="12" opacity=".2"/><circle id="${id}-dot" r="6.5" stroke="var(--surface)" stroke-width="2"/></svg>
   <div style="display:flex;align-items:center;gap:10px;margin:8px 0 2px"><button id="${id}-b" onclick="anPlay('${id}')" style="border:0;border-radius:10px;background:var(--blue);color:#fff;font:inherit;font-size:.82rem;font-weight:700;padding:7px 12px;cursor:pointer;white-space:nowrap">▶ 2010년부터 재생</button>
    <input id="${id}-r" type="range" min="0" max="${n-1}" value="${n-1}" oninput="anSet('${id}',+this.value,1,1)" style="flex:1;accent-color:var(--blue)"></div>
@@ -399,7 +399,7 @@ function anDraw(id){const A=ANM[id];if(!A)return;const el=k=>document.getElement
  el('tip').setAttribute('d',f>i?`M${X(p[1]).toFixed(1)},${Y(p[2]).toFixed(1)}L${X(q[0]).toFixed(1)},${Y(q[1]).toFixed(1)}`:'');el('tip').setAttribute('stroke',pxCol(nv));
  ['dot','halo'].forEach(k=>{el(k).setAttribute('cx',X(q[0]).toFixed(1));el(k).setAttribute('cy',Y(q[1]).toFixed(1));el(k).setAttribute('fill',pxCol(cv));});
  if(A.i===i&&A._drawn)return; A.i=i;A._drawn=1;
- document.querySelectorAll('.'+id+'-sg').forEach(g=>{const k=+g.dataset.i;g.style.display=k<=i?'':'none';g.setAttribute('stroke-width',k>i-12?'3.2':'1.8');});
+ document.querySelectorAll('.'+id+'-sg').forEach(g=>{const k=+g.dataset.i;g.style.display=k<=i?'':'none';});
  document.querySelectorAll('.'+id+'-mk').forEach(g=>{g.style.display=+g.dataset.i<=i?'':'none';});
  el('pxb').textContent=cv==null?'':`집값 6개월 ${cv>0?'+':''}${cv}%`;el('pxb').setAttribute('fill',pxCol(cv));
  const qk=(q[0]>=50?'R':'L')+(q[1]>=50?'T':'B'),num=Object.keys(STG).find(k=>STG[k][1]===qk);[1,2,3,4].forEach(k=>el('q'+k).setAttribute('opacity',String(k)===num?'.24':'.06'));
@@ -414,11 +414,16 @@ function anPlay(id){const A=ANM[id];if(!A)return;if(A.t){anStop(id);return;}if(A
 function anInit(){Object.keys(ANM).forEach(id=>{if(!document.getElementById(id+'-dot')){delete ANM[id];return;}anDraw(id);const sv=document.getElementById(id+'-svg');
  if('IntersectionObserver' in window&&sv&&!ANM[id].auto){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!ANM[id].auto){ANM[id].auto=true;io.disconnect();ANM[id].f=0;ANM[id]._drawn=0;anPlay(id);}}),{threshold:.6});io.observe(sv);}});}
 function areaPath(K,nm){const a=K&&K.areas&&K.areas[nm];if(!a)return null;if(Array.isArray(a[0]))return a;const [y0,f]=a,m0=(+y0.slice(0,4))*12+(+y0.slice(5))-1,o=[];for(let i=0;i<f.length/2;i++){const m=m0+i;o.push([`${Math.floor(m/12)}.${String(m%12+1).padStart(2,'0')}`,f[2*i],f[2*i+1]]);}return o;}
+/* 09-30 사용자: 다음 움직임은 예측할 수 없다, 하지만 영원히 '흐름 강'에 머물 수는 없다고 볼 수 있지 않나 → 예측 대신 사실: 지금 칸 몇 개월째 vs 과거 같은 칸 머문 기간 */
+function dwell(seq,num){if(!seq||!seq[1])return null;const st=seq[1],E=[];for(let i=0;i<st.length;i++){if(st[i]!==String(num))continue;const e=E[E.length-1];if(e&&i-e[1]<=4)e[1]=i;else E.push([i,i]);}
+ if(!E.length)return null;const cur=E[E.length-1][1]===st.length-1?E[E.length-1][1]-E[E.length-1][0]+1:null,past=E.slice(0,cur!=null?-1:E.length).map(e=>e[1]-e[0]+1).filter(x=>x>=3);
+ return {cur,max:past.length?Math.max(...past):null,n:past.length,y0:seq[0].slice(0,4)};}
 function phaseCard(q,P0,S,o){const cur=P0[P0.length-1],ck=(cur[1]>=50?'R':'L')+(cur[2]>=50?'T':'B'),mv=mvOf(P0),r=mv?S[ck+mv]:null,num=Object.keys(STG).find(k=>STG[k][1]===ck);
  const rec=r?`<div class="concl" style="margin-top:12px;line-height:1.7">지금 <b>${num}번 칸</b>, 최근 6개월 <b>${MVW[mv]}</b><br>같은 칸·같은 방향일 때 ${r.n.toLocaleString()}개월의 1년 뒤 집값 평균 <b style="color:${r.avg>=0?'var(--green)':'var(--red)'}">${pc(r.avg)}</b> · 내린 경우 ${r.dn}%`
    +['+','-','='].filter(m=>m!==mv&&S[ck+m]).map(m=>`<br><span class="sub">${MVW[m]}일 때: 평균 ${pc(S[ck+m].avg)} · 내린 경우 ${S[ck+m].dn}%</span>`).join('')+`</div>`:'';
  return {q,big:`${num}번 칸 · 흐름 ${lvF(cur[2])} · 부담 ${lvB(cur[1])}`,c:'var(--ink)',sub:o.cw?`과거 ${o.cw}%는 ①→②→③→④ 시계 방향으로 움직였어요`:'칸 번호 순서(①→②→③→④)로 도는 경우가 많았어요',
-  v:anBlock(o.aid||'anm',P0,o.px,o.marks)+`<div style="margin-top:16px;font-size:.8rem;font-weight:700">칸마다 그 뒤 1년</div>`+stageGrid(ck,S)+stageStrip(o.seq,null)+rec,
+  v:anBlock(o.aid||'anm',P0,o.px,o.marks)+(()=>{const D=dwell(o.seq,num);if(!D||D.cur==null)return '';const lg=D.max!=null&&D.cur>D.max;
+   return `<div class="concl" style="margin-top:12px;line-height:1.7">다음 움직임은 예측할 수 없어요. 다만 지금 <b>${num}번 칸에 ${D.cur}개월째</b>${lg?` — <b>${D.y0}년 이후 가장 길어요</b>`:''}<br><span class="sub">${D.y0}년 이후 ${num}번 칸에 머문 기간: ${D.n?`${D.n}번, 가장 길었던 때 ${D.max}개월`:'기록 없음'} · 3개월 안 되는 잠깐 벗어남은 이어서 셈</span></div>`;})()+`<div style="margin-top:16px;font-size:.8rem;font-weight:700">칸마다 그 뒤 1년</div>`+stageGrid(ck,S)+stageStrip(o.seq,null)+rec,
   line:`칸 숫자·기록 = 2010년 이후 ${o.who||'이 시·도의 구·시'}가 그 칸에 있던 달의 1년 뒤 집값 · 흐름 = 시세 변화·신고가 비중·거래량·매수우위·전망 심리·오르는 지역 · 부담 = 소득 대비 구입 부담·전세가율(낮을수록)·금리로 늘어난 상환액·전세 대신 매수 비용·가계 이자 부담`};}
 function phaseScreen(){const K=KI();if(!K||!K.path||K.path.length<8)return null;return phaseCard('국면',K.path,K.astats||{},{all:1,marks:K.marks,n:12,seq:K.seq,cw:K.cw,px:K.px6||K.px,aid:'anm'});}
 function areaPhase(a){const K=(MD.ki||{})[a.s],P=areaPath(K,a.n);if(!P||P.length<8)return null;const d0=MD.d0,ym=i=>{const m=(+d0.slice(0,4))*12+(+d0.slice(4,6))-1+i;return `${Math.floor(m/12)}.${String(m%12+1).padStart(2,'0')}`;},px=(a.ix||[]).map((v,i)=>[ym(i),(i>=6&&v&&a.ix[i-6])?+((v/a.ix[i-6]-1)*100).toFixed(1):null]).filter(x=>x[1]!=null);   /* 동네 집값 6개월 변화(월, KB 시·군·구) — 선 색이 한발 늦지 않게 */
