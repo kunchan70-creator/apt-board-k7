@@ -482,7 +482,7 @@ let SI=0, SPATH='all';
 // 09-29 사용자: '첫 집' 상담과 홈의 '분석 시작'이 결국 같은 곳(조건 입력)으로 가는데 화면이 갈렸고, 설명 슬라이드가 많아 아는 사람은 또 보게 됐다
 //   → 한 줄 순서(첫 집 안내 3장 → 대표 고민·핵심 질문 → 데이터 질문 3개+셈 도장 → 상담 2문항 → 조건 입력)로 잇고, 설명 블록마다 '다시 보지 않기'. 체크한 블록은 건너뛰고, 조건이 저장돼 있으면 결과로 바로.
 //   버린 화면은 없다 — 메뉴 '매수 분석 안내 다시 보기'(firstFlow(0,1))로 전부 다시 볼 수 있다.
-const FFLOW=[[null,()=>setup(0)]];   /* 09-30 사용자: 첫 집 안내·대표 고민·질문 3개는 홈 소개 슬라이드와 겹침 → 없앰. 분석 시작 = 바로 첫 질문(이전 답 채워짐) */
+const FFLOW=[['jsNoChat',()=>chat()],[null,()=>setup(0)]];   /* 09-30 사용자: 첫 집 안내·질문 3개는 없애고, 사람들 고민 말풍선 화면(chat)만 남김 → 그다음 바로 첫 질문(이전 답 채워짐) */
 let FF={force:false};
 function firstFlow(i,force){if(force!=null)FF.force=!!force; for(let j=i||0;j<FFLOW.length;j++){const [k,f]=FFLOW[j]; if(FF.force||!k||!jsSeen(k)){f();return;}}}
 const PATHS={first:PCARD.first,move:PCARD.move,mine:PCARD.mine,all:STORY}, SQ_={v:STORY};
@@ -1285,7 +1285,7 @@ function chat(){   // 09-24 사용자: 고민 말풍선(취지) 원복 → 결�
  <div id="one" style="opacity:0;transition:opacity .5s"><div class="sub" style="margin:22px 0 2px;text-align:center">상황은 달라도, 핵심 질문은 하나입니다</div>
   <div class="hq" style="text-align:center;margin-top:6px;font-size:clamp(1.6rem,7vw,2rem);line-height:1.35">내 자본으로<br>어디를 매수하면<br>가장 나을까?</div></div>
  <div id="trust"></div>
- <div id="talkgo" class="cta" style="opacity:0;transition:opacity .4s"><button class="btn" onclick="CF.seen=true;save();firstFlow(2)">다음</button>
+ <div id="talkgo" class="cta" style="opacity:0;transition:opacity .4s"><button class="btn" onclick="CF.seen=true;save();setup(0)">다음</button>
  <p style="text-align:center;margin:6px 0 0">${hasSaved()?'<button class="linkbtn" onclick="result()">저장된 조건으로 조회 →</button>':'<button class="linkbtn" disabled style="color:var(--ink3);cursor:default">저장된 조건 없음</button>'}</p>
  <p class="sub" style="text-align:center;margin:10px 0 0;font-size:.74rem">참고용 산출치이며, 투자 권유가 아닙니다.</p></div>${eduBar()}</div>`;
  let t=250;
@@ -1808,7 +1808,7 @@ function jsSeen(k){try{return !!localStorage.getItem(k);}catch(e){return false;}
 function jsMark(k){try{localStorage.setItem(k,'1');}catch(e){}}
 function jsUnmark(k){try{localStorage.removeItem(k);}catch(e){}}
 /* 09-30 사용자: 안내 화면마다 '건너뛰기'와 '다시 보지 않기'를 나란히. 다시 보지 않기 = 안내 전부 끄고 바로 첫 질문으로(메뉴 '안내 다시 보기'로 복구) */
-function eduBar(){return `<div style="display:flex;justify-content:center;align-items:center;gap:14px;margin:16px 0 0"><button class="linkbtn" style="color:var(--ink3)" onclick="firstFlow(3)">건너뛰기</button><span style="width:1px;height:12px;background:var(--line)"></span><button class="linkbtn" style="color:var(--ink3)" onclick="['jsNoFirst','jsNoChat','jsNoWhy'].forEach(jsMark);firstFlow(3)">다시 보지 않기</button></div>`;}
+function eduBar(){return `<div style="display:flex;justify-content:center;align-items:center;gap:14px;margin:16px 0 0"><button class="linkbtn" style="color:var(--ink3)" onclick="setup(0)">건너뛰기</button><span style="width:1px;height:12px;background:var(--line)"></span><button class="linkbtn" style="color:var(--ink3)" onclick="['jsNoFirst','jsNoChat','jsNoWhy'].forEach(jsMark);setup(0)">다시 보지 않기</button></div>`;}
 function noAgain(k){return `<label style="display:flex;justify-content:center;align-items:center;gap:6px;margin:14px 0 0;font-size:.82rem;color:var(--ink3);cursor:pointer"><input type="checkbox" ${jsSeen(k)?'checked':''} onchange="this.checked?jsMark('${k}'):jsUnmark('${k}')" style="width:16px;height:16px;accent-color:var(--blue)">다시 보지 않기</label>`;}
 function topIntro(){const t=document.querySelector('.top');if(t&&!document.getElementById('tpi'))t.insertAdjacentHTML('beforeend',`<button id="tpi" onclick="menu()" aria-label="메뉴" style="border:1px solid var(--line);background:var(--surface);color:var(--ink2);border-radius:12px;width:40px;height:36px;display:grid;place-items:center;cursor:pointer"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>`);}
 // ---------------- 메뉴 · 앱 기본 페이지(09-27 사용자: 기능보다 앱의 기본 요소 — 고객센터·사업자 정보·자주 묻는 질문·약관) ----------------
@@ -1818,7 +1818,7 @@ function menu(){
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
  const it=(t,act,sub)=>`<button class="mrow" onclick="${act}"><span><b>${t}</b>${sub?`<span class="sub">${sub}</span>`:''}</span><span class="sub">›</span></button>`;
  app.innerHTML=HOME+`<div class="hq" style="margin:0 0 10px">메뉴</div>
- <div class="mgrp">서비스</div>${it('집셈 소개','hello()')}${it('집셈을 보기 전에','philo()')}${it('자주 묻는 질문','mpage(\'faq\')')}${it('데이터 출처','mpage(\'src\')')}${it('계산 방법','location.href=\'guide.html\'','숫자를 어떻게 셈하는지')}${it('과거에 맞았나요?','location.href=\'evidence.html\'','검증 결과와 빗나간 곳')}
+ <div class="mgrp">서비스</div>${it('집셈 소개','hello()')}${it('집셈을 보기 전에','philo()')}${it('매수 분석 안내 다시 보기','firstFlow(0,1)')}${it('자주 묻는 질문','mpage(\'faq\')')}${it('데이터 출처','mpage(\'src\')')}${it('계산 방법','location.href=\'guide.html\'','숫자를 어떻게 셈하는지')}${it('과거에 맞았나요?','location.href=\'evidence.html\'','검증 결과와 빗나간 곳')}
  <div class="mgrp">고객지원</div>${it('고객센터 · 정정 요청','mpage(\'help\')','문의, 잘못된 정보 알리기')}
  <div class="mgrp">약관 · 정책</div>${it('이용약관','mpage(\'terms\')')}${it('개인정보처리방침','mpage(\'privacy\')')}${it('사업자 정보','mpage(\'biz\')')}
  <p class="sub" style="font-size:.74rem;margin:18px 2px 0">데이터 기준일 ${DT.asof||'-'} · 매일 자동 갱신</p>`;}
