@@ -840,7 +840,7 @@ function hub(){   // 09-25 사용자: 기능이 많아 다 별것 아닌 듯 보
  ${(DT.mk||[]).length?`<a href="market.html" style="margin-top:12px;display:block;padding:14px 14px 12px;border-radius:16px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);text-decoration:none">
   <div style="display:flex;justify-content:space-between;align-items:center"><span style="display:flex;align-items:center;gap:8px;font-weight:800">${ic('pulse',20)}이번 주 시장</span><span style="font-size:.8rem;font-weight:700;color:var(--blue)">자세히 ›</span></div>
   <div style="display:grid;grid-template-columns:repeat(${DT.mk.length},1fr);gap:8px;margin-top:10px">${DT.mk.map(([r,h])=>{const a=Array.isArray(h),st=a?h[0]:0,on=a?h[1]:0,bn=a?h[7]:null,c=st>0?'var(--red)':st<0?'var(--blue)':'var(--ink)';
-   return `<div style="background:var(--surface2);border-radius:12px;padding:10px 6px;text-align:center"><div style="font-size:.78rem;font-weight:700;color:var(--ink2)">${r}</div><div class="num" style="font-size:1.25rem;font-weight:800;color:${c};margin-top:2px">${st?Math.abs(st)+'주':'보합'}</div><div style="font-size:.7rem;font-weight:700;color:${c}">${st>0?'연속 상승':st<0?'연속 하락':'&nbsp;'}</div><div style="margin-top:6px;font-size:.68rem;font-weight:700;border-radius:999px;padding:2px 0;${on>0?'background:var(--amber-bg,#fff4e0);color:var(--amber,#b76e00)':'background:var(--line);color:var(--ink2)'}">${bn>=4?'주의 · 버팀 4/4':bn!=null?'버팀 점검 '+bn+'/4':(on>0?'주의 신호 '+on+'개':'주의 신호 없음')}</div></div>`;}).join('')}</div></a>`:''}
+   return `<div style="background:var(--surface2);border-radius:12px;padding:10px 6px;text-align:center"><div style="font-size:.78rem;font-weight:700;color:var(--ink2)">${r}</div><div class="num" style="font-size:1.25rem;font-weight:800;color:${c};margin-top:2px">${st?Math.abs(st)+'주':'보합'}</div><div style="font-size:.7rem;font-weight:700;color:${c}">${st>0?'연속 상승':st<0?'연속 하락':'&nbsp;'}</div><div style="margin-top:6px;font-size:.68rem;font-weight:700;border-radius:999px;padding:2px 0;${on>0?'background:var(--amber-bg,#fff4e0);color:var(--amber,#b76e00)':'background:var(--line);color:var(--ink2)'}">${bn>=4?'위험 신호 4개 · 주의':bn!=null?'위험 신호 '+bn+'개':(on>0?'주의 신호 '+on+'개':'주의 신호 없음')}</div></div>`;}).join('')}</div></a>`:''}
  <div style="font-size:.76rem;font-weight:800;color:var(--ink3);margin:20px 2px 10px">더 알아보기</div>
  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px 6px">${APPS.map(([n,t,go])=>`<button onclick="${go}" style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:0;border:0;background:transparent;font:inherit;color:var(--ink);cursor:pointer">${ic(n,46,1)}<span style="font-size:.74rem;font-weight:600;line-height:1.3;text-align:center;word-break:keep-all">${t}</span></button>`).join('')}</div>
  <div style="margin-top:22px;padding-top:14px;border-top:1px solid var(--line2)"><div style="font-size:.76rem;font-weight:800;color:var(--ink3);margin:0 2px 8px">집셈은 어떻게 셈하나요</div>
@@ -1561,6 +1561,7 @@ function mtInfo(){sheet('주택담보대출 이자 소득공제',`<ul style="mar
   <li>조건: 근로소득이 있는 세대주 · 12월 31일 기준 집이 없거나 이 집 한 채 · 취득할 때 공시가격 6억 원 이하 · 소유권 이전 뒤 3개월 안에 받은 15년 이상 대출</li>
   <li>1년 한도: 15년 이상이면서 고정금리이고 처음부터 원리금을 갚으면 2,000만 원, 둘 중 하나면 1,800만 원(집셈은 1,800만 원으로 셈해요)</li>
   <li>공시가격은 실제 공시 값(면적대 중앙값)으로 판정해요. 층·동마다 달라서 6억 근처면 내 호수로 꼭 확인하세요</li>
+  <li>입주 전·새 아파트처럼 공시가격이 아직 없으면 시세의 69%로 어림해 판정해요(‘공시가 추정’으로 표시). 세법상 입주 뒤 처음 공시되는 가격으로 확정돼요</li>
   <li>규정은 세법 개정으로 바뀔 수 있어요. 집셈은 바뀌면 직접 확인해 반영해요</li></ul>
   <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
   <a class="btn ghost" style="text-decoration:none;text-align:center" href="https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=40608&cntntsId=239020" target="_blank" rel="noopener">국세청 공제 요건 보기 ›</a>
@@ -1573,7 +1574,10 @@ function gsBox(c,rows){const G=(DT.gs||{})[c.no];if(!G)return '';const kv=(a,b)=
 function gsOf(r){const g=(DT.gs||{})[r.no];return g?g[String(r.b)]:null;}
 function incTax(ti){const B=[[1400,.06],[5000,.15],[8800,.24],[15000,.35],[30000,.38],[50000,.40],[100000,.42],[1e12,.45]];let t=0,lo=0;for(const [hi,rt] of B){if(ti<=lo)break;t+=(Math.min(ti,hi)-lo)*rt;lo=hi;}return t;}
 function taxable(g){const wd=g<=500?g*.7:g<=1500?350+(g-500)*.4:g<=4500?750+(g-1500)*.15:g<=10000?1200+(g-4500)*.05:1475+(g-10000)*.02;return Math.max(0,g-wd-150-g*.08);}   /* 총급여 - 근로소득공제 - 본인 기본공제 - 4대보험(약 8%) */
-function mortDed(r,L,i){if(CF.inc==null||CF.mt===false||!(L>0)||r.be)return 0;const g=gsOf(r);if(!g||g[0]>60000)return 0;
+/* 09-30 사용자: 팰루시드처럼 공시가가 아직 없는 입주 전·신축은? → 빼지 않고 시세×69%(공동주택 공시가 현실화율, 보유세 추정과 같은 값)로 추정해 판정.
+   세법: 취득 당시 기준시가가 없으면 그 뒤 처음 공시된 기준시가로 판단 → 입주 후 첫 공시가로 확정(추정이라고 표시) */
+function gsEst(r){const g=gsOf(r);return g?[g[0],false]:[r.p*0.69,true];}
+function mortDed(r,L,i){if(CF.inc==null||CF.mt===false||!(L>0)||r.be)return 0;const g=[gsEst(r)[0]];if(g[0]>60000)return 0;
  const y=Math.min(L*i,1800), ti=taxable(CF.inc1!=null?CF.inc1:CF.inc), yrs=CF.law==='plan'&&!CF.useU?Math.max(0,Math.min(r.T||5,2029-YEAR)):(r.T||5);   /* 부부 합산 소득이면 대출 명의자 본인 소득(CF.inc1)으로 */return (incTax(ti)-incTax(Math.max(0,ti-y)))*1.1*yrs;}
 
 /* ---------- 09-30 세금 반영(docs/rules_tax_2026.md, 사용자: 공시가·혜택까지 전부 셈에) ----------
@@ -1878,7 +1882,7 @@ function fold(t,body,open){return body?`<details class="fold"${open?' open':''}>
 function whyUp(r){if(r.as||r.gt==null)return '';const T=r.T||5, lv=(Math.pow(1+DT.level/100,T)-1)*100, P=(r.pt||[]).slice(0,6), sg=v=>`<b class="${v>=0?'pos':'neg'}">${pp(v)}</b>`;
  return `<div style="margin:8px 0 2px;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:.8rem;line-height:1.6"><b>5년 뒤 시세는 이렇게 나와요</b><div style="display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:4px"><span style="white-space:nowrap">시장 평균 <b>+${Math.round(lv)}%</b></span><span style="white-space:nowrap">${(r.gu||'').split(' ').pop()} 흐름 ${sg(r.gt)}</span>${P.map(([i,v])=>`<span style="white-space:nowrap">${S[i]} ${sg(v)}</span>`).join('')}</div><div class="sub" style="font-size:.72rem;margin-top:3px">시장 평균 = 과거 20년 5년 상승률 · 구 흐름·단지 몫 = 같은 구·같은 시점 단지들 사이에서 더/덜 오른 몫(%p, 과거 실거래로 추정) · 학군 = 특목·자사고 진학률과 통학구역 프리미엄</div></div>`;}
 function howNum(r,F){const use=CF.useU&&CF.addU?r.U:0, up=F.q5, cost=-(r.C-r.p-r.bu)-(GRS(F.sv5)-F.sv5), it=-F.it, t=v=>(v>=0?'+':'−')+eok(Math.abs(v));
- const P=[[r.bu?'시세 상승(분담금 뺌)':'시세 상승',up],['누린 값(전세로 치면)',use],['세금·중개보수',cost],['대출이자',it],['남는 자본 예금 이자(세후)',F.di||0],['이자 소득공제',F.tx||0],['취득세 감면',F.ac||0],['보유세(공시가 반영)',-(F.hd||0)],['양도세',-(F.cg||0)],[CF.rpt>0?'수리비':'수리비(어림)',-F.rp]].filter(([_,v])=>Math.abs(v)>=50);
+ const P=[[r.bu?'시세 상승(분담금 뺌)':'시세 상승',up],['누린 값(전세로 치면)',use],['세금·중개보수',cost],['대출이자',it],['남는 자본 예금 이자(세후)',F.di||0],[gsOf(r)?'이자 소득공제':'이자 소득공제(공시가 추정)',F.tx||0],['취득세 감면',F.ac||0],['보유세(공시가 반영)',-(F.hd||0)],['양도세',-(F.cg||0)],[CF.rpt>0?'수리비':'수리비(어림)',-F.rp]].filter(([_,v])=>Math.abs(v)>=50);
  return `<div style="margin:8px 0 2px;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:.8rem;line-height:1.6"><b>기준 ${t(F.p5)}억은 이렇게 나와요</b><div style="display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:4px">${P.map(([k,v])=>`<span style="white-space:nowrap">${k} <b style="color:${v>=0?'var(--green)':'var(--red)'}">${t(v)}</b></span>`).join('')}</div></div>`;}
 // 곁다리(09-26 사용자): 이 집을 사는 대신 가진 돈을 굴리면 연 몇 %를 벌어야 같아지나 — 사는 방식은 고를 수 있게(사용자: 반드시 이 집에 산다는 가정 말고 선택지로).
 //   ① 월세로 살면: (가진 돈 − 보증금)을 연 x%로 굴린 이익 − 5년 월세 = 이 집을 사서 살 때 순이익(월세 아낌은 뺌 — 산 사람은 월세를 안 내니까)
