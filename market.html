@@ -361,9 +361,9 @@ function stageStrip(seq,px){if(!seq||!seq[1])return '';const [y0,st]=seq,n=st.le
 /* 09-30 사용자: 4분면 지도를 애니메이션으로 — 기간별로 점이 움직이면 사이클마다 시계 방향으로 도는 걸 눈치챌 것, 그때 집값 움직임도 함께, 끝엔 '지금은 여기'.
    2010년부터 한 달씩: 지나온 길은 옅게 쌓이고, 점이 있는 칸이 밝아지고, 아래 집값 1년 변화 막대가 함께 차오른다. 화면에 보이면 한 번 자동 재생, 버튼·슬라이더로 조절. */
 const ANM={};
-function anBlock(id,P0,px){const P=P0.map((p,i)=>{const w=P0.slice(Math.max(0,i-2),i+1);return [p[0],w.reduce((a,x)=>a+x[1],0)/w.length,w.reduce((a,x)=>a+x[2],0)/w.length];});
+function anBlock(id,P0,px){const P=P0.map((p,i)=>{const w=P0.slice(Math.max(0,i-5),i+1);return [p[0],w.reduce((a,x)=>a+x[1],0)/w.length,w.reduce((a,x)=>a+x[2],0)/w.length];});
  const W=320,H=250,pd=18,X=v=>pd+v/100*(W-2*pd),Y=v=>H-pd-v/100*(H-2*pd),pxm=new Map(px||[]),n=P.length;
- ANM[id]={P,i:n-1,X,Y,pxm,t:null,auto:false,W};
+ ANM[id]={P,i:n-1,f:n-1,X,Y,pxm,t:null,auto:false,W};
  const qr=(k,x,y)=>{const [t,,c]=STG[k];return `<rect id="${id}-q${k}" x="${x}" y="${y}" width="${X(50)-pd}" height="${Y(50)-pd}" fill="${c}" opacity=".07"/>`;};
  const qn=(k,x,y,a)=>{const [t,,c]=STG[k];return `<text x="${x}" y="${y}" font-size="10" font-weight="800" fill="${c}" text-anchor="${a}">${'①②③④'[k-1]} ${t}</text>`;};
  const pv=P.map(p=>pxm.get(p[0])),pm=Math.max(5,...pv.filter(x=>x!=null).map(Math.abs)),PW=320,PH=64,PL=4,PR=4,PZ=PH/2,PX=i=>PL+i/(n-1)*(PW-PL-PR),PY=v=>PZ-v/pm*(PH/2-4),bw=Math.max(1,(PW-PL-PR)/n*.8);
@@ -376,28 +376,33 @@ function anBlock(id,P0,px){const P=P0.map((p,i)=>{const w=P0.slice(Math.max(0,i-
   <circle id="${id}-halo" r="12" fill="var(--blue)" opacity=".18"/><circle id="${id}-dot" r="6.5" fill="var(--blue)" stroke="var(--surface)" stroke-width="2"/>
   <text id="${id}-ym" x="${W/2}" y="${Y(50)+5}" font-size="22" font-weight="800" fill="var(--ink)" opacity=".13" text-anchor="middle"></text></svg>
   <div style="display:flex;align-items:center;gap:10px;margin:8px 0 2px"><button id="${id}-b" onclick="anPlay('${id}')" style="border:0;border-radius:10px;background:var(--blue);color:#fff;font:inherit;font-size:.82rem;font-weight:700;padding:7px 12px;cursor:pointer;white-space:nowrap">▶ 2010년부터 재생</button>
-   <input id="${id}-r" type="range" min="0" max="${n-1}" value="${n-1}" oninput="anSet('${id}',+this.value,1)" style="flex:1;accent-color:var(--blue)"></div>
+   <input id="${id}-r" type="range" min="0" max="${n-1}" value="${n-1}" oninput="anSet('${id}',+this.value,1,1)" style="flex:1;accent-color:var(--blue)"></div>
   <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:6px"><b id="${id}-lab" style="font-size:.95rem"></b><span id="${id}-px" style="font-size:.86rem;font-weight:700"></span></div>
   <svg viewBox="0 0 ${PW} ${PH+12}" style="width:100%;display:block;margin-top:2px"><line x1="${PL}" x2="${PW-PR}" y1="${PZ}" y2="${PZ}" stroke="var(--line)"/>
    ${pv.map((v,i)=>v==null?'':`<rect class="${id}-pb" data-i="${i}" x="${PX(i).toFixed(1)}" y="${Math.min(PZ,PY(v)).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.abs(PY(v)-PZ).toFixed(1)}" fill="${v>=0?'var(--green)':'var(--red)'}"/>`).join('')}
    <line id="${id}-cur" y1="0" y2="${PH}" stroke="var(--ink)" stroke-width="1.2"/>${P.map((p,i)=>p[0].endsWith('.01')&&(+p[0].slice(0,4))%2===0?`<text x="${PX(i).toFixed(1)}" y="${PH+10}" font-size="9" fill="var(--ink3)" text-anchor="middle">'${p[0].slice(2,4)}</text>`:'').join('')}</svg>
-  <div class="sub" style="font-size:.72rem;text-align:center">아래 막대 = 그달 집값 1년 변화</div></div>`;}
-function anDraw(id){const A=ANM[id];if(!A)return;const el=k=>document.getElementById(id+'-'+k);if(!el('dot'))return;const P=A.P,i=A.i,X=A.X,Y=A.Y,p=P[i];
- el('all').setAttribute('d',smp(P.slice(0,i+1).map(q=>[X(q[1]),Y(q[2])])));el('tr').setAttribute('d',smp(P.slice(Math.max(0,i-11),i+1).map(q=>[X(q[1]),Y(q[2])])));
- ['dot','halo'].forEach(k=>{el(k).setAttribute('cx',X(p[1]).toFixed(1));el(k).setAttribute('cy',Y(p[2]).toFixed(1));});
- const qk=(p[1]>=50?'R':'L')+(p[2]>=50?'T':'B'),num=Object.keys(STG).find(k=>STG[k][1]===qk);[1,2,3,4].forEach(k=>el('q'+k).setAttribute('opacity',String(k)===num?'.24':'.06'));
+  <div class="sub" style="font-size:.72rem;text-align:center">아래 막대 = 그달 집값 1년 변화 · 움직임은 보기 쉽게 6개월 평균으로 그렸어요(칸 기록은 달마다의 실제 값)</div></div>`;}
+function crm(a,b,c,d,t){const t2=t*t,t3=t2*t;return .5*((2*b)+(-a+c)*t+(2*a-5*b+4*c-d)*t2+(-a+3*b-3*c+d)*t3);}
+function anPos(A,f){const P=A.P,n=P.length,i=Math.max(0,Math.min(n-1,Math.floor(f))),t=f-i;if(i>=n-1)return [P[n-1][1],P[n-1][2]];
+ const a=P[Math.max(0,i-1)],b=P[i],c=P[i+1],d=P[Math.min(n-1,i+2)];return [crm(a[1],b[1],c[1],d[1],t),crm(a[2],b[2],c[2],d[2],t)];}
+function anDraw(id){const A=ANM[id];if(!A)return;const el=k=>document.getElementById(id+'-'+k);if(!el('dot'))return;const P=A.P,f=A.f,i=Math.min(P.length-1,Math.floor(f+1e-6)),X=A.X,Y=A.Y,p=P[i],q=anPos(A,f);
+ const pts=P.slice(0,i+1).map(z=>[X(z[1]),Y(z[2])]).concat(f>i?[[X(q[0]),Y(q[1])]]:[]);
+ el('all').setAttribute('d',smp(pts));el('tr').setAttribute('d',smp(pts.slice(Math.max(0,pts.length-13))));
+ ['dot','halo'].forEach(k=>{el(k).setAttribute('cx',X(q[0]).toFixed(1));el(k).setAttribute('cy',Y(q[1]).toFixed(1));});
+ if(A.i===i&&A._drawn)return; A.i=i;A._drawn=1;
+ const qk=(q[0]>=50?'R':'L')+(q[1]>=50?'T':'B'),num=Object.keys(STG).find(k=>STG[k][1]===qk);[1,2,3,4].forEach(k=>el('q'+k).setAttribute('opacity',String(k)===num?'.24':'.06'));
  const last=i===P.length-1,y=+p[0].slice(0,4),m=+p[0].slice(5);el('ym').textContent=`${y}.${String(m).padStart(2,'0')}`;
  el('lab').innerHTML=`${last?'<span style="color:var(--blue)">지금은 여기 · </span>':''}${y}년 ${m}월 · <span style="color:${STG[num][2]}">${'①②③④'[num-1]} ${STG[num][0]}</span>`;
  const v=A.pxm.get(p[0]);el('px').innerHTML=v==null?'':`집값 1년 <span style="color:${v>=0?'var(--green)':'var(--red)'}">${v>0?'+':''}${v}%</span>`;
  const cx=A.PX(i).toFixed(1);el('cur').setAttribute('x1',cx);el('cur').setAttribute('x2',cx);
  document.querySelectorAll('.'+id+'-pb').forEach(r=>r.setAttribute('opacity',+r.dataset.i<=i?'.75':'.12'));
- const r=el('r');if(r&&+r.value!==i)r.value=i;}
-function anStop(id){const A=ANM[id];if(A&&A.t){cancelAnimationFrame(A.t);A.t=null;}const b=document.getElementById(id+'-b');if(b)b.textContent=A&&A.i<A.P.length-1?'▶ 이어서 재생':'▶ 2010년부터 재생';}
-function anSet(id,i,stop){const A=ANM[id];if(!A)return;if(stop)anStop(id);A.i=Math.max(0,Math.min(A.P.length-1,i));anDraw(id);}
-function anPlay(id){const A=ANM[id];if(!A)return;if(A.t){anStop(id);return;}if(A.i>=A.P.length-1)A.i=0;let last=0;const b=document.getElementById(id+'-b');if(b)b.textContent='❚❚ 멈춤';
- const step=ts=>{if(!A.t)return;if(ts-last>70){last=ts;A.i++;anDraw(id);if(A.i>=A.P.length-1){A.t=null;anStop(id);return;}}A.t=requestAnimationFrame(step);};A.t=requestAnimationFrame(step);}
+ const r=el('r');if(r&&!A.drag&&+r.value!==i)r.value=i;}
+function anStop(id){const A=ANM[id];if(A&&A.t){cancelAnimationFrame(A.t);A.t=null;}const b=document.getElementById(id+'-b');if(b)b.textContent=A&&A.f<A.P.length-1?'▶ 이어서 재생':'▶ 2010년부터 재생';}
+function anSet(id,i,stop,sl){const A=ANM[id];if(!A)return;A.f=Math.max(0,Math.min(A.P.length-1,i));if(stop)anStop(id);A._drawn=0;A.drag=!!sl;anDraw(id);A.drag=0;}
+function anPlay(id){const A=ANM[id];if(!A)return;if(A.t){anStop(id);return;}if(A.f>=A.P.length-1){A.f=0;A._drawn=0;}let last=null;const b=document.getElementById(id+'-b');if(b)b.textContent='❚❚ 멈춤';
+ const step=ts=>{if(!A.t)return;if(last!=null)A.f=Math.min(A.P.length-1,A.f+(ts-last)/1000*11);last=ts;anDraw(id);if(A.f>=A.P.length-1){A.t=null;anStop(id);return;}A.t=requestAnimationFrame(step);};A.t=requestAnimationFrame(step);}
 function anInit(){Object.keys(ANM).forEach(id=>{if(!document.getElementById(id+'-dot')){delete ANM[id];return;}anDraw(id);const sv=document.getElementById(id+'-svg');
- if('IntersectionObserver' in window&&sv&&!ANM[id].auto){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!ANM[id].auto){ANM[id].auto=true;io.disconnect();ANM[id].i=0;anPlay(id);}}),{threshold:.6});io.observe(sv);}});}
+ if('IntersectionObserver' in window&&sv&&!ANM[id].auto){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!ANM[id].auto){ANM[id].auto=true;io.disconnect();ANM[id].f=0;ANM[id]._drawn=0;anPlay(id);}}),{threshold:.6});io.observe(sv);}});}
 function areaPath(K,nm){const a=K&&K.areas&&K.areas[nm];if(!a)return null;if(Array.isArray(a[0]))return a;const [y0,f]=a,m0=(+y0.slice(0,4))*12+(+y0.slice(5))-1,o=[];for(let i=0;i<f.length/2;i++){const m=m0+i;o.push([`${Math.floor(m/12)}.${String(m%12+1).padStart(2,'0')}`,f[2*i],f[2*i+1]]);}return o;}
 function phaseCard(q,P0,S,o){const cur=P0[P0.length-1],ck=(cur[1]>=50?'R':'L')+(cur[2]>=50?'T':'B'),mv=mvOf(P0),r=mv?S[ck+mv]:null,num=Object.keys(STG).find(k=>STG[k][1]===ck);
  const rec=r?`<div class="concl" style="margin-top:12px;line-height:1.7">지금 <b>${num}번 칸</b>, 최근 6개월 <b>${MVW[mv]}</b><br>같은 칸·같은 방향일 때 ${r.n.toLocaleString()}개월의 1년 뒤 집값 평균 <b style="color:${r.avg>=0?'var(--green)':'var(--red)'}">${pc(r.avg)}</b> · 내린 경우 ${r.dn}%`
