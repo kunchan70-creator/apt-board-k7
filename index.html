@@ -482,11 +482,11 @@ let SI=0, SPATH='all';
 // 09-29 사용자: '첫 집' 상담과 홈의 '분석 시작'이 결국 같은 곳(조건 입력)으로 가는데 화면이 갈렸고, 설명 슬라이드가 많아 아는 사람은 또 보게 됐다
 //   → 한 줄 순서(첫 집 안내 3장 → 대표 고민·핵심 질문 → 데이터 질문 3개+셈 도장 → 상담 2문항 → 조건 입력)로 잇고, 설명 블록마다 '다시 보지 않기'. 체크한 블록은 건너뛰고, 조건이 저장돼 있으면 결과로 바로.
 //   버린 화면은 없다 — 메뉴 '매수 분석 안내 다시 보기'(firstFlow(0,1))로 전부 다시 볼 수 있다.
-const FFLOW=[['jsNoFirst',()=>{SPATH='first';SQ_.v=PATHS.first;SI=0;story(0);}],['jsNoChat',()=>chat()],['jsNoWhy',()=>{WA={};why3(0);}],[null,()=>{if(CF.done&&!FF.force)result();else consult('first');}]];
+const FFLOW=[['jsNoFirst',()=>{SPATH='first';SQ_.v=PATHS.first;SI=0;story(0);}],['jsNoChat',()=>chat()],['jsNoWhy',()=>{WA={};why3(0);}],[null,()=>setup(0)]];   /* 09-30 사용자: 분석 시작 → 결과가 바로 뜨면 안 되고 조건 선택(첫 질문)부터. 이전 답은 채워져 있음 */
 let FF={force:false};
 function firstFlow(i,force){if(force!=null)FF.force=!!force; for(let j=i||0;j<FFLOW.length;j++){const [k,f]=FFLOW[j]; if(FF.force||!k||!jsSeen(k)){f();return;}}}
 const PATHS={first:PCARD.first,move:PCARD.move,mine:PCARD.mine,all:STORY}, SQ_={v:STORY};
-const GO={first:['매수 분석 시작',"firstFlow(1)"],move:['갈아타기 계산하기',"move()"],mine:['우리 단지 찾아보기',"ownFind()"],all:['시작하기',"hub()"]};
+const GO={first:['다음',"firstFlow(1)"],move:['갈아타기 계산하기',"move()"],mine:['우리 단지 찾아보기',"ownFind()"],all:['시작하기',"hub()"]};
 function startPath(k){if(k==='first'){firstFlow(0);return;} if(k==='timing'){location.href='market.html';return;} if(k==='commute'){jobv();return;} if(k==='mine'){ownFind();return;} /* 09-28: '우리 단지 진단' = 단지 분석 */ if(k==='all'){SPATH=k;SQ_.v=PATHS[k];SI=0;story(0);return;} consult(k);}
 // ---------------- 대화형 안내(09-25): 설명을 이어 붙이지 않고, 묻고 답에 반응한다 ----------------
 let CHT=0;
@@ -813,7 +813,7 @@ function story(i){
  if(!document.getElementById('stcss'))document.head.insertAdjacentHTML('beforeend',STCSS);
  if(SI===SQ_.v.length){app.innerHTML=`<div id="stw" style="--dx:${dx}px;min-height:58vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:16px"><span class="sp" style="border-radius:20px;animation:stPop .6s cubic-bezier(.3,1.4,.5,1) forwards,stGlow 1.4s ease-out .6s 2"><svg width="72" height="72" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg5" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg5)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="22.5" y="31.5" width="19" height="5.2" rx="2.6" fill="url(#lg5)"/><rect x="22.5" y="40.3" width="19" height="5.2" rx="2.6" fill="url(#lg5)"/></svg></span>
    <div class="hq sr" style="font-size:clamp(1.5rem,6.6vw,1.9rem);line-height:1.4;${D_(500)}">셈은 집셈이,<br>결정은 직접</div><div class="sr" style="font-size:.9rem;line-height:1.6;color:var(--ink2);${D_(900)}">집셈은 집을 추천하지 않습니다.<br>흩어진 고민을 같은 기준으로 계산해 드립니다.</div><div class="sub sr" style="font-size:.78rem;line-height:1.6;${D_(1200)}">과거 실거래 ${(DT.evn||0).toLocaleString()}건으로 검증 · 시장 전체의 방향은 예측하지 않습니다<br>서울·경기·인천 아파트 · 매일 갱신</div></div>
-   <div class="cta sr" style="${D_(1500)}"><button class="btn" onclick="${GO[SPATH][1]}">${GO[SPATH][0]}</button><p style="text-align:center;margin:6px 0 0"><button class="linkbtn" onclick="hub()">메인으로</button></p>${SPATH==='first'?noAgain('jsNoFirst'):''}</div>`;return;}
+   <div class="cta sr" style="${D_(1500)}"><button class="btn" onclick="${GO[SPATH][1]}">${GO[SPATH][0]}</button><p style="text-align:center;margin:6px 0 0"><button class="linkbtn" onclick="hub()">메인으로</button></p>${SPATH==='first'?eduBar():''}</div>`;return;}
  const S_=SQ_.v[SI];
  app.innerHTML=`<div id="stw" style="--dx:${dx}px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><span>${SQ_.v.map((_,k)=>`<span style="display:inline-block;width:${k===SI?18:6}px;height:6px;border-radius:3px;margin-right:4px;transition:width .3s;background:${k<=SI?'var(--blue)':'var(--line)'}"></span>`).join('')}</span><button class="linkbtn" style="padding:0;font-size:.84rem;color:var(--ink3)" onclick="hub()">건너뛰기 ›</button></div>
  <div style="display:flex;align-items:center;gap:10px"><span class="sp" style="${D_(80)}">${ic(S_.i,44,1)}</span><span class="stag sr" style="${D_(200)}">${String(SI+1).padStart(2,'0')} · ${S_.t}</span></div>
@@ -821,7 +821,7 @@ function story(i){
  <div style="margin:4px 0 0">${S_.v()}</div>
  <p class="sr" style="margin:16px 0 0;line-height:1.65;font-size:.95rem;font-weight:600;${D_(2300)}">${S_.a}</p>
  ${S_.f?`<div class="sr" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;${D_(2500)}">${S_.f.map(([t,go])=>`<button onclick="${go}" style="padding:7px 12px;border-radius:999px;border:1px solid var(--blue);background:var(--blue-bg);color:var(--blue);font:inherit;font-size:.8rem;font-weight:700;cursor:pointer">${t} ›</button>`).join('')}</div>`:''}
- <div class="cta" style="margin-top:18px"><button class="btn" onclick="story(${SI+1})">${SI===SQ_.v.length-1?'마치기':'다음'}</button>${SI>0?`<p style="text-align:center;margin:6px 0 0"><button class="linkbtn" onclick="story(${SI-1})">이전</button></p>`:SPATH!=='all'?`<p style="text-align:center;margin:6px 0 0"><button class="linkbtn" onclick="hello()">다른 고민 고르기</button></p>`:''}${SPATH==='first'?noAgain('jsNoFirst'):''}</div></div>`;
+ <div class="cta" style="margin-top:18px"><button class="btn" onclick="story(${SI+1})">${SI===SQ_.v.length-1?'마치기':'다음'}</button>${SI>0?`<p style="text-align:center;margin:6px 0 0"><button class="linkbtn" onclick="story(${SI-1})">이전</button></p>`:SPATH!=='all'?`<p style="text-align:center;margin:6px 0 0"><button class="linkbtn" onclick="hello()">다른 고민 고르기</button></p>`:''}${SPATH==='first'?eduBar():''}</div></div>`;
  stCount();
  const w=$('#stw'); let x0=null; w.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;},{passive:true}); w.addEventListener('touchend',e=>{if(x0==null)return;const d=e.changedTouches[0].clientX-x0;if(Math.abs(d)>60)story(SI+(d<0?1:-1));x0=null;});}
 // ---------------- 메인 화면(09-25 사용자: 기능이 여러 개 — 앱처럼 아이콘) ----------------
@@ -840,7 +840,7 @@ function hub(){   // 09-25 사용자: 기능이 많아 다 별것 아닌 듯 보
  ${(DT.mk||[]).length?`<a href="market.html" style="margin-top:12px;display:block;padding:14px 14px 12px;border-radius:16px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);text-decoration:none">
   <div style="display:flex;justify-content:space-between;align-items:center"><span style="display:flex;align-items:center;gap:8px;font-weight:800">${ic('pulse',20)}이번 주 시장</span><span style="font-size:.8rem;font-weight:700;color:var(--blue)">자세히 ›</span></div>
   <div style="display:grid;grid-template-columns:repeat(${DT.mk.length},1fr);gap:8px;margin-top:10px">${DT.mk.map(([r,h])=>{const a=Array.isArray(h),st=a?h[0]:0,on=a?h[1]:0,bn=a?h[7]:null,c=st>0?'var(--red)':st<0?'var(--blue)':'var(--ink)';
-   return `<div style="background:var(--surface2);border-radius:12px;padding:10px 6px;text-align:center"><div style="font-size:.78rem;font-weight:700;color:var(--ink2)">${r}</div><div class="num" style="font-size:1.25rem;font-weight:800;color:${c};margin-top:2px">${st?Math.abs(st)+'주':'보합'}</div><div style="font-size:.7rem;font-weight:700;color:${c}">${st>0?'연속 상승':st<0?'연속 하락':'&nbsp;'}</div><div style="margin-top:6px;font-size:.68rem;font-weight:700;border-radius:999px;padding:2px 0;${on>0?'background:var(--amber-bg,#fff4e0);color:var(--amber,#b76e00)':'background:var(--line);color:var(--ink2)'}">${bn!=null?'부담 지표 '+bn+'/4':(on>0?'점검 항목 '+on+'개':'특이 사항 없음')}</div></div>`;}).join('')}</div></a>`:''}
+   return `<div style="background:var(--surface2);border-radius:12px;padding:10px 6px;text-align:center"><div style="font-size:.78rem;font-weight:700;color:var(--ink2)">${r}</div><div class="num" style="font-size:1.25rem;font-weight:800;color:${c};margin-top:2px">${st?Math.abs(st)+'주':'보합'}</div><div style="font-size:.7rem;font-weight:700;color:${c}">${st>0?'연속 상승':st<0?'연속 하락':'&nbsp;'}</div><div style="margin-top:6px;font-size:.68rem;font-weight:700;border-radius:999px;padding:2px 0;${on>0?'background:var(--amber-bg,#fff4e0);color:var(--amber,#b76e00)':'background:var(--line);color:var(--ink2)'}">${bn!=null?'부담 신호 '+bn+'/4':(on>0?'점검 항목 '+on+'개':'특이 사항 없음')}</div></div>`;}).join('')}</div></a>`:''}
  <div style="font-size:.76rem;font-weight:800;color:var(--ink3);margin:20px 2px 10px">더 알아보기</div>
  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px 6px">${APPS.map(([n,t,go])=>`<button onclick="${go}" style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:0;border:0;background:transparent;font:inherit;color:var(--ink);cursor:pointer">${ic(n,46,1)}<span style="font-size:.74rem;font-weight:600;line-height:1.3;text-align:center;word-break:keep-all">${t}</span></button>`).join('')}</div>
  <div style="margin-top:22px;padding-top:14px;border-top:1px solid var(--line2)"><div style="font-size:.76rem;font-weight:800;color:var(--ink3);margin:0 2px 8px">집셈은 어떻게 셈하나요</div>
@@ -1280,14 +1280,14 @@ function trust(from){   // 09-29 사용자: 토스식 — 아이콘·태그·잔
  +`<section class="os"><div style="display:flex;gap:8px"><a class="tmore" href="evidence.html" style="flex:1;margin:0;text-align:center;text-decoration:none">상세 검증 보기</a><a class="tmore" href="guide.html" style="flex:1;margin:0;text-align:center;text-decoration:none">산출 방법</a></div></section>`;}
 function chat(){   // 09-24 사용자: 고민 말풍선(취지) 원복 → 결국 한 질문 → 시작
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
- app.innerHTML=HOME+`<div class="chat"><button class="skip" onclick="talkAll()">건너뛰기 ›</button>
+ app.innerHTML=HOME+`<div class="chat">
  <div class="sub" style="margin:2px 0 8px">주택 매수자들의 대표적인 고민</div><div id="talk" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
  <div id="one" style="opacity:0;transition:opacity .5s"><div class="sub" style="margin:22px 0 2px;text-align:center">상황은 달라도, 핵심 질문은 하나입니다</div>
   <div class="hq" style="text-align:center;margin-top:6px;font-size:clamp(1.6rem,7vw,2rem);line-height:1.35">내 자본으로<br>어디를 매수하면<br>가장 나을까?</div></div>
  <div id="trust"></div>
- <div id="talkgo" class="cta" style="opacity:0;transition:opacity .4s"><button class="btn" onclick="CF.seen=true;save();firstFlow(2)">분석 시작</button>
+ <div id="talkgo" class="cta" style="opacity:0;transition:opacity .4s"><button class="btn" onclick="CF.seen=true;save();firstFlow(2)">다음</button>
  <p style="text-align:center;margin:6px 0 0">${hasSaved()?'<button class="linkbtn" onclick="result()">저장된 조건으로 조회 →</button>':'<button class="linkbtn" disabled style="color:var(--ink3);cursor:default">저장된 조건 없음</button>'}</p>
- <p class="sub" style="text-align:center;margin:10px 0 0;font-size:.74rem">참고용 산출치이며, 투자 권유가 아닙니다.</p>${noAgain('jsNoChat')}</div></div>`;
+ <p class="sub" style="text-align:center;margin:10px 0 0;font-size:.74rem">참고용 산출치이며, 투자 권유가 아닙니다.</p></div>${eduBar()}</div>`;
  let t=250;
  WORRY.forEach(w=>{TT.push(setTimeout(()=>add(w),t)); t+=380;});
  TT.push(setTimeout(()=>{const T=$('#talk');if(!T)return;T.style.transition='opacity .5s';T.style.opacity=.45;$('#one').style.opacity=1;},t+250));
@@ -1323,14 +1323,14 @@ let WA={};
 function why3(i){
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
  const w=WHY3[i], last=i===WHY3.length-1, a=WA[i], done=a!=null, r=done?w.f(a):null;
- app.innerHTML=`<div class="chat"><button class="skip" onclick="firstFlow(3)">건너뛰기 ›</button>
+ app.innerHTML=`<div class="chat">
  <div class="sub" style="margin:4px 0 10px">${WHY3.map((_,k)=>`<span style="display:inline-block;width:${k===i?18:6}px;height:6px;border-radius:3px;margin-right:4px;background:${k<=i?'var(--blue)':'var(--line)'}"></span>`).join('')} <span style="margin-left:4px">Q${i+1} / ${WHY3.length}</span></div>
  <div style="margin:2px 0 12px">${ic(w.e,48,1)}</div><div class="hq" style="font-size:clamp(1.4rem,6.2vw,1.75rem);line-height:1.4">${w.q}</div>
  <div style="margin:14px 0 4px">${w.o.map((t,k)=>`<button class="opt${done&&k===a?' on':''}" ${done?'disabled':''} onclick="WA[${i}]=${k};why3(${i})">${t}</button>`).join('')}</div>
  ${done?`<div style="background:var(--surface2);border-radius:14px;padding:12px 14px;margin-top:10px;animation:rise .35s both">
    <div style="line-height:1.6;font-size:.95rem;font-weight:600">${r.t}</div>${r.v}<div class="sub" style="font-size:.7rem;text-align:center;margin-top:2px">${r.cap}</div></div>`:''}
  <div class="cta" style="margin-top:18px">${done?`<button class="btn" onclick="${last?'bridge()':'why3('+(i+1)+')'}">다음</button>`:''}
- ${i>0?`<p style="text-align:center;margin:6px 0 0"><button class="linkbtn" onclick="why3(${i-1})">이전</button></p>`:''}${noAgain('jsNoWhy')}</div></div>`;}
+ ${i>0?`<p style="text-align:center;margin:6px 0 0"><button class="linkbtn" onclick="why3(${i-1})">이전</button></p>`:''}${eduBar()}</div></div>`;}
 // 09-24 사용자: 질문 -> 조건 입력 사이 연결. 로딩처럼 짧은 문구가 하나씩 체크(서비스가 해 주는 일)
 function bridge(){   // 09-24 사용자: 토스식 체크 모션 대신 '셈' 도장이 찍힌다
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
@@ -1339,7 +1339,7 @@ function bridge(){   // 09-24 사용자: 토스식 체크 모션 대신 '셈' �
  app.innerHTML=`<style>@keyframes stamp{0%{transform:scale(2.1) rotate(-16deg);opacity:0}55%{transform:scale(.9) rotate(-9deg);opacity:1}100%{transform:scale(1) rotate(-9deg);opacity:1}}
  .seal{flex:0 0 auto;width:34px;height:34px;border:2.5px solid var(--red);color:var(--red);border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.95rem;opacity:0;transform:rotate(-9deg)}
  .seal.on{animation:stamp .38s cubic-bezier(.3,1.4,.5,1) both}</style>
- <div class="chat"><button class="skip" onclick="firstFlow(3)">건너뛰기 ›</button>
+ <div class="chat">
  <div style="margin:2px 0 12px"><svg width="48" height="48" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg6" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg6)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="22.5" y="31.5" width="19" height="5.2" rx="2.6" fill="url(#lg6)"/><rect x="22.5" y="40.3" width="19" height="5.2" rx="2.6" fill="url(#lg6)"/></svg></div>
  <div class="hq" style="font-size:clamp(1.4rem,6.2vw,1.75rem);line-height:1.4">이 모든 것을<br>단지별로 계산합니다</div>
  <div style="margin:20px 0 6px">${L.map(([e,a,b],k)=>`<div id="br${k}" style="display:flex;gap:12px;align-items:center;padding:11px 0;border-bottom:1px dashed var(--line);opacity:.25;transition:opacity .3s">
@@ -1347,7 +1347,7 @@ function bridge(){   // 09-24 사용자: 토스식 체크 모션 대신 '셈' �
   <span style="flex:1;min-width:0"><b style="display:block;font-size:.98rem">${a}</b><span class="sub" style="font-size:.84rem">${b}</span></span>
   <span class="seal" id="bs${k}">셈</span></div>`).join('')}</div>
  <div id="brgo" style="opacity:0;transition:opacity .4s"><p style="text-align:center;font-weight:700;margin:18px 0 10px">이제 자금 조건만 입력하면 됩니다</p>
- <div class="cta" style="margin-top:0"><button class="btn" onclick="firstFlow(3)">매수 조건 입력</button></div></div>${noAgain('jsNoWhy')}</div>`;
+ <div class="cta" style="margin-top:0"><button class="btn" onclick="firstFlow(3)">조건 입력하기</button></div></div>${eduBar()}</div>`;
  let t=250;
  L.forEach((_,k)=>{TT.push(setTimeout(()=>{const r=$('#br'+k);if(r)r.style.opacity=1;},t));
   TT.push(setTimeout(()=>{const b=$('#bs'+k);if(b)b.classList.add('on');},t+380)); t+=700;});
@@ -1442,7 +1442,7 @@ const STO=[['','상관없음'],['a10','역 걸어서 10분'],['a1','역 걸어�
 const SCO=[['','상관없음'],['e3','초품아 (배정 초등학교 300m 안)'],['e6','배정 초등학교 걸어서 10분']], SCL={e3:'초품아',e6:'초등학교 10분'};
 function cc(key,opts,multi){return `<div class="cc">${opts.map(([v,l])=>`<button class="${(multi?CF[key].includes(v):CF[key]===v)?'on':''}" onclick='${multi?'multiTog':'one'}(${JSON.stringify(key)},${JSON.stringify(v)})'>${l}</button>`).join('')}</div>`;}
 // 09-26 사용자: 조건 화면(면적·연차 등)을 한 번에 고르기 어려움 → 한 화면에 질문 하나씩(단계별). 끝에 요약 화면에서 항목별로 다시 고칠 수 있다.
-const STEPS=['purpose','cash','region','size','age','life','inc','perk','sum']; let RET=null;   // RET: 내 조건을 고친 뒤 돌아갈 화면(출퇴근)
+const STEPS=['purpose','cash','region','size','age','life','inc','loan','perk','sum']; let RET=null;   // RET: 내 조건을 고친 뒤 돌아갈 화면(출퇴근)
 let SU=0;
 function uniqN(){return new Set(R.filter(ok).map(r=>r.no||r.n+r.gu)).size;}
 function cntWith(key,v){const k=CF[key];CF[key]=v==null?[]:[v];const n=uniqN();CF[key]=k;return n;}
@@ -1474,8 +1474,9 @@ function sumVal(k){
  if(k==='age')return !CF.age.length?'상관없음':CF.age.map(v=>AGD.find(x=>x[0]===v)[1].split(' (')[0]).join(', ');
  if(k==='life'){const a=[STL[CF.st],SCL[CF.sch],CF.hh?CF.hh.toLocaleString()+'세대 이상':''].filter(Boolean);return a.length?a.join(' · '):'상관없음';}
  if(k==='perk'){const a=[CF.first?'생애최초':'',CF.newly?'신혼':'',CF.baby?'출산 2년 안':'',CF.pol===false?'정책대출 끔':'',CF.joint?'부부 공동명의':'',CF.law==='plan'?'정부 개정안':'현행 세법'].filter(Boolean);return a.join(' · ');}
- if(k==='inc')return CF.inc==null?'입력 안 함':eok(CF.inc)+'억/년'+(CF.debt?' · 기존 대출 연 '+CF.debt.toLocaleString()+'만':'');}
-const SUL={purpose:'보유 목적',cash:'가용 자기자본',region:'희망 지역',size:'전용면적',age:'준공 연차',life:'생활 조건',inc:'연소득',perk:'세금 혜택·세법'};
+ if(k==='inc')return CF.inc==null?'입력 안 함':eok(CF.inc)+'억/년'+(CF.debt?' · 기존 대출 연 '+CF.debt.toLocaleString()+'만':'');
+ if(k==='loan'){const a=[CF.lmode==='max'?'은행 최대':CF.loan!=null?eok(CF.loan)+'억':'필요한 만큼',CF.irate!=null?'금리 '+CF.irate+'%':'',CF.rpt===0?'수리비 뺌':CF.rpt?'수리비 '+CF.rpt.toLocaleString()+'만':'',CF.maxc!=null?'최대 '+eok(CF.maxc)+'억':''].filter(Boolean);return a.join(' · ');}}
+const SUL={purpose:'보유 목적',cash:'가용 자기자본',region:'희망 지역',size:'전용면적',age:'준공 연차',life:'생활 조건',inc:'연소득',loan:'대출·금리·수리비',perk:'세금 혜택·세법'};
 function setup(i){
  MVON=false;
  if(i==null)i=CF.done?STEPS.length-1:0;
@@ -1506,6 +1507,16 @@ function setup(i){
   +`<div style="margin:22px 2px 8px;font-size:.9rem;font-weight:800">세법 기준</div>`+`<div class="cc">${[['now','현행 세법'],['plan','정부 개정안 (국회 심의 중)']].map(([v,l])=>`<button class="${(CF.law||'now')===v?'on':''}" onclick="CF.law='${v}';save();setup(SU)">${l}</button>`).join('')}</div>`
   +`<div class="hint" style="margin-top:8px">정부 개정안: 2027년부터 1주택 종부세 공제 14억(실거주)·양도세 장기보유공제를 거주 기간 중심으로 — 실거주하지 않으면 공제가 거의 없어져요</div>`;}
  else if(k==='age')body=Q('몇 년 된 아파트까지<br>괜찮으세요?','오래된 집은 수리비를 셈에 넣어요')+optList('age',AGD);
+ else if(k==='loan'){   /* 09-30 사용자: 대출을 얼마나 받을지·금리·수리비는 정식 질문으로 */
+  const F_=(l,h,ph,v,js,u,t)=>`<label class="frw" style="margin-top:8px"><span>${l}<small>${h}</small></span><input type="${t||'text'}" inputmode="decimal" autocomplete="off" placeholder="${ph}" value="${v}" oninput="${js}"><em>${u}</em></label>`;
+  body=Q('대출은 얼마나 받으실 건가요?','자기자본이 넉넉해도 대출을 더 받고 남는 돈은 예금에 둘 수 있어요')
+  +`<div class="cc" style="margin:4px 0 6px">${[['need','필요한 만큼만'],['max','은행 최대 한도'],['amt','금액 직접 입력']].map(([m,t])=>`<button class="${lmodeOf()===m?'on':''}" onclick="CF.lmode=${m==='need'?'null':`'${m}'`};${m!=='amt'?'CF.loan=null;':''}save();setup(SU)">${t}</button>`).join('')}</div>`
+  +(lmodeOf()==='amt'?`<div class="inp"><input type="text" inputmode="decimal" autocomplete="off" placeholder="예: 4" value="${CF.loan==null?'':CF.loan/1e4}" oninput="CF.loan=parseMoney(this.value);count()"><b>억</b></div>`:'')
+  +`<div class="hint" style="margin:2px 0 14px">${lmodeOf()==='need'?'자기자본을 먼저 쓰고 모자란 만큼만 대출받는 것으로 셈해요':'남는 자기자본은 예금 금리 '+DT.rate.dep+'%(이자소득세 15.4% 뗀 '+(DT.rate.dep*0.846).toFixed(2)+'%)로 셈해요 · 대출이자가 예금 이자보다 크면 순이익은 줄어요'}</div>`
+  +F_('대출 금리','비우면 최근 평균 '+DT.rate.loan+'%',DT.rate.loan,CF.irate==null?'':CF.irate,"CF.irate=this.value===''?null:+this.value;count()",'%','number')
+  +F_('수리비','비우면 연식으로 어림 · 0이면 제외','어림',CF.rpt==null?'':CF.rpt,"CF.rpt=this.value===''?null:Math.max(0,+this.value);count()",'만원','number')
+  +F_('최대 매수 비용','세금·수리비 포함 상한','없음',CF.maxc==null?'':CF.maxc/1e4,'CF.maxc=parseMoney(this.value);count()','억');
+  cta=`<div class="cta"><button class="btn" id="go" onclick="${nx}">다음</button><button class="btn ghost" style="margin-top:8px" onclick="CF.lmode=null;CF.loan=null;CF.irate=null;CF.rpt=null;CF.maxc=null;save();${nx}">기본값으로 넘어가기</button></div>`;}
  else if(k==='inc'){
   body=Q('연소득을<br>알려 주시겠어요?','은행 대출 한도까지 맞춰 셈해요 · 부부는 합산')
   +`<div class="inp"><input type="text" inputmode="decimal" autocomplete="off" placeholder="예: 0.6 (6천만 원)" value="${CF.inc==null?'':(CF.inc/1e4)}" oninput="CF.inc=parseMoney(this.value);count()"><b>억/년</b></div>
@@ -1515,7 +1526,7 @@ function setup(i){
   cta=`<div class="cta"><button class="btn" id="go" onclick="${nx}">다음</button><button class="btn ghost" style="margin-top:8px" onclick="CF.inc=null;save();${nx}">건너뛰기</button></div>`;}
  else{
   body=Q('이 조건으로 찾을게요','바꾸고 싶은 항목을 누르세요')
-  +`<div class="frs">${STEPS.slice(0,-1).map((s_,j)=>FR(SUL[s_],sumVal(s_),`setup(${j})`)).join('')}${FR('대출·금리·수리비','<span id="advsum"></span>','advSheet()')}</div>`;
+  +`<div class="frs">${STEPS.slice(0,-1).map((s_,j)=>FR(SUL[s_],sumVal(s_),`setup(${j})`)).join('')}</div>`;
   cta=`<div class="cta"><button class="btn" id="go" onclick="CF.done=true;CF.lens='bal';CF.sort=null;save();if(RET==='commute'){RET=null;jres();}else result()">결과 보기</button></div>`;}
  app.innerHTML=head+body+cta;
  refresh(); window.scrollTo(0,0);}
@@ -1796,6 +1807,8 @@ function missLink(from){return `<button class="linkbtn" style="display:block;mar
 function jsSeen(k){try{return !!localStorage.getItem(k);}catch(e){return false;}}
 function jsMark(k){try{localStorage.setItem(k,'1');}catch(e){}}
 function jsUnmark(k){try{localStorage.removeItem(k);}catch(e){}}
+/* 09-30 사용자: 안내 화면마다 '건너뛰기'와 '다시 보지 않기'를 나란히. 다시 보지 않기 = 안내 전부 끄고 바로 첫 질문으로(메뉴 '안내 다시 보기'로 복구) */
+function eduBar(){return `<div style="display:flex;justify-content:center;align-items:center;gap:14px;margin:16px 0 0"><button class="linkbtn" style="color:var(--ink3)" onclick="firstFlow(3)">건너뛰기</button><span style="width:1px;height:12px;background:var(--line)"></span><button class="linkbtn" style="color:var(--ink3)" onclick="['jsNoFirst','jsNoChat','jsNoWhy'].forEach(jsMark);firstFlow(3)">다시 보지 않기</button></div>`;}
 function noAgain(k){return `<label style="display:flex;justify-content:center;align-items:center;gap:6px;margin:14px 0 0;font-size:.82rem;color:var(--ink3);cursor:pointer"><input type="checkbox" ${jsSeen(k)?'checked':''} onchange="this.checked?jsMark('${k}'):jsUnmark('${k}')" style="width:16px;height:16px;accent-color:var(--blue)">다시 보지 않기</label>`;}
 function topIntro(){const t=document.querySelector('.top');if(t&&!document.getElementById('tpi'))t.insertAdjacentHTML('beforeend',`<button id="tpi" onclick="menu()" aria-label="메뉴" style="border:1px solid var(--line);background:var(--surface);color:var(--ink2);border-radius:12px;width:40px;height:36px;display:grid;place-items:center;cursor:pointer"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>`);}
 // ---------------- 메뉴 · 앱 기본 페이지(09-27 사용자: 기능보다 앱의 기본 요소 — 고객센터·사업자 정보·자주 묻는 질문·약관) ----------------

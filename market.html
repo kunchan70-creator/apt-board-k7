@@ -218,6 +218,7 @@ let RG='서울',TI=0;
 const GN={money:'대출 상환 부담',room:'소득 대비 주택가격',demand:'매수세',jeonse:'전세가율'};
 const GS={money:['높음','보통'],room:['높음','보통'],demand:['둔화','보통'],jeonse:['낮음','보통']};
 const LV=(on,name,val,st)=>`<div class="lt"><i class="${on?'on':''}"></i><b style="flex:1;font-size:.95rem">${name}</b><span class="sub" style="font-size:.84rem">${val}</span><b style="width:3em;text-align:right;font-size:.84rem;color:${on?'var(--amber)':'var(--ink3)'}">${st}</b></div>`;
+function btPart(B){return `<div style="margin:18px 0 4px;font-size:.86rem;font-weight:800">부담 신호 <span class="sub" style="font-weight:500">· 4개 중 ${B.n}개 높음</span></div>`+B.g.map(g=>LV(g.on,GN[g.key],g.facts.join(' · '),GS[g.key][g.on?0:1])).join('')+moGrid(B);}
 function btScreen(B){const b4=B.n>=4;
  return {q:'시장 부담 지표',big:b4?'4개 모두 과거 대비 부담 수준':`4개 중 ${B.n}개 부담 수준`,c:b4?'var(--amber)':'var(--ink)',
   sub:`${B.since.slice(0,4)}년 이후 기록과 비교 · 부담 수준 = 과거 상위(전세가율은 하위) 30%`,
@@ -235,7 +236,7 @@ function verdict(T,B){const o=T.o26||{},up6=o.n?Math.round(o.up/10):null;if(!B)r
  const on=B.g.filter(g=>g.on).map(g=>GN[g.key]);
  const L=[];
  if(up6!=null)L.push(`<b>6개월</b> — 과거 유사 시점 10번 중 ${up6}번 상승`);
- L.push(B.n>=4?`<b>1년</b> — 판단 근거 부족 · 부담 지표 4개가 모두 높았던 사례가 2021~2023년 한 번뿐`:`<b>부담 지표</b> — 4개 중 ${B.n}개 부담 수준${on.length?` (${on.join('·')})`:''}`);
+ L.push(B.n>=4?`<b>1년</b> — 판단 근거 부족 · 부담 신호 4개가 모두 높았던 사례가 2021~2023년 한 번뿐`:`<b>부담 신호</b> — 4개 중 ${B.n}개 높음${on.length?` (${on.join('·')})`:''}`);
  if(B.n>=3)L.push(`<b>확인할 점</b> — 금리가 1%p 더 올라도 상환 가능한 대출 규모인지`);
  return L.join('<br>');}
 function tScreens(){const T=MD.t[RG],o=T.o26,P=MD.p[RG==='인천'?'인천':'경기'],L=T.lst,S=T.sup,V=MD.val,col=LC(T.lab);
@@ -244,12 +245,9 @@ function tScreens(){const T=MD.t[RG],o=T.o26,P=MD.p[RG==='인천'?'인천':'경�
  return [
   {q:`${RG} 시세`,big:STREAK(T.streak,'주'),c:'',sub:`1년 ${pc(T.y1)}`,v:line(T.p2,{lab:1}),line:(T.streak>0?`${T.since}부터 매주 올랐어요 · `:'')+'KB 주간 시세 기준(보합 0.00%는 끊긴 것으로)'},
   {q:'과거 유사 시점',big:o.n?`6개월 뒤 실거래 ${pc(o.med)}`:'비슷한 때가 없어요',c:'var(--ink)',sub:o.n?`중앙값 · 10번 중 ${Math.round(o.up/10)}번 올랐어요 · 범위 ${pc(o.p10)} ~ ${pc(o.p90)}`:'',v:dline(T.pts,T.dots,col),line:o.n?`점 = 신호 모양이 지금과 비슷했던 때 (${o.ep}번) · 국토부 실거래 기준 · 과거 기록이지 예측이 아니에요`:''},
-  {q:'시장 신호',big:`높은 편 ${up} · 낮은 편 ${dn}`,sub:`${T.ind.length}개 신호 · 과거 기록 중 상위 30% / 하위 30%`,c:'var(--ink)',
-   v:T.ind.map(x=>{const I=IND[x.key]||[x.k,'낮음','높음'];return `<div class="ind5"><div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:.9rem">${I[0]}</b><span class="tag ${x.dir>0?'red':x.dir<0?'blue':'gray'}">${x.dir>0?'높은 편':x.dir<0?'낮은 편':'보통'}</span></div>${POS(x.pct,I[1],I[2])}</div>`;}).join(''),line:'막대 = 2009년 이후 기록 중 지금 위치'},
-  BT?btScreen(BT):null,
-  {q:'입주 물량 · 시장 분위기',big:(sup||mood)?`${[sup,mood].filter(Boolean).length}개 해당`:'특이 사항 없음',c:(sup||mood)?'var(--amber)':'var(--ink)',
-   v:LV(sup,'입주 물량',S?`적정 수요의 ${S.nx}%`:'-',sup?'과다':'보통')+LV(mood,'시장 분위기',`높은 편 ${up} · 낮은 편 ${dn}`,mood?'냉각':'보통'),
-   line:(T.mon&&T.mon.n&&T.moff&&T.moff.n?`분위기 신호가 켜졌던 과거 주: 6개월 뒤 실거래 중앙값 ${pc(T.mon.med)} (10번 중 ${T.mon.up}번 오름) · 꺼졌던 주: ${pc(T.moff.med)} (10번 중 ${T.moff.up}번) · `:'')+'두 항목 모두 시장이 이미 꺾인 뒤에 해당되는 경우가 많아요'},
+  {q:'시장 신호',big:`상승 신호 ${up}개 · 부담 신호 ${BT?BT.n:0}개`,sub:`${T.ind.length+(BT?4:0)}개 신호 · 과거 기록 중 상위 30% / 하위 30%`,c:'var(--ink)',
+   v:T.ind.map(x=>{const I=IND[x.key]||[x.k,'낮음','높음'];return `<div class="ind5"><div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:.9rem">${I[0]}</b><span class="tag ${x.dir>0?'red':x.dir<0?'blue':'gray'}">${x.dir>0?'높은 편':x.dir<0?'낮은 편':'보통'}</span></div>${POS(x.pct,I[1],I[2])}</div>`;}).join('')+(BT?btPart(BT):''),line:'막대 = 2009년 이후 기록 중 지금 위치'+(BT?' · 부담 신호 = 과거 하락기에 함께 높았던 지표(방향 예측용 아님)':'')},
+  /* 09-30 사용자: 신호는 한 카드(시장 신호)에 — 입주는 아래 '입주 물량' 카드, 분위기는 위 상승 신호와 같은 내용이라 따로 두지 않음 */
   L?{q:'매물 추이',big:`1년 새 ${pc(L.now,0)}`,c:L.now>0?'var(--amber)':'var(--ink)',sub:'팔려고 내놓은 집',
    v:`<div class="sub" style="font-size:.74rem"><b style="color:#e0a030">━ 매물</b> <b style="color:var(--blue)">━ 시세</b></div>`+pair(L.ch.map((p,i)=>[p[0],L.px[i]]),L.ch.map(p=>p[1])),
    line:`${L.hi}% 넘게 늘면 경고${L.first?` · 2022년엔 고점 몇 달 전(${L.first.slice(0,4)}.${+L.first.slice(4,6)})부터 늘었어요`:''}${L.up_hi!=null?` · 경고가 켜졌을 때도 10번 중 ${Math.round(L.up_hi/10)}번은 6개월 뒤 올랐어요`:''}`}:null,
@@ -283,8 +281,8 @@ function aScreens(){const a=MD.a.find(x=>x.n===AN);if(!a)return [];
    line:a.pk?(a.pk>=100?`지난 고점보다 ${a.pk-100}% 높아요`:`지난 고점의 ${a.pk}%예요`):''},
   ...(a.tm?[tmScreen(a)]:[]),
   {q:'점검 항목',big:nOn?`${nOn}개 해당`:'특이 사항 없음',c:nOn?'var(--amber)':'var(--ink)',
-   v:(SB_?LV(b4,`${a.s} 시장 부담 지표`,`4개 중 ${SB_.n}개 부담 수준`,b4?'높음':'보통'):'')+LITE(sup,'입주',a.sup?`적정의 ${a.sup.nx}%`:'-')+(a.sup?`<div style="margin-top:10px">${sbars(a.sup.q)}</div>`:''),
-   line:`입주가 적정의 150%를 넘으면 켜져요${SB_?` · 시장 부담 지표는 ${a.s} 전체 기준(대출 상환 부담·소득 대비 주택가격·매수세·전세가율)`:''}`},
+   v:(SB_?LV(b4,`${a.s} 부담 신호`,`4개 중 ${SB_.n}개 높음`,b4?'높음':'보통'):'')+LITE(sup,'입주',a.sup?`적정의 ${a.sup.nx}%`:'-')+(a.sup?`<div style="margin-top:10px">${sbars(a.sup.q)}</div>`:''),
+   line:`입주가 적정의 150%를 넘으면 켜져요${SB_?` · 부담 신호는 ${a.s} 전체 기준(대출 상환 부담·소득 대비 주택가격·매수세·전세가율)`:''}`},
   {q:'거래량',big:a.v==null?'-':`1년 전보다 ${pc(a.v,0)}`,c:'',sub:'월별 아파트 매매',v:bars(a.vol,MD.vy.map(y=>y.slice(2,4)+'.'+y.slice(4)),{lab:6,dim:2}),line:'회색 = 신고가 아직 덜 들어온 최근 달'}];}
 function aGo(){const sc=aScreens();if(!sc.length)return;mountAll($m('areabox'),sc);}
 function show(n){AN=n;$m('asug').innerHTML='';$m('aq').value=n;try{localStorage.setItem('mkArea',n);}catch(e){}aGo();}
