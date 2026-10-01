@@ -296,6 +296,17 @@ details.adv[open]{background:var(--surface)}
 .chart{cursor:pointer}
 .cmpt td,.cmpt th{white-space:normal;word-break:keep-all;vertical-align:top}.cmpt td:first-child{width:34%}   /* 09-28 비교표: 셀 줄바꿈 금지(공용 표 규칙) 때문에 옆으로 넘치던 것 */
 @keyframes rmF{from{opacity:0}to{opacity:1}}
+.calc{position:fixed;inset:0;z-index:95;background:var(--bg);display:flex;justify-content:center;animation:shF .18s;transition:opacity .25s}.calc.out{opacity:0}
+.cl-in{width:100%;max-width:560px;padding:calc(22px + env(safe-area-inset-top)) 20px calc(18px + env(safe-area-inset-bottom));display:flex;flex-direction:column;box-sizing:border-box}
+.cl-st{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:.88rem;font-weight:700;color:var(--ink2)}.cl-st b{color:var(--blue);font-size:.95rem}
+.cl-sl{flex:1;display:flex;align-items:center;padding:18px 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cl-cd{width:100%;background:var(--surface);border-radius:20px;padding:22px 20px;animation:up .35s cubic-bezier(.2,.8,.2,1) both;word-break:keep-all}
+.cl-tg{font-size:.76rem;font-weight:800;color:var(--blue)}.cl-q{font-size:.95rem;font-weight:700;color:var(--ink2);margin:6px 0 2px}
+.cl-a{font-size:1.32rem;font-weight:800;letter-spacing:-.03em;line-height:1.35}.cl-fg{margin:6px 0 2px}.cl-g{font-size:.8rem;color:var(--ink3);line-height:1.55;margin-top:10px}
+.cl-mc{display:flex;justify-content:space-between;align-items:baseline;margin-top:12px}.cl-mc span{font-size:.78rem;color:var(--ink3)}.cl-mc b{font-size:1.3rem;font-weight:800}
+.cl-dt{display:flex;justify-content:center;gap:6px;margin:0 0 14px}.cl-dt i{width:6px;height:6px;border-radius:3px;background:var(--line);transition:width .25s,background .25s}.cl-dt i.on{width:18px;background:var(--blue)}.cl-dt i.d{background:var(--ink3)}
+.cl-sk{align-self:center;border:0;background:none;color:var(--ink3);font:inherit;font-size:.86rem;font-weight:600;padding:10px 14px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+@media (prefers-reduced-motion:reduce){.calc,.cl-cd{animation:none}}
 @media (prefers-reduced-motion:reduce){.fact{animation:rmF .3s ease both}}   /* 09-28: 동작 줄이기(삼성 '애니메이션 제거'·절전·아이폰)에서도 부드러운 나타남·막대는 남긴다 — 전엔 전부 꺼서 폰에서 효과가 안 보였다 */
 </style>
 <div id="splash" onclick="endSplash()"><span class="ic"><svg width="92" height="92" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="#ffffff"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#4263eb" stroke="#4263eb" stroke-width="4" stroke-linejoin="round"/><rect x="22.5" y="31.5" width="19" height="5.2" rx="2.6" fill="#ffffff"/><rect x="22.5" y="40.3" width="19" height="5.2" rx="2.6" fill="#ffffff"/></svg></span><div class="nm">집셈</div></div>
@@ -1410,7 +1421,7 @@ function chat(){   // 09-24 사용자: 고민 말풍선(취지) 원복 → 결�
   <div class="hq" style="text-align:center;margin-top:6px;font-size:clamp(1.6rem,7vw,2rem);line-height:1.35">내 자본으로<br>어디를 매수하면<br>가장 나을까?</div></div>
  <div id="trust"></div>
  <div id="talkgo" class="cta" style="opacity:0;transition:opacity .4s"><button class="btn" onclick="CF.seen=true;save();setup(0)">다음</button>
- <p style="text-align:center;margin:6px 0 0">${hasSaved()?'<button class="linkbtn" onclick="result()">저장된 조건으로 조회 →</button>':'<button class="linkbtn" disabled style="color:var(--ink3);cursor:default">저장된 조건 없음</button>'}</p>
+ <p style="text-align:center;margin:6px 0 0">${hasSaved()?'<button class="linkbtn" onclick="calcGo()">저장된 조건으로 조회 →</button>':'<button class="linkbtn" disabled style="color:var(--ink3);cursor:default">저장된 조건 없음</button>'}</p>
  <p class="sub" style="text-align:center;margin:10px 0 0;font-size:.74rem">참고용 산출치이며, 투자 권유가 아닙니다.</p></div>${eduBar()}</div>`;
  let t=250;
  WORRY.forEach(w=>{TT.push(setTimeout(()=>add(w),t)); t+=380;});
@@ -1684,7 +1695,7 @@ function setup(i){
  else{
   body=Q('이 조건으로 찾을게요','바꾸고 싶은 항목을 누르세요')
   +`<div class="frs">${STEPS.slice(0,-1).map((s_,j)=>FR(SUL[s_],sumVal(s_),`setup(${j})`)).join('')}</div>`;
-  cta=`<div class="cta"><button class="btn" id="go" onclick="CF.done=true;CF.lens='bal';CF.sort=null;save();if(RET==='commute'){RET=null;jres();}else result()">결과 보기</button></div>`;}
+  cta=`<div class="cta"><button class="btn" id="go" onclick="CF.done=true;CF.lens='bal';CF.sort=null;save();if(RET==='commute'){RET=null;jres();}else calcGo()">결과 보기</button></div>`;}
  if(ONE){head=`<div style="display:flex;align-items:center;gap:4px;margin-bottom:16px"><button class="ib" style="margin:-4px 0 0 -8px" aria-label="뒤로" onclick="retGo()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><span class="sub" style="font-size:.84rem">${RET==='move'?'갈아타기':'직장 근처 찾기'} · 내 조건</span></div>`;
   cta=`<div class="cta"><button class="btn" onclick="retGo()">확인</button></div>`;}
  app.innerHTML=head+body+cta;
@@ -2614,6 +2625,88 @@ function jrun(){const box=$('#jlist');if(!box)return;box.innerHTML='<p class="su
   const st=e.state; if(!st||!st.s||typeof window[st.s]!=='function'){POP=true;try{hub();}finally{POP=false;} CUR={s:'hub',a:[],i:0};return;}
   POP=true; try{window[st.s].apply(null,st.a||[]);}finally{POP=false;} CUR=st;});
 })();
+
+let CL=null;
+function calcGo(){
+ result(); if(!V.length)return;
+ const S=clSlides().filter(Boolean), req=S.filter(s=>s.req), opt=S.filter(s=>!s.req);
+ let sn={};try{sn=JSON.parse(localStorage.getItem('jsCalc')||'{}')||{};}catch(e){}
+ const rnd=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]), first=!sn.n, last=sn.last||[];
+ const rq=first?req:rnd(req).sort((a,b)=>(sn[a.id]||0)-(sn[b.id]||0)).slice(0,1);
+ const op=rnd(opt).sort((a,b)=>last.includes(a.id)-last.includes(b.id)).slice(0,first?1:1+(Math.random()<.5));
+ const sl=rq.concat(op); if(!sl.length)return;
+ sl.forEach(s=>sn[s.id]=(sn[s.id]||0)+1); sn.n=(sn.n||0)+1; sn.last=op.map(s=>s.id);
+ try{localStorage.setItem('jsCalc',JSON.stringify(sn));}catch(e){}
+ const dw=sl.map(()=>2500+Math.random()*600), tot=dw.reduce((a,b)=>a+b,0);
+ const nC=new Set(V.map(r=>r.no||r.n+r.gu)).size, ev=(DT.ev5||[]).length;
+ const ST=[`조건에 맞는 단지 ${nC.toLocaleString()}곳 찾는 중`,`단지마다 과거 ${ev||'여러'}번의 5년 흐름 맞춰 보는 중`,'대출 한도·이자·세금 넣는 중','5년 순이익 순으로 정리하는 중'];
+ clEnd(true);
+ const el=document.createElement('div'); el.className='calc'; el.setAttribute('role','dialog'); el.setAttribute('aria-label','결과 셈하는 중');
+ el.innerHTML=`<div class="cl-in"><div class="cl-st"><span id="clS" aria-live="polite">${ST[0]}</span><b class="num" id="clP">0%</b></div><div class="prog" style="margin:8px 0 0"><i id="clB" style="width:0;transition:none"></i></div>
+  <div class="cl-sl" id="clC" onclick="clNext()"></div><div class="cl-dt">${sl.map((s,i)=>`<i id="clD${i}"></i>`).join('')}</div>
+  <button class="cl-sk" onclick="clEnd()">결과 바로 보기</button></div>`;
+ document.body.appendChild(el); document.documentElement.style.overflow='hidden';
+ CL={el,sl,dw,tot,i:-1,t0:performance.now(),acc:0,ST,raf:0,tm:0};
+ clShow(0); CL.raf=requestAnimationFrame(clTick);}
+function clShow(i){if(!CL)return; if(i>=CL.sl.length){clEnd();return;}
+ CL.i=i; const s=CL.sl[i], c=document.getElementById('clC');
+ c.innerHTML=`<div class="cl-cd"><div class="cl-tg">${s.tag}</div><div class="cl-q">${s.q}</div><div class="cl-a">${s.a}</div><div class="cl-fg">${s.fig}</div><div class="cl-g">${s.g}</div></div>`;
+ setTimeout(()=>c.querySelectorAll('.chart').forEach(x=>x.classList.add('go')),40);
+ CL.sl.forEach((_,k)=>{const d=document.getElementById('clD'+k);if(d)d.className=k<i?'d':k===i?'on':'';});
+ clearTimeout(CL.tm); CL.tm=setTimeout(()=>{CL.acc+=CL.dw[i];clShow(i+1);},CL.dw[i]);}
+function clNext(){if(!CL)return; clearTimeout(CL.tm); CL.acc+=CL.dw[CL.i]; CL.t0=Math.min(CL.t0,performance.now()-CL.acc); clShow(CL.i+1);}
+function clTick(){if(!CL)return; const t=Math.min(1,(performance.now()-CL.t0)/CL.tot), e=1-Math.pow(1-t,1.6);
+ const b=document.getElementById('clB'), p=document.getElementById('clP'), s=document.getElementById('clS');
+ if(b)b.style.width=(e*100).toFixed(1)+'%'; if(p)p.textContent=Math.floor(e*100)+'%';
+ const k=t<.22?0:t<.5?1:t<.8?2:3; if(s&&s.textContent!==CL.ST[k])s.textContent=CL.ST[k];
+ CL.raf=requestAnimationFrame(clTick);}
+function clEnd(now){if(!CL)return; const c=CL; CL=null; cancelAnimationFrame(c.raf); clearTimeout(c.tm); document.documentElement.style.overflow='';
+ if(now){c.el.remove();return;}
+ const b=c.el.querySelector('#clB'), p=c.el.querySelector('#clP'), s=c.el.querySelector('#clS'); if(b)b.style.width='100%'; if(p)p.textContent='100%'; if(s)s.textContent='셈 완료';
+ window.scrollTo(0,0); setTimeout(()=>{c.el.classList.add('out');setTimeout(()=>c.el.remove(),260);},220);}
+function clSlides(){
+ const T=V[0], F=T&&(T.F||fin(T)), cnt=n=>n<1?'1번 미만':n+'번';
+ const out=[];
+ // 필수 1: 큰 숫자 읽는 법(지금 1위 카드 그대로)
+ if(F)out.push({id:'big',req:1,tag:'읽는 법',q:'카드의 큰 숫자는 무엇인가요',a:'보통일 때의 5년 순이익이에요',
+  fig:`<div class="cl-mc"><span>지금 1위 · 5년 순이익 예상</span><b class="num ${F.p5>=0?'pos':'neg'}">${ab(F.p5)}</b></div>${cells(F)}`,
+  g:'10번 셈하면 가운데쯤 나오는 값이에요. 양끝 옅은 곳은 10번 중 1번꼴이에요.'});
+ // 필수 2: 1위도 손실이 날 수 있다(지금 1~3위 손실 확률)
+ if(F)out.push({id:'loss',req:1,tag:'오해하기 쉬운 것',q:'1위면 손실이 없나요',a:'1위도 손실이 날 수 있어요',
+  fig:hbars(V.slice(0,3).map((r,i)=>{const L=lossP(r.F||fin(r));return [(i+1)+'위 손실',Math.max(L,1),'10번 중 '+cnt(Math.round(L/10))];}),100,'red'),
+  g:'순위는 같은 조건에서 나란히 놓고 비교한 순서예요. 이익을 약속하지 않아요.'});
+ // 과거 검증: 상위 20%가 더 남은 반기(신뢰 페이지 '과거에 맞았나요'와 같은 셈)
+ const SB=DT.sbt, sK=[10000,30000,50000].reduce((a,b)=>Math.abs(b-(CF.cash||30000))<Math.abs(a-(CF.cash||30000))?b:a), SR=SB?SB.r[sK+'_0.5']:null, SP=SR?Object.entries(SR):[];
+ const HY=SP.flatMap(([p,x])=>x[6]), hw=HY.filter(h=>h[1]).length;
+ if(HY.length)out.push({id:'hit',tag:'과거 기록',q:'높게 셈한 집이 과거에도 더 남았나요',a:`${HY.length}번 중 ${hw}번 더 남았어요`,
+  fig:`<div style="display:flex;justify-content:center;gap:5px;flex-wrap:wrap;margin:10px 0 4px">${HY.map(h=>`<span style="display:flex;flex-direction:column;align-items:center;gap:2px"><i style="width:14px;height:14px;border-radius:50%;background:${h[1]?'var(--blue)':'var(--line)'}"></i><span style="font-size:.58rem;color:var(--ink3)">'${h[0].slice(2)}</span></span>`).join('')}</div>`,
+  g:'점 = 매수한 반기 · 파랑 = 순이익 상위 20%가 전체보다 더 남음. 셈을 만들 때 쓰지 않은 시기의 실거래로 맞춰 봤어요.'});
+ // 과거 기록: 매수 시점에 따라 5년 결과가 달랐다
+ const C=((DT.ml||{}).coh||[]).filter(x=>x[4]);
+ if(C.length>=6){const mx=Math.max(...C.map(x=>x[2])), mn=Math.min(...C.map(x=>x[2])), sc=56/Math.max(1,mx-Math.min(0,mn)), z=Math.max(0,mx)*sc, sg=v=>(v>=0?'+':'−')+Math.abs(v).toFixed(0)+'%';
+  out.push({id:'when',tag:'과거 기록',q:'언제 매수했느냐에 따라 달랐나요',a:`5년 뒤 ${sg(mn)} ~ ${sg(mx)}`,
+   fig:`<div class="chart" style="position:relative;height:60px;display:flex;gap:2px;margin:12px 0 2px;border-top:0">${C.map((x,i)=>{const h=Math.max(2,Math.abs(x[2])*sc);return `<span style="flex:1;position:relative"><i class="gy" style="position:absolute;left:0;right:0;top:${x[2]>=0?z-h:z}px;height:${h}px;background:var(--${x[2]>=0?'blue':'red'});border-radius:2px;transform-origin:${x[2]>=0?'bottom':'top'};animation-delay:${i*22}ms"></i></span>`;}).join('')}<i style="position:absolute;left:0;right:0;top:${z}px;border-top:1px solid var(--ink3)"></i></div><div style="display:flex;justify-content:space-between;font-size:.62rem;color:var(--ink3)"><span>${C[0][0]}년 매수</span><span>${C[C.length-1][0]}년 매수</span></div>`,
+   g:'서울·경기·인천 실거래 지수로 본 매수 반기별 5년 뒤 결과예요. 매수 시점은 고를 수 없어 범위로 보여 드려요.'});}
+ // 오해하기 쉬운 것: 입지 상위 ≠ 순이익 상위(지금 내 결과 그대로)
+ if(V.length>=25){const n=Math.ceil(V.length*.2), byS=V.slice().sort((a,b)=>b.sc-a.sc), topP=new Set(V.slice().sort((a,b)=>(b.F||fin(b)).p5-(a.F||fin(a)).p5).slice(0,n)), both=byS.slice(0,n).filter(r=>topP.has(r)).length, k=Math.round(both/n*10);
+  const W=V.slice(0,400), xs=W.map(r=>r.sc), ys=W.map(r=>(r.F||fin(r)).p5), x0=Math.min(...xs), x1=Math.max(...xs), y0=Math.min(...ys), y1=Math.max(...ys), tS=new Set(byS.slice(0,n));
+  const X=v=>8+(v-x0)/Math.max(1e-9,x1-x0)*284, Y=v=>106-(v-y0)/Math.max(1e-9,y1-y0)*90;
+  out.push({id:'loc',tag:'오해하기 쉬운 것',q:'입지가 좋으면 순이익도 클까요',a:k>=7?`10곳 중 ${k}곳이 겹쳐요`:`꼭 그렇지 않아요 · 10곳 중 ${k}곳만 겹쳐요`,
+   fig:`<div class="chart"><svg viewBox="0 0 300 134" style="width:100%;height:auto;margin:8px 0 0">${W.map((r,i)=>`<circle class="fd" cx="${X(xs[i]).toFixed(1)}" cy="${Y(ys[i]).toFixed(1)}" r="2.6" fill="var(--${tS.has(r)?'blue':'ink3'})" opacity="${tS.has(r)?.9:.35}" style="animation-delay:${Math.min(600,i*2)}ms"/>`).join('')}<text x="296" y="130" font-size="9" text-anchor="end" fill="var(--ink3)">입지 좋음 →</text><text x="4" y="9" font-size="9" fill="var(--ink3)">↑ 5년 순이익</text></svg></div>`,
+   g:'파란 점 = 입지 상위 20%. 입지는 지금 동네의 급, 순이익은 내 돈으로 5년 뒤 남는 돈이라 따로 셈해요.'});}
+ // 읽는 법: 순이익은 어떻게 나오나(지금 1위의 보통 셈, 몫이 큰 숫자와 맞을 때만)
+ if(F){const s=split5(T), sum=s.up+s.use+s.it+s.cost+s.dep;
+  if(Math.abs(sum-F.p5)<500)out.push({id:'parts',tag:'읽는 법',q:'순이익은 어떻게 셈하나요',a:'시세 변동에서 이자·세금·비용을 빼요',
+   fig:dbars([['시세 변동',s.up/1e4],['대출이자',s.it/1e4],['세금·비용',s.cost/1e4]].filter(x=>Math.abs(x[1])>=.05),'억',1),
+   g:`지금 1위 단지의 보통일 때 셈이에요. 더하면 큰 숫자(${ab(F.p5)})가 돼요.`});}
+ // 과거 기록: 높게 셈한 집의 손실은 시장 고점 매수에 몰렸다
+ const M=DT.miss;
+ if(M&&M.yrs&&M.yrs.length&&SP.length){const lp=Math.round(SP.reduce((t,[p,x])=>t+x[4],0)/SP.length);
+  out.push({id:'mkt',tag:'과거 기록',q:'높게 셈한 집도 손실이 났나요',a:`100곳 중 ${lp}곳은 손실이었어요`,
+   fig:hbars(M.yrs.slice(0,4).map(y=>[y[0]+'년 매수',y[1],y[1]+'%']),100,'red'),
+   g:`그 손실의 ${M.yrs[0][1]}%는 시세가 가장 높던 ${M.yrs[0][0]}년에 매수한 경우예요. 단지를 잘 골라도 시장 전체가 내리면 함께 내려요.`});}
+ return out;}
+
 
 (function(){var EP='',LOC=/^(127\.0\.0\.1|localhost)$/.test(location.hostname);if(!EP&&!LOC){window.jsTrack=function(){};return;}
  function rid(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);}
