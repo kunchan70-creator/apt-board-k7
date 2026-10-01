@@ -298,17 +298,17 @@ details.adv[open]{background:var(--surface)}
 @keyframes rmF{from{opacity:0}to{opacity:1}}
 .calc{position:fixed;inset:0;z-index:95;background:var(--bg);display:flex;justify-content:center;animation:shF .18s;transition:opacity .25s}.calc.out{opacity:0}
 .cl-in{width:100%;max-width:560px;padding:calc(22px + env(safe-area-inset-top)) 20px calc(18px + env(safe-area-inset-bottom));display:flex;flex-direction:column;box-sizing:border-box}
-.cl-lg{position:relative;align-self:center;width:84px;height:84px;margin:8vh 0 14px}.cl-lg svg{display:block;filter:drop-shadow(0 8px 18px rgba(66,99,235,.28))}
-.cl-hs{stroke-dasharray:1;stroke-dashoffset:1;fill-opacity:0;animation:clDraw .9s cubic-bezier(.4,0,.2,1) forwards}
+.cl-lg{position:relative;align-self:center;width:120px;height:120px;margin:7vh 0 18px}.cl-lg svg{display:block;filter:drop-shadow(0 8px 18px rgba(66,99,235,.28))}
+.cl-hs{stroke-dasharray:1;stroke-dashoffset:1;fill-opacity:0;animation:clDraw 1.5s cubic-bezier(.4,0,.2,1) forwards}
 @keyframes clDraw{70%{stroke-dashoffset:0;fill-opacity:0}100%{stroke-dashoffset:0;fill-opacity:1}}
-.cl-nm{opacity:0;transition:opacity .2s,transform .3s;transform-box:fill-box;transform-origin:center;font-family:inherit;font-variant-numeric:tabular-nums}
-.cl-lg:not(.eq) .cl-nm{opacity:1;animation:clNm .9s .9s both}@keyframes clNm{from{opacity:0}}
-.cl-e1,.cl-e2{transform-box:fill-box;transform-origin:center;transform:scaleX(0);transition:transform .38s cubic-bezier(.3,1.6,.5,1)}
-.cl-lg.eq .cl-e1,.cl-lg.eq .cl-e2{transform:scaleX(1)}.cl-lg.eq .cl-e2{transition-delay:.08s}.cl-lg.eq .cl-nm{transform:scale(.3)}
-.cl-lg.eq svg{animation:clPop .45s cubic-bezier(.3,1.6,.5,1)}@keyframes clPop{40%{transform:scale(1.07)}}
-.cl-fl{position:absolute;inset:0;pointer-events:none}.cl-fl i{position:absolute;top:-30px;font-style:normal;font-size:.8rem;font-weight:800;color:var(--blue);opacity:0;animation:clFl 2.4s ease-in infinite}
-.cl-fl i:nth-child(1){left:6px;animation-delay:1s}.cl-fl i:nth-child(2){left:30px;animation-delay:1.35s}.cl-fl i:nth-child(3){left:58px;animation-delay:1.7s}.cl-fl i:nth-child(4){left:18px;animation-delay:2.05s}.cl-fl i:nth-child(5){left:46px;animation-delay:2.4s}
-@keyframes clFl{0%{opacity:0;transform:translateY(-6px)}15%{opacity:.75}45%{opacity:0;transform:translate(0,40px) scale(.5)}100%{opacity:0}}
+.cl-nm{opacity:0;transition:opacity .35s,transform .5s;transform-box:fill-box;transform-origin:center;font-family:inherit;font-variant-numeric:tabular-nums}
+.cl-lg:not(.eq) .cl-nm{opacity:1;animation:clNm .6s both}@keyframes clNm{from{opacity:0}}
+.cl-e1,.cl-e2{transform-box:fill-box;transform-origin:center;transform:scaleX(0);transition:transform .65s cubic-bezier(.3,1.5,.5,1)}
+.cl-lg.eq .cl-e1,.cl-lg.eq .cl-e2{transform:scaleX(1)}.cl-lg.eq .cl-e2{transition-delay:.15s}.cl-lg.eq .cl-nm{transform:scale(.3)}
+.cl-lg.eq svg{animation:clPop .7s cubic-bezier(.3,1.6,.5,1)}@keyframes clPop{40%{transform:scale(1.07)}}
+.cl-fl{position:absolute;inset:0;pointer-events:none}.cl-fl i{position:absolute;top:-30px;font-style:normal;font-size:.95rem;font-weight:800;color:var(--blue);opacity:0;animation:clFl 3.6s ease-in infinite}
+.cl-fl i:nth-child(1){left:12px;animation-delay:1.5s}.cl-fl i:nth-child(2){left:52px;animation-delay:2.2s}.cl-fl i:nth-child(3){left:96px;animation-delay:2.9s}.cl-fl i:nth-child(4){left:30px;animation-delay:3.6s}.cl-fl i:nth-child(5){left:76px;animation-delay:4.3s}
+@keyframes clFl{0%{opacity:0;transform:translateY(-6px)}15%{opacity:.75}45%{opacity:0;transform:translate(0,56px) scale(.5)}100%{opacity:0}}
 .cl-lg.dn .cl-fl{display:none}
 .cl-st{text-align:center;font-size:.86rem;font-weight:600;color:var(--ink3);min-height:1.3em}
 .cl-sl{flex:1;display:flex;align-items:flex-start;padding:22px 0 18px;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -2654,7 +2654,7 @@ function calcGo(){
  clEnd(true);
  const el=document.createElement('div'); el.className='calc'; el.setAttribute('role','dialog'); el.setAttribute('aria-label','결과 셈하는 중');
  el.innerHTML=`<div class="cl-in"><div class="cl-lg" aria-hidden="true"><span class="cl-fl"><i>5</i><i>+</i><i>2</i><i>%</i><i>8</i></span>
-  <svg viewBox="0 0 64 64" width="84" height="84"><defs><linearGradient id="clG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs>
+  <svg viewBox="0 0 64 64" width="120" height="120"><defs><linearGradient id="clG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs>
   <rect class="cl-tile" width="64" height="64" rx="18" fill="url(#clG)"/>
   <path class="cl-hs" pathLength="1" d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#fff" stroke="#fff" stroke-width="4" stroke-linejoin="round"/>
   <text id="clN" class="cl-nm" x="32" y="43.6" text-anchor="middle" font-size="11.5" font-weight="800" fill="#4263eb">00</text>
@@ -2671,10 +2671,11 @@ function clShow(i){if(!CL)return; if(i>=CL.sl.length){clEnd();return;}
  CL.sl.forEach((_,k)=>{const d=document.getElementById('clD'+k);if(d)d.className=k<i?'d':k===i?'on':'';});
  clearTimeout(CL.tm); CL.tm=setTimeout(()=>{CL.acc+=CL.dw[i];clShow(i+1);},CL.dw[i]);}
 function clNext(){if(!CL)return; clearTimeout(CL.tm); CL.acc+=CL.dw[CL.i]; CL.t0=Math.min(CL.t0,performance.now()-CL.acc); clShow(CL.i+1);}
+// 10-02 '더 크게·더 천천히': 집 그리기 1.5초 → 3.6초 주기(숫자 굴림 2.2초 · 등호 1.4초)
 function clTick(){if(!CL)return; const now=performance.now(), t=Math.min(1,(now-CL.t0)/CL.tot), lg=CL.el.querySelector('.cl-lg'), s=document.getElementById('clS'), n=document.getElementById('clN');
  const k=t<.22?0:t<.5?1:t<.8?2:3; if(s&&s.textContent!==CL.ST[k])s.textContent=CL.ST[k];
- const u=now-CL.ts-900;   // 집이 다 그려진 뒤부터 셈
- if(u>0&&lg){const ph=u%2400<1500; lg.classList.toggle('eq',!ph); if(ph&&n&&now-(CL.nt||0)>85){CL.nt=now;n.textContent=Math.random()<.5?(Math.random()*9.9).toFixed(1):String(10+Math.floor(Math.random()*90));}}
+ const u=now-CL.ts-1500;   // 집이 다 그려진 뒤부터 셈
+ if(u>0&&lg){const ph=u%3600<2200; lg.classList.toggle('eq',!ph); if(ph&&n&&now-(CL.nt||0)>150){CL.nt=now;n.textContent=Math.random()<.5?(Math.random()*9.9).toFixed(1):String(10+Math.floor(Math.random()*90));}}
  CL.raf=requestAnimationFrame(clTick);}
 function clEnd(now){if(!CL)return; const c=CL; CL=null; cancelAnimationFrame(c.raf); clearTimeout(c.tm); document.documentElement.style.overflow='';
  if(now){c.el.remove();return;}
