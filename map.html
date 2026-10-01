@@ -516,6 +516,7 @@ function nFail() {
   const el = document.getElementById('nmap'); if (el) el.remove();
   map.getContainer().classList.remove('nbase');
   if (baseKind === 'nmap' || !baseKind) { baseKind = ''; map.options.zoomSnap = 0.5; initBase(); }
+  if (typeof railVis === 'function') { railVis(); later(); }
 }
 async function nBase() {
   await new Promise((ok, no) => { window.navermap_authFailure = () => { no(new Error('auth')); nFail(); }; loadJs('https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=' + NVK).then(ok, no); });
@@ -533,7 +534,7 @@ async function nBase() {
   map.on('move zoom moveend zoomend', sync);
   map.on('resize', () => { if (nmap) { nmap.setSize(new naver.maps.Size(box.clientWidth, box.clientHeight)); sync(); } });
   map.attributionControl.addAttribution('노선 &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>');
-  baseKind = 'nmap'; sync();
+  baseKind = 'nmap'; sync(); railVis(); later();
 }
 if (NVK) nBase().catch(() => nFail()); else initBase();   // 09-29 사용자: 다크 모드에서도 N 지도 그대로
 const mq = matchMedia('(prefers-color-scheme: dark)');
@@ -552,9 +553,11 @@ for (const s of ST) {
 let showRail = true;
 try { showRail = localStorage.getItem('jipsem.map.rail') !== '0'; } catch (e) {}
 function railVis() {
-  const z = map.getZoom();
-  if (showRail) { if (!map.hasLayer(lineLayer)) lineLayer.addTo(map); } else if (map.hasLayer(lineLayer)) map.removeLayer(lineLayer);
-  const stOn = showRail && z >= 12; if (stOn && !map.hasLayer(stLayer)) stLayer.addTo(map); if (!stOn && map.hasLayer(stLayer)) map.removeLayer(stLayer);
+  // 10-01 사용자: 지하철 선이 두 줄 — N 지도 바탕은 노선·역을 직접 그리므로 집셈 노선·역은 예비 지도일 때만
+  const z = map.getZoom(), own = showRail && baseKind !== 'nmap';
+  $('#lyr').style.display = baseKind === 'nmap' ? 'none' : '';
+  if (own) { if (!map.hasLayer(lineLayer)) lineLayer.addTo(map); } else if (map.hasLayer(lineLayer)) map.removeLayer(lineLayer);
+  const stOn = own && z >= 12; if (stOn && !map.hasLayer(stLayer)) stLayer.addTo(map); if (!stOn && map.hasLayer(stLayer)) map.removeLayer(stLayer);
   lineLayer.eachLayer(l => l.setStyle({ weight: z >= 14 ? 4 : z >= 12 ? 3 : 2.2, opacity: z >= 12 ? 0.6 : 0.45 }));
   $('#lyr').setAttribute('aria-pressed', showRail ? 'true' : 'false');
 }
@@ -625,7 +628,7 @@ function refresh() {
   }
   if (!RK && sel && md !== 'cx' && inb(sel.lat, sel.lon)) want.set('c:' + sel.i, { ll: [sel.lat, sel.lon], z: 100000, html: cxHtml(sel, false, true), cx: sel });
   // 역 이름(가까이 볼 때만)
-  if (showRail && z >= 14) for (const s of ST) if (inb(s.lat, s.lon)) want.set('s:' + s.name + s.lat, { ll: [s.lat, s.lon], z: -1, pane: 'stlab', html: `<span class="stl${s.g === 3 ? ' x' : ''}">${esc(s.name)}</span>` });
+  if (showRail && baseKind !== 'nmap' && z >= 14) for (const s of ST) if (inb(s.lat, s.lon)) want.set('s:' + s.name + s.lat, { ll: [s.lat, s.lon], z: -1, pane: 'stlab', html: `<span class="stl${s.g === 3 ? ' x' : ''}">${esc(s.name)}</span>` });
   for (const [k, m] of cur) if (!want.has(k)) { map.removeLayer(m); cur.delete(k); }
   for (const [k, w] of want) {
     let m = cur.get(k);
