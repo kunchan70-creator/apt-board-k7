@@ -533,8 +533,7 @@ async function nBase() {
   const sync = () => { if (!nmap) return; const p = map.getCenter(); nmap.setCenter(new naver.maps.LatLng(p.lat, p.lng)); nmap.setZoom(map.getZoom(), false); };
   map.on('move zoom moveend zoomend', sync);
   map.on('resize', () => { if (nmap) { nmap.setSize(new naver.maps.Size(box.clientWidth, box.clientHeight)); sync(); } });
-  map.attributionControl.addAttribution('노선 &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>');
-  baseKind = 'nmap'; sync(); railVis(); later();
+  baseKind = 'nmap';   // 10-01: N 지도 바탕이면 노선을 집셈이 안 그리므로 '노선 © OSM' 출처도 뺌 sync(); railVis(); later();
 }
 if (NVK) nBase().catch(() => nFail()); else initBase();   // 09-29 사용자: 다크 모드에서도 N 지도 그대로
 const mq = matchMedia('(prefers-color-scheme: dark)');
