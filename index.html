@@ -1506,15 +1506,19 @@ function lnNear(c,L){const m=lnOf(c);if(!m)return false;const lim=CF.st==='a10'?
    고른 지역(없으면 전체)의 단지 근처에 있는 노선만, 근처 단지가 많은 순. 누르면 그 노선 색으로 채워짐 */
 const SUBC={'1호선':'#0052A4','2호선':'#00A84D','3호선':'#EF7C1C','4호선':'#00A5DE','5호선':'#996CAC','6호선':'#CD7C2F','7호선':'#747F00','8호선':'#E6186C','9호선':'#BDB092','신분당':'#D4003B','GTX-A':'#9A6292','수인분당':'#F5A200','경의중앙':'#77C4A3','공항철도':'#0090D2','경춘':'#0C8E72','경강':'#003DA5','서해':'#8FC31F','신림':'#6789CA','우이신설':'#B0CE18','김포골드':'#A17800','용인':'#509F22','의정부':'#FDA600','인천1':'#7CA8D5','인천2':'#ED8B00'};
 function lnTog(k){const A=CF.ln||[];CF.ln=A.includes(k)?A.filter(x=>x!==k):A.concat(k);save();refresh();}
+/* 10-01 사용자: 색은 좋지만 다 나열하면 지저분 → 1~9호선은 지하철 표지판처럼 숫자 동그라미 한 줄, 나머지는 근처 단지 많은 4개 + '+n'(펼치기) */
+let LNX=false;
 function lnChips(){const G=CF.regions.length?new Set(CF.regions):null, C={};
  CPX.forEach(c=>{if(G&&!G.has(c.gu))return;const m=lnOf(c);if(m)Object.keys(m).forEach(g=>{if(m[g]<=1.0)C[g]=(C[g]||0)+1;});});
- const A=CF.ln||[], K=Object.keys(LNM).filter(k=>C[k]||A.includes(k)).sort((a,b)=>{const na=/^\d호선$/.test(a),nb=/^\d호선$/.test(b);return na&&nb?a.localeCompare(b):na?-1:nb?1:(C[b]||0)-(C[a]||0);});   // 1~9호선은 번호 순, 나머지는 근처 단지 많은 순
- if(!K.length)return '<div class="hint">고른 지역 근처에 지하철역이 없어요</div>';
- const nm=k=>{const n=LNM[k];return /호선$/.test(n)?n:n.replace(/선$/,'').replace('김포골드라인','김포골드');};
- return `<div style="display:flex;flex-wrap:wrap;gap:6px">${K.map(k=>{const on=A.includes(k),c=SUBC[k]||'var(--ink2)';
-  return `<button onclick="lnTog('${k}')" style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px 7px 8px;border-radius:999px;border:1.5px solid ${on?c:'var(--line)'};background:${on?c:'var(--surface)'};color:${on?'#fff':'var(--ink)'};font:inherit;font-size:.86rem;font-weight:700;cursor:pointer">`
-   +`<i style="width:12px;height:12px;border-radius:50%;background:${on?'#fff':c};flex:0 0 auto"></i>${nm(k)}</button>`;}).join('')}</div>`
-  +`<div class="hint" style="margin-top:6px">${A.length?`고른 노선 역이 걸어서 ${CF.st==='a10'?'10분':'15분'} 안인 단지만 · `:''}${G?'고른 지역에 있는 노선만 보여요':''}</div>`;}
+ const A=CF.ln||[], has=k=>C[k]||A.includes(k), NUM=Object.keys(LNM).filter(k=>/^\d호선$/.test(k)&&has(k));
+ const OTH=Object.keys(LNM).filter(k=>!/^\d호선$/.test(k)&&has(k)).sort((a,b)=>(C[b]||0)-(C[a]||0));
+ if(!NUM.length&&!OTH.length)return '<div class="hint">고른 지역 근처에 지하철역이 없어요</div>';
+ const tp4=OTH.slice(0,4), more=OTH.slice(4), show=LNX?OTH:tp4.concat(more.filter(k=>A.includes(k)));
+ const col=k=>SUBC[k]||'var(--ink2)';
+ const circ=k=>{const on=A.includes(k),c=col(k);return `<button onclick="lnTog('${k}')" aria-label="${LNM[k]}" style="width:29px;height:29px;border-radius:50%;border:2px solid ${c};background:${on?c:'var(--surface)'};color:${on?'#fff':c};font:inherit;font-size:.84rem;font-weight:800;cursor:pointer;padding:0;display:inline-flex;align-items:center;justify-content:center">${k[0]}</button>`;};
+ const pill=k=>{const on=A.includes(k),c=col(k),n=/호선$/.test(LNM[k])?LNM[k]:LNM[k].replace(/선$/,'').replace('김포골드라인','김포골드');return `<button onclick="lnTog('${k}')" style="height:29px;padding:0 10px;border-radius:999px;border:2px solid ${c};background:${on?c:'var(--surface)'};color:${on?'#fff':'var(--ink)'};font:inherit;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap">${n}</button>`;};
+ return `<div style="display:flex;flex-wrap:wrap;gap:6px 5px;align-items:center">${NUM.map(circ).join('')}${show.map(pill).join('')}${!LNX&&more.length?`<button onclick="LNX=true;refresh()" style="height:29px;padding:0 11px;border-radius:999px;border:1.5px dashed var(--line);background:none;color:var(--ink3);font:inherit;font-size:.8rem;font-weight:700;cursor:pointer">+${more.filter(k=>!A.includes(k)).length}</button>`:''}</div>`
+  +(A.length?`<div class="hint" style="margin-top:6px">${A.map(k=>LNM[k]).join(', ')} 역이 걸어서 ${CF.st==='a10'?'10분':'15분'} 안인 단지</div>`:'');}
 const STO=[['','상관없음'],['a10','역 걸어서 10분'],['a1','역 걸어서 15분'],['x2','급행역(신분당·GTX) 2km']], STL={a10:'역 10분',a1:'역 15분',x2:'급행역 2km'};
 const SCO=[['','상관없음'],['e3','초품아 (배정 초등학교 300m 안)'],['e6','배정 초등학교 걸어서 10분']], SCL={e3:'초품아',e6:'초등학교 10분'};
 function cc(key,opts,multi){return `<div class="cc">${opts.map(([v,l])=>`<button class="${(multi?CF[key].includes(v):CF[key]===v)?'on':''}" onclick='${multi?'multiTog':'one'}(${JSON.stringify(key)},${JSON.stringify(v)})'>${l}</button>`).join('')}</div>`;}
