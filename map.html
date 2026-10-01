@@ -125,6 +125,15 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
 #chips button .ic{width:17px;height:17px}
 #chips button.on{background:var(--blue-bg);color:var(--blue);font-weight:700}
 #chips button .cv{width:14px;height:14px;opacity:.7}
+#rkbar{position:absolute;left:12px;right:12px;top:10px;z-index:1001;display:none;align-items:center;gap:10px;padding:10px 10px 10px 14px;border-radius:16px;background:var(--surface);box-shadow:var(--float)}
+#rkbar.on{display:flex}#rkbar div{flex:1;min-width:0}#rkbar b{display:block;font-size:.92rem}#rkbar span{display:block;font-size:.74rem;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#rkbar button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--ink2);font:inherit;font-size:.8rem;font-weight:700;border-radius:999px;padding:7px 12px;cursor:pointer}
+body.rkon #chips,body.rkon #legend{display:none}body.rkon #status{top:72px}
+.rkp{position:absolute;transform:translate(-50%,-100%);display:flex;align-items:center;gap:6px;height:30px;padding:0 3px;border-radius:15px;background:var(--surface);border:2px solid #4263eb;box-shadow:0 2px 8px rgba(0,0,0,.22);white-space:nowrap;cursor:pointer}
+.rkp b{width:22px;height:22px;border-radius:50%;background:#fff;color:#4263eb;border:2px solid #4263eb;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800;box-sizing:border-box}
+.rkp.t3 b{background:#4263eb;color:#fff}.rkp.t3{border-width:2.5px}.rkp.wl{padding-right:10px}.rkp em{font-style:normal;font-size:.78rem;font-weight:700;color:var(--ink)}.rkp em i{font-style:normal;color:#00a660;margin-left:4px}
+.rkp.on{box-shadow:0 0 0 2.5px var(--surface),0 0 0 5px var(--ink),0 4px 12px rgba(0,0,0,.3)}
+.rkh{margin:0 0 12px;padding:10px 12px;border-radius:12px;background:#eef1ff;color:#4263eb;font-size:.86rem;font-weight:700}
 #status{position:absolute;left:12px;top:54px;z-index:999;font-size:.76rem;color:var(--ink2);background:var(--surface);border-radius:999px;padding:4px 10px;box-shadow:var(--float);pointer-events:none;white-space:nowrap;max-width:calc(100% - 80px);overflow:hidden;text-overflow:ellipsis}
 #status b{color:var(--ink);font-weight:700}
 
@@ -275,6 +284,7 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
   <button type="button" data-g="st"></button>
   <button type="button" data-g="hh"></button>
  </div>
+ <div id="rkbar" role="region" aria-label="내 매수 분석 순위"><div><b></b><span></span></div><button type="button" id="rkx">✕ 순위 끄기</button></div>
  <div id="status" aria-live="polite"></div>
  <div id="ctrl">
   <div class="grp zoom"><button type="button" id="zin" aria-label="확대"><svg class="ic"><use href="#i-plus"/></svg></button><button type="button" id="zout" aria-label="축소"><svg class="ic"><use href="#i-minus"/></svg></button></div>
@@ -565,7 +575,18 @@ function refresh() {
   const take = (x, y, w, h) => cells(x, y, w, h, k => { if (!occ.has(k)) occ.set(k, []); occ.get(k).push([x, y, w, h]); });
   const fits = (x, y, w, h) => { if (!free(x, y, w, h)) return false; take(x, y, w, h); return true; };
   let hidden = 0;
-  if (md !== 'cx') {
+  if (RK) {
+    // 10-01 내 순위 모드: 순위 단지만 번호 핀(겹쳐도 다 그림, 높은 순위가 위). 확대하면 이름·예상 순이익
+    const z13 = z >= 13;
+    for (const [a, v] of [...RK.m].sort((x, y) => (x[0] === sel ? -1 : y[0] === sel ? 1 : x[1].rk - y[1].rk))) {   // 높은 순위(선택 단지 먼저)부터 이름표 자리 차지, 겹치면 번호만
+      if (!inb(a.lat, a.lon)) continue;
+      const on = a === sel, p = map.latLngToContainerPoint([a.lat, a.lon]), lw = 44 + Math.min(a.name.length, 9) * 11 + v.lab.length * 8;
+      const wl = z13 && fits(p.x - lw / 2, p.y - 34, lw, 30);
+      if (!wl) take(p.x - 15, p.y - 34, 30, 30);
+      want.set('r:' + a.i + (wl ? 'w' : '') + (on ? 'o' : ''), { ll: [a.lat, a.lon], z: 100000 - v.rk + (on ? 100000 : 0), cx: a,
+        html: `<div class="rkp${v.rk <= 3 ? ' t3' : ''}${wl ? ' wl' : ''}${on ? ' on' : ''}" role="button" aria-label="${v.rk}위 ${esc(a.name)}"><b>${v.rk}</b>${wl ? `<em>${esc(short(a.name))}<i>${esc(v.lab)}</i></em>` : ''}</div>` });
+    }
+  } else if (md !== 'cx') {
     // 구역 말풍선은 '면적 이름표'라 조금 비켜 놓아도 된다: 제자리 → 위 → 아래 → 오른쪽 → 왼쪽 순으로 빈자리를 찾는다(단지 수 많은 구역부터)
     const gs = GROUPS[md].filter(g => g.n && inb(g.lat, g.lon)).sort((x, y) => y.n - x.n);
     for (const g of gs) {
@@ -595,7 +616,7 @@ function refresh() {
       want.set('c:' + a.i + (wl ? 'w' : ''), { ll: [a.lat, a.lon], z: a.score * 40 + (a === sel ? 100000 : 0), html: cxHtml(a, wl, a === sel), cx: a });
     }
   }
-  if (sel && md !== 'cx' && inb(sel.lat, sel.lon)) want.set('c:' + sel.i, { ll: [sel.lat, sel.lon], z: 100000, html: cxHtml(sel, false, true), cx: sel });
+  if (!RK && sel && md !== 'cx' && inb(sel.lat, sel.lon)) want.set('c:' + sel.i, { ll: [sel.lat, sel.lon], z: 100000, html: cxHtml(sel, false, true), cx: sel });
   // 역 이름(가까이 볼 때만)
   if (showRail && z >= 14) for (const s of ST) if (inb(s.lat, s.lon)) want.set('s:' + s.name + s.lat, { ll: [s.lat, s.lon], z: -1, pane: 'stlab', html: `<span class="stl${s.g === 3 ? ' x' : ''}">${esc(s.name)}</span>` });
   for (const [k, m] of cur) if (!want.has(k)) { map.removeLayer(m); cur.delete(k); }
@@ -612,8 +633,8 @@ function refresh() {
     } else if (m._html !== w.html) { m.setIcon(icon(w.html)); m.setZIndexOffset(w.z); m._html = w.html; }
   }
   // 상태 줄
-  const tot = active() ? `<b>${fmt(FILT.length)}</b>곳 / ${fmt(N)}곳` : `<b>${fmt(N)}</b>곳`;
-  const hint = md !== 'cx' ? (md === 'si' ? ' · 시·군별 가운데 값' : ' · 구별 가운데 값') : (hidden ? ' · 확대하면 더 보여요' : '');   // 09-29 토스식: 설명 꼬리 짧게
+  const tot = RK ? `내 순위 <b>${RK.m.size}</b>곳` : active() ? `<b>${fmt(FILT.length)}</b>곳 / ${fmt(N)}곳` : `<b>${fmt(N)}</b>곳`;
+  const hint = RK ? (z < 13 ? ' · 확대하면 이름·예상 순이익' : '') : md !== 'cx' ? (md === 'si' ? ' · 시·군별 가운데 값' : ' · 구별 가운데 값') : (hidden ? ' · 확대하면 더 보여요' : '');   // 09-29 토스식: 설명 꼬리 짧게
   $('#status').innerHTML = tot + hint;
   saveHash();
 }
@@ -738,7 +759,8 @@ window.mshare = (no, name) => {   // 09-29: 공유 링크는 앱의 단지 분�
 };
 function select(a, fly) {
   const prev = sel; sel = a; if (window.jsTrack) jsTrack('map_select', { n: a.name, gu: a.gu });
-  $('#sbody').innerHTML = detail(a); $('#sheet .body').scrollTop = 0;
+  const rv = RK && RK.m.get(a);
+  $('#sbody').innerHTML = (rv ? `<div class="rkh">내 순위 ${rv.rk}위${rv.b ? ' · ' + rv.b + '㎡' : ''} · 5년 순이익 예상 ${esc(rv.lab)}</div>` : '') + detail(a); $('#sheet .body').scrollTop = 0;
   $('#sheet').classList.add('peek');
   openSheet('#sheet');
   const z = fly ? Math.max(map.getZoom(), 16) : map.getZoom();
@@ -826,6 +848,7 @@ function saveHash() {
   clearTimeout(hashT);
   hashT = setTimeout(() => {
     if (!map._loaded) return;
+    if (RK) { try { history.replaceState(history.state, '', '#rank'); } catch (e) {} return; }
     const c = map.getCenter(), h = '#' + map.getZoom() + '/' + c.lat.toFixed(5) + '/' + c.lng.toFixed(5) + (sel && openId === '#sheet' ? '/' + sel.no : '');
     try { history.replaceState(history.state, '', h); } catch (e) {}
   }, 250);
@@ -841,11 +864,27 @@ function readHash() {
 let tT = 0;
 function toast(t) { const el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(tT); tT = setTimeout(() => el.classList.remove('on'), 2600); }
 
+// ---------- 10-01 내 순위 모드: 집셈 매수 분석 결과 '지도로 보기'(map.html#rank, 순위는 localStorage 'jipsem.rank') ----------
+let RK = null;
+function rankLoad() {
+  try { const o = JSON.parse(localStorage.getItem('jipsem.rank') || 'null'); if (!o || !o.items) return null;
+    const m = new Map(); o.items.forEach(([no, rk, lab, b]) => { const a = BYNO.get(no); if (a && !m.has(a)) m.set(a, { rk, lab, b }); });
+    return m.size ? { title: o.title, cond: o.cond, m } : null; } catch (e) { return null; }
+}
+function rankOn() {
+  RK = rankLoad(); if (!RK) { toast('매수 분석 결과가 없어요. 결과 화면에서 다시 열어 주세요.'); return false; }
+  $('#rkbar b').textContent = RK.title || '내 매수 분석 순위'; $('#rkbar span').textContent = RK.cond || '';
+  $('#rkbar').classList.add('on'); document.body.classList.add('rkon');
+  map.fitBounds(L.latLngBounds([...RK.m.keys()].map(a => [a.lat, a.lon])), { padding: [90, 40], maxZoom: 15 });
+  return true;
+}
+$('#rkx').onclick = () => { RK = null; $('#rkbar').classList.remove('on'); document.body.classList.remove('rkon'); refresh(); };
 // ---------- 시작 ----------
 const h0 = readHash();
 if (h0 && h0.lat != null && bb.pad(0.3).contains([h0.lat, h0.lon])) map.setView([h0.lat, h0.lon], Math.min(18, Math.max(8, h0.z)));
 else map.fitBounds(bb, { padding: [20, 20] });
 railVis(); applyF(true);
+if (location.hash === '#rank' && rankOn()) refresh();
 if (h0 && h0.c && BYNO.has(h0.c)) select(BYNO.get(h0.c), h0.lat == null);
 window.addEventListener('resize', later);
 })();
