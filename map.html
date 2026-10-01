@@ -125,6 +125,11 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
 #chips button .ic{width:17px;height:17px}
 #chips button.on{background:var(--blue-bg);color:var(--blue);font-weight:700}
 #chips button .cv{width:14px;height:14px;opacity:.7}
+#rklg{position:absolute;left:12px;bottom:30px;z-index:1000;display:none;flex-direction:column;gap:4px;padding:9px 12px;border-radius:12px;background:var(--surface);box-shadow:var(--float);font-size:.76rem;font-weight:700}
+#rklg.on{display:flex}#rklg i{display:inline-block;width:14px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}#rklg small{font-weight:500;color:var(--ink3)}
+.jobp{position:absolute;transform:translate(-50%,-100%);display:flex;align-items:center;gap:5px;height:28px;padding:0 10px 0 6px;border-radius:14px;background:#1a1f2c;color:#fff;font-size:.78rem;font-weight:800;white-space:nowrap;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+.jobp:after{content:'';position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-top-color:#1a1f2c;border-bottom:0}
+.leaflet-image-layer.jarea{image-rendering:auto}
 #rkbar{position:absolute;left:12px;right:12px;top:10px;z-index:1001;display:none;align-items:center;gap:10px;padding:10px 10px 10px 14px;border-radius:16px;background:var(--surface);box-shadow:var(--float)}
 #rkbar.on{display:flex}#rkbar div{flex:1;min-width:0}#rkbar b{display:block;font-size:.92rem}#rkbar span{display:block;font-size:.74rem;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #rkbar button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--ink2);font:inherit;font-size:.8rem;font-weight:700;border-radius:999px;padding:7px 12px;cursor:pointer}
@@ -285,6 +290,7 @@ body.rkon #chips,body.rkon #legend{display:none}body.rkon #status{top:72px}
   <button type="button" data-g="hh"></button>
  </div>
  <div id="rkbar" role="region" aria-label="내 매수 분석 순위"><div><b></b><span></span></div><button type="button" id="rkx">✕ 순위 끄기</button></div>
+ <div id="rklg" aria-label="범례"></div>
  <div id="status" aria-live="polite"></div>
  <div id="ctrl">
   <div class="grp zoom"><button type="button" id="zin" aria-label="확대"><svg class="ic"><use href="#i-plus"/></svg></button><button type="button" id="zout" aria-label="축소"><svg class="ic"><use href="#i-minus"/></svg></button></div>
@@ -633,7 +639,7 @@ function refresh() {
     } else if (m._html !== w.html) { m.setIcon(icon(w.html)); m.setZIndexOffset(w.z); m._html = w.html; }
   }
   // 상태 줄
-  const tot = RK ? `내 순위 <b>${RK.m.size}</b>곳` : active() ? `<b>${fmt(FILT.length)}</b>곳 / ${fmt(N)}곳` : `<b>${fmt(N)}</b>곳`;
+  const tot = RK ? (RK.area ? `조건에 맞는 단지 <b>${RK.m.size}</b>곳` : `내 순위 <b>${RK.m.size}</b>곳`) : active() ? `<b>${fmt(FILT.length)}</b>곳 / ${fmt(N)}곳` : `<b>${fmt(N)}</b>곳`;
   const hint = RK ? (z < 13 ? ' · 확대하면 이름·예상 순이익' : '') : md !== 'cx' ? (md === 'si' ? ' · 시·군별 가운데 값' : ' · 구별 가운데 값') : (hidden ? ' · 확대하면 더 보여요' : '');   // 09-29 토스식: 설명 꼬리 짧게
   $('#status').innerHTML = tot + hint;
   saveHash();
@@ -760,7 +766,7 @@ window.mshare = (no, name) => {   // 09-29: 공유 링크는 앱의 단지 분�
 function select(a, fly) {
   const prev = sel; sel = a; if (window.jsTrack) jsTrack('map_select', { n: a.name, gu: a.gu });
   const rv = RK && RK.m.get(a);
-  $('#sbody').innerHTML = (rv ? `<div class="rkh">내 순위 ${rv.rk}위${rv.b ? ' · ' + rv.b + '㎡' : ''} · 5년 순이익 예상 ${esc(rv.lab)}</div>` : '') + detail(a); $('#sheet .body').scrollTop = 0;
+  $('#sbody').innerHTML = (rv ? `<div class="rkh">내 순위 ${rv.rk}위${rv.b ? ' · ' + rv.b + '㎡' : ''} · 5년 순이익 예상 ${esc(rv.lab)}${rv.sub ? '<br>' + esc(rv.sub) : ''}</div>` : '') + detail(a); $('#sheet .body').scrollTop = 0;
   $('#sheet').classList.add('peek');
   openSheet('#sheet');
   const z = fly ? Math.max(map.getZoom(), 16) : map.getZoom();
@@ -868,17 +874,39 @@ function toast(t) { const el = $('#toast'); el.textContent = t; el.classList.add
 let RK = null;
 function rankLoad() {
   try { const o = JSON.parse(localStorage.getItem('jipsem.rank') || 'null'); if (!o || !o.items) return null;
-    const m = new Map(); o.items.forEach(([no, rk, lab, b]) => { const a = BYNO.get(no); if (a && !m.has(a)) m.set(a, { rk, lab, b }); });
-    return m.size ? { title: o.title, cond: o.cond, m } : null; } catch (e) { return null; }
+    const m = new Map(); o.items.forEach(([no, rk, lab, b, sub]) => { const a = BYNO.get(no); if (a && !m.has(a)) m.set(a, { rk, lab, b, sub }); });
+    return m.size || o.area ? { title: o.title, cond: o.cond, m, area: o.area, jobs: o.jobs } : null; } catch (e) { return null; }
 }
 function rankOn() {
   RK = rankLoad(); if (!RK) { toast('매수 분석 결과가 없어요. 결과 화면에서 다시 열어 주세요.'); return false; }
   $('#rkbar b').textContent = RK.title || '내 매수 분석 순위'; $('#rkbar span').textContent = RK.cond || '';
   $('#rkbar').classList.add('on'); document.body.classList.add('rkon');
-  map.fitBounds(L.latLngBounds([...RK.m.keys()].map(a => [a.lat, a.lon])), { padding: [90, 40], maxZoom: 15 });
+  const pts = [...RK.m.keys()].map(a => [a.lat, a.lon]).concat((RK.jobs || []).map(j => [j[0], j[1]]));
+  if (RK.area) rkArea(RK.area);
+  (RK.jobs || []).forEach(j => RKL.push(L.marker([j[0], j[1]], { icon: icon(`<div class="jobp">🏢 ${esc(j[2])}</div>`), zIndexOffset: 300000, interactive: false }).addTo(map)));
+  if (pts.length) map.fitBounds(L.latLngBounds(pts), { padding: [90, 40], maxZoom: 14 });
   return true;
 }
-$('#rkx').onclick = () => { RK = null; $('#rkbar').classList.remove('on'); document.body.classList.remove('rkon'); refresh(); };
+/* 10-01 통근 범위: 비트 격자(세로 메르카토르 등간격)를 그림 한 장으로 — 한 사람 파랑, 두 사람이면 나만 파랑·배우자만 분홍·둘 다 보라 */
+const RKL = [];
+function rkArea(A) {
+  const bits = A.m.map(s => { const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; });
+  const cv = document.createElement('canvas'); cv.width = A.nx; cv.height = A.ny; const cx = cv.getContext('2d'), im = cx.createImageData(A.nx, A.ny), D = im.data;
+  const two = bits.length === 2, C1 = [66, 99, 235, two ? 52 : 115], C2 = [230, 73, 128, 52], C3 = [104, 52, 226, 185];
+  let n3 = 0;
+  for (let k = 0; k < A.nx * A.ny; k++) {
+    const a = (bits[0][k >> 3] >> (k & 7)) & 1, b = two ? (bits[1][k >> 3] >> (k & 7)) & 1 : 0, c = a && b ? C3 : a ? C1 : b ? C2 : null;
+    if (a && b) n3++;
+    if (c) { D[k * 4] = c[0]; D[k * 4 + 1] = c[1]; D[k * 4 + 2] = c[2]; D[k * 4 + 3] = c[3]; }
+  }
+  cx.putImageData(im, 0, 0);
+  RKL.push(L.imageOverlay(cv.toDataURL(), [[A.la0, A.lo0], [A.la1, A.lo1]], { className: 'jarea', interactive: false }).addTo(map));
+  const sw = c => `<i style="background:rgba(${c[0]},${c[1]},${c[2]},${(c[3] / 255 + .15).toFixed(2)})"></i>`;
+  $('#rklg').innerHTML = two ? `<div>${sw(C3)}둘 다 ${A.max[0] === A.max[1] ? A.max[0] + '분' : ''} 안 ${n3 ? '' : '<small>(겹치는 곳 없음)</small>'}</div><div>${sw(C1)}${esc(A.who[0])}만 ${A.max[0]}분 안</div><div>${sw(C2)}${esc(A.who[1])}만 ${A.max[1]}분 안</div><small>평일 8시 대중교통 대략값 · ±10분</small>`
+    : `<div>${sw(C1)}출근 ${A.max[0]}분 안에 살 수 있는 곳</div><small>평일 8시 대중교통 대략값 · ±10분</small>`;
+  $('#rklg').classList.add('on');
+}
+$('#rkx').onclick = () => { RK = null; RKL.splice(0).forEach(l => map.removeLayer(l)); $('#rklg').classList.remove('on'); $('#rkbar').classList.remove('on'); document.body.classList.remove('rkon'); refresh(); };
 // ---------- 시작 ----------
 const h0 = readHash();
 if (h0 && h0.lat != null && bb.pad(0.3).contains([h0.lat, h0.lon])) map.setView([h0.lat, h0.lon], Math.min(18, Math.max(8, h0.z)));
