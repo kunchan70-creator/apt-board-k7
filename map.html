@@ -478,7 +478,8 @@ async function glStyle(dk) {
     if (JSON.stringify(l.layout['text-field']).indexOf('name') >= 0) l.layout['text-field'] = ['coalesce', ['get', 'name:ko'], ['get', 'name']];
     if (/name-path|name-minor|name_other|oneway/.test(l.id)) l.layout.visibility = 'none';   // 골목·일방통행 표시는 점수 말풍선을 가려서 끈다
   }
-  for (const l of st.layers) if (/^(poi_r20|poi_r7|poi_transit|road_one_way_arrow.*|building-3d)$/.test(l.id)) { l.layout = l.layout || {}; l.layout.visibility = 'none'; }   // 작은 가게·버스 정류장·3D 건물은 말풍선을 가려서 끔(역은 우리 노선 그림이 따로 있음)
+  for (const l of st.layers) if (/^(poi_r20|poi_r7|poi_transit|road_one_way_arrow.*|building-3d)$/.test(l.id)) { l.layout = l.layout || {}; l.layout.visibility = 'none'; }
+  for (const l of st.layers) if (l.type === 'line' && /rail|transit/.test(l.id)) { l.layout = l.layout || {}; l.layout.visibility = 'none'; }   // 10-01 사용자: 지하철 선이 두 줄 — 바탕지도 철도(회색)와 집셈 노선색 선이 겹쳐 그려짐 → 바탕 철도 선은 끄고 노선색 선(지하철 버튼으로 켜고 끔)만   // 작은 가게·버스 정류장·3D 건물은 말풍선을 가려서 끔(역은 우리 노선 그림이 따로 있음)
   return (styles[k] = st);
 }
 function esri(dk) {
@@ -890,20 +891,30 @@ function rankOn() {
 /* 10-01 통근 범위: 비트 격자(세로 메르카토르 등간격)를 그림 한 장으로 — 한 사람 파랑, 두 사람이면 나만 파랑·배우자만 분홍·둘 다 보라 */
 const RKL = [];
 function rkArea(A) {
-  const bits = A.m.map(s => { const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; });
+  const dec = x => { if (!x) return null; const b = atob(x), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; };
+  const any = A.m.map(dec), sure = (A.s || []).map(dec), bit = (u, k) => u ? (u[k >> 3] >> (k & 7)) & 1 : 0;
+  const idx = any.map((u, k) => u ? k : -1).filter(k => k >= 0), two = idx.length === 2;
   const cv = document.createElement('canvas'); cv.width = A.nx; cv.height = A.ny; const cx = cv.getContext('2d'), im = cx.createImageData(A.nx, A.ny), D = im.data;
-  const two = bits.length === 2, C1 = [66, 99, 235, two ? 52 : 115], C2 = [230, 73, 128, 52], C3 = [104, 52, 226, 185];
+  // 진하게 = 최대 시간보다 10분 이상 안쪽(실측과 거의 맞음) · 옅게 = 마지막 10분 경계(실제는 ±10분)
+  const BL = [66, 99, 235], PK = [230, 73, 128], PU = [104, 52, 226];
   let n3 = 0;
   for (let k = 0; k < A.nx * A.ny; k++) {
-    const a = (bits[0][k >> 3] >> (k & 7)) & 1, b = two ? (bits[1][k >> 3] >> (k & 7)) & 1 : 0, c = a && b ? C3 : a ? C1 : b ? C2 : null;
-    if (a && b) n3++;
-    if (c) { D[k * 4] = c[0]; D[k * 4 + 1] = c[1]; D[k * 4 + 2] = c[2]; D[k * 4 + 3] = c[3]; }
+    let c = null, al = 0;
+    if (two) {
+      const a = bit(any[idx[0]], k), b = bit(any[idx[1]], k);
+      if (a && b) { n3++; c = PU; al = bit(sure[idx[0]], k) && bit(sure[idx[1]], k) ? 175 : 75; }
+      else if (a) { c = BL; al = 40; } else if (b) { c = PK; al = 40; }
+    } else if (idx.length) { const a = bit(any[idx[0]], k); if (a) { c = BL; al = bit(sure[idx[0]], k) ? 120 : 45; } }
+    if (c) { D[k * 4] = c[0]; D[k * 4 + 1] = c[1]; D[k * 4 + 2] = c[2]; D[k * 4 + 3] = al; }
   }
   cx.putImageData(im, 0, 0);
-  RKL.push(L.imageOverlay(cv.toDataURL(), [[A.la0, A.lo0], [A.la1, A.lo1]], { className: 'jarea', interactive: false }).addTo(map));
-  const sw = c => `<i style="background:rgba(${c[0]},${c[1]},${c[2]},${(c[3] / 255 + .15).toFixed(2)})"></i>`;
-  $('#rklg').innerHTML = two ? `<div>${sw(C3)}둘 다 ${A.max[0] === A.max[1] ? A.max[0] + '분' : ''} 안 ${n3 ? '' : '<small>(겹치는 곳 없음)</small>'}</div><div>${sw(C1)}${esc(A.who[0])}만 ${A.max[0]}분 안</div><div>${sw(C2)}${esc(A.who[1])}만 ${A.max[1]}분 안</div><small>평일 8시 대중교통 대략값 · ±10분</small>`
-    : `<div>${sw(C1)}출근 ${A.max[0]}분 안에 살 수 있는 곳</div><small>평일 8시 대중교통 대략값 · ±10분</small>`;
+  if (idx.length) RKL.push(L.imageOverlay(cv.toDataURL(), [[A.la0, A.lo0], [A.la1, A.lo1]], { className: 'jarea', interactive: false }).addTo(map));
+  const sw = (c, al) => `<i style="background:rgba(${c[0]},${c[1]},${c[2]},${(al / 255 + .12).toFixed(2)})"></i>`, mx = A.max;
+  const carNote = (A.car || []).some(Boolean) ? `<small>${(A.car || []).map((c, k) => c ? esc(A.who[k]) : null).filter(Boolean).join('·')}(자가용)는 직선거리 어림이라 범위를 그리지 않아요</small>` : '';
+  let h = '';
+  if (two) h = `<div>${sw(PU, 175)}둘 다 출근 가능 ${n3 ? '' : '<small>(겹치는 곳 없음)</small>'}</div><div>${sw(PU, 75)}둘 다 · 한쪽이라도 경계</div><div>${sw(BL, 40)}${esc(A.who[0])}만 · ${sw(PK, 40)}${esc(A.who[1])}만</div>`;
+  else if (idx.length) { const m = mx[idx[0]]; h = `<div>${sw(BL, 120)}대중교통 약 ${m - 10}분 안</div><div>${sw(BL, 45)}${m - 10}~${m}분 · 경계</div>`; }
+  $('#rklg').innerHTML = h + carNote + `<small>평일 8시 대중교통 대략값 · 경계는 실제 ±10분</small>`;
   $('#rklg').classList.add('on');
 }
 $('#rkx').onclick = () => { RK = null; RKL.splice(0).forEach(l => map.removeLayer(l)); $('#rklg').classList.remove('on'); $('#rkbar').classList.remove('on'); document.body.classList.remove('rkon'); refresh(); };

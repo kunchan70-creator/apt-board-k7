@@ -2474,20 +2474,22 @@ function jgu(la,lo){let g=null,bd=3;CPX.forEach(c=>{if(!c.xy)return;const d=jkm(
 const jmy=la=>Math.log(Math.tan(Math.PI/4+la*Math.PI/360)), jiy=y=>(2*Math.atan(Math.exp(y))-Math.PI/2)*180/Math.PI;
 function jgridBox(){let a=90,b=-90,c=180,d=-180;CPX.forEach(x=>{if(!x.xy)return;a=Math.min(a,x.xy[0]);b=Math.max(b,x.xy[0]);c=Math.min(c,x.xy[1]);d=Math.max(d,x.xy[1]);});
  a-=.03;b+=.03;c-=.04;d+=.04;return {la0:a,la1:b,lo0:c,lo1:d,nx:Math.round((d-c)*JKX/0.35),ny:Math.round((b-a)*JKY/0.35)};}
-function jmask(P,G){const X=jbprep(),R=X.R,car=P.mode==='car'&&JCAR,Ls=car?null:jlab(P),g=[P.lat,P.lon],out=new Uint8Array(Math.ceil(G.nx*G.ny/8)),y0=jmy(G.la0),y1=jmy(G.la1);
+function jmask(P,G){if(P.mode==='car')return null;   // 자가용 = 직선거리 공식이라 그리면 원 — 실제처럼 보이므로 안 그림
+ const X=jbprep(),R=X.R,Ls=jlab(P),g=[P.lat,P.lon],out=new Uint8Array(Math.ceil(G.nx*G.ny/8)),sure=new Uint8Array(out.length),y0=jmy(G.la0),y1=jmy(G.la1);
  let n=0;for(let j=0;j<G.ny;j++){const lat=jiy(y1-(j+.5)/G.ny*(y1-y0));for(let i=0;i<G.nx;i++){const p=[lat,G.lo0+(i+.5)/G.nx*(G.lo1-G.lo0)];let t;
-  if(car)t=jcar(p,g);else{t=X.wk(jkm(p,g));if(t>30)t=Infinity;
-   for(const [k,d] of jgnear(X.sg,X.sl,X.so,p,R.walk_max/R.detour)){const v=X.wk(d)+Ls.TS[k];if(v<t)t=v;}
-   if(t>P.max)for(const [k,d] of jgnear(X.bg,X.la,X.lo,p,R.stop_walk_km)){const v=X.wk(d)+Ls.TB[k];if(v<t)t=v;}}
-  if(t<=P.max){const b=j*G.nx+i;out[b>>3]|=1<<(b&7);n++;}}}
- let s='';for(let i=0;i<out.length;i+=4096)s+=String.fromCharCode.apply(null,out.subarray(i,i+4096));return {m:btoa(s),n};}
+  t=X.wk(jkm(p,g));if(t>30)t=Infinity;
+  for(const [k,d] of jgnear(X.sg,X.sl,X.so,p,R.walk_max/R.detour)){const v=X.wk(d)+Ls.TS[k];if(v<t)t=v;}
+  if(t>P.max-10)for(const [k,d] of jgnear(X.bg,X.la,X.lo,p,R.stop_walk_km)){const v=X.wk(d)+Ls.TB[k];if(v<t)t=v;}
+  if(t<=P.max){const b=j*G.nx+i;out[b>>3]|=1<<(b&7);n++;if(t<=P.max-10)sure[b>>3]|=1<<(b&7);}}}
+ const enc=u=>{let s='';for(let i=0;i<u.length;i+=4096)s+=String.fromCharCode.apply(null,u.subarray(i,i+4096));return btoa(s);};
+ return {m:enc(out),s:enc(sure),n};}
 let JL=[];
 function jmap(btn){if(btn){btn.disabled=true;btn.textContent='범위 셈하는 중…';}
  setTimeout(()=>{jbload().then(()=>{const PS=JB.P.slice(0,JB.n).map(P=>Object.assign({},P,{mode:P.mode==='car'&&JCAR?'car':'pt'})),G=jgridBox(),M=PS.map(P=>jmask(P,G));
   const it=[],seen=new Set();JL.forEach(({c,r,ts})=>{if(it.length>=30||!c.no||seen.has(c.no))return;seen.add(c.no);const F=r.F||fin(r);it.push([c.no,it.length+1,ab(F.p5),r.b,'통근 '+ts.map((t,k)=>(JB.n===2?JWHO[k]+' ':'')+jband(t)).join(' · ')]);});
   const cond=PS.map((P,k)=>(JB.n===2?JWHO[k]+' ':'')+P.lab.split(' · ')[0]+' '+P.max+'분').join(' · ');
   try{localStorage.setItem('jipsem.rank',JSON.stringify({at:Date.now(),title:'직장 근처 찾기 · 통근 범위',cond,items:it,
-   area:{la0:G.la0,la1:G.la1,lo0:G.lo0,lo1:G.lo1,nx:G.nx,ny:G.ny,m:M.map(x=>x.m),who:PS.map((P,k)=>JB.n===2?JWHO[k]:'나'),max:PS.map(P=>P.max)},
+   area:{la0:G.la0,la1:G.la1,lo0:G.lo0,lo1:G.lo1,nx:G.nx,ny:G.ny,m:M.map(x=>x?x.m:null),s:M.map(x=>x?x.s:null),who:PS.map((P,k)=>JB.n===2?JWHO[k]:'나'),max:PS.map(P=>P.max),car:PS.map(P=>P.mode==='car')},
    jobs:PS.map((P,k)=>[P.lat,P.lon,(JB.n===2?JWHO[k]+' · ':'')+P.lab.split(' · ')[0]])}));}catch(e){}
   location.href='map.html#rank';}).catch(()=>{if(btn){btn.disabled=false;btn.textContent='지도로 보기';}});},30);}
 function jrun(){const box=$('#jlist');if(!box)return;box.innerHTML='<p class="sub">계산 중…</p>';
