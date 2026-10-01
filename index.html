@@ -2271,13 +2271,12 @@ function why2(r){   // 1위보다 덜 남는 이유를 말로(큰 것 두 개)
  const d=Object.keys(W).map(k=>[k,a[k]-b[k]]).filter(x=>x[1]<-300).sort((x,y)=>x[1]-y[1]).slice(0,2);
  return d.length?d.map(([k])=>W[k]).join(', '):'차이 미미';}
 // 10-02 사용자: '서울·경기는 고점권인데 매수 분석이 국면을 반영했나?' → 걸어가며 시험(v2phasetest): 국면을 넣어도 5년 셈이 더 맞지 않아 금액엔 안 넣음.
-// 대신 내 결과 단지 절반 넘게가 한 국면이면 그 국면에서 과거 매수한 5년 결과(사실)를 한 줄로
+// 대신 내 결과 단지 절반 넘게가 한 국면이면 국면 이름만 + 시장 화면으로(10-02 사용자: 말 많을 필요 없다)
 function phLine(){const P=DT.ph; if(!P||!V.length)return '';
  const c={}, seen=new Set(); V.forEach(r=>{const k=r.no||r.n+r.gu; if(seen.has(k))return; seen.add(k); const p=P.g[r.gu]||P.g[r.gu.split(' ')[0]]; if(p)c[p]=(c[p]||0)+1;});
  const tot=Object.values(c).reduce((a,b)=>a+b,0), top=Object.keys(c).sort((a,b)=>c[b]-c[a])[0]; if(!top||c[top]<tot*.5)return '';
- const S=P.s[top], A=P.all, nm={1:'상승기',2:'고점권',3:'조정기',4:'바닥권'}[top]; if(!S||S[1]==null)return '';
- const sg=v=>(v>=0?'+':'−')+Math.abs(Math.round(v))+'%';
- return `<div class="tip" style="margin:0 0 10px;display:block;font-size:.84rem;line-height:1.6"><b>지금 ${Math.round(c[top]/tot*100)}%가 ${nm}</b> — 과거 ${nm}에 매수한 경우 5년 뒤 <b>100곳 중 ${Math.round(S[1])}곳 손실</b>(평균 ${sg(S[0])})이었어요. 전체 평균은 ${Math.round(A[1])}곳 손실(평균 ${sg(A[0])})이에요.<div class="sub" style="font-size:.74rem;margin-top:3px">국면을 셈에 넣어 과거로 시험했지만 더 맞지 않아 금액엔 넣지 않았어요 · 2015~2021년 매수, 구·시 단위 · <a href="market.html">국면 보기 ›</a></div></div>`;}
+ const nm={1:'상승기',2:'고점권',3:'조정기',4:'바닥권'}[top];
+ return `<a class="tip" href="market.html" style="margin:0 0 10px;display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:inherit;font-size:.88rem"><span>지금 시장 국면 <b>${nm}</b></span><span style="color:var(--blue);font-weight:700;font-size:.82rem">국면 보기 ›</span></a>`;}
 function result(){
  TT.forEach(clearTimeout); TT=[];
  V=R.filter(ok); V.forEach(r=>r.F=fin(r)); N=10; RBV=V.filter(isMid); V=V.filter(r=>!isMid(r));
