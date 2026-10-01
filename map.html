@@ -87,7 +87,7 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
 :root[data-dark] .leaflet-control-attribution{background:rgba(25,28,32,.8)!important;color:var(--ink3)}
 :root[data-dark] .leaflet-control-attribution a{color:var(--ink2)}
 .leaflet-bottom.leaflet-right{margin-bottom:var(--safe-b)}
-#noleaf{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--ink2);font-size:.95rem}
+#noleaf{position:absolute;inset:0;z-index:1500;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--ink2);font-size:.95rem;background:var(--bg)}
 
 /* 점수 말풍선: 단지 = 둥근 알약 + 꼬리(좌표를 가리킴), 시·구 = 둥근 사각 */
 .mk{background:none;border:0}
@@ -466,11 +466,15 @@ const loadJs = src => new Promise((ok, no) => { const s = document.createElement
 // 사이트 주소가 등록되지 않았거나 인증이 실패하면 스스로 걷어내고 기존 컬러 지도로 돌아간다.
 const NVK = 'oeq5r2o6gg';
 let nmap = null;
-function nFail() {
+let nTry = 0;
+function nFail() {   // 10-02 사용자: 고객이 보는 화면 — 엉뚱한 지도·빈 바탕 금지. 한 번 다시 시도, 그래도 안 되면 지도 자리를 카드로 덮는다
   if (nmap) { try { nmap.destroy(); } catch (e) {} nmap = null; }
   const el = document.getElementById('nmap'); if (el) el.remove();
   map.getContainer().classList.remove('nbase'); baseKind = '';
-  const m = $('#noleaf'); m.textContent = '지도를 불러오지 못했어요. 잠시 뒤 새로고침해 주세요.'; m.style.display = 'flex';
+  if (NVK && ++nTry < 2) { setTimeout(() => nBase().catch(() => nFail()), 3000); return; }
+  const m = $('#noleaf');
+  m.innerHTML = '<div style="max-width:280px"><b style="font-size:1.05rem;color:var(--ink)">지도를 잠시 불러오지 못했어요</b><div style="margin-top:6px;font-size:.86rem;line-height:1.5">네트워크가 잠시 불안정할 수 있어요</div><button type="button" onclick="location.reload()" style="margin-top:14px;border:0;border-radius:12px;background:var(--blue);color:#fff;font:inherit;font-size:.92rem;font-weight:700;padding:11px 22px;cursor:pointer">다시 시도</button></div>';
+  m.style.display = 'flex';
 }
 async function nBase() {
   await new Promise((ok, no) => { window.navermap_authFailure = () => { no(new Error('auth')); nFail(); }; loadJs('https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=' + NVK).then(ok, no); });
