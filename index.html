@@ -2633,11 +2633,11 @@ function calcGo(){
  let sn={};try{sn=JSON.parse(localStorage.getItem('jsCalc')||'{}')||{};}catch(e){}
  const rnd=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]), first=!sn.n, last=sn.last||[];
  const rq=first?req:rnd(req).sort((a,b)=>(sn[a.id]||0)-(sn[b.id]||0)).slice(0,1);
- const op=rnd(opt).sort((a,b)=>last.includes(a.id)-last.includes(b.id)).slice(0,first?1:1+(Math.random()<.5));
+ const op=rnd(opt).sort((a,b)=>last.includes(a.id)-last.includes(b.id)).slice(0,first?0:1);
  const sl=rq.concat(op); if(!sl.length)return;
  sl.forEach(s=>sn[s.id]=(sn[s.id]||0)+1); sn.n=(sn.n||0)+1; sn.last=op.map(s=>s.id);
  try{localStorage.setItem('jsCalc',JSON.stringify(sn));}catch(e){}
- const dw=sl.map(()=>2500+Math.random()*600), tot=dw.reduce((a,b)=>a+b,0);
+ const dw=sl.map(s=>Math.min(8500,Math.max(5500,3500+(s.q+s.a+s.g).replace(/<[^>]*>/g,'').length*45))+Math.random()*700), tot=dw.reduce((a,b)=>a+b,0);
  const nC=new Set(V.map(r=>r.no||r.n+r.gu)).size, ev=(DT.ev5||[]).length;
  const ST=[`조건에 맞는 단지 ${nC.toLocaleString()}곳 찾는 중`,`단지마다 과거 ${ev||'여러'}번의 5년 흐름 맞춰 보는 중`,'대출 한도·이자·세금 넣는 중','5년 순이익 순으로 정리하는 중'];
  clEnd(true);
