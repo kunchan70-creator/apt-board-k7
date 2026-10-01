@@ -307,7 +307,7 @@ const $=q=>document.querySelector(q), app=$('#app');
 const eok=v=>v==null?'-':(v/1e4).toFixed(2), pc=v=>v==null?'-':(v>0?'+':'')+v.toFixed(1)+'%', pp=v=>(v>0?'+':'')+v.toFixed(1)+'%p';
 const YEAR=new Date().getFullYear();
 // ---------------- 설정 저장 ----------------
-const DEF={done:false,sort:'money',my:null,regions:[],cash:DT.my.cash,maxc:DT.my.max_price,first:!!DT.my.first_home,loan:null,lmode:null,irate:null,inc:null,debt:null,yrs:30,rpt:null,addU:false,useU:true,size:[],age:[],st:'',hh:0,sch:'',baby:false,newly:false,pol:true,joint:false,law:'now',mine:{own:false,cmp:false},trust:false};
+const DEF={done:false,sort:'money',my:null,regions:[],cash:DT.my.cash,maxc:DT.my.max_price,first:!!DT.my.first_home,loan:null,lmode:null,irate:null,inc:null,debt:null,yrs:30,rpt:null,addU:false,useU:true,size:[],age:[],st:'',ln:[],hh:0,sch:'',baby:false,newly:false,pol:true,joint:false,law:'now',mine:{own:false,cmp:false},trust:false};
 function load(){try{return Object.assign({},DEF,JSON.parse(localStorage.getItem('v2cfg')||'{}'),{trust:false,keep:true,lens:'bal',sort:null})}catch(e){return Object.assign({},DEF)}}
 function save(){try{if(CF.keep===false){localStorage.removeItem('v2cfg');return;}localStorage.setItem('v2cfg',JSON.stringify(CF))}catch(e){}}
 function hasSaved(){try{const j=JSON.parse(localStorage.getItem('v2cfg')||'null');return !!(j&&j.done&&j.keep!==false);}catch(e){return false;}}
@@ -1493,6 +1493,22 @@ const szOf=b=>b<=49?'49':b<=59?'59':b<=74?'74':b<=84?'84':'101';
 const SZL={'49':'49㎡↓','59':'59㎡','74':'74㎡','84':'84㎡','101':'101㎡↑'},AGL={n:'신축',m:'준신축',o:'구축'};
 function qsRow(){return `<div class="cc qs" style="margin:0 0 10px;gap:5px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none">${[[null,'전체'],['49','49㎡↓'],['59','59㎡'],['74','74㎡'],['84','84㎡'],['101','101㎡↑']].map(([v,l])=>`<button class="${(v==null?!CF.size.length:CF.size.includes(v))?'on':''}" style="flex:0 0 auto;padding:6px 9px;font-size:.8rem" onclick='qSize(${JSON.stringify(v)})'>${l}</button>`).join('')}</div>`;}
 function qSize(v){if(v==null)CF.size=[];else{const i=CF.size.indexOf(v);i<0?CF.size.push(v):CF.size.splice(i,1);}save();result();}
+/* 10-01 사용자(이용자 요청): 지하철 거리만 말고 몇 호선인지 고르게 → 고른 노선 중 하나의 역이 걸어서 15분(1km, 역 10분을 고르면 0.67km) 안인 단지.
+   역·노선 = 직장 근처 찾기와 같은 철도 노선망(NET), 단지 좌표 = DT.xy. 걷는 거리 = 직선 × 1.12(WKM 과 같은 어림) */
+const LNM={'1호선':'1호선','2호선':'2호선','3호선':'3호선','4호선':'4호선','5호선':'5호선','6호선':'6호선','7호선':'7호선','8호선':'8호선','9호선':'9호선','신분당':'신분당선','GTX-A':'GTX-A','수인분당':'수인분당선','경의중앙':'경의중앙선','공항철도':'공항철도','경춘':'경춘선','경강':'경강선','서해':'서해선','신림':'신림선','우이신설':'우이신설선','김포골드':'김포골드라인','용인':'용인경전철','의정부':'의정부경전철','인천1':'인천1호선','인천2':'인천2호선'};
+let SLN=null;
+function lnOf(c){if(c._ln!==undefined)return c._ln;if(!c.xy||typeof NET==='undefined')return c._ln=null;
+ if(!SLN){SLN=NET.stations.map(()=>new Set());NET.edges.forEach(([a,b,k])=>{const g=k.replace(/급행$/,'');SLN[a].add(g);SLN[b].add(g);});}
+ const m={};NET.stations.forEach((st,i)=>{const dy=(st[1]-c.xy[0])*111.0;if(Math.abs(dy)>1.2)return;const d=Math.hypot(dy,(st[2]-c.xy[1])*88.2)*1.12;if(d>1.0)return;SLN[i].forEach(g=>{if(m[g]==null||d<m[g])m[g]=d;});});
+ return c._ln=m;}
+function lnNear(c,L){const m=lnOf(c);if(!m)return false;const lim=CF.st==='a10'?0.67:1.0;return L.some(l=>m[l]!=null&&m[l]<=lim);}
+let LNC=null;   // 노선별 역 근처 단지 수(조건과 무관한 전체, 바텀시트 안내용)
+function lnSheet(){if(!LNC){LNC={};CPX.forEach(c=>{const m=lnOf(c);if(m)Object.keys(m).forEach(g=>LNC[g]=(LNC[g]||0)+1);});}
+ const A=CF.ln||[], K=Object.keys(LNM).filter(k=>LNC[k]);
+ const o=k=>`<button class="o${A.includes(k)?' on':''}" onclick="CF.ln=(CF.ln||[]).includes('${k}')?CF.ln.filter(x=>x!=='${k}'):(CF.ln||[]).concat('${k}');save();lnSheet();count()"><span>${LNM[k]}<small>역 근처 단지 ${LNC[k].toLocaleString()}곳</small></span></button>`;
+ sheet('노선',`<p class="sub" style="margin:0 0 4px;font-size:.82rem">여러 개 고를 수 있어요 · 고른 노선 중 하나라도 역이 걸어서 ${CF.st==='a10'?'10분':'15분'} 안이면 보여 드려요</p>`
+  +`<button class="o${A.length?'':' on'}" onclick="CF.ln=[];save();lnSheet();count()"><span>상관없음</span></button>`+K.map(o).join('')
+  +`<button class="btn" style="margin-top:12px" onclick="shClose();setup(SU)">확인</button>`);}
 const STO=[['','상관없음'],['a10','역 걸어서 10분'],['a1','역 걸어서 15분'],['x2','급행역(신분당·GTX) 2km']], STL={a10:'역 10분',a1:'역 15분',x2:'급행역 2km'};
 const SCO=[['','상관없음'],['e3','초품아 (배정 초등학교 300m 안)'],['e6','배정 초등학교 걸어서 10분']], SCL={e3:'초품아',e6:'초등학교 10분'};
 function cc(key,opts,multi){return `<div class="cc">${opts.map(([v,l])=>`<button class="${(multi?CF[key].includes(v):CF[key]===v)?'on':''}" onclick='${multi?'multiTog':'one'}(${JSON.stringify(key)},${JSON.stringify(v)})'>${l}</button>`).join('')}</div>`;}
@@ -1533,7 +1549,7 @@ function sumVal(k){
  if(k==='region')return !CF.regions.length?'서울·경기·인천 전체':CF.regions.length<=3?CF.regions.map(short).join(', '):CF.regions.slice(0,2).map(short).join(', ')+` 외 ${CF.regions.length-2}곳`;
  if(k==='size')return !CF.size.length?'상관없음':CF.size.map(v=>SZD.find(x=>x[0]===v)[1]).join(', ');
  if(k==='age')return !CF.age.length?'상관없음':CF.age.map(v=>AGD.find(x=>x[0]===v)[1].split(' (')[0]).join(', ');
- if(k==='life'){const a=[STL[CF.st],SCL[CF.sch],CF.hh?CF.hh.toLocaleString()+'세대 이상':''].filter(Boolean);return a.length?a.join(' · '):'상관없음';}
+ if(k==='life'){const a=[STL[CF.st],(CF.ln||[]).length?CF.ln.map(x=>LNM[x]||x).join('·'):'',SCL[CF.sch],CF.hh?CF.hh.toLocaleString()+'세대 이상':''].filter(Boolean);return a.length?a.join(' · '):'상관없음';}
  if(k==='perk'){const a=[CF.first?'생애최초':'',CF.newly?'신혼':'',CF.baby?'출산 2년 안':'',CF.pol===false?'정책대출 끔':'',CF.joint?'부부 공동명의':'',CF.law==='plan'?'정부 개정안':'현행 세법'].filter(Boolean);return a.join(' · ');}
  if(k==='inc')return CF.inc==null?'입력 안 함':eok(CF.inc)+'억/년'+(CF.debt?' · 기존 대출 연 '+CF.debt.toLocaleString()+'만':'');
  if(k==='loan'){const a=[CF.lmode==='max'?'은행 최대':CF.loan!=null?eok(CF.loan)+'억':'필요한 만큼',CF.irate!=null?'금리 '+CF.irate+'%':'',CF.rpt===0?'수리비 뺌':CF.rpt?'수리비 '+CF.rpt.toLocaleString()+'만':'',CF.maxc!=null?'최대 '+eok(CF.maxc)+'억':''].filter(Boolean);return a.join(' · ');}}
@@ -1558,7 +1574,7 @@ function setup(i){
   +`<div class="picked" id="picked"></div><div class="rtab" id="rtab"></div><div id="rl"></div>
   <input id="rq" type="search" placeholder="이름으로 찾기 (예: 수원, 강동, 분당)" oninput="drawReg()" style="width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit;margin-top:10px">`;}
  else if(k==='size')body=Q('원하는 집 크기는요?','전용면적 기준이에요')+optList('size',SZD);
- else if(k==='life')body=Q('생활 조건이 있나요?','고르지 않으면 모두 보여 드려요')+`<div style="margin:4px 2px 8px;font-size:.9rem;font-weight:800">지하철역</div><div id="c_st"></div><div style="margin:20px 2px 8px;font-size:.9rem;font-weight:800">초등학교</div><div id="c_sch"></div><div style="margin:20px 2px 8px;font-size:.9rem;font-weight:800">단지 크기</div><div id="c_hh"></div><div class="hint" style="margin-top:14px">초품아 = 교육청 학구도에서 배정되는 초등학교까지 직선 300m 안 · 걸어서 10분 = 600m 안</div>`;
+ else if(k==='life')body=Q('생활 조건이 있나요?','고르지 않으면 모두 보여 드려요')+`<div style="margin:4px 2px 8px;font-size:.9rem;font-weight:800">지하철역</div><div id="c_st"></div><div class="frs" style="margin-top:8px">${FR('노선',(CF.ln||[]).length?CF.ln.map(k=>LNM[k]||k).join(', '):'','lnSheet()','상관없음')}</div><div style="margin:20px 2px 8px;font-size:.9rem;font-weight:800">초등학교</div><div id="c_sch"></div><div style="margin:20px 2px 8px;font-size:.9rem;font-weight:800">단지 크기</div><div id="c_hh"></div><div class="hint" style="margin-top:14px">초품아 = 교육청 학구도에서 배정되는 초등학교까지 직선 300m 안 · 걸어서 10분 = 600m 안</div>`;
  else if(k==='perk'){const TG=(key,t,d)=>`<label class="frw" style="margin-top:8px"><span>${t}<small>${d}</small></span><input type="checkbox" ${CF[key]?'checked':''} onchange="CF.${key}=this.checked;count()" style="width:22px;height:22px"></label>`;
   body=Q('해당하는 게 있나요?','해당하는 것 <b>모두</b> 고르세요 · 대출은 자격이 되는 것 중 가장 유리한 하나로, 취득세 감면은 큰 것 하나로 셈해요 <a href="javascript:void(0)" onclick="taxInfo()" style="color:var(--blue)">어떻게 셈하나요 ⓘ</a>')
   +(ONE&&RET==='move'?'<div class="hint" style="margin:6px 2px 2px">갈아타기는 이미 집을 가진 적이 있어 생애최초 혜택(취득세 감면·대출 70%)은 셈에서 빠져요</div>':TG('first','생애 첫 주택 매수','본인·배우자 모두 집을 가진 적 없음 · 취득세 최대 200만 원 감면, 대출 70%'))
@@ -1813,6 +1829,7 @@ function ok(r){
  if(CF.st==='a1'&&!(r.ka!=null&&WKM(r)<=1))return false;
  if(CF.sch){const e=(DT.el||{})[r.no];if(e==null||e>(CF.sch==='e3'?300:600))return false;}   /* 09-30 초품아: 배정 초등학교까지 직선 m(학구도·나이스) */
  if(CF.st==='x2'&&!(r.kx!=null&&r.kx<=2))return false;
+ if(CF.ln&&CF.ln.length){const c=CPXK[r.no||(r.n+'|'+r.gu)];if(!c||!lnNear(c,CF.ln))return false;}   /* 10-01 노선 */
  if(CF.hh&&!(r.hh>=CF.hh))return false;
  return true;}
 let RGT=null;
