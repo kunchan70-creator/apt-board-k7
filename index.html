@@ -2375,7 +2375,24 @@ function jband(t){const a=Math.floor(t/10)*10;return a+'~'+(a+10)+'분';}   // 1
 // 자가용(commute_carfit.py): 평일 출근 시각 실측으로 맞춘 '분 = a + b x 직선km + c x 직선km x [도착 서울]'. 표본이 모이기 전엔 꺼 둔다.
 const JCAR=(NET.car||{}).am||null;
 const jseoul=p=>p[0]>37.42&&p[0]<37.70&&p[1]>126.76&&p[1]<127.19;
-function jcar(p,g){const w=JCAR.w,s=jkm(p,g);return w[0]+w[1]*s+w[2]*s*(jseoul(g)?1:0);}
+function jcar(p,g){if(JCAR2&&JCN&&JCN.D.has(g[0]+','+g[1]))return jctime(p,g);const w=JCAR.w,s=jkm(p,g);return w[0]+w[1]*s+w[2]*s*(jseoul(g)?1:0);}
+// 10-01 사용자: 자가용을 직선거리 공식으로 그리면 원 — 말이 안 된다 → 도로망(오픈스트리트맵 고속~3차) 위 최단 시간, 속도는 공식 길찾기 API 표본에 맞춘 출근 시간대 값(carfit2.py).
+//   검증(쌍 단위 반반) 10분 안 비율이 대중교통 계산과 같은 75%를 넘고 직선 공식보다 나을 때만 켜짐(NET.car2.ok). 도로망 파일(carnet.js, 1MB)은 자가용 고른 사람만 받는다.
+const JCAR2=(NET.car2&&NET.car2.ok)?NET.car2:null;
+let JCN=null;
+function jcload(){return new Promise((ok,no)=>{if(window.JCARN)return ok();const s=document.createElement('script');s.src='carnet.js';s.onload=()=>ok();s.onerror=no;document.head.appendChild(s);});}
+function jcprep(){if(JCN)return JCN;const C=window.JCARN,P=JCAR2,n=C.la.length,la=new Float64Array(n),lo=new Float64Array(n);let a=0,b=0;for(let i=0;i<n;i++){a+=C.la[i];b+=C.lo[i];la[i]=a/1e5;lo[i]=b/1e5;}
+ const E=[];C.u.forEach((u,k)=>{const v=C.v[k],t=C.l[k]/100*P.w[C.f[k]];if(C.o[k]>=0)E.push([v,u,t]);if(C.o[k]<=0)E.push([u,v,t]);});   // 거꾸로(도착 → 출발) 인접
+ const st=new Int32Array(n+1);E.forEach(e=>st[e[0]+1]++);for(let i=0;i<n;i++)st[i+1]+=st[i];const to=new Int32Array(E.length),w=new Float64Array(E.length),fill=st.slice(0,n);
+ E.forEach(([x,y,t])=>{const k=fill[x]++;to[k]=y;w[k]=t;});
+ JCN={n,la,lo,st,to,w,g:jgrid(la,lo,n),D:new Map()};return JCN;}
+function jcnear(p){const N=JCN;let r=jgnear(N.g,N.la,N.lo,p,1.5);if(!r.length)r=jgnear(N.g,N.la,N.lo,p,5);let b=null;for(const x of r)if(!b||x[1]<b[1])b=x;return b;}
+function jcto(g){const N=jcprep(),k=g[0]+','+g[1];if(N.D.has(k))return N.D.get(k);const s=jcnear(g),D=new Float64Array(N.n).fill(Infinity);
+ if(s){D[s[0]]=0;const hp=[[0,s[0]]];const push=(d,u)=>{hp.push([d,u]);let i=hp.length-1;while(i>0){const q=(i-1)>>1;if(hp[q][0]<=hp[i][0])break;[hp[q],hp[i]]=[hp[i],hp[q]];i=q;}};
+  const pop=()=>{const tp=hp[0],l=hp.pop();if(hp.length){hp[0]=l;let i=0;for(;;){const a=2*i+1,b=a+1;let m=i;if(a<hp.length&&hp[a][0]<hp[m][0])m=a;if(b<hp.length&&hp[b][0]<hp[m][0])m=b;if(m===i)break;[hp[m],hp[i]]=[hp[i],hp[m]];i=m;}}return tp;};
+  while(hp.length){const [d,u]=pop();if(d>D[u])continue;for(let k=N.st[u];k<N.st[u+1];k++){const v=N.to[k],nd=d+N.w[k];if(nd<D[v]){D[v]=nd;push(nd,v);}}}}
+ const R={D,ga:s?s[1]:0};N.D.set(k,R);return R;}
+function jctime(p,g){const R=jcto(g),s=jcnear(p);if(!s||!isFinite(R.D[s[0]]))return null;return JCAR2.c0+JCAR2.wa*(s[1]+R.ga)+R.D[s[0]];}
 let JB=(()=>{try{return JSON.parse(localStorage.getItem('jobcfg')||'null')}catch(e){return null}})()||{n:1,sort:'up',P:[{lab:'',lat:null,lon:null,hr:8,max:60,mode:'pt'},{lab:'',lat:null,lon:null,hr:8,max:60,mode:'pt'}]};
 const jsave=()=>{try{localStorage.setItem('jobcfg',JSON.stringify(JB))}catch(e){}};
 const JWHO=['나','배우자'], JHRS=[7,8,9], JMAX=[30,45,60,90];
@@ -2387,10 +2404,11 @@ function jready(){return JB.P.slice(0,JB.n).every(P=>P.lat!=null);}
 function jobv(){if(JB.done&&jready())jres();else consult('commute');}
 const JDC=new Map();   // 직장별 계산 결과(같은 조건 다시 안 풂)
 function jlab(P){const k=P.lat+','+P.lon+','+P.hr;if(!JDC.has(k))JDC.set(k,jto([P.lat,P.lon],P.hr));return JDC.get(k);}
-function jcount(ps){return CPX.filter(c=>c.xy&&ps.every(P=>{const t=P.mode==='car'&&JCAR?jcar(c.xy,[P.lat,P.lon]):jtime(c.xy,[P.lat,P.lon],jlab(P),P.hr);return t!=null&&t<=P.max;})).length;}
+function jcwarm(ps){if(!JCAR2||!window.JCARN)return;ps.forEach(P=>{if(P.mode==='car')jcto([P.lat,P.lon]);});}
+function jcount(ps){jcwarm(ps);return CPX.filter(c=>c.xy&&ps.every(P=>{const t=P.mode==='car'&&JCAR?jcar(c.xy,[P.lat,P.lon]):jtime(c.xy,[P.lat,P.lon],jlab(P),P.hr);return t!=null&&t<=P.max;})).length;}
 function jnearst(p){let b=null,bd=1e9;NET.stations.forEach(s=>{const d=jkm([p.lat,p.lon],[s[1],s[2]]);if(d<bd){bd=d;b=s[0];}});return [b,bd];}
 function jpers(a,k){return {lab:a['J'+k].lab,lat:a['J'+k].lat,lon:a['J'+k].lon,hr:8,max:a['M'+k]||60,mode:a['C'+k]||'pt'};}
-function jasync(id,fn){setTimeout(()=>jbload().then(()=>setTimeout(()=>{const e=document.getElementById(id);if(e)e.textContent=fn();},20)).catch(()=>{const e=document.getElementById(id);if(e)e.textContent='-';}),30);}
+function jasync(id,fn){setTimeout(()=>Promise.all([jbload(),JCAR2?jcload():0]).then(()=>setTimeout(()=>{const e=document.getElementById(id);if(e)e.textContent=fn();},20)).catch(()=>{const e=document.getElementById(id);if(e)e.textContent='-';}),30);}
 CSTEP.commute={title:'직장 근처 단지 찾기',note:'통근 시간은 공공 버스·지하철 노선으로 계산한 대략값입니다(실제와 ±10분 안팎). 다음 화면에서 매매가·면적으로 더 좁힐 수 있습니다.',done:'통근 조건에 맞는<br>단지를 찾았습니다',
  init:()=>{const a={n:JB.n};JB.P.forEach((P,k)=>{if(P.lat!=null)a['J'+k]={lab:P.lab,lat:P.lat,lon:P.lon};a['M'+k]=P.max||60;if(JCAR)a['C'+k]=P.mode||'pt';});return a;},
  get steps(){const n=CN.a.n||1,S=[{id:'n',q:'출근하는 사람은<br>몇 명인가요?',h:'맞벌이면 두 사람의 직장을 각각 넣고, 둘 다 조건에 맞는 단지만 찾습니다.',
@@ -2444,7 +2462,7 @@ function jInfo(){const ck=NET.cv||NET.check||{};
  <li>공공 자료(서울 열린데이터광장·경기데이터드림의 버스 노선·정류장, 오픈스트리트맵 철도)로 만든 노선망에서 걷기·대기·환승을 더한 <b>대략값</b>이에요</li>
  <li>10분 단위로 보여 드려요. 평일 8시 실제 길찾기 ${ck.n||0}건과 비교하면 평균 ${ck.mae}분 차이, ${ck.within10}%가 10분 안이에요</li>
  <li>실시간 버스 도착·도로 정체는 반영하지 않아요. 정확한 시간은 지도 앱에서 확인하세요</li>
- <li>${JCAR?`자가용은 평일 출근 시각 실측 ${JCAR.n}건에 맞춘 계산이에요(평균 ${JCAR.mae}분 차이)`:'자가용은 평일 출근길 실측을 모으는 중이에요'}</li>
+ <li>${JCAR2?`자가용은 도로망(고속도로~3차 도로) 위 최단 시간이에요. 속도는 평일 아침 실제 길찾기 ${JCAR2.n.toLocaleString()}건에 맞췄고, 맞출 때 안 쓴 절반과 비교하면 평균 ${JCAR2.mae}분 차이, ${JCAR2.within10}%가 10분 안이에요`:JCAR?`자가용은 직선거리로 어림한 값이에요(평균 ${JCAR.mae}분 차이) · 도로를 따라 셈하는 계산은 출근길 표본을 모으는 중이에요`:'자가용은 평일 출근길 실측을 모으는 중이에요'}</li>
  <li>순이익은 매수 분석과 같은 셈이에요. 자본·연소득·대출·생활 조건·세금 혜택은 매수 분석의 '내 조건'을 그대로 쓰고, 매매가·평형·연식은 이 화면에서 골라요</li>
  <li>재건축·리모델링 진행 중인 단지는 뺐어요</li></ul>`);}
 const JPB=[[0,'전체'],[6,'6억 이하'],[9,'9억 이하'],[12,'12억 이하'],[15,'15억 이하']], JSO={up:'5년 순이익 순',t:'통근 짧은 순',sc:'입지 좋은 순'};
@@ -2474,26 +2492,28 @@ function jgu(la,lo){let g=null,bd=3;CPX.forEach(c=>{if(!c.xy)return;const d=jkm(
 const jmy=la=>Math.log(Math.tan(Math.PI/4+la*Math.PI/360)), jiy=y=>(2*Math.atan(Math.exp(y))-Math.PI/2)*180/Math.PI;
 function jgridBox(){let a=90,b=-90,c=180,d=-180;CPX.forEach(x=>{if(!x.xy)return;a=Math.min(a,x.xy[0]);b=Math.max(b,x.xy[0]);c=Math.min(c,x.xy[1]);d=Math.max(d,x.xy[1]);});
  a-=.03;b+=.03;c-=.04;d+=.04;return {la0:a,la1:b,lo0:c,lo1:d,nx:Math.round((d-c)*JKX/0.35),ny:Math.round((b-a)*JKY/0.35)};}
-function jmask(P,G){if(P.mode==='car')return null;   // 자가용 = 직선거리 공식이라 그리면 원 — 실제처럼 보이므로 안 그림
- const X=jbprep(),R=X.R,Ls=jlab(P),g=[P.lat,P.lon],out=new Uint8Array(Math.ceil(G.nx*G.ny/8)),sure=new Uint8Array(out.length),y0=jmy(G.la0),y1=jmy(G.la1);
+function jmask(P,G){const car=P.mode==='car';if(car&&!(JCAR2&&window.JCARN))return null;   // 자가용: 도로망 모형이 검증을 통과했을 때만(직선 공식은 원이라 안 그림)
+ const X=car?null:jbprep(),R=car?null:X.R,Ls=car?null:jlab(P),g=[P.lat,P.lon],out=new Uint8Array(Math.ceil(G.nx*G.ny/8)),sure=new Uint8Array(out.length),y0=jmy(G.la0),y1=jmy(G.la1);
+ if(car)jcto(g);
  let n=0;for(let j=0;j<G.ny;j++){const lat=jiy(y1-(j+.5)/G.ny*(y1-y0));for(let i=0;i<G.nx;i++){const p=[lat,G.lo0+(i+.5)/G.nx*(G.lo1-G.lo0)];let t;
+  if(car){t=jctime(p,g);if(t==null)t=Infinity;}else{
   t=X.wk(jkm(p,g));if(t>30)t=Infinity;
   for(const [k,d] of jgnear(X.sg,X.sl,X.so,p,R.walk_max/R.detour)){const v=X.wk(d)+Ls.TS[k];if(v<t)t=v;}
-  if(t>P.max-10)for(const [k,d] of jgnear(X.bg,X.la,X.lo,p,R.stop_walk_km)){const v=X.wk(d)+Ls.TB[k];if(v<t)t=v;}
+  if(t>P.max-10)for(const [k,d] of jgnear(X.bg,X.la,X.lo,p,R.stop_walk_km)){const v=X.wk(d)+Ls.TB[k];if(v<t)t=v;}}
   if(t<=P.max){const b=j*G.nx+i;out[b>>3]|=1<<(b&7);n++;if(t<=P.max-10)sure[b>>3]|=1<<(b&7);}}}
  const enc=u=>{let s='';for(let i=0;i<u.length;i+=4096)s+=String.fromCharCode.apply(null,u.subarray(i,i+4096));return btoa(s);};
  return {m:enc(out),s:enc(sure),n};}
 let JL=[];
 function jmap(btn){if(btn){btn.disabled=true;btn.textContent='범위 셈하는 중…';}
- setTimeout(()=>{jbload().then(()=>{const PS=JB.P.slice(0,JB.n).map(P=>Object.assign({},P,{mode:P.mode==='car'&&JCAR?'car':'pt'})),G=jgridBox(),M=PS.map(P=>jmask(P,G));
+ setTimeout(()=>{Promise.all([jbload(),JCAR2&&JB.P.slice(0,JB.n).some(P=>P.mode==='car')?jcload():0]).then(()=>{const PS=JB.P.slice(0,JB.n).map(P=>Object.assign({},P,{mode:P.mode==='car'&&JCAR?'car':'pt'})),G=jgridBox(),M=PS.map(P=>jmask(P,G));
   const it=[],seen=new Set();JL.forEach(({c,r,ts})=>{if(it.length>=30||!c.no||seen.has(c.no))return;seen.add(c.no);const F=r.F||fin(r);it.push([c.no,it.length+1,ab(F.p5),r.b,'통근 '+ts.map((t,k)=>(JB.n===2?JWHO[k]+' ':'')+jband(t)).join(' · ')]);});
   const cond=PS.map((P,k)=>(JB.n===2?JWHO[k]+' ':'')+P.lab.split(' · ')[0]+' '+P.max+'분').join(' · ');
   try{localStorage.setItem('jipsem.rank',JSON.stringify({at:Date.now(),title:'직장 근처 찾기 · 통근 범위',cond,items:it,
-   area:{la0:G.la0,la1:G.la1,lo0:G.lo0,lo1:G.lo1,nx:G.nx,ny:G.ny,m:M.map(x=>x?x.m:null),s:M.map(x=>x?x.s:null),who:PS.map((P,k)=>JB.n===2?JWHO[k]:'나'),max:PS.map(P=>P.max),car:PS.map(P=>P.mode==='car')},
+   area:{la0:G.la0,la1:G.la1,lo0:G.lo0,lo1:G.lo1,nx:G.nx,ny:G.ny,m:M.map(x=>x?x.m:null),s:M.map(x=>x?x.s:null),who:PS.map((P,k)=>JB.n===2?JWHO[k]:'나'),max:PS.map(P=>P.max),car:PS.map(P=>P.mode==='car'&&!JCAR2),cm:PS.map(P=>P.mode==='car')},
    jobs:PS.map((P,k)=>[P.lat,P.lon,(JB.n===2?JWHO[k]+' · ':'')+P.lab.split(' · ')[0]])}));}catch(e){}
   location.href='map.html#rank';}).catch(()=>{if(btn){btn.disabled=false;btn.textContent='지도로 보기';}});},30);}
 function jrun(){const box=$('#jlist');if(!box)return;box.innerHTML='<p class="sub">계산 중…</p>';
- jbload().then(()=>setTimeout(()=>{const PS=JB.P.slice(0,JB.n).map(P=>Object.assign({},P,{mode:P.mode==='car'&&JCAR?'car':'pt'})),Ds=PS.map(P=>P.mode==='car'?null:jlab(P));
+ Promise.all([jbload(),JCAR2&&JB.P.slice(0,JB.n).some(P=>P.mode==='car')?jcload():0]).then(()=>setTimeout(()=>{const PS=JB.P.slice(0,JB.n).map(P=>Object.assign({},P,{mode:P.mode==='car'&&JCAR?'car':'pt'})),Ds=PS.map(P=>P.mode==='car'?null:jlab(P));jcwarm(PS);
   const HC=CF.cash!=null; R.forEach(r=>r.F=null);   // 다른 화면에서 셈한 값이 섞이지 않게
   // 09-29 사용자: 매수 분석과 같은 셈이어야 — 필터는 ok()(지역·면적 조건만 통근 화면의 것으로), 정비사업 진행 단지 제외(isMid), 정렬은 순이익(lscore 보통 순), 카드는 row()
   const okc=r=>{const g=CF.regions,z=CF.size,a=CF.age;CF.regions=[];CF.size=[];CF.age=JB.age||[];try{return ok(r);}finally{CF.regions=g;CF.size=z;CF.age=a;}};   // 지역·면적·연식은 이 화면 것, 나머지(자본·연소득·대출·생활 조건·세금 혜택)는 매수 분석의 내 조건

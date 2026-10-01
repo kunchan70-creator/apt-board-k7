@@ -915,8 +915,8 @@ function rkArea(A) {
   const carNote = (A.car || []).some(Boolean) ? `<small>${(A.car || []).map((c, k) => c ? esc(A.who[k]) : null).filter(Boolean).join('·')}(자가용)는 직선거리 어림이라 범위를 그리지 않아요</small>` : '';
   let h = '';
   if (two) h = `<div>${sw(PU, 175)}둘 다 출근 가능 ${n3 ? '' : '<small>(겹치는 곳 없음)</small>'}</div><div>${sw(PU, 75)}둘 다 · 한쪽이라도 경계</div><div>${sw(BL, 40)}${esc(A.who[0])}만 · ${sw(PK, 40)}${esc(A.who[1])}만</div>`;
-  else if (idx.length) { const m = mx[idx[0]]; h = `<div>${sw(BL, 120)}대중교통 약 ${m - 10}분 안</div><div>${sw(BL, 45)}${m - 10}~${m}분 · 경계</div>`; }
-  $('#rklg').innerHTML = h + carNote + `<small>평일 8시 대중교통 대략값 · 경계는 실제 ±10분</small>`;
+  else if (idx.length) { const m = mx[idx[0]]; const md = A.cm && A.cm[idx[0]] ? '자가용' : '대중교통'; h = `<div>${sw(BL, 120)}${md} 약 ${m - 10}분 안</div><div>${sw(BL, 45)}${m - 10}~${m}분 · 경계</div>`; }
+  $('#rklg').innerHTML = h + carNote + `<small>평일 아침 출근길 대략값 · 경계는 실제 ±10분</small>`;
   $('#rklg').classList.add('on');
 }
 $('#rkx').onclick = () => { RK = null; RKL.splice(0).forEach(l => map.removeLayer(l)); $('#rklg').classList.remove('on'); $('#rkbar').classList.remove('on'); document.body.classList.remove('rkon'); refresh(); };
