@@ -102,6 +102,13 @@ small.src{display:block;color:var(--ink3);font-size:.8rem;margin-top:4px;line-he
 .card h2:first-child,.card h1:first-child{margin-top:0}
 ul.plain{padding-left:18px}
 </style><style>
+.kzb{display:block;margin:8px 0 2px;border:0;background:var(--surface2);color:var(--blue);font:inherit;font-size:.82rem;font-weight:700;border-radius:10px;padding:8px 12px;cursor:pointer}
+.kz{position:fixed;inset:0;z-index:99;background:var(--bg);overflow:auto;padding:calc(12px + env(safe-area-inset-top)) 16px 24px;box-sizing:border-box}
+.kzh{display:flex;justify-content:space-between;align-items:center;max-width:980px;margin:0 auto}.kzh b{font-size:1.1rem}.kzh button{border:0;background:var(--surface2);color:var(--ink);width:36px;height:36px;border-radius:50%;font-size:1rem;cursor:pointer}
+.kzt{display:flex;gap:6px;flex-wrap:wrap;max-width:980px;margin:12px auto 6px}.kzt button{border:0;background:var(--surface2);color:var(--ink2);font:inherit;font-size:.82rem;font-weight:600;border-radius:999px;padding:7px 12px;cursor:pointer}.kzt button.on{background:var(--blue);color:#fff}
+.kzl{display:flex;gap:12px;flex-wrap:wrap;font-size:.78rem;color:var(--ink2);max-width:980px;margin:4px auto 6px}
+#kzc{max-width:980px;margin:0 auto}.kzv{max-width:980px;margin:8px auto 0;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:.86rem;line-height:1.6}
+.kzg{display:flex;gap:12px;flex-wrap:wrap;max-width:980px;margin:10px auto 0;font-size:.74rem;color:var(--ink3)}.kzg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;opacity:.5;vertical-align:-1px}
 .mk-sub{font-size:.84rem;color:var(--ink2);line-height:1.6}
 .i3{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;margin-top:14px}.i3>div{padding:12px 10px;border-radius:14px;background:var(--surface2);min-width:0}
 .hist{margin-top:18px;padding-top:16px;border-top:1px solid var(--line2)}
@@ -298,9 +305,50 @@ function kiOpen(id,gi,ii,mode){const el=document.getElementById(id);if(!el)retur
  mode=mode||(KM[it.k]||'lvl');KM[it.k]=mode;const r=k=>R_[k]?pc(R_[k][0]):'-';
  el.innerHTML=(lvl?`<div class="kt">${[['lvl','수준'],['chg','1년 변화']].map(([m,t])=>`<button class="${mode===m?'on':''}" onclick="event.stopPropagation();kiOpen('${id}',${gi},${ii},'${m}')">${t}</button>`).join('')}</div>`:'')
   +`<div style="display:flex;gap:12px;font-size:.74rem;color:var(--ink2);margin-top:8px"><span><b style="color:var(--blue)">━</b> ${it.nm}</span><span><b style="color:var(--green)">▮</b><b style="color:var(--red)">▮</b> 집값 1년 변화</span></div>`
-  +kplot(id+'p',it,mode)+`<p>${it.desc}</p>`
+  +kplot(id+'p',it,mode)+`<button class="kzb" onclick="event.stopPropagation();kzoom(${gi},${ii},'${mode}')">크게 보기 · 집값 겹쳐 보기 ›</button><p>${it.desc}</p>`
   +(it.zone&&it.zavg!=null?`<div class="rec">지금처럼 <b>${ZW[it.zone]}</b>이었던 달(${it.zn}달)의 1년 뒤 집값 평균 <b style="color:${it.zavg>=K_().base?'var(--green)':'var(--red)'}">${pc(it.zavg)}</b> · 전체 평균 ${pc(K_().base)}<br><span class="sub">높은 편 ${r('hi')} · 보통 ${r('mid')} · 낮은 편 ${r('lo')} · 2010년 이후</span></div>`:'');
  el.hidden=false;}
+// 10-02 사용자: 국면 그래프를 확대해 '지금은 어느 정도인지' 보고 싶다 + 집값 그래프를 포개면 보기 편하다
+//   → 전체 화면: 지표(왼쪽 눈금) + 집값 1년 변화(오른쪽 눈금) 포갬 · 배경 = 그달 국면 색 · 기간 3년/5년/10년/전체 · 손가락을 댄 달의 두 값
+let KZ=null;
+function kzoom(gi,ii,mode,yrs){const it=KI().groups[gi].items[ii];KZ={gi,ii,mode:mode||'lvl',yrs:yrs||10};
+ let el=document.getElementById('kz');if(!el){el=document.createElement('div');el.id='kz';el.className='kz';document.body.appendChild(el);}
+ const P=[[3,'3년'],[5,'5년'],[10,'10년'],[99,'전체']];
+ el.innerHTML=`<div class="kzh"><b>${it.nm}</b><button onclick="kzClose()" aria-label="닫기">✕</button></div>
+  <div class="kzt">${P.map(([y,t])=>`<button class="${KZ.yrs===y?'on':''}" onclick="kzoom(${gi},${ii},'${KZ.mode}',${y})">${t}</button>`).join('')}${!it.sg?`<span style="flex:1"></span>${[['lvl','수준'],['chg','1년 변화']].map(([m,t])=>`<button class="${KZ.mode===m?'on':''}" onclick="kzoom(${gi},${ii},'${m}',${KZ.yrs})">${t}</button>`).join('')}`:''}</div>
+  <div class="kzl"><span><b style="color:var(--blue)">━</b> ${it.nm}</span><span><b style="color:#d9822b">━</b> 집값 1년 변화</span><span class="sub">배경 = 그달 국면</span></div>
+  <div id="kzc"></div><div id="kzv" class="kzv"></div>
+  <div class="kzg">${[1,2,3,4].map(k=>`<span><i style="background:${STG[k][2]}"></i>${STG[k][3]}</span>`).join('')}</div>`;
+ document.documentElement.style.overflow='hidden'; kzDraw(it);}
+function kzClose(){const el=document.getElementById('kz');if(el)el.remove();document.documentElement.style.overflow='';KZ=null;}
+function kzDraw(it){const K=KI(),S0=kser(it,KZ.mode),pxm=new Map(K.px||[]),last=S0[S0.length-1][0],y0=+last.slice(0,4)-KZ.yrs;
+ const S=S0.filter(x=>KZ.yrs>=99||x[0]>=`${y0}${last.slice(4)}`), n=S.length; if(n<2)return;
+ const box=document.getElementById('kzc'), W=Math.max(320,Math.min(980,box.clientWidth||360)), H=Math.round(Math.min(window.innerHeight*0.6,Math.max(W*0.62,Math.min(W*0.9,320)))), L=44,R=44,T0=12,T1=H-26;
+ const f=x=>it.unit==='pct'?x*100:x, vv=S.map(x=>f(x[1])), pv=S.map(x=>pxm.get(x[0]));
+ let lo=Math.min(...vv),hi=Math.max(...vv); if(KZ.mode==='chg'||it.sg){lo=Math.min(lo,0);hi=Math.max(hi,0);} const pd=(hi-lo)*.08||1; lo-=pd; hi+=pd;
+ const pz=pv.filter(x=>x!=null), pm=Math.max(5,...pz.map(Math.abs))*1.1;
+ const X=i=>L+i/(n-1)*(W-L-R), Y=x=>T0+(hi-x)/(hi-lo)*(T1-T0), PY=x=>T0+(pm-x)/(2*pm)*(T1-T0);
+ const u=(it.unit==='pct'||it.k==='jr'||it.k==='gapc')?(KZ.mode==='chg'?'%p':'%'):it.unit==='pp'?'%p':'';
+ const seq=K.seq?K.seq[1]:'', s0=K.seq?K.seq[0]:'2010.01', idx=ym=>((+ym.slice(0,4)-+s0.slice(0,4))*12+(+ym.slice(5)-+s0.slice(5)));
+ let bg='';for(let i=0;i<n;i++){const c=seq[idx(S[i][0])];if(!c||!STG[c])continue;const x0=i?(X(i-1)+X(i))/2:L,x1=i<n-1?(X(i)+X(i+1))/2:W-R;bg+=`<rect x="${x0.toFixed(1)}" y="${T0}" width="${(x1-x0+.4).toFixed(1)}" height="${T1-T0}" fill="${STG[c][2]}" opacity=".10"/>`;}
+ const tk=nice(lo+pd,hi-pd), ptk=[-pm/1.1,0,pm/1.1].map(v=>Math.round(v));
+ const yrsL=S.map((x,i)=>[x[0],i]).filter(([ym])=>ym.endsWith('.01')&&(KZ.yrs<=5||(+ym.slice(0,4))%2===0));
+ const pl=pv.map((v,i)=>v==null?null:[X(i),PY(v)]); let pd2='';pl.forEach((q,i)=>{if(!q)return;pd2+=(i&&pl[i-1]?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1);});
+ box.innerHTML=`<svg id="kzs" viewBox="0 0 ${W} ${H}" style="width:100%;display:block;touch-action:none" onpointermove="kzScr(event)" onpointerdown="kzScr(event)">${bg}
+  ${tk.map(t=>`<line x1="${L}" x2="${W-R}" y1="${Y(t).toFixed(1)}" y2="${Y(t).toFixed(1)}" stroke="var(--line)" stroke-width="${t===0?1.2:.6}"/><text x="${L-6}" y="${(Y(t)+3.5).toFixed(1)}" font-size="11" text-anchor="end" fill="var(--blue)">${Math.abs(t)>=100?t.toFixed(0):+t.toFixed(2)}${u}</text>`).join('')}
+  ${ptk.map(t=>`<text x="${W-R+6}" y="${(PY(t)+3.5).toFixed(1)}" font-size="11" fill="#b8661b">${t>0?'+':''}${t}%</text>`).join('')}
+  <line x1="${L}" x2="${W-R}" y1="${PY(0).toFixed(1)}" y2="${PY(0).toFixed(1)}" stroke="#d9822b" stroke-dasharray="3 3" stroke-width=".8" opacity=".6"/>
+  <path d="${pd2}" fill="none" stroke="#d9822b" stroke-width="2"/>
+  <path d="${vv.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join('')}" fill="none" stroke="var(--blue)" stroke-width="2.4"/>
+  <circle cx="${X(n-1).toFixed(1)}" cy="${Y(vv[n-1]).toFixed(1)}" r="4" fill="var(--blue)"/>
+  ${yrsL.map(([ym,i])=>`<text x="${X(i).toFixed(1)}" y="${H-8}" font-size="11" text-anchor="middle" fill="var(--ink3)">'${ym.slice(2,4)}</text>`).join('')}
+  <g id="kzx"></g></svg>`;
+ KZ.g={S,vv,pv,X,Y,PY,n,L,R,W,T0,T1,u,seq,idx,it}; kzVal(n-1);}
+function kzScr(e){const g=KZ&&KZ.g;if(!g)return;const sv=document.getElementById('kzs').getBoundingClientRect(),x=(e.clientX-sv.left)/sv.width*g.W;
+ const i=Math.max(0,Math.min(g.n-1,Math.round((x-g.L)/(g.W-g.L-g.R)*(g.n-1))));kzVal(i);}
+function kzVal(i){const g=KZ.g,ym=g.S[i][0],c=g.seq[g.idx(ym)];let q=g.pv[i],qi=i;while(q==null&&qi>0){qi--;q=g.pv[qi];}const qn=qi!==i?` <span class="sub">(${g.S[qi][0].replace('.','년 ')}월)</span>`:'';
+ document.getElementById('kzx').innerHTML=`<line x1="${g.X(i).toFixed(1)}" x2="${g.X(i).toFixed(1)}" y1="${g.T0}" y2="${g.T1}" stroke="var(--ink2)" stroke-width=".8"/><circle cx="${g.X(i).toFixed(1)}" cy="${g.Y(g.vv[i]).toFixed(1)}" r="4.5" fill="var(--surface)" stroke="var(--blue)" stroke-width="2"/>${q!=null?`<circle cx="${g.X(i).toFixed(1)}" cy="${g.PY(q).toFixed(1)}" r="4.5" fill="var(--surface)" stroke="#d9822b" stroke-width="2"/>`:''}`;
+ document.getElementById('kzv').innerHTML=`<b>${ym.replace('.','년 ')}월</b>${c&&STG[c]?` <span style="color:${STG[c][2]};font-weight:800">● ${STG[c][3]}</span>`:''}<br><span style="color:var(--blue)">${g.it.nm} <b>${kval(g.it,g.S[i][1],KZ.mode)}</b></span> · <span style="color:#b8661b">집값 1년 변화 <b>${q==null?'-':(q>0?'+':'')+q.toFixed(1)+'%'}</b>${q==null?'':qn}</span>`;}
 function kiScreen(){const K=KI();if(!K)return null;
  /* 09-30 사용자: '오르는 쪽 2 · 내리는 쪽 7'은 앱이 내린다고 말하는 것처럼 읽힌다 · 지표마다 중요도가 다르다 · 기준이 뭔지 모르겠다
     → 개수 대신 크기: 과거 이 지표가 지금 수준이었던 달의 1년 뒤 집값이 전체 평균보다 몇 %p 높았나/낮았나(막대). 두 기간 모두 같은 쪽인 것만 색, 나머지는 접음 */
