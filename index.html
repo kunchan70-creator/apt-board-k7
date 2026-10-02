@@ -369,7 +369,7 @@ const QU={key:'useU',q:'매수 후<br>실거주할 건가요?',o:[['실거주',t
   :`<b class="k">전세보증금만큼 자기자본이 덜 들어요</b>토지거래허가구역(서울 전역·경기 12곳)은 실거주 의무로 제외됩니다.`};
 
 const QS=[
- {key:null,q:'선호 동네 집이<br>돈도 더 남을까요?',o:[['그럴 것 같아요',1],['꼭 그렇진 않을 것 같아요',0]],
+ {key:null,q:'선호 입지 단지는<br>순이익도 높을까요?',o:[['그럴 것 같아요',1],['꼭 그렇진 않을 것 같아요',0]],
   a:v=>{const e=eduEx(), yes=e.hi&&e.hi.p5>e.lo.p5, worse=e.hi&&e.hi.p1<e.lo.p1;
    return `<b class="k">${yes?(v?'대체로 맞아요':'대체로는 순이익이 더 컸어요'):(v?'꼭 그렇진 않아요':'맞아요')}</b>${yes?'같은 자금으로 매수할 수 있는 곳 중에선, 선호 동네가 보통 순이익이 더 컸어요.'+(worse?(e.hi.pp>e.lo.pp?` 나쁠 때 <b>집값은 덜 빠지지만</b>(${Math.round(e.hi.pp)}% vs ${Math.round(e.lo.pp)}%), 대출이 커서 <b>잃는 금액</b>은 더 커요.`:' 대신 나쁠 땐 더 잃었어요.'):''):'선호 동네는 비싸서, 같은 돈이면 대출과 세금이 더 들어요.'}`;},
   v:v=>eduView()},
@@ -481,7 +481,7 @@ const STORY=[   // 09-25 전개: 큰 결정 → 발견(선호는 잘 안 변함)
  {i:'pin',t:'기준',q:'그래서 입지를<br>이렇게 비교했습니다',v:sLoc,a:'입지(주변 단지 실거래로 본 동네 시세 + 역)와 단지(연식·규모)를 나눠 점수로 만들었습니다. 새 아파트라서 높은 것과 동네가 좋아서 높은 것을 구분해요.',f:[['입지 순위',"board('obj')"],['단지 지도',"location.href='map.html'"]]},
  {i:'calc',t:'내 예산',q:'누구나 선호하는 곳이<br>내게도 최선일까요?',v:sPick,a:'내 자본으로 매수할 수 있는 집 가운데, 대출·세금·이자까지 셈해 5년 순이익이 가장 높은 곳을 찾아 드립니다.',f:[['매수 분석',"chat()"]]},
  {i:'home',t:'우리 단지',q:'우리 단지는<br>어떤 점이 강점일까요?',v:sMine,a:'우리 단지의 강점과 약점, 5년 뒤 시세 범위를 한 장으로 보고, 다른 단지와 같은 기준으로 비교해 봅니다.',f:[['단지 성적표',"board('obj',1)"],['단지 비교',"cmp()"],['갈아타기',"move()"]]},
- {i:'shield',t:'검증',q:'이 계산,<br>과거에도 맞았을까요?',v:sBack,a:'과거 거래로 확인해 보니, 5년 수익을 높게 셈한 집이 실제로 더 올랐습니다. 다만 시장 전체가 오를지 내릴지는 맞힐 수 없습니다.',f:[['믿을 수 있나요',"trust()"]]}];
+ {i:'shield',t:'검증',q:'이 셈의<br>과거 검증 결과는?',v:sBack,a:'과거 거래로 확인해 보니, 5년 수익을 높게 셈한 집이 실제로 더 올랐습니다. 다만 시장 전체가 오를지 내릴지는 맞힐 수 없습니다.',f:[['믿을 수 있나요',"trust()"]]}];
 // ---- 고민별 전용 카드(09-25): 선택한 고민에서 대화가 이어지게. 그림은 모두 실제 데이터 또는 구성 그림(가짜 수치 없음)
 function vWorry(L){return `<div style="display:flex;flex-direction:column;gap:8px;margin-top:16px">`+L.map((t,k)=>`<span class="sr" style="align-self:${k%2?'flex-end':'flex-start'};max-width:85%;padding:10px 14px;border-radius:16px;background:${k%2?'var(--blue-bg)':'var(--surface2)'};color:${k%2?'var(--blue)':'var(--ink)'};font-weight:700;font-size:.9rem;${D_(400+k*450)}">“${t}”</span>`).join('')+`</div>`;}
 function vRange(){   // 내 돈 기준 순이익 1위 단지의 5년 범위(실제 값)
@@ -1348,7 +1348,7 @@ function mvRun(){
 
 // ---------------- 이 결과, 어떻게 믿나요 ----------------
 /* 10-02 사용자: 사람들이 가장 먼저 '이걸 어떻게 믿냐'를 궁금해한다 — 결과까지 보여 준 건 좋은데 '그래서 어떻게 믿는데?'가 남는다, 아직 빈약.
-   '산출 방법'·'믿을 수 있나요'·'과거에 맞았나요'는 사실 같은 역할 → 한 페이지(목차 칩 + 섹션마다 질문·큰 답·그림). 관심 있게 볼 사람에게 편하게, 가시성 있게.
+   '산출 방법'·'믿을 수 있나요'·'과거 검증 결과'는 사실 같은 역할 → 한 페이지(목차 칩 + 섹션마다 질문·큰 답·그림). 관심 있게 볼 사람에게 편하게, 가시성 있게.
    섹션: 자료 · 셈 방법 · 검증 · 빗나간 곳 · 넣고 뺀 것 · 정확도 · 갱신. 숫자는 모두 자료에서 매번 다시 읽는다 */
 function trust(from,sec){
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); shClose();
@@ -1385,12 +1385,12 @@ function trust(from,sec){
  const dots=HY.length?`<div style="display:flex;justify-content:center;gap:5px;flex-wrap:wrap;margin:6px 0 4px">${HY.map(h=>`<span title="${h[0]}" style="display:flex;flex-direction:column;align-items:center;gap:2px"><i style="width:16px;height:16px;border-radius:50%;background:${h[1]?'var(--blue)':'var(--line)'}"></i><span style="font-size:.6rem;color:var(--ink3)">'${h[0].slice(2)}</span></span>`).join('')}</div>`:'';
  const pbar=(lab,v,mx,hl)=>`<div style="display:flex;align-items:center;gap:8px;margin:5px 0"><span style="flex:0 0 4.6em;font-size:.76rem;text-align:right;color:${hl?'var(--blue)':'var(--ink2)'};font-weight:${hl?800:600}">${lab}</span><span style="flex:1;height:14px;background:var(--line2);border-radius:5px;overflow:hidden"><i style="display:block;height:100%;width:${Math.max(2,Math.max(0,v)/mx*100)}%;background:${hl?'var(--blue)':'var(--ink3)'};opacity:${hl?1:.45};border-radius:5px"></i></span><b class="num" style="flex:0 0 4.4em;font-size:.8rem;text-align:right">${e1(v)}</b></div>`;
  const pmx=Math.max(1,...SP.map(([p,x])=>x[1]));
- const s3=sect('test','과거에 맞았나요',SB?`${HY.length}번 중 ${hwin}번, 순이익 상위 20%가 더 남았어요`:'과거 실거래로 대조했어요',
+ const s3=sect('test','과거 검증 결과',SB?`${HY.length}번 중 ${hwin}번, 순이익 상위 20%가 초과 성과를 냈어요`:'과거 실거래로 대조했어요',
   `이 화면의 순위와 똑같은 셈(자본 ${sK/1e4}억 · 모자란 만큼 대출 · 그때 금리 · 세금·비용)을 과거 매수 시점에 그대로 돌리고, 5년 뒤 실제 거래로 맞춰 봤어요. 만들 때 쓰지 않은 시기의 실거래 ${EVN}건이에요.`,
   dots+SP.map(([p,x])=>`<div style="font-size:.8rem;font-weight:700;margin:14px 0 2px">${p}년 매수 · 5년 뒤 실제 순이익(가운데)</div>`
    +pbar('상위 20%',x[1],pmx,1)+pbar('전체',x[2],pmx,0)+pbar('하위 20%',x[3],pmx,0)).join('')
   +(SP.length?`<div style="display:flex;gap:8px;margin-top:14px">${tile(SP.map(([p,x])=>x[4]+'%').join(' · '),'상위 20% 중 실제 손실<br>'+SP.map(([p])=>p.slice(2,4)+'~'+p.slice(-2)).join(' · ')+'년 매수')}${tile(SP.map(([p,x])=>x[5]+'%').join(' · '),'전체 중 실제 손실<br>'+SP.map(([p])=>p.slice(2,4)+'~'+p.slice(-2)).join(' · ')+'년 매수')}</div>`:''),
-  `점 = 매수한 반기 · 파랑 = 그 반기에 순이익 상위 20%가 전체보다 더 남음 · 자본 1·3·5억 × 대출 50·70% × 두 기간, 12가지 모두 ${SB&&SB.pass?'같은 결론':'확인 중'} · ‘나쁠 때 손실 적은 순’은 이 시험에서 실제와 거꾸로 나와 순서 기준에서 뺐어요`);
+  `점 = 매수한 반기 · 파랑 = 그 반기에 순이익 상위 20%가 전체 대비 초과 성과 · 자본 1·3·5억 × 대출 50·70% × 두 기간, 12가지 모두 ${SB&&SB.pass?'같은 결론':'확인 중'} · ‘나쁠 때 손실 적은 순’은 이 시험에서 실제와 거꾸로 나와 순서 기준에서 뺐어요`);
  // 4 빗나간 곳
  const s4=sect('miss','어디서 빗나갔나요',(SP.length?`순이익 상위 20%도 100곳 중 ${Math.round(SP.reduce((t,[p,x])=>t+x[4],0)/SP.length)}곳은 손실이었어요`:`높게 셈한 집도 1,000곳 중 ${Math.round((M?M.pct:(qb.loss||0))*10)}곳은 손실이었어요`),
   M&&M.yrs&&M.yrs[0]?`높게 셈한 집의 손실 가운데 ${M.yrs[0][1]}%는 시세가 가장 높던 ${M.yrs[0][0]}년에 산 경우예요. 단지를 잘 골라도 시장 전체가 내리면 함께 내려요.`:'단지를 잘 골라도 시장 전체가 내리면 함께 내려요.',
@@ -1409,7 +1409,7 @@ function trust(from,sec){
   `매달 다시 시험해서 떨어지면 빼요${(DT.cand||{}).date?' · 마지막 시험 '+DT.cand.date:''} · 빠진 항목도 단지 정보로는 보여 드려요`);
  // 6 정확도 — 10-02 사용자: ①출퇴근 정확도는 5년 셈과 무관 → 뺌(출퇴근 화면에 있음) ②'범위 80% 적중'을 초록 막대로 보이면 폭이 넓은 걸 정확도로 포장한 셈 → 폭을 그대로 보여 줌
  const RW=R.filter(r=>!r.as&&!(r.bu>0)&&r.p&&r.v1&&r.v9), md_=a=>{a=a.slice().sort((x,y)=>x-y);return a.length?a[Math.floor(a.length/2)]:0;}, rlo=Math.round(md_(RW.map(r=>(r.v1/r.p-1)*100))), rhi=Math.round(md_(RW.map(r=>(r.v9/r.p-1)*100))), sgn=v=>(v>=0?'+':'−')+Math.abs(v)+'%';
- const s6=sect('acc','숫자는 얼마나 정확한가요','맞는 만큼만 믿으세요','숫자마다 얼마나 맞았는지 따로 쟀어요.',
+ const s6=sect('acc','숫자는 얼마나 정확한가요','맞는 만큼만 믿으세요','숫자마다 적중도를 따로 쟀어요.',
   `<div style="padding:10px 0;border-bottom:1px solid var(--line2)"><b style="font-size:.88rem">순이익 순위</b><div class="sub" style="font-size:.74rem">화면 순서와 실제 순서가 얼마나 같았나 · 1 = 완벽 · 0 = 아무렇게나 고른 것과 같음 · 자본 ${sK/1e4}억</div>${SP.map(([p,x])=>gauge(Math.max(0,x[0]),1,'var(--blue)',p+' '+icf(x[0]))).join('')}<div class="sub" style="font-size:.72rem;margin-top:6px">순서가 대체로 맞는 정도예요. 1위와 5위의 차이는 믿을 만큼 크지 않아요 — 위쪽 몇 곳을 후보로 보세요.</div></div>`
   +`<div style="padding:10px 0;border-bottom:1px solid var(--line2)"><b style="font-size:.88rem">5년 뒤 범위</b><div class="sub" style="font-size:.74rem">넓어요 — 가운데 단지 기준 시세가 나쁠 때 <b style="color:var(--red)">${sgn(rlo)}</b> ~ 좋을 때 <b style="color:var(--ink)">${sgn(rhi)}</b></div><div class="sub" style="font-size:.72rem;margin-top:6px">과거 실제 결과의 80%가 이 범위 안이었지만, 이만큼 넓으면 ‘맞혔다’고 하기 어려워요. 시장 전체가 오를지 내릴지를 못 맞히기 때문이에요. 그래서 한 숫자로 약속하지 않고 손실 확률을 같이 보여 드려요.</div></div>`
   +`<div style="padding:10px 0;border-bottom:1px solid var(--line2)"><b style="font-size:.88rem">시장 전체 방향</b><div class="sub" style="font-size:.74rem">못 맞혀요 — 그래서 셈에 넣지 않고 범위로만 둬요</div>${gauge(0,100,'var(--red)','예측 안 함')}</div>`,
@@ -1957,7 +1957,7 @@ function why(r){   // 09-27: 입지(주변 단지 실거래로 본 동네 + 역)
   +`<p class="note" style="margin-top:6px">숫자는 서울·경기·인천 평균보다 ㎡값을 얼마나 더/덜 쳐 주는지. 점수는 5~95 순위(수익 예측 아님). ${r.gu} 안 입지 상위 ${guTop(r)}%</p>`;}
 // 신뢰도 → 말로 된 배지(가장 중요한 이유 하나). 역 거리 직선 추정·좌표 없음 같은 작은 이유는 배지 없이 상세에만.
 // 09-27 사용자: 72%가 '신뢰도 낮음'인데 대부분 거래 적음(가격 자체는 국토부 실거래라 사실) → 등급 한 줄 대신 약점을 보여 주고, 약점마다 무게를 나눈다.
-//   hi = 주의(5년 셈이나 실제 매수가가 크게 흔들릴 수 있음) · lo = 참고(추정 방식의 한계, 큰 문제 아님)
+//   hi = 주의(5년 셈이나 실제 매수가의 변동성이 큼) · lo = 참고(추정 방식의 한계, 큰 문제 아님)
 const FLAG=[[/입주권 단계/,'입주권·분담금 추정','분담금이 추정값','hi'],
  [/분양권·입주권/,'분양권 거래','등기 전 거래라 실제 시세와 다를 수 있음','hi'],
  [/리모델링 .*분담금/,'분담금 보도값','분담금이 확정 전 보도값','hi'],
@@ -1974,7 +1974,7 @@ const FLAG=[[/입주권 단계/,'입주권·분담금 추정','분담금이 추�
 function flag(r){const W=(r.why||[]).map(i=>S[i]||'');for(const [re,t,d] of FLAG)if(W.some(w=>re.test(w)))return {t,d};return null;}
 // 신뢰도(09-25 사용자: 분양권처럼 분석 정확성이 떨어지는 경우는 숫자를 보는 순간 알아야 한다) — 숫자가 나오는 모든 곳에 등급+이유를 붙인다.
 const TLV={A:['자료 충분','var(--green)','최근 실거래가 충분하고 과거 검증 범위 안의 단지입니다.'],B:['참고할 점','var(--ink2)','추정 방식의 한계가 조금 있지만 큰 문제는 아닙니다.'],
- C:['주의할 점','var(--tlo)','5년 셈이나 실제 매수가가 크게 흔들릴 수 있는 단지입니다. 집이 나쁘다는 뜻은 아닙니다.']};
+ C:['주의할 점','var(--tlo)','5년 셈이나 실제 매수가의 변동성이 큰 단지입니다. 집이 나쁘다는 뜻은 아닙니다.']};
 // 10-02 사용자: 전세 놓기는 전세가 늘 들어온다고 가정 → 2022~23 역전세만큼 전셋값이 내리면 갱신 때 돌려줄 돈(KB 전세지수 실제 하락폭, 시·군·구 → 시·도)
 function rjNeed(r){if(CF.useU||!DT.jdr)return null; const F=r.F||fin(r); if(!(F.jd>0))return null;
  const gu=r.gu, c=gu.split(' ')[0];   // 전세 놓기는 서울이 빠지므로 경기·인천 이름만 맞으면 된다(없으면 경기 전체)
@@ -2013,7 +2013,7 @@ function menu(){
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
  const it=(t,act,sub)=>`<button class="mrow" onclick="${act}"><span><b>${t}</b>${sub?`<span class="sub">${sub}</span>`:''}</span><span class="sub">›</span></button>`;
  app.innerHTML=HOME+`<div class="hq" style="margin:0 0 10px">메뉴</div>
- <div class="mgrp">서비스</div>${it('집셈 소개','hello()')}${it('집셈을 보기 전에','philo()')}${it('매수 분석 안내 다시 보기','firstFlow(0,1)')}${it('자주 묻는 질문','mpage(\'faq\')')}${it('이 결과, 어떻게 믿나요','trust()','자료 · 셈 방법 · 검증 · 정확도')}${it('계산 방법','trust(null,\'how\')','숫자를 어떻게 셈하는지')}${it('과거에 맞았나요?','trust(null,\'test\')','검증 결과와 빗나간 곳')}
+ <div class="mgrp">서비스</div>${it('집셈 소개','hello()')}${it('집셈을 보기 전에','philo()')}${it('매수 분석 안내 다시 보기','firstFlow(0,1)')}${it('자주 묻는 질문','mpage(\'faq\')')}${it('이 결과, 어떻게 믿나요','trust()','자료 · 셈 방법 · 검증 · 정확도')}${it('계산 방법','trust(null,\'how\')','숫자를 어떻게 셈하는지')}${it('과거 검증 결과','trust(null,\'test\')','검증 결과와 빗나간 곳')}
  <div class="mgrp">고객지원</div>${it('고객센터 · 정정 요청','mpage(\'help\')','문의, 잘못된 정보 알리기')}
  <div class="mgrp">약관 · 정책</div>${it('이용약관','mpage(\'terms\')')}${it('개인정보처리방침','mpage(\'privacy\')')}${it('사업자 정보','mpage(\'biz\')')}
  <p class="sub" style="font-size:.74rem;margin:18px 2px 0">데이터 기준일 ${DT.asof||'-'} · 매일 자동 갱신</p>`;}
@@ -2024,7 +2024,7 @@ const MP={
   ['숫자는 어디서 나오나요?','국토교통부 실거래가, KB부동산 지수, 한국은행 금리, 금융위원회 대출 규제, 서울·경기·인천 정비사업 공개 목록 같은 공개 자료입니다. 메뉴의 \'데이터 출처\'에 모두 적었습니다.'],
   ['5년 뒤 시세를 맞힐 수 있나요?','아무도 맞힐 수 없습니다. 그래서 가운데 값과 비관~낙관 범위(과거 10번 중 8번이 들어온 폭)를 함께 보여 드리고, 과거에 빗나간 곳도 공개합니다.'],
   ['\'손실 확률\'은 무슨 뜻인가요?','과거 비슷한 집들의 결과로 볼 때, 5년 뒤 순이익이 0보다 작을 가능성입니다.'],
-  ['단지에 붙은 \'거래 적음\'·\'분양권 거래\' 표시는요?','계산의 약점입니다. 황토색은 결과가 크게 흔들릴 수 있는 약점, 회색은 참고할 점입니다. 집이 나쁘다는 뜻은 아닙니다. 단지를 누르면 이유가 나옵니다.'],
+  ['단지에 붙은 \'거래 적음\'·\'분양권 거래\' 표시는요?','계산의 약점입니다. 황토색은 결과 변동성이 큰 약점, 회색은 참고할 점입니다. 집이 나쁘다는 뜻은 아닙니다. 단지를 누르면 이유가 나옵니다.'],
   ['재건축 단지는 왜 따로 나오나요?','조합설립 이후 단지는 분담금에 따라 결과가 크게 달라지는데 확정 전이라, 순위에서 빼고 사실만 보여 드립니다. 초기 단계(구역지정·안전진단·추진위) 단지는 순위에 들어 있습니다.'],
   ['대출 한도는 정확한가요?','발표된 규제(LTV·DSR·주택가격별 한도)를 적용한 어림값입니다. 실제 한도는 소득·신용·은행마다 다르니 은행에서 꼭 확인하세요.'],
   ['입력한 정보는 어디에 저장되나요?','회원가입이 없고, 입력한 조건은 이 기기의 브라우저에만 저장됩니다. 서버로 보내지 않습니다.'],
@@ -2053,7 +2053,7 @@ const MP={
   ['제1조 (목적)','이 약관은 '+((DT.op||{}).name||'운영자')+'(이하 \'운영자\')가 제공하는 집셈 서비스(이하 \'서비스\')의 이용 조건과 운영자·이용자의 권리와 의무를 정합니다.'],
   ['제2조 (약관의 게시와 효력)','운영자는 이 약관을 서비스 메뉴에 게시합니다. 서비스는 회원가입 없이 이용하며, 이용자가 서비스를 이용하면 이 약관에 동의한 것으로 봅니다.'],
   ['제3조 (서비스 내용)','서비스는 공개 자료를 가공해 아파트의 매수 비용, 대출 어림값, 5년 뒤 순이익의 범위, 출퇴근 시간 등 참고 정보를 무료로 제공합니다.'],
-  ['제4조 (정보의 성격)','① 서비스의 모든 수치는 과거 자료와 공개된 가정으로 계산한 통계적 추정치입니다. 특정 주택의 가치나 가격을 평가·보증하지 않으며, 매수·매도 권유, 부동산 중개, 감정평가, 투자자문이 아닙니다.<br>② 수치는 자료 제공 기관의 오류·지연이나 계산 방식의 한계로 실제와 다를 수 있습니다. 계산 방법과 과거에 빗나간 사례는 메뉴의 \'계산 방법\'·\'과거에 맞았나요?\'에 공개합니다.'],
+  ['제4조 (정보의 성격)','① 서비스의 모든 수치는 과거 자료와 공개된 가정으로 계산한 통계적 추정치입니다. 특정 주택의 가치나 가격을 평가·보증하지 않으며, 매수·매도 권유, 부동산 중개, 감정평가, 투자자문이 아닙니다.<br>② 수치는 자료 제공 기관의 오류·지연이나 계산 방식의 한계로 실제와 다를 수 있습니다. 계산 방법과 과거에 빗나간 사례는 메뉴의 \'계산 방법\'·\'과거 검증 결과\'에 공개합니다.'],
   ['제5조 (이용자의 확인 의무)','이용자는 계약 전에 실거래가, 등기사항증명서, 건축물대장, 대출 조건(은행), 세금(세무 전문가), 현장 상태를 직접 확인해야 합니다.'],
   ['제6조 (책임의 제한)','① 운영자는 서비스 정보를 참고한 이용자의 결정으로 생긴 손해에 대해, 운영자의 고의 또는 중대한 과실이 없는 한 책임지지 않습니다.<br>② 운영자는 자료 제공 기관의 사정, 통신 장애, 천재지변 등 운영자가 통제할 수 없는 사유로 서비스를 제공하지 못한 경우 책임지지 않습니다. 다만 운영자의 고의 또는 중대한 과실이 있는 경우는 그렇지 않습니다.'],
   ['제7조 (이용자의 의무)','이용자는 다음 행위를 해서는 안 됩니다. ① 서비스의 내용이나 자료를 자동화된 방법으로 대량 수집하는 행위 ② 운영자의 동의 없이 서비스의 내용을 영리 목적으로 복제·배포하는 행위 ③ 서비스의 운영을 방해하는 행위 ④ 서비스를 이용해 법령이나 타인의 권리를 침해하는 행위'],
@@ -2203,7 +2203,7 @@ function row(r,k,ex,o){   // 09-28 사용자: 결과판이 지저분 + 순위마
  const big=o.big||`<b class="num ${n>=0?'pos':'neg'}">${ab(n)}</b>`;   // 10-02 사용자: '같은 조건 가운데보다'는 처음 보면 뜻을 모름 → 5년 순이익 그대로 + 위에 '가정' 줄(limH)로 한계를 분명히   // 어느 순서로 보든 큰 숫자는 5년 순이익(09-28) — 10-01 '약'·0.1억
  return `<details class="card rc${k===1?' r1':''}" ontoggle="if(this.open){ppFb(${r._i});try{localStorage.setItem('jsRcOpen','1')}catch(e){}document.querySelectorAll('details.rc.nudge').forEach(x=>x.classList.remove('nudge'));}"><summary>
  <div class="rc1"><span class="rk${k===1?' r1':''}"${String(k).length>3?' style="font-size:.7rem"':''}>${k}</span><b class="rcn">${r.n} <span>${r.b}㎡</span></b><span class="bn"><i>${o.lbl||'5년 순이익 · 예상'}</i>${big}</span></div>
- <div class="rc2"><span>${r.gu}${CF.cash!=null&&CF.useU&&!o.noRng?` · ${monthly(r,F)<1?'대출 없음':`월 이자 <b style="color:var(--ink)">${mTxt(monthly(r,F))}</b>`}`:''}${!CF.useU&&!o.noRng&&r.U?` · 내 거주비 5년 <b style="color:var(--ink)">${eok(r.U)}억</b>`:''}${o.l2?' · '+o.l2:''}${hi?` <em>${hi.t}</em>`:''}</span><span></span></div>
+ <div class="rc2"><span>${r.gu}${CF.cash!=null&&CF.useU&&!o.noRng?` · ${monthly(r,F)<1?'대출 없음':`월 이자 <b style="color:var(--ink)">${mTxt(monthly(r,F))}</b>`}`:''}${!CF.useU&&!o.noRng&&r.U?` · 임차 주거비 5년 <b style="color:var(--ink)">${eok(r.U)}억</b>`:''}${o.l2?' · '+o.l2:''}${hi?` <em>${hi.t}</em>`:''}</span><span></span></div>
  ${ex||''}<div class="rc3">${o.l3||`시세 ${eok(r.p)}억${r.bu?` + 분담금 ${eok(r.bu)}억`:''} → 5년 뒤 보통 <b>약 ${ab1(GRS(F.sv5))}</b>`}</div>
  ${o.noRng?'':`<div class="rng1">${cells(F)}</div>`}
  <div class="rchint"><b></b><i>⌄</i></div></summary>${detail(r)}<div style="display:flex;gap:8px;margin:6px 12px 4px"><a class="btn ghost" style="flex:1;text-decoration:none;text-align:center;padding:12px 0" href="map.html#${r.no}">지도에서 보기</a><button class="btn" style="flex:1.4;padding:12px 0" onclick="rcard('${key}')">단지 분석 보기 ›</button></div></details>`;}
@@ -2327,7 +2327,7 @@ function result(){
  const hvH='';   // 09-28 사용자: '아껴서 모으기/더 쓰고 누리기'는 '더 쓰는데 더 버나?'로 읽히고, 좋은 곳은 사람마다 다름 → 버튼 대신 카드마다 '매달 드는 돈'을 보여 주고 판단은 사람에게
  N=3; const MD_=midD();
  app.innerHTML=HOME+`${DT.alert?`<div class="box warn" style="margin-top:0"><b>주간 과열 경보 발령</b> <span class="sub">과거 과열기에 자주 나타난 신호이며, 적중을 보장하지 않습니다.</span></div>`:''}
- ${cbarH}${V.length?`<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0 4px"><div class="hq" style="margin:0">${{bal:'5년 예상 순이익 순위',safe:'5년 손실이 적을 것으로 셈한 순위',obj:'입지 좋은 순'}[L]}</div><button onclick="rankMap()" style="flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:.82rem;font-weight:700;border-radius:999px;padding:7px 12px;cursor:pointer">${ic('map',16)}지도로 보기</button></div><div class="rleg" style="font-size:.8rem;margin:0 2px 10px">1위도 손실이 날 수 있어요 · <a onclick="trust('r')" style="cursor:pointer">빗나간 곳 보기 ›</a></div>`+phLine()+(CF.useU?'':`<div class="rleg" style="font-size:.78rem;margin:-4px 2px 10px">전세 놓기 · 비슷한 집에 세 들어 사는 5년 거주비를 뺀 값이에요</div>`)+altH+hvH+qsRow()+(L==='obj'?`<div class="rleg">주변 시세와 역 접근성으로 본 입지 순이에요. 입지가 좋다고 순이익이 반드시 큰 건 아니에요.</div>`:'')+V.slice(0,3).map((r,k)=>row(r,k+1)).join(''):'<div class="hq">조건에 맞는 단지 없음</div>'+qsRow()}
+ ${cbarH}${V.length?`<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0 4px"><div class="hq" style="margin:0">${{bal:'5년 예상 순이익 순위',safe:'5년 손실이 적을 것으로 셈한 순위',obj:'입지 좋은 순'}[L]}</div><button onclick="rankMap()" style="flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:.82rem;font-weight:700;border-radius:999px;padding:7px 12px;cursor:pointer">${ic('map',16)}지도로 보기</button></div><div class="rleg" style="font-size:.8rem;margin:0 2px 10px">1위도 손실이 날 수 있어요 · <a onclick="trust('r')" style="cursor:pointer">빗나간 곳 보기 ›</a></div>`+phLine()+(CF.useU?'':`<div class="rleg" style="font-size:.78rem;margin:-4px 2px 10px">전세 놓기 · 임차 주거비(5년) 차감 기준</div>`)+altH+hvH+qsRow()+(L==='obj'?`<div class="rleg">주변 시세와 역 접근성으로 본 입지 순이에요. 입지가 좋다고 순이익이 반드시 큰 건 아니에요.</div>`:'')+V.slice(0,3).map((r,k)=>row(r,k+1)).join(''):'<div class="hq">조건에 맞는 단지 없음</div>'+qsRow()}
  <div id="list"></div><button class="btn ghost" id="more" style="margin-top:12px" onclick="N+=10;draw()">다음 10곳</button>
  <button class="btn ghost" style="margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px" onclick="trust('r')">${ic('shield',18)}이 셈이 빗나간 곳도 봅니다</button>
  ${(RBV.length||MD_)?fold(`분담금 미정 정비사업 단지 (${RBV.length+(MD_?+MD_.match(/못 한 곳 (\d+)/)[1]:0)}곳)`,`<p class="sub" style="font-size:.8rem;margin:0 0 8px">분담금에 따라 결과가 크게 달라지는데 아직 확정되지 않아 순위에 넣지 않았어요. 사실만 보여 드립니다. 1기 신도시 선도지구도 분담금이 정해지지 않아 여기로 옮겼어요. 구역지정·안전진단·추진위 같은 초기 단계는 순위에 그대로 있어요.</p>`+RBV.slice(0,30).map(rbCard).join('')+(RBV.length>30?`<p class="sub" style="font-size:.78rem">외 ${RBV.length-30}곳 — 지역을 좁히면 모두 볼 수 있어요.</p>`:'')+MD_):''}
@@ -2363,7 +2363,7 @@ function lscore(r){const w=LENS_W[lensKey()], F=r.F||fin(r);
 // 순위를 정하는 값(현금을 넣었을 때 = 보통·나쁨 순이익의 평균)을 다섯 몫으로 나눈다: 집값 오르내림 + 아끼는 월세 − 이자 − 세금·비용 + 예금이자 (정확히 더해짐)
 function split5(r){const F=r.F||fin(r), w=LENS_W[lensKey()], up=w[0]*F.sv1+w[1]*F.sv5+w[2]*F.sv9-r.p;
  return {up, use:CF.useU?0:-(r.U||0), it:-F.it, cost:-(r.C-r.p+F.rp), dep:0};}
-const PN=[['up','시세 변동'],['use','내 거주비'],['it','대출이자'],['cost','세금·거래비용'],['dep','예금 이자']];
+const PN=[['up','시세 변동'],['use','임차 주거비'],['it','대출이자'],['cost','세금·거래비용'],['dep','예금 이자']];
 let TOP1=null;
 // 막대: 매수 반기별 5년 뒤 실제(실거래 연쇄 지수). 진한 막대 = 5년 뒤 결과, 아래 연한 빨강 = 보유 중 가장 떨어졌던 깊이. 5년이 안 찬 반기는 연하게.
 function bars(sel,click){
@@ -2727,12 +2727,12 @@ function clSlides(){
  if(F)out.push({id:'loss',req:1,tag:'오해하기 쉬운 것',q:'1위면 손실이 없나요',a:'1위도 손실이 날 수 있어요',
   fig:hbars(V.slice(0,3).map((r,i)=>{const L=lossP(r.F||fin(r));return [(i+1)+'위 손실',Math.max(L,1),'10번 중 '+cnt(Math.round(L/10))];}),100,'red'),
   g:'순위는 같은 조건에서 나란히 놓고 비교한 순서예요. 이익을 약속하지 않아요.'});
- // 과거 검증: 상위 20%가 더 남은 반기(신뢰 페이지 '과거에 맞았나요'와 같은 셈)
+ // 과거 검증: 상위 20%가 더 남은 반기(신뢰 페이지 '과거 검증 결과'와 같은 셈)
  const SB=DT.sbt, sK=[10000,30000,50000].reduce((a,b)=>Math.abs(b-(CF.cash||30000))<Math.abs(a-(CF.cash||30000))?b:a), SR=SB?SB.r[sK+'_0.5']:null, SP=SR?Object.entries(SR):[];
  const HY=SP.flatMap(([p,x])=>x[6]), hw=HY.filter(h=>h[1]).length;
- if(HY.length)out.push({id:'hit',tag:'과거 기록',q:'높게 셈한 집이 과거에도 더 남았나요',a:`${HY.length}번 중 ${hw}번 더 남았어요`,
+ if(HY.length)out.push({id:'hit',tag:'과거 기록',q:'상위 셈 단지의 과거 초과 성과',a:`${HY.length}번 중 ${hw}번 초과 성과`,
   fig:`<div style="display:flex;justify-content:center;gap:5px;flex-wrap:wrap;margin:10px 0 4px">${HY.map(h=>`<span style="display:flex;flex-direction:column;align-items:center;gap:2px"><i style="width:14px;height:14px;border-radius:50%;background:${h[1]?'var(--blue)':'var(--line)'}"></i><span style="font-size:.58rem;color:var(--ink3)">'${h[0].slice(2)}</span></span>`).join('')}</div>`,
-  g:'점 = 매수한 반기 · 파랑 = 순이익 상위 20%가 전체보다 더 남음. 셈을 만들 때 쓰지 않은 시기의 실거래로 맞춰 봤어요.'});
+  g:'점 = 매수한 반기 · 파랑 = 순이익 상위 20%가 전체 대비 초과 성과. 표본 외 기간 실거래로 검증했어요.'});
  // 과거 기록: 매수 시점에 따라 5년 결과가 달랐다
  const C=((DT.ml||{}).coh||[]).filter(x=>x[4]);
  if(C.length>=6){const mx=Math.max(...C.map(x=>x[2])), mn=Math.min(...C.map(x=>x[2])), sc=56/Math.max(1,mx-Math.min(0,mn)), z=Math.max(0,mx)*sc, sg=v=>(v>=0?'+':'−')+Math.abs(v).toFixed(0)+'%';
