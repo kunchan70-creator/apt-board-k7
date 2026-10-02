@@ -342,7 +342,7 @@ const YEAR=new Date().getFullYear();
 // ---------------- 설정 저장 ----------------
 const DEF={done:false,sort:'money',my:null,regions:[],cash:DT.my.cash,maxc:DT.my.max_price,first:!!DT.my.first_home,loan:null,lmode:null,irate:null,inc:null,debt:null,yrs:30,rpt:null,addU:false,useU:true,size:[],age:[],st:'',ln:[],hh:0,sch:'',baby:false,newly:false,pol:true,joint:false,law:'now',mine:{own:false,cmp:false},trust:false};
 function load(){try{return Object.assign({},DEF,JSON.parse(localStorage.getItem('v2cfg')||'{}'),{trust:false,keep:true,lens:'bal',sort:null})}catch(e){return Object.assign({},DEF)}}
-function save(){try{if(CF.keep===false){localStorage.removeItem('v2cfg');return;}localStorage.setItem('v2cfg',JSON.stringify(CF))}catch(e){}}
+function save(){try{REL0=null}catch(e){}try{if(CF.keep===false){localStorage.removeItem('v2cfg');return;}localStorage.setItem('v2cfg',JSON.stringify(CF))}catch(e){}}
 function hasSaved(){try{const j=JSON.parse(localStorage.getItem('v2cfg')||'null');return !!(j&&j.done&&j.keep!==false);}catch(e){return false;}}
 let CF=load(); CF.my=null; CF.addU=false; CF.mv=3; if((CF.size||[]).some(x=>'sml'.includes(x))){CF.size=[...new Set(CF.size.flatMap(x=>({s:['49','59'],m:['74','84'],l:['101']})[x]||[x]))];}   // 09-24: 시장은 늘 과거 확률대로(고르는 질문·버튼 없앰). 경우별 숫자는 단지 상세에 참고로만
 // ---------------- ① 질문 ----------------
@@ -1170,7 +1170,9 @@ function ownHTML(c,r,k,back,X){
  const flb=X&&B&&B.fl?box('층별 정상가',flBox(c,r,B)):'';   // 09-29 사용자: 순위 차이보다 좋은 호수를 싸게
  /* ② 계속 살면 5년 뒤 */
  const fut=r.as?box('5년 더 보유하면','<div style="font-size:.92rem;color:var(--ink2)">입주권 단계라 분담금을 뺀 새 아파트 값으로 따로 셈합니다.</div>')
-  :box('5년 더 보유하면',`<div class="obig"><b class="num">${eok(s5)}억</b><span>지금 ${eok(r.p)}억에서 · 보통일 때</span></div>${pbar(r.p,s1,s5,s9)}`);
+  :box('5년 더 보유하면',(()=>{const F=r.F||fin(r), b0=relBase(), rv=b0!=null?F.p5-b0:null;   // 10-02 사용자: 큰 숫자 = 같은 조건 가운데보다 더 남는 몫(시장 평균 +27%는 아무도 모름)
+   return (rv!=null?`<div class="obig"><span>내 조건 단지들 가운데보다 · 5년 순이익</span><b class="num ${rv>=0?'pos':'neg'}">${ab(rv)}</b><span>5년 뒤 시세 보통 약 ${ab1(s5)} · 5년 순이익 보통 ${ab(F.p5)}</span></div>`
+    :`<div class="obig"><b class="num">${eok(s5)}억</b><span>지금 ${eok(r.p)}억에서 · 보통일 때</span></div>`)+pbar(r.p,s1,s5,s9);})());
  /* ③ 내 대출·금리 */
  const inp=(id,ph,v,u,l)=>`<label class="frw"><span>${l}</span><input id="${id}" type="number" inputmode="decimal" step="0.1" placeholder="${ph}" value="${v==null?'':v}" oninput="ownCalc('${c.k}',${r.b})"><em>${u}</em></label>`;
  const loan=box('내 대출로 셈하기',`<div style="font-size:.84rem;color:var(--ink3);margin:-4px 0 2px">갖고 있으면 남은 대출, 살 생각이면 받을 대출</div>${inp('owL','0',OWN.loan,'억','대출')}${inp('owR',DT.rate.loan,OWN.rate,'%','금리')}<div id="owCalc" style="margin-top:6px"></div>`);
@@ -2198,18 +2200,21 @@ function row(r,k,ex,o){   // 09-28 사용자: 결과판이 지저분 + 순위마
  // 09-29 사용자: 입지·5년 뒤 시세·하락기 순위판도 같은 카드 → o={lbl,big,l2,l3}로 큰 숫자와 줄만 바꾼다(없으면 5년 순이익). 펼치면 맨 아래 '단지 분석 보기'
  o=o||{};
  const L=lensKey(), F=r.F||fin(r), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', n=F.p5, T=trustOf(r), hi=T.tags.find(x=>x.hi), key=r.no||(r.n+'|'+r.gu);
- const big=o.big||`<b class="num ${n>=0?'pos':'neg'}">${ab(n)}</b>`;   // 어느 순서로 보든 큰 숫자는 5년 순이익(09-28) — 10-01 '약'·0.1억
+ // 10-02 사용자: '시장 평균 +27%'는 아무도 모르는 값 → 큰 숫자 = 같은 조건 단지들 가운데(REL0)보다 더 남는 몫(엔진이 검증으로 맞힌 건 상대 비교). 절대 금액은 아래 줄·범위로
+ const rel=(!o.big&&REL0!=null)?n-REL0:null;
+ const big=o.big||(rel!=null?`<b class="num ${rel>=0?'pos':'neg'}">${ab(rel)}</b>`:`<b class="num ${n>=0?'pos':'neg'}">${ab(n)}</b>`);   // 어느 순서로 보든 큰 숫자는 5년 순이익(09-28) — 10-01 '약'·0.1억
  return `<details class="card rc${k===1?' r1':''}" ontoggle="if(this.open){ppFb(${r._i});try{localStorage.setItem('jsRcOpen','1')}catch(e){}document.querySelectorAll('details.rc.nudge').forEach(x=>x.classList.remove('nudge'));}"><summary>
- <div class="rc1"><span class="rk${k===1?' r1':''}"${String(k).length>3?' style="font-size:.7rem"':''}>${k}</span><b class="rcn">${r.n} <span>${r.b}㎡</span></b><span class="bn"><i>${o.lbl||'5년 순이익 · 예상'}</i>${big}</span></div>
+ <div class="rc1"><span class="rk${k===1?' r1':''}"${String(k).length>3?' style="font-size:.7rem"':''}>${k}</span><b class="rcn">${r.n} <span>${r.b}㎡</span></b><span class="bn"><i>${o.lbl||(rel!=null?'같은 조건 가운데보다':'5년 순이익 · 예상')}</i>${big}</span></div>
  <div class="rc2"><span>${r.gu}${CF.cash!=null&&CF.useU&&!o.noRng?` · ${monthly(r,F)<1?'대출 없음':`월 이자 <b style="color:var(--ink)">${mTxt(monthly(r,F))}</b>`}`:''}${o.l2?' · '+o.l2:''}${hi?` <em>${hi.t}</em>`:''}</span><span></span></div>
- ${ex||''}<div class="rc3">${o.l3||`시세 ${eok(r.p)}억${r.bu?` + 분담금 ${eok(r.bu)}억`:''} → 5년 뒤 보통 <b>약 ${ab1(GRS(F.sv5))}</b>`}</div>
+ ${ex||''}<div class="rc3">${o.l3||`시세 ${eok(r.p)}억${r.bu?` + 분담금 ${eok(r.bu)}억`:''} → 5년 뒤 보통 <b>약 ${ab1(GRS(F.sv5))}</b>${rel!=null?` · 5년 순이익 보통 ${ab(n)}`:''}`}</div>
  ${o.noRng?'':`<div class="rng1">${cells(F)}</div>`}
  <div class="rchint"><b></b><i>⌄</i></div></summary>${detail(r)}<div style="display:flex;gap:8px;margin:6px 12px 4px"><a class="btn ghost" style="flex:1;text-decoration:none;text-align:center;padding:12px 0" href="map.html#${r.no}">지도에서 보기</a><button class="btn" style="flex:1.4;padding:12px 0" onclick="rcard('${key}')">단지 분석 보기 ›</button></div></details>`;}
-let RBV=[], N=10, V=[], RS={lo:-1,hi:1};
+let RBV=[], N=10, V=[], RS={lo:-1,hi:1}, REL0=null;
+function relBase(){if(REL0==null){const q=R.filter(r=>ok(r)&&!isMid(r)).map(r=>(r.F||fin(r)).p5).sort((a,b)=>a-b);REL0=q.length?(q[(q.length-1)>>1]+q[q.length>>1])/2:null;}return REL0;}   // 10-02 같은 조건 후보 가운데값(단지 분석·지도 순위도 같은 기준)   // REL0: 같은 조건 후보들의 5년 순이익(보통) 가운데값 — 카드 큰 숫자의 기준
 /* 10-01 사용자: 매수 결과를 지도로 보면 내 순위대로 보이면 좋겠다 → 상위 30곳(목록과 같은 순위 번호)을 localStorage 로 넘겨 map.html#rank 에서 번호 핀으로 */
 function rankMap(){const seen=new Set(), it=[];
- V.forEach((r,i)=>{if(it.length>=30||!r.no||seen.has(r.no))return;seen.add(r.no);it.push([r.no,i+1,ab((r.F||fin(r)).p5),r.b]);});
- const L=lensKey(), title={bal:'내 5년 예상 순이익 순위',safe:'내 손실 적은 순 순위',obj:'내 입지 좋은 순 순위'}[L];
+ V.forEach((r,i)=>{if(it.length>=30||!r.no||seen.has(r.no))return;seen.add(r.no);it.push([r.no,i+1,(()=>{const b0=relBase(),v=(r.F||fin(r)).p5;return b0!=null?ab(v-b0):ab(v);})(),r.b]);});
+ const L=lensKey(), title={bal:'내 5년 예상 순이익 순위 · 숫자 = 같은 조건 가운데보다',safe:'내 손실 적은 순 순위',obj:'내 입지 좋은 순 순위'}[L];
  try{localStorage.setItem('jipsem.rank',JSON.stringify({at:Date.now(),title,cond:summaryChips(true),items:it}));}catch(e){}
  location.href='map.html#rank';}
 function rcNudge(){try{if(localStorage.getItem('jsRcOpen'))return;}catch(e){}const c=document.querySelector('details.rc:not([open])');if(c)c.classList.add('nudge');}
@@ -2289,6 +2294,7 @@ function phLine(){const P=DT.ph; if(!P||!V.length)return '';
 function result(){
  TT.forEach(clearTimeout); TT=[];
  V=R.filter(ok); V.forEach(r=>r.F=fin(r)); N=10; RBV=V.filter(isMid); V=V.filter(r=>!isMid(r));
+ {const q=V.map(r=>r.F.p5).sort((a,b)=>a-b);REL0=q.length?(q[(q.length-1)>>1]+q[q.length>>1])/2:null;}
  const L=lensKey();
  V.sort((a,b)=>lscore(b)-lscore(a));                  // 가치관 저울로 줄 세움
  R.forEach(r=>r.mr=null); V.forEach((r,i)=>r.mr=i+1);
@@ -2308,7 +2314,7 @@ function result(){
  const hvH='';   // 09-28 사용자: '아껴서 모으기/더 쓰고 누리기'는 '더 쓰는데 더 버나?'로 읽히고, 좋은 곳은 사람마다 다름 → 버튼 대신 카드마다 '매달 드는 돈'을 보여 주고 판단은 사람에게
  N=3; const MD_=midD();
  app.innerHTML=HOME+`${DT.alert?`<div class="box warn" style="margin-top:0"><b>주간 과열 경보 발령</b> <span class="sub">과거 과열기에 자주 나타난 신호이며, 적중을 보장하지 않습니다.</span></div>`:''}
- ${cbarH}${V.length?`<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0 4px"><div class="hq" style="margin:0">${{bal:'5년 예상 순이익 순위',safe:'5년 손실이 적을 것으로 셈한 순위',obj:'입지 좋은 순'}[L]}</div><button onclick="rankMap()" style="flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:.82rem;font-weight:700;border-radius:999px;padding:7px 12px;cursor:pointer">${ic('map',16)}지도로 보기</button></div><div class="rleg" style="font-size:.8rem;line-height:1.55;margin:0 2px 10px">과거 20년 실거래로 셈한 <b style="color:var(--ink2)">예상</b>이에요. 1위도 손실이 날 수 있어요 · <a onclick="trust('r')" style="cursor:pointer">빗나간 곳 보기 ›</a></div>`+phLine()+(CF.useU?'':`<div class="rleg" style="font-size:.78rem;margin:-4px 2px 10px">전세 놓기: 세입자 전세금을 이자 없는 돈으로 셈해요. 공실·역전세·매도 지연은 셈에 없어요 — 갱신 때 돌려줄 돈이 남는 자본보다 크면 <b style="color:var(--ink2)">역전세 대비</b> 표시</div>`)+altH+hvH+qsRow()+(L==='obj'?`<div class="rleg">주변 시세와 역 접근성으로 본 입지 순이에요. 입지가 좋다고 순이익이 반드시 큰 건 아니에요.</div>`:'')+V.slice(0,3).map((r,k)=>row(r,k+1)).join(''):'<div class="hq">조건에 맞는 단지 없음</div>'+qsRow()}
+ ${cbarH}${V.length?`<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0 4px"><div class="hq" style="margin:0">${{bal:'5년 예상 순이익 순위',safe:'5년 손실이 적을 것으로 셈한 순위',obj:'입지 좋은 순'}[L]}</div><button onclick="rankMap()" style="flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:.82rem;font-weight:700;border-radius:999px;padding:7px 12px;cursor:pointer">${ic('map',16)}지도로 보기</button></div><div class="rleg" style="font-size:.8rem;line-height:1.55;margin:0 2px 10px">큰 숫자 = 내 조건 ${V.length.toLocaleString()}곳의 가운데(5년 순이익 보통 ${ab(REL0||0)})보다 <b style="color:var(--ink2)">더 남는 몫</b> · 1위도 손실이 날 수 있어요 · <a onclick="trust('r')" style="cursor:pointer">빗나간 곳 보기 ›</a></div>`+phLine()+(CF.useU?'':`<div class="rleg" style="font-size:.78rem;margin:-4px 2px 10px">전세 놓기: 세입자 전세금을 이자 없는 돈으로 셈해요. 공실·역전세·매도 지연은 셈에 없어요 — 갱신 때 돌려줄 돈이 남는 자본보다 크면 <b style="color:var(--ink2)">역전세 대비</b> 표시</div>`)+altH+hvH+qsRow()+(L==='obj'?`<div class="rleg">주변 시세와 역 접근성으로 본 입지 순이에요. 입지가 좋다고 순이익이 반드시 큰 건 아니에요.</div>`:'')+V.slice(0,3).map((r,k)=>row(r,k+1)).join(''):'<div class="hq">조건에 맞는 단지 없음</div>'+qsRow()}
  <div id="list"></div><button class="btn ghost" id="more" style="margin-top:12px" onclick="N+=10;draw()">다음 10곳</button>
  <button class="btn ghost" style="margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px" onclick="trust('r')">${ic('shield',18)}이 셈이 빗나간 곳도 봅니다</button>
  ${(RBV.length||MD_)?fold(`분담금 미정 정비사업 단지 (${RBV.length+(MD_?+MD_.match(/못 한 곳 (\d+)/)[1]:0)}곳)`,`<p class="sub" style="font-size:.8rem;margin:0 0 8px">분담금에 따라 결과가 크게 달라지는데 아직 확정되지 않아 순위에 넣지 않았어요. 사실만 보여 드립니다. 1기 신도시 선도지구도 분담금이 정해지지 않아 여기로 옮겼어요. 구역지정·안전진단·추진위 같은 초기 단계는 순위에 그대로 있어요.</p>`+RBV.slice(0,30).map(rbCard).join('')+(RBV.length>30?`<p class="sub" style="font-size:.78rem">외 ${RBV.length-30}곳 — 지역을 좁히면 모두 볼 수 있어요.</p>`:'')+MD_):''}
@@ -2701,9 +2707,10 @@ function clSlides(){
  const T=V[0], F=T&&(T.F||fin(T)), cnt=n=>n<1?'1번 미만':n+'번';
  const out=[];
  // 필수 1: 큰 숫자 읽는 법(지금 1위 카드 그대로)
- if(F)out.push({id:'big',req:1,tag:'읽는 법',q:'카드의 큰 숫자는 무엇인가요',a:'보통일 때의 5년 순이익이에요',
-  fig:`<div class="cl-mc"><span>지금 1위 · 5년 순이익 예상</span><b class="num ${F.p5>=0?'pos':'neg'}">${ab(F.p5)}</b></div>${cells(F)}`,
-  g:'10번 셈하면 가운데쯤 나오는 값이에요. 양끝 옅은 곳은 10번 중 1번꼴이에요.'});
+ if(F){const b0=relBase(), rv=b0!=null?F.p5-b0:F.p5;   // 10-02 큰 숫자 = 같은 조건 가운데보다 더 남는 몫
+  out.push({id:'big',req:1,tag:'읽는 법',q:'카드의 큰 숫자는 무엇인가요',a:'같은 조건 단지들보다 더 남는 몫이에요',
+  fig:`<div class="cl-mc"><span>지금 1위 · 같은 조건 가운데보다</span><b class="num ${rv>=0?'pos':'neg'}">${ab(rv)}</b></div><div class="cl-mc" style="margin-top:4px"><span>5년 순이익 보통</span><b class="num" style="font-size:1rem">${ab(F.p5)}</b></div>${cells(F)}`,
+  g:'시장 전체가 얼마나 오를지는 아무도 몰라요. 그래서 같은 돈으로 살 수 있는 다른 집들보다 얼마나 나은지를 크게 보여 줘요 — 과거 실거래로 맞춰 본 것도 이 비교예요.'});}
  // 필수 2: 1위도 손실이 날 수 있다(지금 1~3위 손실 확률)
  if(F)out.push({id:'loss',req:1,tag:'오해하기 쉬운 것',q:'1위면 손실이 없나요',a:'1위도 손실이 날 수 있어요',
   fig:hbars(V.slice(0,3).map((r,i)=>{const L=lossP(r.F||fin(r));return [(i+1)+'위 손실',Math.max(L,1),'10번 중 '+cnt(Math.round(L/10))];}),100,'red'),
@@ -2731,7 +2738,7 @@ function clSlides(){
  if(F){const s=split5(T), sum=s.up+s.use+s.it+s.cost+s.dep;
   if(Math.abs(sum-F.p5)<500)out.push({id:'parts',tag:'읽는 법',q:'순이익은 어떻게 셈하나요',a:'시세 변동에서 이자·세금·비용을 빼요',
    fig:dbars([['시세 변동',s.up/1e4],['대출이자',s.it/1e4],['세금·비용',s.cost/1e4]].filter(x=>Math.abs(x[1])>=.05),'억',1),
-   g:`지금 1위 단지의 보통일 때 셈이에요. 더하면 큰 숫자(${ab(F.p5)})가 돼요.`});}
+   g:`지금 1위 단지의 보통일 때 셈이에요. 더하면 5년 순이익 보통(${ab(F.p5)})이 돼요.`});}
  // 과거 기록: 높게 셈한 집의 손실은 시장 고점 매수에 몰렸다
  const M=DT.miss;
  if(M&&M.yrs&&M.yrs.length&&SP.length){const lp=Math.round(SP.reduce((t,[p,x])=>t+x[4],0)/SP.length);
