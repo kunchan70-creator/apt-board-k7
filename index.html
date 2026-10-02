@@ -1984,7 +1984,7 @@ function trustOf(r){const W=(r.why||[]).map(i=>S[i]||''), tags=[];for(let [re,t,
    if(t==='분담금 보도값'&&r.bu)d=`분담금 ${eok(r.bu)}억은 조합 공고·보도로 확인한 값(공식 확정 아님)${r.into?' · 입주 '+r.into:''}`;
    if((t==='분담금 보도값'||t==='입주권·분담금 추정')&&r.bu>0)d+=` · 비관·낙관에 ±${eok(bErr(r))}억 반영`;
    tags.push({t,d,hi:w==='hi'});}
- if(!CF.useU&&r.rb&&r.rb.rb&&r.rb.rb[5]>0&&!r.rd){const F=r.F||fin(r), nd=F.jd+r.rb.rb[5];if(nd>F.left)tags.push({t:'재건축 이주 대비',d:`재건축이 추진돼 이주하게 되면 세입자 전세금 약 ${eok(F.jd)}억을 돌려주고 분담금 약 ${eok(r.rb.rb[5])}억(추정)이 더 들어요 — 남는 자본은 ${eok(F.left)}억이에요. 5년 셈은 그 전에 매도한다고 보고 넣지 않았어요`,hi:true});}   // 10-02 사용자: 전세금으로 메우고 분담금 5억까지 — 1위 맞나
+ if(!CF.useU&&Array.isArray(r.rb)&&r.rb[5]>0&&!r.rd){const F=r.F||fin(r), nd=F.jd+r.rb[5];if(nd>F.left)tags.push({t:'재건축 이주 대비',d:`재건축이 추진돼 이주하게 되면 세입자 전세금 약 ${eok(F.jd)}억을 돌려주고 분담금 약 ${eok(r.rb[5])}억(추정)이 더 들어요 — 남는 자본은 ${eok(F.left)}억이에요. 5년 셈은 그 전에 매도한다고 보고 넣지 않았어요`,hi:true});}   // 10-02 사용자: 전세금으로 메우고 분담금 5억까지 — 1위 맞나
  const RJ=rjNeed(r); if(RJ&&RJ.need>RJ.left)tags.push({t:'역전세 대비',d:`2022~23년 ${RJ.at} 전셋값이 ${RJ.dr}% 내렸어요. 그만큼 내리면 갱신 때 약 ${eok(RJ.need)}억을 돌려줘야 하는데, 남는 자본은 ${eok(RJ.left)}억이에요`,hi:true});
  if(r.g==='C'&&!tags.length)tags.push({t:'자료 부족',d:'판단에 쓰는 자료 일부가 없거나 추정값입니다',hi:false});
  tags.sort((a,b)=>b.hi-a.hi); const g=tags.some(x=>x.hi)?'C':tags.length?'B':'A';
