@@ -102,6 +102,9 @@ small.src{display:block;color:var(--ink3);font-size:.8rem;margin-top:4px;line-he
 .card h2:first-child,.card h1:first-child{margin-top:0}
 ul.plain{padding-left:18px}
 </style><style>
+svg.gz-on{cursor:grab;outline:1.5px solid var(--blue);outline-offset:2px;border-radius:6px}svg.gz-on:not([data-ts]) *{vector-effect:non-scaling-stroke}
+.gz-tip{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:120;background:var(--ink);color:var(--surface);font-size:.82rem;font-weight:600;padding:9px 14px;border-radius:999px;white-space:nowrap;animation:gzf 2.6s ease both}
+@keyframes gzf{0%{opacity:0;transform:translate(-50%,8px)}12%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
 .mk-sub{font-size:.84rem;color:var(--ink2);line-height:1.6}
 .i3{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;margin-top:14px}.i3>div{padding:12px 10px;border-radius:14px;background:var(--surface2);min-width:0}
 .hist{margin-top:18px;padding-top:16px;border-top:1px solid var(--line2)}
@@ -263,15 +266,14 @@ const PHN={1:'상승기',2:'고점권',3:'조정기',4:'바닥권'};
 function kph(it){return (it.phc||[]).map(([ph,a,b])=>{const v=(a+b)/2;return `<span style="display:inline-block;margin:2px 4px 0 0;padding:1px 7px;border-radius:999px;font-size:.68rem;font-weight:700;background:var(--surface2);color:${v<0?'var(--red)':'var(--green)'}">${PHN[ph]} ${v>0?'+':'−'}${Math.abs(v).toFixed(0)}%p</span>`;}).join('');}
 function kchip(it){const e=keff(it);if(e==null)return kph(it);const c=it.dir>0?'var(--green)':it.dir<0?'var(--red)':'var(--ink3)',w=Math.min(100,Math.abs(e)/6*100);
  return `<span style="display:inline-flex;align-items:center;gap:6px;vertical-align:middle"><span style="position:relative;display:inline-block;width:56px;height:6px;border-radius:3px;background:var(--line)"><i style="position:absolute;top:0;height:6px;border-radius:3px;background:${c};${e>=0?'left:50%':'right:50%'};width:${w/2}%"></i><i style="position:absolute;left:50%;top:-2px;width:1px;height:10px;background:var(--ink3)"></i></span><span style="font-size:.72rem;font-weight:700;color:${c}">${e>=0?'+':''}${e.toFixed(1)}%p</span></span>${it.dir?'':'<br>'+kph(it)}`;}
-const KY={};   // 10-02 지표별 보기 기간(년, 99=전체) — 그래프 그 자리에서 확대
-function kserY(it,mode){const S=kser(it,mode),y=KY[it.k]||99;if(y>=99||!S.length)return S;const l=S[S.length-1][0],c=(+l.slice(0,4)-y)+l.slice(4);return S.filter(x=>x[0]>=c);}
 function kser(it,mode){if(mode!=='chg')return it.ser;const m=new Map(it.ser),o=[];for(const [ym,v] of it.ser){const pv=m.get((+ym.slice(0,4)-1)+ym.slice(4));if(pv!=null)o.push([ym,v-pv]);}return o;}
 function kspark(it){const v=it.ser.slice(-60).map(x=>x[1]);if(v.length<2)return '';const mn=Math.min(...v),mx=Math.max(...v),W=72,H=26,P=v.map((x,i)=>[i/(v.length-1)*(W-4)+2,H-4-(x-mn)/((mx-mn)||1)*(H-8)]),id='sp'+it.k+RG.charCodeAt(0);
  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="flex:0 0 auto"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--blue)" stop-opacity=".22"/><stop offset="1" stop-color="var(--blue)" stop-opacity="0"/></linearGradient></defs>
   <path d="${smp(P)}L${P[P.length-1][0]},${H}L${P[0][0]},${H}Z" fill="url(#${id})"/><path d="${smp(P)}" fill="none" stroke="var(--blue)" stroke-width="1.5" stroke-linecap="round"/><circle cx="${P[P.length-1][0].toFixed(1)}" cy="${P[P.length-1][1].toFixed(1)}" r="2.6" fill="var(--blue)"/></svg>`;}
 function nice(lo,hi){const r=hi-lo||1,st=Math.pow(10,Math.floor(Math.log10(r/3))),m=[1,2,2.5,5,10].find(k=>r/(st*k)<=4)*st;const a=Math.ceil(lo/m)*m,o=[];for(let x=a;x<=hi+1e-9;x+=m)o.push(+x.toFixed(10));return o;}
 /* 지표 그래프: 위 = 지표, 아래 = 같은 달 집값 1년 변화(막대). id 는 화면 안에서 유일 */
-function kplot(id,it,mode){const S=kserY(it,mode),v=S.map(x=>x[1]),K=KI(),pxm=new Map(K.px||[]),W=340,H=206,L=38,R=14,T0=14,T1=128,P0=146,P1=184;
+const KW={};   // 10-02 시간 그래프 보기 구간(손가락 확대로 바뀜)
+function kplot(id,it,mode){const SF=kser(it,mode),KWi=KW[id],S=KWi?SF.slice(KWi[0],KWi[1]+1):SF,v=S.map(x=>x[1]),K=KI(),pxm=new Map(K.px||[]),W=340,H=206,L=38,R=14,T0=14,T1=128,P0=146,P1=184;
  const f=x=>it.unit==='pct'?x*100:x, vv=v.map(f); let lo=Math.min(...vv),hi=Math.max(...vv); const zc=mode==='chg'||it.sg; if(zc){lo=Math.min(lo,0);hi=Math.max(hi,0);} const pad=(hi-lo)*.08||1; lo-=pad; hi+=pad;
  const n=S.length,X=i=>L+i/(n-1)*(W-L-R),Y=x=>T0+(hi-x)/(hi-lo)*(T1-T0),pts=vv.map((x,i)=>[X(i),Y(x)]);
  const q=[...vv].sort((a,b)=>a-b),q30=q[Math.floor((n-1)*.3)],q70=q[Math.floor((n-1)*.7)];
@@ -279,8 +281,8 @@ function kplot(id,it,mode){const S=kserY(it,mode),v=S.map(x=>x[1]),K=KI(),pxm=ne
  const tk=nice(lo+pad,hi-pad), u=(it.unit==='pct'||it.k==='jr'||it.k==='gapc')?(mode==='chg'?'%p':'%'):it.unit==='pp'?'%p':'';
  const yl=S.map((x,i)=>[x[0],i]).filter(([ym])=>ym.endsWith('.01')&&(+ym.slice(0,4))%2===0);
  const am=new Set(), gid='g'+id, last=pts[n-1], lab=kval(it,v[n-1],mode);
- CH[id]={S,it,mode,X,L,R,W,n,pv,Y,f,T0,P1};
- return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;margin-top:6px;touch-action:pan-y" onpointermove="kscr(event,'${id}')" onpointerdown="kscr(event,'${id}')" onpointerleave="kscr(null,'${id}')">
+ CH[id]={S,it,mode,X,L,R,W,n,pv,Y,f,T0,P1,N:SF.length};
+ return `<svg data-ts="${id}" viewBox="0 0 ${W} ${H}" style="width:100%;display:block;margin-top:6px;touch-action:pan-y" onpointermove="kscr(event,'${id}')" onpointerdown="kscr(event,'${id}')" onpointerleave="kscr(null,'${id}')">
  <defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--blue)" stop-opacity=".18"/><stop offset="1" stop-color="var(--blue)" stop-opacity="0"/></linearGradient></defs>
  ${mode!=='chg'&&!it.sg?`<rect x="${L}" y="${T0}" width="${W-L-R}" height="${Math.max(0,Y(q70)-T0).toFixed(1)}" fill="var(--ink3)" opacity=".07"/><rect x="${L}" y="${Y(q30).toFixed(1)}" width="${W-L-R}" height="${Math.max(0,T1-Y(q30)).toFixed(1)}" fill="var(--ink3)" opacity=".07"/>`:''}
  ${tk.map(t=>`<line x1="${L}" x2="${W-R}" y1="${Y(t).toFixed(1)}" y2="${Y(t).toFixed(1)}" stroke="var(--line)" stroke-width="${t===0?1.2:.6}"/><text x="${L-6}" y="${(Y(t)+3).toFixed(1)}" font-size="9.5" text-anchor="end" fill="var(--ink3)">${Math.abs(t)>=100?t.toFixed(0):+t.toFixed(2)}${u}</text>`).join('')}
@@ -293,16 +295,57 @@ function kplot(id,it,mode){const S=kserY(it,mode),v=S.map(x=>x[1]),K=KI(),pxm=ne
  ${yl.map(([ym,i])=>`<text x="${X(i).toFixed(1)}" y="${H-4}" font-size="9.5" text-anchor="middle" fill="var(--ink3)">'${ym.slice(2,4)}</text>`).join('')}
  <g id="${id}-c"></g><rect x="${L}" y="0" width="${W-L-R}" height="${P1}" fill="transparent"/></svg>`;}
 function kscr(e,id){const c=CH[id],g=document.getElementById(id+'-c');if(!c||!g)return;if(!e){g.innerHTML='';return;}
- const sv=g.ownerSVGElement,r=sv.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*c.W,i=Math.max(0,Math.min(c.n-1,Math.round((x-c.L)/(c.W-c.L-c.R)*(c.n-1)))),xx=c.X(i),p=c.pv[i];
+ const sv=g.ownerSVGElement,pt=sv.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const x=pt.matrixTransform(sv.getScreenCTM().inverse()).x,i=Math.max(0,Math.min(c.n-1,Math.round((x-c.L)/(c.W-c.L-c.R)*(c.n-1)))),xx=c.X(i),p=c.pv[i];
  const t=`${c.S[i][0]} · ${kval(c.it,c.S[i][1],c.mode)} · 집값 ${p==null?'-':(p>0?'+':'')+p+'%'}`,tw=t.length*5.6+14,tx=Math.min(c.W-c.R-tw,Math.max(c.L,xx-tw/2));
  g.innerHTML=`<line x1="${xx}" x2="${xx}" y1="${c.T0}" y2="${c.P1}" stroke="var(--ink2)" stroke-width=".8"/><circle cx="${xx}" cy="${c.Y(c.f(c.S[i][1]))}" r="3.5" fill="var(--ink)"/><rect x="${tx}" y="0" width="${tw}" height="16" rx="8" fill="var(--ink)"/><text x="${tx+tw/2}" y="11" font-size="9.5" text-anchor="middle" fill="var(--surface)">${t}</text>`;}
 function kiOpen(id,gi,ii,mode){const el=document.getElementById(id);if(!el)return;if(mode==null&&!el.hidden){el.hidden=true;return;}const it=KI().groups[gi].items[ii],R_=it.rec||{},lvl=!it.sg;
  mode=mode||(KM[it.k]||'lvl');KM[it.k]=mode;const r=k=>R_[k]?pc(R_[k][0]):'-';
- el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">${lvl?`<div class="kt">`:''}${lvl?[['lvl','수준'],['chg','1년 변화']].map(([m,t])=>`<button class="${mode===m?'on':''}" onclick="event.stopPropagation();kiOpen('${id}',${gi},${ii},'${m}')">${t}</button>`).join('')+'</div>':'<span></span>'}<div class="kt">${[[3,'3년'],[10,'10년'],[99,'전체']].map(([y,t])=>`<button class="${(KY[it.k]||99)===y?'on':''}" onclick="event.stopPropagation();KY['${it.k}']=${y};kiOpen('${id}',${gi},${ii},'${mode}')">${t}</button>`).join('')}</div></div>`
+ el.innerHTML=(lvl?`<div class="kt">${[['lvl','수준'],['chg','1년 변화']].map(([m,t])=>`<button class="${mode===m?'on':''}" onclick="event.stopPropagation();kiOpen('${id}',${gi},${ii},'${m}')">${t}</button>`).join('')}</div>`:'')
   +`<div style="display:flex;gap:12px;font-size:.74rem;color:var(--ink2);margin-top:8px"><span><b style="color:var(--blue)">━</b> ${it.nm}</span><span><b style="color:var(--green)">▮</b><b style="color:var(--red)">▮</b> 집값 1년 변화</span></div>`
   +kplot(id+'p',it,mode)+`<p>${it.desc}</p>`
   +(it.zone&&it.zavg!=null?`<div class="rec">지금처럼 <b>${ZW[it.zone]}</b>이었던 달(${it.zn}달)의 1년 뒤 집값 평균 <b style="color:${it.zavg>=K_().base?'var(--green)':'var(--red)'}">${pc(it.zavg)}</b> · 전체 평균 ${pc(K_().base)}<br><span class="sub">높은 편 ${r('hi')} · 보통 ${r('mid')} · 낮은 편 ${r('lo')} · 2010년 이후</span></div>`:'');
  el.hidden=false;}
+// 10-02 사용자: 그래프를 확대해서 보고 싶다 — 버튼·별도 화면 말고, 지표 몇 개만이 아니라 모든 그래프에서 같은 손동작으로
+//   두 손가락 벌리기 = 확대(손가락 사이를 중심으로) · 확대된 뒤 한 손가락 끌기 = 옆으로 이동 · 두 번 누르기 = 원래대로 · PC = Ctrl+휠(트랙패드 핀치)
+//   그림 모양은 그대로(viewBox 만 바꿈). 새로 그려지는 그래프에도 저절로 붙는다(MutationObserver).
+const GZ={hint:false};
+function gzRedraw(sv,id){const c=CH[id];if(!c)return;const t=document.createElement('div');t.innerHTML=kplot(id,c.it,c.mode);const n=t.firstElementChild;if(!n)return;sv.innerHTML=n.innerHTML;
+ const w=KW[id];sv.classList.toggle('gz-on',!!w);sv.style.touchAction=w?'none':'pan-y';}
+function gzTs(sv){const id=sv.dataset.ts,st={p:new Map(),d0:0,a0:0,b0:0,last:0};sv.__gz=st;
+ const full=()=>CH[id]?CH[id].N:0, win=()=>KW[id]||[0,full()-1];
+ const frac=cx=>{const r=sv.getBoundingClientRect(),c=CH[id];const x=(cx-r.left)/r.width*c.W;return Math.min(1,Math.max(0,(x-c.L)/(c.W-c.L-c.R)));};
+ const setW=(a,b)=>{const N=full();let len=Math.max(12,Math.min(N,Math.round(b-a)));a=Math.round(a);if(a<0)a=0;if(a+len>N)a=N-len;KW[id]=(a===0&&len===N)?undefined:[a,a+len-1];if(!KW[id])delete KW[id];gzRedraw(sv,id);};
+ const zoom=(cx,k,a0,b0)=>{const f=frac(cx),len=(b0-a0+1),nl=len/k,ctr=a0+f*len;setW(ctr-f*nl,ctr-f*nl+nl);};
+ sv.addEventListener('pointerdown',e=>{st.p.set(e.pointerId,[e.clientX,e.clientY]);if(st.p.size===2){const [a,b]=[...st.p.values()];st.d0=Math.abs(a[0]-b[0])||1;[st.a0,st.b0]=win();}
+  const t=Date.now();if(st.p.size===1&&t-st.last<300){delete KW[id];gzRedraw(sv,id);}st.last=t;gzHintOnce();});
+ sv.addEventListener('pointermove',e=>{if(!st.p.has(e.pointerId))return;const pr=st.p.get(e.pointerId);st.p.set(e.pointerId,[e.clientX,e.clientY]);
+  if(st.p.size===2){const [a,b]=[...st.p.values()],d=Math.abs(a[0]-b[0])||1;zoom((a[0]+b[0])/2,d/st.d0,st.a0,st.b0);e.preventDefault();}
+  else if(KW[id]){const r=sv.getBoundingClientRect(),c=CH[id],[a0,b0]=win(),len=b0-a0+1,di=-(e.clientX-pr[0])/(r.width*(c.W-c.L-c.R)/c.W)*len;if(Math.abs(di)>=0.5)setW(a0+di,a0+di+len);}});
+ const up=e=>{st.p.delete(e.pointerId);if(st.p.size<2)st.d0=0;};
+ sv.addEventListener('pointerup',up);sv.addEventListener('pointercancel',up);sv.addEventListener('pointerleave',up);
+ sv.addEventListener('wheel',e=>{if(!e.ctrlKey&&!e.metaKey)return;e.preventDefault();const [a0,b0]=win();zoom(e.clientX,Math.exp(-e.deltaY*0.01),a0,b0);},{passive:false});
+ sv.addEventListener('dblclick',()=>{delete KW[id];gzRedraw(sv,id);});}
+function gzHintOnce(){if(GZ.hint)return;GZ.hint=true;try{if(!localStorage.getItem('gzHint')){localStorage.setItem('gzHint','1');gzTip();}}catch(_){}}
+function gzOn(sv){if(sv.__gz||sv.closest('button,.ic,svg svg'))return;if(sv.dataset.ts){gzTs(sv);return;}const b=sv.viewBox&&sv.viewBox.baseVal;if(!b||b.width<200)return;
+ const z=sv.__gz={x0:b.x,y0:b.y,W:b.width,H:b.height,x:b.x,y:b.y,w:b.width,h:b.height,p:new Map(),d0:0,w0:0,last:0};
+ const set=()=>{sv.setAttribute('viewBox',`${z.x} ${z.y} ${z.w} ${z.h}`);const on=z.w<z.W-0.5;sv.style.touchAction=on?'none':'pan-y';sv.classList.toggle('gz-on',on);};
+ const clamp=()=>{z.w=Math.min(z.W,Math.max(z.W/8,z.w));z.h=z.w*z.H/z.W;z.x=Math.min(z.x0+z.W-z.w,Math.max(z.x0,z.x));z.y=Math.min(z.y0+z.H-z.h,Math.max(z.y0,z.y));};
+ const toV=(cx,cy)=>{const r=sv.getBoundingClientRect();return [z.x+(cx-r.left)/r.width*z.w,z.y+(cy-r.top)/r.height*z.h];};
+ const zoomAt=(cx,cy,k)=>{const [vx,vy]=toV(cx,cy),r=sv.getBoundingClientRect();z.w=z.w/k;z.h=z.w*z.H/z.W;z.x=vx-(cx-r.left)/r.width*z.w;z.y=vy-(cy-r.top)/r.height*z.h;clamp();set();};
+ const reset=()=>{z.x=z.x0;z.y=z.y0;z.w=z.W;z.h=z.H;set();};
+ sv.style.touchAction='pan-y';
+ sv.addEventListener('pointerdown',e=>{z.p.set(e.pointerId,[e.clientX,e.clientY]);if(z.p.size===2){const [a,b]=[...z.p.values()];z.d0=Math.hypot(a[0]-b[0],a[1]-b[1]);z.w0=z.w;}
+  const t=Date.now();if(z.p.size===1&&t-z.last<300){reset();}z.last=t;
+  gzHintOnce();});
+ sv.addEventListener('pointermove',e=>{if(!z.p.has(e.pointerId))return;const pr=z.p.get(e.pointerId);z.p.set(e.pointerId,[e.clientX,e.clientY]);
+  if(z.p.size===2){const [a,b]=[...z.p.values()],d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(z.d0>0){const want=z.w0*z.d0/d;zoomAt((a[0]+b[0])/2,(a[1]+b[1])/2,z.w/want);}e.preventDefault();}
+  else if(z.w<z.W-0.5){const r=sv.getBoundingClientRect();z.x-=(e.clientX-pr[0])/r.width*z.w;z.y-=(e.clientY-pr[1])/r.height*z.h;clamp();set();}});
+ const up=e=>{z.p.delete(e.pointerId);if(z.p.size<2)z.d0=0;};
+ sv.addEventListener('pointerup',up);sv.addEventListener('pointercancel',up);sv.addEventListener('pointerleave',up);
+ sv.addEventListener('wheel',e=>{if(!e.ctrlKey&&!e.metaKey)return;e.preventDefault();zoomAt(e.clientX,e.clientY,Math.exp(-e.deltaY*0.01));},{passive:false});
+ sv.addEventListener('dblclick',reset);}
+function gzTip(){const d=document.createElement('div');d.className='gz-tip';d.textContent='두 손가락으로 벌리면 기간 확대 · 두 번 누르면 원래대로';document.body.appendChild(d);setTimeout(()=>d.remove(),2600);}
+(()=>{const run=()=>document.querySelectorAll('svg[viewBox]').forEach(gzOn);new MutationObserver(()=>{clearTimeout(GZ.t);GZ.t=setTimeout(run,60);}).observe(document.body,{childList:true,subtree:true});setTimeout(run,300);})();
 function kiScreen(){const K=KI();if(!K)return null;
  /* 09-30 사용자: '오르는 쪽 2 · 내리는 쪽 7'은 앱이 내린다고 말하는 것처럼 읽힌다 · 지표마다 중요도가 다르다 · 기준이 뭔지 모르겠다
     → 개수 대신 크기: 과거 이 지표가 지금 수준이었던 달의 1년 뒤 집값이 전체 평균보다 몇 %p 높았나/낮았나(막대). 두 기간 모두 같은 쪽인 것만 색, 나머지는 접음 */
