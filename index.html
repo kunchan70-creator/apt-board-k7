@@ -1057,9 +1057,12 @@ try{const s=JSON.parse(localStorage.getItem('jsOwn')||'null');if(s)OWN=s;}catch(
 async function ownLoad(gu){try{if(!OWNI)OWNI=await fetch('own/index.json').then(x=>x.json());const f=OWNI.idx[gu];if(!f)return {};if(!OWNF[f])OWNF[f]=await fetch('own/'+f+'.json').then(x=>x.json());return OWNF[f];}catch(e){return {};}}
 const YMt=t=>Math.floor(t/12)+'.'+String(t%12+1).padStart(2,'0');
 function flB(r){try{const f=OWNI&&OWNI.idx[r.gu];return f&&OWNF[f]?(((OWNF[f][r.no]||{}).b||{})[String(r.b)]||null):null;}catch(e){return null;}}
+/* 층대 비율(중층 기준값 대비) — 10-03 실측(2012~20, 4.8만 건): 층 차이는 평균으로 5년 뒤에도 유지(저층 −4.7%→−4.1%, 고층≈중층)
+   하지만 단지별로 잰 값은 5년 뒤 다시 재면 상관 0.2(거래가 적어 대부분 잡음) → '층대 평균 + 단지 몫 20%'. 정상가 표시·5년 뒤 값 모두 이 값(말이 엇갈리지 않게) */
+function flR(f,k,r){const raw=f.r[k][0]/(r.anc==='3m'&&f.r.mi?f.r.mi[0]:1), M={lo:.955,mi:1,hi:1}[k];return M+(raw-M)*.2;}
 function flInfo(B,r){   // 09-29 층별 정상가: own_data.flband 비율 × 지금 시세 (3개월 앵커는 10-03부터 중간층 기준 값이라 중층 비율로 나눔)
  const f=B&&B.fl; if(!f||!f.r)return null; const nm={lo:'저층',mi:'중층',hi:'고층'}, rg={lo:'1~'+f.cut[0]+'층',mi:(f.cut[0]+1)+'~'+(f.cut[1]-1)+'층',hi:f.cut[1]+'~'+f.mx+'층'};
- const bands=['lo','mi','hi'].map(k=>({k,nm:nm[k],rg:rg[k],n:f.r[k]?f.r[k][1]:0,p:f.r[k]?Math.round(r.p*f.r[k][0]/(r.anc==='3m'&&f.r.mi?f.r.mi[0]:1)):null})).filter(b=>f.cut[1]>f.cut[0]+1||b.k!=='mi');
+ const bands=['lo','mi','hi'].map(k=>({k,nm:nm[k],rg:rg[k],n:f.r[k]?f.r[k][1]:0,p:f.r[k]?Math.round(r.p*flR(f,k,r)):null})).filter(b=>f.cut[1]>f.cut[0]+1||b.k!=='mi');
  return {f,bands,bandOf:fl=>fl<=f.cut[0]?'lo':fl>=f.cut[1]?'hi':'mi'};}
 function flVerdict(B,r,fl,v){   // 층(+가격) → 이 층대 정상가·급매 선·판정. 가격 없으면 정상가만
  const I=flInfo(B,r); if(!I)return ''; fl=Math.round(fl||0); if(!(fl>=1))return '<div class="sub" style="font-size:.78rem">층을 넣으면 그 층대 정상가를 알려 드려요</div>';
@@ -1914,7 +1917,8 @@ function ppCalc(i,el){if(document.getElementById('own')&&!ppCalc.in){ppCalc.in=1
  if(!v||v<r.p*0.3||v>r.p*3){out.innerHTML=(el.value.trim()?'<div class="sub" style="font-size:.78rem">가격을 억 단위로 넣어 주세요 (예: 7.5)</div>':'')+'<div id="ppfl-'+i+'"></div>';ppFl(i,r,null);return;}
  /* 10-03 사용자: 층마다 값이 다른데 고층을 비싸게 사면 손해로 셈됐다 → 고층은 팔 때도 고층 값. 층을 넣으면 5년 뒤 값도 그 층대 비율(flband)만큼 옮겨
     '그 층 정상가보다 더 준 돈'만 순이익에서 빠지게. 층 자료는 상세를 열 때(ppFb) 받아 둔 것을 쓴다 */
- const fl=Math.round(parseFloat((document.getElementById('ppf-'+i)||{}).value)||0), FI=fl>=1?flInfo(flB(r),r):null, fk=FI&&fl<=FI.f.mx?FI.bandOf(fl):null, fr=fk&&FI.f.r[fk]?FI.f.r[fk][0]/(r.anc==='3m'&&FI.f.r.mi?FI.f.r.mi[0]:1):1;   // 10-03: 3개월 앵커는 중간층 기준 값이라 중층 비율로 나눔
+ /* 10-03 사용자: 층마다 값이 다른데 고층을 비싸게 사면 손해로 셈됐다 → 층을 넣으면 5년 뒤 값도 그 층대 비율(flR)만큼 옮겨 '그 층 정상가보다 더 준 돈'만 빠지게 */
+ const fl=Math.round(parseFloat((document.getElementById('ppf-'+i)||{}).value)||0), FI=fl>=1?flInfo(flB(r),r):null, fk=FI&&fl<=FI.f.mx?FI.bandOf(fl):null, fr=fk&&FI.f.r[fk]?flR(FI.f,fk,r):1;
  const r2=withPrice(r,v); if(fr!==1){r2.v1*=fr;r2.v5*=fr;r2.v9*=fr;}
  const F=fin(r2), F0=r.F||fin(r), sg=x=>(x>=0?'+':'−')+eok(Math.abs(x))+'억', d=v-r.p, kv=(k,x)=>`<div class="kv"><span class="k">${k}</span><span class="v">${x}</span></div>`;
  out.innerHTML=`<div style="margin-top:6px;padding:10px 12px;border-radius:12px;background:var(--surface2)">`
