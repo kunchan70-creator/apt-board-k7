@@ -290,7 +290,7 @@ details.adv[open]{background:var(--surface)}
 .optp{background:var(--surface2);border-radius:14px;padding:6px 12px 10px;margin:8px 0 0}.optp .opt{margin:6px 0;padding:13px 14px;font-size:.95rem}
 .lead2{font-size:.95rem;line-height:1.55;margin:10px 0 4px;color:var(--ink2)}.lead2 b{color:var(--ink)}
 .tip{display:flex;gap:10px;align-items:center;background:var(--surface2);border-radius:12px;padding:10px 12px;margin:10px 0 0;font-size:.86rem;line-height:1.5}
-.ltab{display:flex;gap:20px;margin:6px 2px 12px;border-bottom:1px solid var(--line)}.ltab a{font-size:.95rem;font-weight:700;color:var(--ink3);padding:9px 0 10px;border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer}.ltab a.on{color:var(--ink);border-color:var(--ink)}.rc4{display:flex;flex-wrap:wrap;gap:2px 12px;margin:3px 0 0 40px;font-size:.76rem;color:var(--ink2)}.rc4 span{white-space:nowrap}.mapfab>span{color:#fff!important}.mapfab{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:40;display:inline-flex;align-items:center;gap:6px;border:0;background:var(--blue);color:#fff;font:inherit;font-size:1rem;font-weight:700;border-radius:999px;padding:14px 22px;white-space:nowrap;box-shadow:0 6px 18px rgba(66,99,235,.38);cursor:pointer}.cbar{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--surface2);margin:0 0 12px}.cbar em{display:block;font-style:normal;font-size:.7rem;font-weight:800;color:var(--ink3);margin-bottom:1px}.alts{margin:-4px 0 12px;font-size:.8rem;color:var(--ink3)}.alts a{color:var(--blue);font-weight:700;cursor:pointer;margin-left:4px}
+.ltab{display:flex;gap:20px;margin:6px 2px 12px;border-bottom:1px solid var(--line)}.ltab a{font-size:.95rem;font-weight:700;color:var(--ink3);padding:9px 0 10px;border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer}.ltab a.on{color:var(--ink);border-color:var(--ink)}.nb{--vio:#7048e8;margin:2px 0 12px;padding:14px 14px 12px;border-radius:16px;background:var(--surface2)}@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .nb{--vio:#a594f9}}:root[data-theme=dark] .nb{--vio:#a594f9}.nbh{font-size:.78rem;font-weight:800;color:var(--ink3);margin-bottom:8px}.nbr{display:grid;grid-template-columns:8.6em 1fr 4.6em;align-items:center;gap:10px;margin:8px 0;font-size:.84rem;color:var(--ink2)}.nbr>span:first-child{white-space:nowrap}.nbr b{text-align:right;font-variant-numeric:tabular-nums;font-size:.92rem}.nbb{height:8px;border-radius:4px;background:var(--line2);overflow:hidden}.nbb i{display:block;height:100%;border-radius:4px}.nbs{display:grid;grid-template-columns:1fr 1fr;gap:3px 16px;margin:0 0 4px 2px;padding:6px 0 6px 12px;border-left:2px solid var(--line);font-size:.74rem;color:var(--ink3)}.nbs span{display:flex;justify-content:space-between;white-space:nowrap}.nbs em{font-style:normal;font-variant-numeric:tabular-nums;color:var(--ink2)}.nbt{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-weight:800}.nbt b{font-size:1.05rem}.nbv{margin-top:12px;padding-top:4px;border-top:1px dashed var(--line)}.nbv .nbr{margin-bottom:2px}.nbn{font-size:.72rem;color:var(--ink3);line-height:1.5}.mapfab>span{color:#fff!important}.mapfab{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:40;display:inline-flex;align-items:center;gap:6px;border:0;background:var(--blue);color:#fff;font:inherit;font-size:1rem;font-weight:700;border-radius:999px;padding:14px 22px;white-space:nowrap;box-shadow:0 6px 18px rgba(66,99,235,.38);cursor:pointer}.cbar{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--surface2);margin:0 0 12px}.cbar em{display:block;font-style:normal;font-size:.7rem;font-weight:800;color:var(--ink3);margin-bottom:1px}.alts{margin:-4px 0 12px;font-size:.8rem;color:var(--ink3)}.alts a{color:var(--blue);font-weight:700;cursor:pointer;margin-left:4px}
 .cbar span{flex:1;min-width:0;font-size:.84rem;font-weight:700;color:var(--ink2);word-break:keep-all}.cbar button{flex:0 0 auto;border:1.5px solid var(--blue);background:var(--surface);color:var(--blue);font:inherit;font-weight:800;font-size:.86rem;border-radius:999px;padding:8px 14px;cursor:pointer}
 .chips{font-size:.82rem;color:var(--ink2);margin:2px 0 0}.chips a{color:var(--blue);font-weight:700;cursor:pointer;margin-left:6px}
 .chart{cursor:pointer}
@@ -363,7 +363,7 @@ function eduEx(){   // 같은 현금으로: 남는 돈 1위 vs 입지 점수 1�
 function eduView(){const e=eduEx(), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억'; if(!e.hi)return '';
  const row=(t,x)=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line2)"><b style="font-size:.9rem">${t}</b><span style="text-align:right;font-size:.86rem">보통 <b class="num ${x.p5>=0?'pos':'neg'}">${sg(x.p5)}</b><span class="sub" style="display:block;font-size:.74rem">나쁠 때 ${sg(x.p1)} · 집값 ${Math.round(x.pp)}%</span></span></div>`;
  return `<div class="sub" style="margin-top:12px">현금 ${eok(e.K)}억으로 매수할 수 있는 곳, 5년 뒤 평균 (입지 상위 1/3 vs 하위 1/3)</div>`+row('선호 동네',e.hi)+row('그 밖',e.lo);}
-// 10-03 사용자: 순이익 = '5년 뒤 내 재산이 이만큼 는다'는 숫자 → 전·월세를 안 내는 가치(r.U)는 실제로 재산이 느는 게 아니라 순이익에서 빼고 카드에 따로 한 줄(parts3)
+// 10-03 사용자: 순이익 = '5년 뒤 내 재산이 이만큼 는다'는 숫자 → 전·월세를 안 내는 가치(r.U)는 실제로 재산이 느는 게 아니라 순이익에서 빼고 펼친 상세 맨 위 '5년 순이익 구성'(nb)에 보라색 별도 줄
 // 결과 화면 버튼 전용(질문에선 안 물음 — 사람은 어딘가 살아야 하니 기본은 실거주, 09-24 사용자)
 const QU={key:'useU',q:'매수 후<br>실거주할 건가요?',o:[['실거주',true],['임대(전세)',false]],
  a:v=>v?`<b class="k">5년 동안 전·월세를 안 내는 가치는 순이익과 따로 보여 드려요</b>`
@@ -2097,9 +2097,6 @@ function fold(t,body,open){return body?`<details class="fold"${open?' open':''}>
 // 09-29 사용자: 학군이 순이익을 바꾸는데 결과표에 그 이유가 나오나? → 5년 뒤 시세의 조각(시장 평균 · 구 흐름 · 단지 몫: 학군·역·연식·규모·전세가율 등 %p)을 카드에
 function whyUp(r){if(r.as||r.gt==null)return '';const T=r.T||5, lv=(Math.pow(1+DT.level/100,T)-1)*100, P=(r.pt||[]).slice(0,6), sg=v=>`<b class="${v>=0?'pos':'neg'}">${pp(v)}</b>`;
  return `<div style="margin:8px 0 2px;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:.8rem;line-height:1.6"><b>5년 뒤 시세는 이렇게 나와요</b><div style="display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:4px"><span style="white-space:nowrap">시장 평균 <b>+${Math.round(lv)}%</b></span><span style="white-space:nowrap">${(r.gu||'').split(' ').pop()} 흐름 ${sg(r.gt)}</span>${P.map(([i,v])=>`<span style="white-space:nowrap">${S[i]} ${sg(v)}</span>`).join('')}</div><div class="sub" style="font-size:.72rem;margin-top:3px">시장 평균 = 과거 20년 5년 상승률 · 구 흐름·단지 몫 = 같은 구·같은 시점 단지들 사이에서 더/덜 상승한 몫(%p, 과거 실거래로 추정) · 학군 = 특목·자사고 진학률과 통학구역 프리미엄</div></div>`;}
-function howNum(r,F){const use=CF.useU&&CF.addU?r.U:0, up=F.q5, cost=-(r.C-r.p-r.bu)-(GRS(F.sv5)-F.sv5), it=-F.it, t=v=>(v>=0?'+':'−')+eok(Math.abs(v));
- const P=[[r.bu?'시세 상승(분담금 뺌)':'시세 상승',up],['임차 주거비 절감',use],['세금·중개보수',cost],['대출이자',it],['남는 자본 예금 이자(세후)',F.di||0],[gsOf(r)?'이자 소득공제':'이자 소득공제(공시가 추정)',F.tx||0],['취득세 감면',F.ac||0],['보유세(공시가 반영)',-(F.hd||0)],['양도세',-(F.cg||0)],[CF.rpt>0?'수리비':'수리비(어림)',-F.rp]].filter(([_,v])=>Math.abs(v)>=50);
- return `<div style="margin:8px 0 2px;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:.8rem;line-height:1.6"><b>기준 ${t(F.p5)}억은 이렇게 나와요</b><div style="display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:4px">${P.map(([k,v])=>`<span style="white-space:nowrap">${k} <b style="color:${v>=0?'var(--green)':'var(--red)'}">${t(v)}</b></span>`).join('')}</div></div>`;}
 // 곁다리(09-26 사용자): 이 집을 사는 대신 가진 돈을 굴리면 연 몇 %를 벌어야 같아지나 — 사는 방식은 고를 수 있게(사용자: 반드시 이 집에 산다는 가정 말고 선택지로).
 //   ① 월세로 살면: (가진 돈 − 보증금)을 연 x%로 굴린 이익 − 5년 월세 = 이 집을 사서 살 때 순이익(월세 아낌은 뺌 — 산 사람은 월세를 안 내니까)
 //   ② 전세로 살면: (가진 돈 − 전세금)을 굴린 이익 = 같은 순이익
@@ -2138,11 +2135,26 @@ function invBody(r,x,k){const t=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', M=[[
  ${inputs}<div class="sub" style="font-size:.74rem;line-height:1.55">${note} 수익률은 세전·복리. 기본 금액은 ${x.mode==='j'?'보유 자본의 절반':'이 집 전세금 기준(월세 = 전세금 × 지역 전월세 전환율)'}이고 고칠 수 있어요.</div>`;}
 function invUpd(k){const r=INVR[k], el=document.getElementById('inv-'+k); if(!r||!el)return; const x=invCalc(r); el.innerHTML=invBody(r,x,k);
  const sm=el.parentElement.querySelector('[data-inv]'); if(sm)sm.innerHTML=invSum(x);}
+/* 10-03 사용자: 큰 숫자(5년 순이익 = 늘어나는 내 재산)가 어떻게 나왔는지 — 펼치면 맨 위. 더하면 순이익.
+   전·월세 안 내는 가치는 재산이 느는 게 아니라 별도(초록·빨강이 아닌 보라). 전세 놓기는 내가 살 집 임차 주거비가 실제로 나가는 돈이라 빨강 조각 */
+function nb(r,F){const up=F.q5, rent=CF.useU?0:-(r.U||0), etc=F.p5-up-rent, U=CF.useU?(r.U||0):0;
+ const m=v=>{const a=Math.abs(v);return a>=1000?(Math.round(a/1000)/10).toFixed(1)+'억':(Math.round(a/100)*100).toLocaleString()+'만';}, sg=v=>(v>=0?'+':'−')+m(v);
+ const mx=Math.max(Math.abs(up),Math.abs(etc),Math.abs(rent),U,1), w=v=>Math.max(2,Math.abs(v)/mx*100).toFixed(1);
+ const cost=-(r.C-r.p-r.bu)-(GRS(F.sv5)-F.sv5), sub=[['대출이자',-F.it],['세금·중개',cost],['예금 이자',F.di||0],['소득공제',F.tx||0],['취득세 감면',F.ac||0],['보유세',-(F.hd||0)],['양도세',-(F.cg||0)],['수리비',-F.rp]].filter(x=>Math.abs(x[1])>=50);
+ const row=(k,v,c,txt)=>`<div class="nbr"><span>${k}</span><span class="nbb"><i style="width:${w(v)}%;background:${c}"></i></span><b style="color:${c}">${txt||sg(v)}</b></div>`;
+ return `<div class="nb"><div class="nbh">5년 순이익 구성</div>`
+  +row(r.bu?'시세 차익(분담금 뺌)':'시세 차익',up,up>=0?'var(--green)':'var(--red)')
+  +(rent?row('임차 주거비',rent,'var(--red)'):'')
+  +row('이자·세금 등',etc,etc>=0?'var(--green)':'var(--red)')
+  +(sub.length?`<div class="nbs">${sub.map(([k,v])=>`<span>${k}<em>${sg(v)}</em></span>`).join('')}</div>`:'')
+  +`<div class="nbt"><span>5년 순이익</span><b class="${F.p5>=0?'pos':'neg'}">${ab(F.p5)}</b></div>`
+  +(U?`<div class="nbv">${row('전·월세 안 내는 가치',U,'var(--vio)','약 '+m(U))}<div class="nbn">순이익과 별도 · 이 집에 사는 5년 동안 전·월세를 내지 않아 얻는 가치</div></div>`:'')
+  +`</div>`;}
 function detail(r){   // 09-30 사용자: 결과 카드엔 필요한 것만(단지 정보·자금 계획·5년 뒤) — 나머지는 단지 분석(planMore)
  const kv=(k,v)=>`<div class="kv"><span class="k">${k}</span><span class="v">${v}</span></div>`, F=fin(r), l=Math.max(r.ltv,CF.first?0.7:0), age=r.y?YEAR-r.y:null;
  const sec=(t,b)=>`<div class="dsec"><div class="dh">${t}</div>${b}</div>`, sch=(DT.sch||{})[r.no], el=(DT.el||{})[r.no];
  const st=STXT(r)+(r.ka!=null&&!r.wk?' <span class="sub">(지도상 어림)</span>':'');
- let h=`<div style="padding:0 12px 14px">`
+ let h=`<div style="padding:0 12px 14px">`+nb(r,F)+(trustOf(r).tags.length?tbox(r):'')   // 10-03 사용자: 펼치면 맨 위 = 순이익 구성, 경고는 그다음
   +sec('단지 정보',kv('준공 · 규모',[r.y?r.y+'년 ('+age+'년차)':null,r.hh?r.hh.toLocaleString()+'세대':null].filter(Boolean).join(' · ')||'-')
     +kv('가까운 역',st)
     +(sch&&sch[0]?kv('초등학교',sch[0]+'등학교'+(el!=null?` <span class="sub">(${el<=300?'초품아 · ':''}${el}m)</span>`:'')):'')
@@ -2155,8 +2167,7 @@ function detail(r){   // 09-30 사용자: 결과 카드엔 필요한 것만(단�
    +kv('대출',F.L>0?(F.ln?'<b>'+F.ln+'</b> '+eok(F.L)+'억 <span class="sub">(연 '+(F.i*100).toFixed(2)+'% <a href="javascript:void(0)" onclick="loanInfo()" style="color:var(--blue)">ⓘ</a>)</span>':eok(F.L)+'억 <span class="sub">(연 '+(F.i*100).toFixed(2)+'% · LTV '+Math.round(l*100)+'%)</span>'):'없음')
    +(F.L>0?kv('월 상환','약 '+Math.round(pay).toLocaleString()+'만 원'):'')
    +kv('자기자본','<b>'+eok(F.own)+'억</b>'+(CF.cash!=null?(F.ok?'':' <span class="neg">· '+eok(F.own-CF.cash)+'억 부족</span>'):'')));}
- h+=sec('5년 뒤 (추정)',kv('예상 시세','<b>'+eok(GRS(F.sv5))+'억</b> <span class="sub">(비관 '+eok(GRS(F.sv1))+' ~ 낙관 '+eok(GRS(F.sv9))+'억)</span>')+howNum(r,F));
- if(trustOf(r).tags.length)h+=tbox(r);
+ h+=sec('5년 뒤 (추정)',kv('예상 시세','<b>'+eok(GRS(F.sv5))+'억</b> <span class="sub">(비관 '+eok(GRS(F.sv1))+' ~ 낙관 '+eok(GRS(F.sv9))+'억)</span>'));
  return h+'</div>';}
 // 09-30: 결과 카드에서 뺀 것 — 단지 분석 화면 '매수 계획 더 보기'
 function planMore(r,F){const kv=(k,v)=>`<div class="kv"><span class="k">${k}</span><span class="v">${v}</span></div>`, sec=(t,b)=>`<div class="dsec"><div class="dh">${t}</div>${b}</div>`;
@@ -2212,15 +2223,9 @@ function row(r,k,ex,o){   // 09-28 사용자: 결과판이 지저분 + 순위마
  return `<details class="card rc${k===1?' r1':''}" ontoggle="if(this.open){ppFb(${r._i});try{localStorage.setItem('jsRcOpen','1')}catch(e){}document.querySelectorAll('details.rc.nudge').forEach(x=>x.classList.remove('nudge'));}"><summary>
  <div class="rc1"><span class="rk${k===1?' r1':''}"${String(k).length>3?' style="font-size:.7rem"':''}>${k}</span><b class="rcn">${r.n} <span>${r.b}㎡</span></b><span class="bn"><i>${o.lbl||'5년 순이익 · 예상'}</i>${big}</span></div>
  <div class="rc2"><span>${r.gu}${CF.cash!=null&&CF.useU&&!o.noRng?` · ${monthly(r,F)<1?'대출 없음':`월 이자 <b style="color:var(--ink)">${mTxt(monthly(r,F))}</b>`}`:''}${!CF.useU&&!o.noRng&&r.U?` · 임차 주거비 5년 <b style="color:var(--ink)">${eok(r.U)}억</b>`:''}${o.l2?' · '+o.l2:''}${hi?` <em>${hi.t}</em>`:''}</span><span></span></div>
- ${ex||''}<div class="rc3">${o.l3||`시세 ${eok(r.p)}억${r.bu?` + 분담금 ${eok(r.bu)}억`:''} → 5년 뒤 보통 <b>약 ${ab1(GRS(F.sv5))}</b>`}</div>${o.l3||o.noRng?'':parts3(r,F)}
+ ${ex||''}<div class="rc3">${o.l3||`시세 ${eok(r.p)}억${r.bu?` + 분담금 ${eok(r.bu)}억`:''} → 5년 뒤 보통 <b>약 ${ab1(GRS(F.sv5))}</b>`}</div>
  ${o.noRng?'':`<div class="rng1">${cells(F)}</div>`}
  <div class="rchint"><b></b><i>⌄</i></div></summary>${detail(r)}<div style="display:flex;gap:8px;margin:6px 12px 4px"><a class="btn ghost" style="flex:1;text-decoration:none;text-align:center;padding:12px 0" href="map.html#${r.no}">지도에서 보기</a><button class="btn" style="flex:1.4;padding:12px 0" onclick="rcard('${key}')">단지 분석 보기 ›</button></div></details>`;}
-/* 10-03 사용자: '+3.0억이 어디서 나왔나' 바로 이해되게 — 큰 숫자(순이익 = 5년 뒤 늘어나는 내 재산)를 조각으로. 더하면 큰 숫자.
-   실거주: 시세 차익 + 이자·세금 등. 전·월세를 안 내는 가치는 재산이 느는 게 아니라 순이익 밖 회색 한 줄(같은 날 사용자). 전세 놓기: 내가 살 집 임차 주거비는 실제로 나가는 돈이라 조각에 넣음 */
-function parts3(r,F){const up=F.q5, use=CF.useU?0:-(r.U||0), etc=F.p5-up-use, t=v=>(v>=0?'+':'−')+ab1(Math.abs(v)), c=v=>v>=0?'var(--green)':'var(--red)';
- const P=[['시세 차익',up]].concat(CF.useU?[]:[['임차 주거비',use]]).concat([['이자·세금 등',etc]]);
- return `<div class="rc4">`+P.map(([k,v])=>`<span>${k} <b style="color:${c(v)}">${t(v)}</b></span>`).join('')+`</div>`
-  +(CF.useU&&r.U?`<div class="rc4" style="color:var(--ink3)"><span>+ 전·월세 안 내는 가치 약 ${ab1(r.U)} · 순이익과 별도</span></div>`:'');}
 let RBV=[], N=10, V=[], RS={lo:-1,hi:1};
 // 10-02 사용자: 순이익은 그대로 보여 주되 한계를 분명히 → 같은 날 '평균이라고 써 두면 엔진이 바보처럼 보인다'로 화면 '가정' 줄(limH)은 뺌(함수만 남김)
 const MKT5=()=>Math.round((Math.pow(1+DT.level/100,5)-1)*100);
