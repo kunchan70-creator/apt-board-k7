@@ -318,7 +318,7 @@ details.adv[open]{background:var(--surface)}
 .cl-tg{font-size:.76rem;font-weight:800;color:var(--blue)}.cl-q{font-size:.95rem;font-weight:700;color:var(--ink2);margin:6px 0 2px}
 .cl-a{font-size:1.32rem;font-weight:800;letter-spacing:-.03em;line-height:1.35}.cl-fg{margin:6px 0 2px}.cl-g{font-size:.8rem;color:var(--ink3);line-height:1.55;margin-top:10px}
 .cl-mc{display:flex;justify-content:space-between;align-items:baseline;margin-top:12px}.cl-mc span{font-size:.78rem;color:var(--ink3)}.cl-mc b{font-size:1.3rem;font-weight:800}
-.cl-dt{display:flex;justify-content:center;gap:6px;margin:0 0 14px}.cl-dt i{width:6px;height:6px;border-radius:3px;background:var(--line);transition:width .25s,background .25s}.cl-dt i.on{width:18px;background:var(--blue)}.cl-dt i.d{background:var(--ink3)}
+.cl-dt{display:flex;justify-content:center;gap:6px;margin:0 0 14px}.cl-dt i{width:6px;height:6px;border-radius:3px;background:var(--line);transition:width .25s,background .25s}.cl-dt i.on{width:26px;background:var(--line);position:relative;overflow:hidden}.cl-dt i.on:after{content:'';position:absolute;inset:0;background:var(--blue);transform-origin:left;animation:clP var(--d,6s) linear forwards}@keyframes clP{from{transform:scaleX(0)}to{transform:scaleX(1)}}.cl-dt i.nd{animation:clNd .35s}@keyframes clNd{30%{transform:translateX(-3px)}60%{transform:translateX(3px)}}.cl-dt i.d{background:var(--ink3)}
 @media (prefers-reduced-motion:reduce){.calc,.cl-cd,.cl-lg svg{animation:none}.cl-fl{display:none}.cl-hs{animation:none;stroke-dashoffset:0;fill-opacity:1}}
 @media (prefers-reduced-motion:reduce){.fact{animation:rmF .3s ease both}}   /* 09-28: 동작 줄이기(삼성 '애니메이션 제거'·절전·아이폰)에서도 부드러운 나타남·막대는 남긴다 — 전엔 전부 꺼서 폰에서 효과가 안 보였다 */
 </style>
@@ -2724,9 +2724,10 @@ function clShow(i){if(!CL)return; if(i>=CL.sl.length){clEnd();return;}
  CL.i=i; const s=CL.sl[i], c=document.getElementById('clC');
  c.innerHTML=`<div class="cl-cd"><div class="cl-tg">${s.tag}</div><div class="cl-q">${s.q}</div><div class="cl-a">${s.a}</div><div class="cl-fg">${s.fig}</div><div class="cl-g">${s.g}</div></div>`;
  setTimeout(()=>c.querySelectorAll('.chart').forEach(x=>x.classList.add('go')),40);
- CL.sl.forEach((_,k)=>{const d=document.getElementById('clD'+k);if(d)d.className=k<i?'d':k===i?'on':'';});
+ CL.sh=performance.now(); CL.sl.forEach((_,k)=>{const d=document.getElementById('clD'+k);if(d){d.className=k<i?'d':k===i?'on':'';if(k===i)d.style.setProperty('--d',CL.dw[i]+'ms');}});
  clearTimeout(CL.tm); CL.tm=setTimeout(()=>{CL.acc+=CL.dw[i];clShow(i+1);},CL.dw[i]);}
-function clNext(){if(!CL)return; clearTimeout(CL.tm); CL.acc+=CL.dw[CL.i]; CL.t0=Math.min(CL.t0,performance.now()-CL.acc); clShow(CL.i+1);}
+function clNext(){if(!CL)return; const need=Math.max(3500,CL.dw[CL.i]*.6); if(performance.now()-CL.sh<need){const d=document.getElementById('clD'+CL.i);if(d){d.classList.remove('nd');void d.offsetWidth;d.classList.add('nd');}return;}   // 10-04 사용자: 연타하면 넘어가 버려 만든 이유가 없다
+ clearTimeout(CL.tm); CL.acc+=CL.dw[CL.i]; CL.t0=Math.min(CL.t0,performance.now()-CL.acc); clShow(CL.i+1);}
 // 10-02 '더 크게·더 천천히': 집 그리기 1.5초 → 3.6초 주기(숫자 굴림 2.2초 · 등호 1.4초)
 function clTick(){if(!CL)return; const now=performance.now(), t=Math.min(1,(now-CL.t0)/CL.tot), lg=CL.el.querySelector('.cl-lg'), s=document.getElementById('clS'), n=document.getElementById('clN');
  const k=t<.22?0:t<.5?1:t<.8?2:3; if(s&&s.textContent!==CL.ST[k])s.textContent=CL.ST[k];
@@ -2741,11 +2742,21 @@ function clSlides(){
  const T=V[0], F=T&&(T.F||fin(T)), cnt=n=>n<1?'1번 미만':n+'번';
  const out=[];
  // 필수 1: 큰 숫자 읽는 법(지금 1위 카드 그대로)
- if(F)out.push({id:'big',req:1,tag:'읽는 법',q:'카드의 큰 숫자는 무엇인가요',a:'보통일 때의 5년 순이익이에요',
+ if(F)out.push({id:'big',req:1,tag:'읽는 법',q:'5년 뒤 딱 이만큼 남는다는 뜻인가요',a:'아니요, 보통일 때의 셈이에요',
   fig:`<div class="cl-mc"><span>지금 1위 · 5년 순이익 예상</span><b class="num ${F.p5>=0?'pos':'neg'}">${ab(F.p5)}</b></div>${cells(F)}`,
-  g:`시장 전체가 과거 평균만큼(5년 +${MKT5()}%) 오른다고 가정한 값이에요. 시장이 다르게 가면 모든 금액이 함께 바뀌어요.`});
+  g:`실제 결과는 막대처럼 나쁠 때 ${ab(F.p1).replace('약 ','')} ~ 좋을 때 ${ab(F.p9).replace('약 ','')} 사이로 흩어져요. 큰 숫자는 그 가운데예요.`});
+ // 10-04 사용자: '1위를 사라'가 아니라 상위권이 확률적으로 유리할 뿐 — 그 안에서 월 이자 같은 내 형편에 맞춰 고른다. 그림 = 과거 같은 셈의 상위·전체·하위 20% 실제 5년 순이익
+ {const SB0=DT.sbt, k0=[10000,30000,50000].reduce((a,b)=>Math.abs(b-(CF.cash||30000))<Math.abs(a-(CF.cash||30000))?b:a), R0=SB0?Object.values(SB0.r[k0+'_0.5']||{}):[];
+  if(R0.length&&T){const av=j=>R0.reduce((t,x)=>t+x[j],0)/R0.length;
+   out.push({id:'use',req:1,tag:'쓰는 법',q:'1위를 사라는 뜻인가요',a:'상위권일수록 과거 성과가 좋았을 뿐이에요',
+    fig:hbars([['상위 20%',av(1)],['전체',av(2)],['하위 20%',av(3)]].map(([k,v])=>[k,Math.max(v,0),(v>=0?'+':'−')+(Math.abs(v)/1e4).toFixed(1)+'억']),Math.max(av(1),av(2),av(3),1),'blue'),
+    g:`과거 같은 셈으로 줄 세웠을 때 실제 5년 순이익(가운데)이에요. 1위도 손실이 날 수 있어요. 상위권 안에서 월 이자(1위 ${mTxt(monthly(T,F))})·자기자본·출퇴근처럼 내 형편에 맞는 곳을 고르세요.`});}}
+ // 10-04 사용자: 보라색(전·월세 안 내는 가치)도 처음 보면 '오잉' — 펼친 상세 맨 위 상자를 그대로 보여 주고 뜻을 한 줄로
+ if(F&&CF.useU&&T.U)out.push({id:'vio',req:1,tag:'읽는 법',q:'펼쳤을 때 보라색은 무엇인가요',a:'전·월세를 안 내는 가치예요',
+  fig:`<div style="margin-top:10px">${nb(T,F)}</div>`,
+  g:'집을 사서 살면 5년 동안 전·월세를 내지 않아요. 재산이 느는 건 아니라서 순이익엔 넣지 않고 보라색으로 따로 보여 드려요.'});
  // 필수 2: 1위도 손실이 날 수 있다(지금 1~3위 손실 확률)
- if(F)out.push({id:'loss',req:1,tag:'오해하기 쉬운 것',q:'1위면 손실이 없나요',a:'1위도 손실이 날 수 있어요',
+ if(F)out.push({id:'loss',tag:'오해하기 쉬운 것',q:'1위면 손실이 없나요',a:'1위도 손실이 날 수 있어요',
   fig:hbars(V.slice(0,3).map((r,i)=>{const L=lossP(r.F||fin(r));return [(i+1)+'위 손실',Math.max(L,1),'10번 중 '+cnt(Math.round(L/10))];}),100,'red'),
   g:'순위는 같은 조건에서 나란히 놓고 비교한 순서예요. 이익을 약속하지 않아요.'});
  // 과거 검증: 상위 20%가 초과 성과를 낸 반기(신뢰 페이지 '과거 검증 결과'와 같은 셈)
