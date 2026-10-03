@@ -1056,6 +1056,7 @@ let OWN={loan:null,rate:null}, OWNF={}, OWNI=null;
 try{const s=JSON.parse(localStorage.getItem('jsOwn')||'null');if(s)OWN=s;}catch(e){}
 async function ownLoad(gu){try{if(!OWNI)OWNI=await fetch('own/index.json').then(x=>x.json());const f=OWNI.idx[gu];if(!f)return {};if(!OWNF[f])OWNF[f]=await fetch('own/'+f+'.json').then(x=>x.json());return OWNF[f];}catch(e){return {};}}
 const YMt=t=>Math.floor(t/12)+'.'+String(t%12+1).padStart(2,'0');
+function flB(r){try{const f=OWNI&&OWNI.idx[r.gu];return f&&OWNF[f]?(((OWNF[f][r.no]||{}).b||{})[String(r.b)]||null):null;}catch(e){return null;}}
 function flInfo(B,r){   // 09-29 층별 정상가: own_data.flband 비율 × 지금 시세(최근 3개월 중앙값)
  const f=B&&B.fl; if(!f||!f.r)return null; const nm={lo:'저층',mi:'중층',hi:'고층'}, rg={lo:'1~'+f.cut[0]+'층',mi:(f.cut[0]+1)+'~'+(f.cut[1]-1)+'층',hi:f.cut[1]+'~'+f.mx+'층'};
  const bands=['lo','mi','hi'].map(k=>({k,nm:nm[k],rg:rg[k],n:f.r[k]?f.r[k][1]:0,p:f.r[k]?Math.round(r.p*f.r[k][0]):null})).filter(b=>f.cut[1]>f.cut[0]+1||b.k!=='mi');
@@ -1911,14 +1912,18 @@ function ppFl(i,r,v){   // 09-29 층별 정상가(own_data.flband) — 단지 �
 function ppCalc(i,el){if(document.getElementById('own')&&!ppCalc.in){ppCalc.in=1;try{return mineWrap('own',[R[i]],()=>ppCalc(i,el));}finally{ppCalc.in=0;}}   /* 09-30 단지 분석 안에선 '내 조건 반영' 스위치를 따른다 */
  const r=R[i], out=document.getElementById('pp-'+i); if(!r||!out)return; const v=parseMoney(el.value);
  if(!v||v<r.p*0.3||v>r.p*3){out.innerHTML=(el.value.trim()?'<div class="sub" style="font-size:.78rem">가격을 억 단위로 넣어 주세요 (예: 7.5)</div>':'')+'<div id="ppfl-'+i+'"></div>';ppFl(i,r,null);return;}
- const r2=withPrice(r,v), F=fin(r2), F0=r.F||fin(r), sg=x=>(x>=0?'+':'−')+eok(Math.abs(x))+'억', d=v-r.p, kv=(k,x)=>`<div class="kv"><span class="k">${k}</span><span class="v">${x}</span></div>`;
+ /* 10-03 사용자: 층마다 값이 다른데 고층을 비싸게 사면 손해로 셈됐다 → 고층은 팔 때도 고층 값. 층을 넣으면 5년 뒤 값도 그 층대 비율(flband)만큼 옮겨
+    '그 층 정상가보다 더 준 돈'만 순이익에서 빠지게. 층 자료는 상세를 열 때(ppFb) 받아 둔 것을 쓴다 */
+ const fl=Math.round(parseFloat((document.getElementById('ppf-'+i)||{}).value)||0), FI=fl>=1?flInfo(flB(r),r):null, fk=FI&&fl<=FI.f.mx?FI.bandOf(fl):null, fr=fk&&FI.f.r[fk]?FI.f.r[fk][0]:1;
+ const r2=withPrice(r,v); if(fr!==1){r2.v1*=fr;r2.v5*=fr;r2.v9*=fr;}
+ const F=fin(r2), F0=r.F||fin(r), sg=x=>(x>=0?'+':'−')+eok(Math.abs(x))+'억', d=v-r.p, kv=(k,x)=>`<div class="kv"><span class="k">${k}</span><span class="v">${x}</span></div>`;
  out.innerHTML=`<div style="margin-top:6px;padding:10px 12px;border-radius:12px;background:var(--surface2)">`
   +kv('최근 실거래 대비',`${d>=0?'+':'−'}${eok(Math.abs(d))}억 <span class="sub">(${(d/r.p*100>=0?'+':'')+(d/r.p*100).toFixed(1)}%)</span>`)
   +kv('총 매수 비용','<b>'+eok(v+r2.fee+r.bu+F.rp)+'억</b>')
   +kv('대출 · 자기자본',(F.L>0?eok(F.L)+'억 · ':'')+'<b>'+eok(F.own)+'억</b>'+(CF.cash!=null&&!F.ok?' <span class="neg">('+eok(F.own-CF.cash)+'억 부족)</span>':''))
   +kv('5년 순이익',`<b class="${F.p5>=0?'pos':'neg'}">${sg(F.p5)}</b> <span class="sub">(비관 ${sg(F.p1)} ~ 낙관 ${sg(F.p9)})</span>`)
   +kv('손실 확률',lossTxt(F).replace('손실 확률 ',''))
-  +`<div class="sub" style="font-size:.74rem;margin-top:4px">실거래 가격으로 셈했을 때보다 순이익 ${sg(F.p5-F0.p5)}</div></div><div id="ppfl-${i}"></div>`; ppFl(i,r,v);}
+  +`<div class="sub" style="font-size:.74rem;margin-top:4px">실거래 가격으로 셈했을 때보다 순이익 ${sg(F.p5-F0.p5)}${fr!==1?` · 5년 뒤 값도 ${fl}층 시세 기준`:''}</div></div><div id="ppfl-${i}"></div>`; ppFl(i,r,v);}
 function GRS(v){const t=v<5000?.0066:v<20000?.0055:v<90000?.0044:v<120000?.0055:v<150000?.0066:.0077;return v/(1-t);}
 function cash(r){return fin(r).own;}
 function ok(r){
