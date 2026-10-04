@@ -1,7 +1,7 @@
 <!doctype html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="light dark"><meta name="robots" content="noindex,nofollow">
-<title>단지 지도 · 집셈</title><meta property="og:type" content="website"><meta property="og:site_name" content="집셈"><meta property="og:title" content="단지 지도 · 집셈"><meta property="og:description" content="내 자본으로 매수할 수 있는 집 가운데 순이익이 가장 높은 곳을 셈해 봅니다. 서울·경기·인천 아파트, 국토부 실거래 20년."><meta property="og:image" content="https://kunchan70-creator.github.io/apt-board-k7/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="description" content="내 자본으로 매수할 수 있는 집 가운데 순이익이 가장 높은 곳을 셈해 봅니다."><link rel="icon" href="data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 64 64' aria-hidden='true' style='flex:0 0 auto'%3E%3Cdefs%3E%3ClinearGradient id='lg1' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%236b83ff'/%3E%3Cstop offset='1' stop-color='%233346c9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='%2316191f'/%3E%3Cpath d='M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z' fill='%23ffffff' stroke='%23ffffff' stroke-width='4' stroke-linejoin='round'/%3E%3Crect x='22.5' y='31.5' width='19' height='5.2' rx='2.6' fill='%2316191f'/%3E%3Crect x='22.5' y='40.3' width='19' height='5.2' rx='2.6' fill='%2316191f'/%3E%3C/svg%3E"><meta name="theme-color" content="#4263eb">
+<title>단지 지도 · 집셈</title><meta property="og:type" content="website"><meta property="og:site_name" content="집셈"><meta property="og:title" content="단지 지도 · 집셈"><meta property="og:description" content="내 자본으로 매수할 수 있는 집 가운데 순이익이 가장 높은 곳을 셈해 봅니다. 서울·경기·인천 아파트, 국토부 실거래 20년."><meta property="og:image" content="https://kunchan70-creator.github.io/apt-board-k7/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="description" content="내 자본으로 매수할 수 있는 집 가운데 순이익이 가장 높은 곳을 셈해 봅니다."><link rel="icon" href="data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 64 64' aria-hidden='true' style='flex:0 0 auto'%3E%3Cdefs%3E%3ClinearGradient id='lg1' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%236b83ff'/%3E%3Cstop offset='1' stop-color='%233346c9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='url(%23lg1)'/%3E%3Cpath d='M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z' fill='%23ffffff' stroke='%23ffffff' stroke-width='4' stroke-linejoin='round'/%3E%3Crect x='22.5' y='31.5' width='19' height='5.2' rx='2.6' fill='url(%23lg1)'/%3E%3Crect x='22.5' y='40.3' width='19' height='5.2' rx='2.6' fill='url(%23lg1)'/%3E%3C/svg%3E"><meta name="theme-color" content="#4263eb">
 <meta name="description" content="서울·경기·인천 아파트 단지의 입지(주변 시세·역 접근성)를 지도에서 확인합니다.">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
@@ -9,8 +9,8 @@
 <style>
 /* 토큰: pagekit.py CSS와 같은 값(색·반경·그림자). 지도 전용 값(점수 색 단계 --c1~--c5)만 여기서 더한다 */
 :root{
- --bg:#fff;--surface:#fff;--surface2:#f4f5f7;--ink:#16191f;--ink2:#4e5968;--ink3:#6b7684;--line:#e5e8eb;--line2:#f2f4f6;--grid:transparent;
- --blue:#3b5bdb;--blue-bg:#eef2ff;--red:#e5484d;--red-bg:#fdecec;--green:#12a150;--green-bg:#e8f7ee;--amber:#b85c00;--amber-bg:#fff1e6;
+ --bg:#f3f2ec;--surface:#fff;--surface2:#f8f7f3;--ink:#1a1f2c;--ink2:#4c5566;--ink3:#8a909b;--line:#e6e3da;--line2:#f1efe8;--grid:rgba(66,99,235,.07);
+ --blue:#4263eb;--blue-bg:#eef1ff;--red:#f04452;--red-bg:#fee;--green:#00a660;--green-bg:#e5f7ee;--amber:#f59e0b;--amber-bg:#fff5e5;
  --r:16px;--r2:11px;--shadow:0 1px 3px rgba(0,0,0,.04);--float:0 2px 10px rgba(26,31,44,.13),0 0 0 1px rgba(26,31,44,.05);
  --mapbg:#f2f1ed;--mkb:#fff;--mks:0 0 0 1px rgba(26,31,44,.14),0 2px 6px rgba(26,31,44,.22);--halo:#fff;
  --c1:#e3e6f4;--f1:#4c5566;--c2:#bcc6f6;--f2:#1c2552;--c3:#8497f1;--f3:#0f1640;--c4:#4263eb;--f4:#fff;--c5:#1f2d8a;--f5:#fff;
@@ -27,7 +27,7 @@
  --c1:#2c3040;--f1:#a7b0ba;--c2:#35417c;--f2:#e3e8ff;--c3:#4d61d6;--f3:#fff;--c4:#7c93ff;--f4:#0c1233;--c5:#c3cdff;--f5:#0c1233}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;margin:0}
-body{background:var(--bg);
+body{background:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px;
  color:var(--ink);font-size:15px;line-height:1.5;letter-spacing:-.01em;overflow:hidden;
  font-family:Pretendard,"Pretendard Variable",-apple-system,BlinkMacSystemFont,system-ui,"Noto Sans KR","Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased;
  display:flex;flex-direction:column;height:100vh;height:100dvh}
@@ -120,7 +120,7 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
 /* ---------- 필터 칩 ---------- */
 #chips{position:absolute;left:0;right:0;top:10px;z-index:1000;display:flex;gap:6px;padding:0 12px;overflow-x:auto;scrollbar-width:none;pointer-events:none}
 #chips::-webkit-scrollbar{display:none}
-#chips button{pointer-events:auto;flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;height:36px;padding:0 13px;border-radius:10px;border:0;background:var(--surface);color:var(--ink2);
+#chips button{pointer-events:auto;flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;height:36px;padding:0 13px;border-radius:999px;border:0;background:var(--surface);color:var(--ink2);
  font-size:.85rem;font-weight:600;cursor:pointer;box-shadow:var(--float);white-space:nowrap}
 #chips button .ic{width:17px;height:17px}
 #chips button.on{background:var(--blue-bg);color:var(--blue);font-weight:700}
@@ -132,14 +132,14 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
 .leaflet-image-layer.jarea{image-rendering:auto}
 #rkbar{position:absolute;left:12px;right:12px;top:10px;z-index:1001;display:none;align-items:center;gap:10px;padding:10px 10px 10px 14px;border-radius:16px;background:var(--surface);box-shadow:var(--float)}
 #rkbar.on{display:flex}#rkbar div{flex:1;min-width:0}#rkbar b{display:block;font-size:.92rem}#rkbar span{display:block;font-size:.74rem;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#rkbar button{flex:0 0 auto;border:0;background:var(--surface2);color:var(--ink2);font:inherit;font-size:.8rem;font-weight:700;border-radius:10px;padding:7px 12px;cursor:pointer}
+#rkbar button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--ink2);font:inherit;font-size:.8rem;font-weight:700;border-radius:999px;padding:7px 12px;cursor:pointer}
 body.rkon #chips,body.rkon #legend{display:none}body.rkon #status{top:72px}
 .rkp{position:absolute;transform:translate(-50%,-100%);display:flex;align-items:center;gap:6px;height:30px;padding:0 3px;border-radius:15px;background:var(--surface);border:2px solid #4263eb;box-shadow:0 2px 8px rgba(0,0,0,.22);white-space:nowrap;cursor:pointer}
 .rkp b{width:22px;height:22px;border-radius:50%;background:#fff;color:#4263eb;border:2px solid #4263eb;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800;box-sizing:border-box}
 .rkp.t3 b{background:#4263eb;color:#fff}.rkp.t3{border-width:2.5px}.rkp.wl{padding-right:10px}.rkp em{font-style:normal;font-size:.78rem;font-weight:700;color:var(--ink)}.rkp em i{font-style:normal;color:#00a660;margin-left:4px}
 .rkp.on{box-shadow:0 0 0 2.5px var(--surface),0 0 0 5px var(--ink),0 4px 12px rgba(0,0,0,.3)}
 .rkh{margin:0 0 12px;padding:10px 12px;border-radius:12px;background:#eef1ff;color:#4263eb;font-size:.86rem;font-weight:700}
-#status{position:absolute;left:12px;top:54px;z-index:999;font-size:.76rem;color:var(--ink2);background:var(--surface);border-radius:10px;padding:4px 10px;box-shadow:var(--float);pointer-events:none;white-space:nowrap;max-width:calc(100% - 80px);overflow:hidden;text-overflow:ellipsis}
+#status{position:absolute;left:12px;top:54px;z-index:999;font-size:.76rem;color:var(--ink2);background:var(--surface);border-radius:999px;padding:4px 10px;box-shadow:var(--float);pointer-events:none;white-space:nowrap;max-width:calc(100% - 80px);overflow:hidden;text-overflow:ellipsis}
 #status b{color:var(--ink);font-weight:700}
 
 /* ---------- 오른쪽 조작 버튼 ---------- */
@@ -202,7 +202,7 @@ body.rkon #chips,body.rkon #legend{display:none}body.rkon #status{top:72px}
 :root[data-dark] .nbtn{color:#0c1233}
 .nbtn .ic{width:18px;height:18px}
 .mhero{margin:14px 0 0}.mhero span{display:block;font-size:.8rem;color:var(--ink3)}.mhero b{display:block;font-size:1.9rem;font-weight:800;letter-spacing:-.03em;line-height:1.2}.mhero em{display:block;font-style:normal;font-size:.86rem;color:var(--ink2)}.mhero em small{color:var(--ink3);font-size:.76rem}
-.mchips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}.mchips span{padding:6px 10px;border-radius:10px;background:var(--surface2,#f2f4f6);font-size:.8rem;font-weight:600;color:var(--ink2)}
+.mchips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}.mchips span{padding:6px 10px;border-radius:999px;background:var(--surface2,#f2f4f6);font-size:.8rem;font-weight:600;color:var(--ink2)}
 .mgo{display:block;text-align:center;margin:14px 0 4px;padding:13px;border-radius:14px;background:var(--blue,#4263eb);color:#fff;font-weight:800;text-decoration:none}
 .mshare{display:block;width:100%;margin:8px 0 4px;padding:12px;border:0;border-radius:14px;background:var(--surface2);color:var(--ink2);font:inherit;font-weight:700;cursor:pointer}
 .note{font-size:.76rem;color:var(--ink3);line-height:1.6;margin:14px 0 0}
@@ -211,7 +211,7 @@ body.rkon #chips,body.rkon #legend{display:none}body.rkon #status{top:72px}
 #fsheet .ttl{font-size:1.25rem;font-weight:800;margin:4px 44px 0 0;letter-spacing:-.02em}
 #fsheet h3{font-size:.92rem;font-weight:700;color:var(--ink);margin:22px 0 10px}
 .opts{display:flex;flex-wrap:wrap;gap:7px}
-.opts button{padding:10px 14px;border-radius:10px;border:0;background:var(--surface2);color:var(--ink2);font-size:.9rem;font-weight:600;cursor:pointer}
+.opts button{padding:10px 14px;border-radius:999px;border:0;background:var(--surface2);color:var(--ink2);font-size:.9rem;font-weight:600;cursor:pointer}
 .opts button[aria-pressed=true]{background:var(--blue-bg);color:var(--blue);font-weight:700}
 .opts button small{font-weight:500;opacity:.8;margin-left:3px}
 .fhint{font-size:.74rem;color:var(--ink3);margin:6px 0 0}
@@ -220,7 +220,7 @@ body.rkon #chips,body.rkon #legend{display:none}body.rkon #status{top:72px}
 .ffoot .ghost{flex:0 0 32%;background:var(--surface2);color:var(--ink2)}
 .ffoot .pri{background:var(--blue);color:#fff}
 :root[data-dark] .ffoot .pri{color:#0c1233}
-#toast{position:absolute;left:50%;top:96px;transform:translate(-50%,-8px);z-index:1200;background:var(--ink);color:var(--surface);font-size:.84rem;padding:8px 14px;border-radius:10px;opacity:0;pointer-events:none;transition:.2s;white-space:nowrap}
+#toast{position:absolute;left:50%;top:96px;transform:translate(-50%,-8px);z-index:1200;background:var(--ink);color:var(--surface);font-size:.84rem;padding:8px 14px;border-radius:999px;opacity:0;pointer-events:none;transition:.2s;white-space:nowrap}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 
 /* ---------- 좁은 화면 ---------- */
@@ -264,7 +264,7 @@ body.rkon #chips,body.rkon #legend{display:none}body.rkon #status{top:72px}
 </svg>
 <header id="bar">
  <a class="back" href="index.html"><svg class="ic"><use href="#i-back"/></svg>홈</a>
- <div class="ttl"><svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="#16191f"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="22.5" y="31.5" width="19" height="5.2" rx="2.6" fill="#16191f"/><rect x="22.5" y="40.3" width="19" height="5.2" rx="2.6" fill="#16191f"/></svg><span>단지 지도</span><small>입지 좋은 순</small></div>
+ <div class="ttl"><svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg2)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="22.5" y="31.5" width="19" height="5.2" rx="2.6" fill="url(#lg2)"/><rect x="22.5" y="40.3" width="19" height="5.2" rx="2.6" fill="url(#lg2)"/></svg><span>단지 지도</span><small>입지 좋은 순</small></div>
  <div class="srch" role="search">
   <div class="box"><svg class="ic"><use href="#i-search"/></svg><input id="q" type="search" placeholder="단지명·동 검색" autocomplete="off" spellcheck="false" enterkeyhint="search" aria-label="단지명 또는 동 검색" aria-controls="qres" aria-expanded="false"><button class="qx" id="qx" type="button" aria-label="검색어 지우기" hidden><svg class="ic"><use href="#i-x"/></svg></button></div>
   <div id="qres" role="listbox" hidden></div>
