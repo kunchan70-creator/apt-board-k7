@@ -1567,7 +1567,7 @@ function regionHTML(f){
  return h||'<p class="hint">맞는 지역이 없어요.</p>';}
 // 희망 지역(09-25 사용자: 처음 쓰는 사람이 지역 고르기를 어려워함 — 원하는 곳이 핵심) = 서울/경기 탭 + 버튼 격자, 버튼마다 내 조건으로 매수 가능한 단지 수
 let RT=null, RO=null;
-function regCnt(){const k=CF.regions;CF.regions=[];const m={};R.forEach(r=>{if(ok(r))(m[r.gu]=m[r.gu]||new Set()).add(r.no||r.n);});CF.regions=k;const o={};for(const g in m)o[g]=m[g].size;return o;}
+function regCnt(){const k=CF.regions;CF.regions=[];const m={};capped(capNow()===99?99:STI.region,()=>R.forEach(r=>{if(ok(r))(m[r.gu]=m[r.gu]||new Set()).add(r.no||r.n);}));CF.regions=k;const o={};for(const g in m)o[g]=m[g].size;return o;}
 function drawReg(){
  const el=$('#rl'); if(!el)return; const f=(($('#rq')||{}).value||'').trim(), N=regCnt(), n=l=>l.reduce((a,g)=>a+(N[g]||0),0);
  if(RT==null)RT=!CF.regions.length||SEOUL.includes(CF.regions[0])?'se':INC.includes(CF.regions[0])?'ic':'gg';
@@ -1608,8 +1608,9 @@ const SUBC={'1호선':'#0052A4','2호선':'#00A84D','3호선':'#EF7C1C','4호선
 function lnTog(k){const A=CF.ln||[];CF.ln=A.includes(k)?A.filter(x=>x!==k):A.concat(k);save();refresh();}
 /* 10-01 사용자: 색은 좋지만 다 나열하면 지저분 → 1~9호선은 지하철 표지판처럼 숫자 동그라미 한 줄, 나머지는 근처 단지 많은 4개 + '+n'(펼치기) */
 let LNX=false;
-function lnChips(){const G=CF.regions.length?new Set(CF.regions):null, C={};
- CPX.forEach(c=>{if(G&&!G.has(c.gu))return;const m=lnOf(c);if(m)Object.keys(m).forEach(g=>{if(m[g]<=1.0)C[g]=(C[g]||0)+1;});});
+function lnChips(){const C={}, K=new Set();
+ capped(STI.age,()=>R.forEach(r=>{if(ok(r))K.add(r.no||(r.n+'|'+r.gu));}));   /* 10-05: 앞 단계(자본·지역·면적·연식)까지 맞는 단지 근처 노선만 */
+ K.forEach(k=>{const c=CPXK[k];const m=c&&lnOf(c);if(m)Object.keys(m).forEach(g=>{if(m[g]<=1.0)C[g]=(C[g]||0)+1;});});
  const A=CF.ln||[], has=k=>C[k]||A.includes(k), NUM=Object.keys(LNM).filter(k=>/^\d호선$/.test(k)&&has(k));
  const OTH=Object.keys(LNM).filter(k=>!/^\d호선$/.test(k)&&has(k)).sort((a,b)=>(C[b]||0)-(C[a]||0));
  if(!NUM.length&&!OTH.length)return '<div class="hint">고른 지역 근처에 지하철역이 없어요</div>';
@@ -1632,7 +1633,7 @@ function editStep(k,ret){shClose();RET=ret;ONE=k;setup(STEPS.indexOf(k));}
 function retGo(){const r=RET;ONE=null;RET=null;save();if(r==='move')move();else if(r==='commute')jres();else setup(STEPS.length-1);}
 function myRows(ret,keys){return keys.map(k=>FR(SUL[k],sumVal(k),`editStep('${k}','${ret}')`)).join('');}
 function uniqN(){return new Set(R.filter(ok).map(r=>r.no||r.n+r.gu)).size;}
-function cntWith(key,v){const k=CF[key];CF[key]=v==null?[]:[v];const n=uniqN();CF[key]=k;return n;}
+function cntWith(key,v){const k=CF[key];CF[key]=v==null?[]:[v];const n=capped(capNow()===99?99:STI[key],uniqN);CF[key]=k;return n;}
 function pickOpt(key,v){if(v==null)CF[key]=[];else{const i=CF[key].indexOf(v);i<0?CF[key].push(v):CF[key].splice(i,1);}save();setup(SU);}
 const SZD=[['49','49㎡ 이하','15~20평 · 1~2인, 방 1~2개'],['59','59㎡','24평 · 신혼·3인, 방 3개'],['74','74㎡','29평 · 방 3개, 조금 넓게'],['84','84㎡','34평 · 3~4인, 가장 흔한 크기(국민평형)'],['101','101㎡ 이상','40평대 · 4인 이상, 넓은 집']];
 const AGD=[['n','신축 (10년 이내)','비싸지만 수리할 곳이 거의 없음'],['m','준신축 (10~20년)','부분 수리 비용을 계산에 넣음'],['o','구축 (20년 넘음)','싸지만 전체 수리 비용을 계산에 넣음']];
@@ -1669,7 +1670,7 @@ function setup(i){
  if(i==null)i=CF.done?STEPS.length-1:0;
  if(ONE&&STEPS[i]!==ONE)ONE=null;
  SU=i; const k=STEPS[i], last=STEPS.length-1, nx=ONE?'retGo()':`setup(${i+1})`;
- let head=`<div style="display:flex;justify-content:space-between;align-items:center"><button class="ib" style="margin:-4px 0 0 -8px" aria-label="뒤로" onclick="navBack(()=>${i?`setup(${i-1})`:'hub()'})"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><button class="linkbtn" style="padding:4px 2px;font-size:.88rem;color:var(--ink3)" onclick="hub()">홈</button></div><div class="prog" style="height:3px;margin:6px 0 20px"><i style="width:${(i+1)/(last+1)*100}%"></i></div>`;
+ let head=`<div style="display:flex;justify-content:space-between;align-items:center"><button class="ib" style="margin:-4px 0 0 -8px" aria-label="뒤로" onclick="navBack(()=>${i?`setup(${i-1})`:'hub()'})"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><button class="linkbtn" style="padding:4px 2px;font-size:.88rem;color:var(--ink3)" onclick="hub()">홈</button></div><div class="prog" id="supg" style="height:3px;margin:6px 0 20px"><i style="width:${(i+1)/(last+1)*100}%"></i></div>`;
  const Q=(t,h)=>`<div class="hq" style="margin:0 0 6px;word-break:keep-all">${t}</div>${h?`<div class="hint" style="margin-bottom:14px">${h}</div>`:''}`;
  let body='', cta=`<div class="cta"><button class="btn" id="go" onclick="${nx}">다음</button></div>`;
  if(k==='purpose'){
@@ -1934,22 +1935,29 @@ function ppCalc(i,el){if(document.getElementById('own')&&!ppCalc.in){ppCalc.in=1
   +`<div class="sub" style="font-size:.74rem;margin-top:4px">실거래 가격으로 셈했을 때보다 순이익 ${sg(F.p5-F0.p5)}${fr!==1?` · 5년 뒤 값도 ${fl}층 시세 기준`:''}</div></div><div id="ppfl-${i}"></div>`; ppFl(i,r,v);}
 function GRS(v){const t=v<5000?.0066:v<20000?.0055:v<90000?.0044:v<120000?.0055:v<150000?.0066:.0077;return v/(1-t);}
 function cash(r){return fin(r).own;}
+/* 10-05 사용자: 단계별 질문에서 고를수록 선택지가 줄어야 하는데, 뒤 단계(저장된 면적·연식 등)가 앞 단계 숫자에 먼저 걸려 있었다
+   → 질문 화면에선 그 단계까지의 조건만 건다(OKCAP = 걸 수 있는 마지막 단계 번호, 결과·다른 화면은 99 = 전부) */
+let OKCAP=99; const STI={purpose:0,cash:1,region:2,size:3,age:4,life:5,inc:6,loan:7,perk:8};
+function capped(i,f){const o=OKCAP;OKCAP=i;try{return f();}finally{OKCAP=o;}}
+function capNow(){return !MVON&&!ONE&&$('#supg')&&STEPS[SU]!=='sum'?SU:99;}
 function ok(r){
- if(CF.regions.length&&!CF.regions.includes(r.gu))return false;
+ const C_=OKCAP;
+ if(C_>=2&&CF.regions.length&&!CF.regions.includes(r.gu))return false;
  if(!CF.useU&&r.ltv<0.5)return false;   // 세 주기: 토지거래허가구역(서울 전역·경기 12곳)은 실거주 의무라 뺌
- if(CF.cash!=null&&cash(r)>CF.cash)return false;
- if(CF.maxc!=null&&r.C-r.hold+repair(r)>CF.maxc)return false;
- if(CF.size.length){if(!CF.size.includes(szOf(r.b)))return false;}
- if(CF.age.length){if(!r.y)return false;const a=YEAR-r.y,z=a<=10?'n':a<=20?'m':'o';if(!CF.age.includes(z))return false;}
+ if(C_>=1&&CF.cash!=null&&cash(r)>CF.cash)return false;
+ if(C_>=7&&CF.maxc!=null&&r.C-r.hold+repair(r)>CF.maxc)return false;
+ if(C_>=3&&CF.size.length){if(!CF.size.includes(szOf(r.b)))return false;}
+ if(C_>=4&&CF.age.length){if(!r.y)return false;const a=YEAR-r.y,z=a<=10?'n':a<=20?'m':'o';if(!CF.age.includes(z))return false;}
+ if(C_>=5){
  if(CF.st==='a10'&&!(r.ka!=null&&WKM(r)<=0.67))return false;   /* 걸어서 10분 ≈ 0.67km */
  if(CF.st==='a1'&&!(r.ka!=null&&WKM(r)<=1))return false;
  if(CF.sch){const e=(DT.el||{})[r.no];if(e==null||e>(CF.sch==='e3'?300:600))return false;}   /* 09-30 초품아: 배정 초등학교까지 직선 m(학구도·나이스) */
  if(CF.st==='x2'&&!(r.kx!=null&&r.kx<=2))return false;
  if(CF.ln&&CF.ln.length){const c=CPXK[r.no||(r.n+'|'+r.gu)];if(!c||!lnNear(c,CF.ln))return false;}   /* 10-01 노선 */
- if(CF.hh&&!(r.hh>=CF.hh))return false;
+ if(CF.hh&&!(r.hh>=CF.hh))return false;}
  return true;}
 let RGT=null;
-function count(){clearTimeout(RGT);RGT=setTimeout(drawReg,250);const n=uniqN();const b=$('#go');if(b){const L=STEPS[SU]==='sum';b.textContent=n?(L?`${n.toLocaleString()}개 단지 결과 보기`:`다음 · 매수 가능 단지 ${n.toLocaleString()}곳`):'조건에 맞는 단지 없음';b.disabled=!n;b.style.opacity=n?1:.5;}save();}
+function count(){clearTimeout(RGT);RGT=setTimeout(drawReg,250);const n=capped(capNow(),uniqN);const b=$('#go');if(b){const L=STEPS[SU]==='sum';b.textContent=n?(L?`${n.toLocaleString()}개 단지 결과 보기`:`다음 · 매수 가능 단지 ${n.toLocaleString()}곳`):'조건에 맞는 단지 없음';b.disabled=!n;b.style.opacity=n?1:.5;}save();}
 // ---------------- ③ 결과 ----------------
 const GC={A:'green',B:'blue',C:'amber'};
 const scol=s=>s>=80?'green':s>=60?'blue':s>=40?'amber':'red';
