@@ -217,7 +217,7 @@ const LITE=(on,name,val)=>`<div class="lt"><i class="${on?'on':''}"></i><b style
 function sect(sc){return `<section class="step mks"><div class="pq">${sc.q}</div><div class="pb" style="color:${sc.c||'var(--ink)'}">${sc.big}</div>${sc.sub?`<div class="ps">${sc.sub}</div>`:''}${sc.v?`<div class="pv">${sc.v}</div>`:''}${sc.line?`<div class="pl">${sc.line}</div>`:''}</section>`;}
 function fixDash(root){root.querySelectorAll('path[pathLength="1"]').forEach(p=>{try{const L=p.getTotalLength();if(L>0){p.removeAttribute('pathLength');p.style.strokeDasharray=L;p.style.strokeDashoffset=L;}}catch(e){}});}   // 09-28: iOS 사파리 pathLength 선 그리기 문제
 const IO=('IntersectionObserver' in window)?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');IO.unobserve(e.target);}}),{threshold:.2}):null;
-function mountAll(el,scs){el.innerHTML=scs.map(sect).join('');fixDash(el);el.querySelectorAll('.step').forEach(x=>IO?IO.observe(x):x.classList.add('vis'));}
+function mountAll(el,scs){el.innerHTML=scs.map(sect).join('');fixDash(el);el.querySelectorAll('.step').forEach((x,i)=>!i||!IO?x.classList.add('vis'):IO.observe(x));}   /* 10-05: 맨 위 카드(지금 국면)는 바로 보이게 */
 let RG='서울',TI=0;
 /* 09-30 시장 부담 지표 4가지(buttress.py). 사용자: 구어체('식었나·받치나·드문 일이에요')는 앱 신뢰를 떨어뜨림 → 금융 앱 문체의 명사형.
    또 "4개 모두 켜졌는데 1년 뒤 오른 게 더 많은데 이게 위험 신호가 맞나?" → 맞지 않다(2021~23 한 번뿐, 고점 전·바닥에서도 켜짐, 걸어가며 검증 실패).
@@ -530,8 +530,26 @@ function sumScreen(T){const K=KI();if(!K)return null;const cur=K.path[K.path.len
   q?`<b>같은 칸·${mv?MVW[mv]:''}일 때</b> — ${q.n.toLocaleString()}개월 · 1년 뒤 집값 평균 <b style="color:${q.avg>=0?'var(--green)':'var(--red)'}">${pc(q.avg)}</b> (전체 평균 ${pc(K.base)}) · 하락 ${q.dn}%`:'',
   top(1)?`<b>더 상승한 쪽 지표</b> — ${top(1)}`:'', top(-1)?`<b>덜 상승한 쪽 지표</b> — ${top(-1)}`:''].filter(Boolean);
  const sn=STG[Object.keys(STG).find(k=>STG[k][1]===QK(cur))];return {q:'요약',big:`${'①②③④'[Object.keys(STG).find(k=>STG[k][1]===QK(cur))-1]} ${sn[3]}${mv?' · '+MVW[mv]:''}`,c:'var(--ink)',v:`<div class="concl" style="line-height:1.75">${L.join('<br>')}</div>`,line:'2010년 이후 이 시·도 구·시들의 기록 · 흐름·부담·방향 = 아래 국면 지도'};}
+/* 10-05 사용자·ChatGPT 디자인 검토: 시장 화면 맨 위 = 지금 국면. 2×2(위=매수 흐름 강함, 오른쪽=구입 부담 높음)에 지금 위치 점 하나, 현재 칸만 파랑.
+   예측처럼 보이지 않게 화살표·순서 연결선·국면별 빨강/초록·진행 막대 없음. 최근 흐름(횡보 등)은 국면과 따로 적는다 */
+function nowScreen(){const K=KI();if(!K||!K.path||!K.path.length)return null;const kp=K.path[K.path.length-1],ck=QK(kp),num=+Object.keys(STG).find(k=>STG[k][1]===ck),mv=mvOf(K.path),D=dwell(K.seq,num);
+ const W=300,H=212,x0=44,y0=6,w=250,h=176,X=v=>x0+Math.max(4,Math.min(96,v))/100*w,Y=v=>y0+(1-Math.max(4,Math.min(96,v))/100)*h,hw=w/2,hh=h/2;
+ const Q={1:[0,0],2:[1,0],3:[1,1],4:[0,1]},nm=['상승기','고점권','조정기','바닥권'];
+ const cells=[1,2,3,4].map(k=>{const [cx,cy]=Q[k],on=k===num,x=x0+cx*hw,y=y0+cy*hh;return `<rect x="${x+2}" y="${y+2}" width="${hw-4}" height="${hh-4}" rx="12" fill="${on?'var(--blue-bg)':'var(--surface2)'}" ${on?'stroke="var(--blue)" stroke-width="1.6"':''}/>
+  <text x="${x+14}" y="${y+26}" font-size="12" font-weight="700" fill="${on?'var(--blue)':'var(--ink3)'}">${'①②③④'[k-1]}</text><text x="${x+14}" y="${y+45}" font-size="14" font-weight="700" fill="${on?'var(--blue)':'var(--ink2)'}">${nm[k-1]}</text>`;}).join('');
+ const px=X(kp[1]),py=Y(kp[2]);
+ const svg=`<svg viewBox="0 0 ${W} ${H+22}" style="width:100%;max-width:380px;display:block;margin:8px auto 0" role="img" aria-label="지금 ${RG} 시장: ${nm[num-1]}">${cells}
+  <text x="12" y="${y0+hh}" font-size="11" font-weight="600" fill="var(--ink2)" text-anchor="middle" transform="rotate(-90 12 ${y0+hh})">매수 흐름</text>
+  <text x="${x0-6}" y="${y0+12}" font-size="10" fill="var(--ink3)" text-anchor="end">강함</text><text x="${x0-6}" y="${y0+h-4}" font-size="10" fill="var(--ink3)" text-anchor="end">약함</text>
+  <text x="${x0}" y="${H+14}" font-size="11" fill="var(--ink2)">구입 부담 낮음</text><text x="${x0+w}" y="${H+14}" font-size="11" fill="var(--ink2)" text-anchor="end">구입 부담 높음</text>
+  <circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="11" fill="var(--surface)" stroke="rgba(43,107,243,.3)" stroke-width="6"/><circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="6" fill="var(--blue)"/>
+  <text x="${px.toFixed(1)}" y="${(py+24).toFixed(1)}" font-size="11" font-weight="800" fill="var(--blue)" text-anchor="middle">지금</text></svg>`;
+ const kv=(k,v)=>`<div style="display:flex;justify-content:space-between;align-items:baseline;padding:11px 2px;border-bottom:1px solid var(--line2)"><span style="color:var(--ink2);font-size:.9rem">${k}</span><b style="font-size:.95rem">${v}</b></div>`;
+ return {q:`지금 ${RG} 시장`,big:`${'①②③④'[num-1]} ${nm[num-1]}`,c:'var(--blue)',sub:STG[num][0].replace('흐름 강','매수 흐름 강함').replace('흐름 약','매수 흐름 약함').replace('부담 높음','구입 부담 높음').replace('부담 낮음','구입 부담 낮음'),
+  v:svg+`<div style="margin-top:10px">${D&&D.cur!=null?kv('같은 국면',D.cur+'개월째'):''}${mv?kv('최근 흐름',{'+':'상승','-':'하락','=':'횡보'}[mv]):''}</div>`,
+  line:'최근 자료로 분류한 지금 상태예요 · 앞으로의 방향을 예측하지 않습니다'};}
 function tScreens(){const a=tScreens0().filter(x=>x&&!['과거 유사 시점','시장 신호','요약','입주 물량','매물 추이'].includes(x.q)&&!/^서울·/.test(x.q)),T=MD.t[RG];
- return [a[0],sumScreen(T),phaseScreen(),kiScreen(),...a.slice(1)].filter(Boolean);}   /* 09-30 사용자: 비슷했던 과거는 전부 안 비슷하고 방향도 갈려 의미 없음 → 뺌 */
+ return [nowScreen(),a[0],sumScreen(T),phaseScreen(),kiScreen(),...a.slice(1)].filter(Boolean);}   /* 09-30 사용자: 비슷했던 과거는 전부 안 비슷하고 방향도 갈려 의미 없음 → 뺌 */
 function tScreens0(){const T=MD.t[RG],o=T.o26||{n:0},P=MD.p[RG==='인천'?'인천':'경기'],L=T.lst,S=T.sup,V=MD.val,col=LC(T.lab);
  const up=T.ind.filter(x=>x.dir>0).length,dn=T.ind.filter(x=>x.dir<0).length,mae=!!(L&&L.dir<0),sup=!!(S&&S.nx>=150),mood=T.s<=-1,BT=T.bt,b4=!!(BT&&BT.n>=4),nOn=[mae,sup,mood].filter(Boolean).length;
  const other=RG==='서울'?'경기':'서울';
@@ -637,6 +655,13 @@ body.notab .tabbar,body.notab .disc{display:none}body.notab{padding-bottom:40px}
 .hero b{display:block;margin-top:8px;font-size:1.32rem;font-weight:800;line-height:1.42;letter-spacing:-.02em}
 .hero .hh{position:absolute;right:44px;bottom:-12px;opacity:.9}
 .hero .ha{position:absolute;right:18px;bottom:20px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;font-size:1.2rem;font-weight:700}
+.hero .hcta{display:inline-flex;align-items:center;gap:4px;margin-top:14px;padding:9px 14px;border-radius:12px;background:rgba(255,255,255,.2);font-size:.9rem;font-weight:800}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.keys button{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:12px;min-height:92px;padding:14px 12px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer;box-shadow:var(--shadow)}
+.keys button svg{color:var(--blue)}.keys button b{font-size:.92rem;line-height:1.3;word-break:keep-all}.keys button:active{transform:scale(.97)}
+.mlist{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mlist button{display:flex;align-items:center;gap:8px;min-height:50px;padding:0 12px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font:inherit;font-size:.86rem;font-weight:700;text-align:left;cursor:pointer}
+.mlist button svg{color:var(--blue);flex:0 0 auto}.mlist button span{flex:1;min-width:0;word-break:keep-all;line-height:1.3}.mlist button i{font-style:normal;color:var(--ink3)}
 .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
 .tiles button{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 4px 13px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;box-shadow:var(--shadow);word-break:keep-all;line-height:1.3}
 .tiles button svg{color:var(--blue)}
@@ -646,9 +671,12 @@ body.notab .tabbar,body.notab .disc{display:none}body.notab{padding-bottom:40px}
 .hist .th{flex:0 0 58px;height:58px;border-radius:12px;overflow:hidden;background:#DCE8FB}
 .hist .nm{flex:1;min-width:0}.hist .nm b{display:block;font-size:.98rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hist .nm span{display:block;font-size:.78rem;color:var(--ink3);white-space:nowrap}
 .hist .sc{text-align:right;flex:0 0 auto}.hist .sc i{display:block;font-style:normal;font-size:.68rem;color:var(--ink3);font-weight:600}.hist .sc b{font-size:1.05rem}
+.fav{flex:0 0 auto;border:0;background:none;width:40px;height:40px;display:grid;place-items:center;color:var(--ink3);cursor:pointer;border-radius:10px}.fav svg{fill:none;stroke:currentColor;stroke-width:1.9}.fav.on{color:#F03E5E}.fav.on svg{fill:currentColor}
+.hist{padding:12px 6px 12px 14px}
+.hist .hm{flex:1;min-width:0;display:flex;align-items:center;gap:12px;border:0;background:none;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
 .hempty{padding:20px 16px;border:1px solid var(--line);border-radius:16px;background:var(--surface);text-align:center;color:var(--ink2);font-size:.9rem;box-shadow:var(--shadow)}
 .mkt{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.mkt a{display:block;padding:12px 6px;border:1px solid var(--line);border-radius:14px;background:var(--surface);text-align:center;color:var(--ink);text-decoration:none;box-shadow:var(--shadow)}
+.mkt a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:14px 6px 12px;border:1px solid var(--line);border-radius:14px;background:var(--surface);text-align:center;color:var(--ink);text-decoration:none;box-shadow:var(--shadow)}
 .mkt a span{display:block;font-size:.76rem;color:var(--ink3);font-weight:600}.mkt a b{display:block;margin-top:3px;font-size:1rem}.mkt a em{display:block;font-style:normal;font-size:.7rem;color:var(--ink3);margin-top:1px}
 /* 온보딩 */
 .onb{min-height:calc(100vh - 40px);display:flex;flex-direction:column;padding:8px 0 0}
@@ -658,6 +686,7 @@ body.notab .tabbar,body.notab .disc{display:none}body.notab{padding-bottom:40px}
 .onb p.ob-d{margin:14px 0 0;font-size:.94rem;line-height:1.65;color:var(--ink2)}
 .onb .ob-art{flex:1;display:flex;align-items:flex-end;justify-content:center;margin:18px -16px 0;min-height:220px}
 .onb .ob-art svg{width:100%;height:auto;display:block}
+.onb .ob-photo{flex:0 0 38vh;min-height:220px;margin:18px -16px 0;background:#DCE8FB url('https://images.unsplash.com/photo-1762200967825-70737361849c?w=900&q=72&auto=format&fit=crop') center 60%/cover;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 22%);mask-image:linear-gradient(to bottom,transparent 0,#000 22%)}   /* 10-05 사용자: 소개 배너 사진 배경 — Unsplash 무료 라이선스(RK7sy3cECpo) */
 .onb .ob-dots{display:flex;justify-content:center;gap:6px;margin:16px 0}.onb .ob-dots i{width:6px;height:6px;border-radius:3px;background:var(--line)}.onb .ob-dots i.on{width:18px;background:var(--blue)}
 .onb .ob-ft{padding:0 0 calc(18px + env(safe-area-inset-bottom))}
 .ofl{display:flex;flex-direction:column;gap:10px;margin-top:20px}
