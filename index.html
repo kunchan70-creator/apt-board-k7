@@ -1186,8 +1186,9 @@ function ownHTML(c,r,k,back,X){
  const loan=box('내 대출로 셈하기',`<div style="font-size:.84rem;color:var(--ink3);margin:-4px 0 2px">갖고 있으면 남은 대출, 살 생각이면 받을 대출</div>${inp('owL','0',OWN.loan,'억','대출')}${inp('owR',DT.rate.loan,OWN.rate,'%','금리')}<div id="owCalc" style="margin-top:6px"></div>`);
  /* ④ 입지와 순위 */
  const GB=goodBad(c), chip=(x,col,bg)=>`<span style="padding:6px 10px;border-radius:999px;background:${bg};color:${col};font-size:.8rem;font-weight:700">${x}</span>`;
- const lc=box('입지',`<div style="display:flex;align-items:center;gap:12px"><div style="flex:0 0 44%">${vGauge(c.sc).replace('width:62%','width:100%')}</div>
-   <div style="flex:1;min-width:0;font-size:.9rem;line-height:1.8"><div>${c.gu.split(' ').pop()} <b style="color:var(--blue)">상위 ${gtop}%</b></div><div>서울·경기·인천 <b style="color:var(--blue)">상위 ${tpp}%</b></div><div class="sub" style="font-size:.78rem">${c.ng}곳 중 ${c.rg}위 · 전체 ${N.toLocaleString()}곳</div></div></div>
+ const RD=typeof radar5==='function'?radar5(c,r):'';   // 10-05 사용자: 시안의 오각형(theme_ref.radar5) — 자료(home_detail) 오기 전엔 옛 반원 게이지
+ const lc=box('입지',(RD?`<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px"><div><b class="num" style="font-size:2rem;color:var(--blue)">${c.sc}</b><b style="font-size:1rem">점</b></div><div style="text-align:right;font-size:.86rem;line-height:1.6">${c.gu.split(' ').pop()} <b style="color:var(--blue)">상위 ${gtop}%</b> · 전체 <b style="color:var(--blue)">상위 ${tpp}%</b><div class="sub" style="font-size:.76rem">${c.ng}곳 중 ${c.rg}위</div></div></div>${RD}`:`<div style="display:flex;align-items:center;gap:12px"><div style="flex:0 0 44%">${vGauge(c.sc).replace('width:62%','width:100%')}</div>
+   <div style="flex:1;min-width:0;font-size:.9rem;line-height:1.8"><div>${c.gu.split(' ').pop()} <b style="color:var(--blue)">상위 ${gtop}%</b></div><div>서울·경기·인천 <b style="color:var(--blue)">상위 ${tpp}%</b></div><div class="sub" style="font-size:.78rem">${c.ng}곳 중 ${c.rg}위 · 전체 ${N.toLocaleString()}곳</div></div></div>`)+`
    ${GB[0].length||GB[1].length?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px">${GB[0].map(x=>chip(x,'var(--green)','var(--green-bg)')).join('')}${GB[1].map(x=>chip(x,'var(--ink2)','var(--surface2)')).join('')}</div>`:''}`
    +(loc!=null?kv('동네 시세',`평균보다 <b style="color:${gc(loc)}">${loc>=0?'+':'−'}${Math.abs(Math.round(loc))}%</b>`):'')
    +kv('가까운 역',STXT(r))
@@ -2709,6 +2710,25 @@ function houseArt(){return `<svg viewBox="0 0 330 250"><defs><linearGradient id=
   <rect x="112" y="146" width="40" height="40" rx="6" fill="#2B6BF3"/><path d="M132 146v40M112 166h40" stroke="#fff" stroke-width="4"/>
   <g transform="rotate(-8 205 180)"><rect x="168" y="138" width="78" height="92" rx="16" fill="url(#hR)"/><rect x="184" y="166" width="46" height="11" rx="5.5" fill="#fff"/><rect x="184" y="186" width="46" height="11" rx="5.5" fill="#fff"/></g>
   <circle cx="262" cy="214" r="18" fill="#2B6BF3" stroke="#fff" stroke-width="4"/><text x="262" y="220" text-anchor="middle" font-size="17" font-weight="800" fill="#fff">₩</text></svg>`;}
+
+// 10-05 사용자: 시안의 오각형 — 입지 점수를 이루는 5개 항목(qparts)을 서울·경기·인천 단지 가운데 백분위(0~100)로
+let QP=null;
+function qpTable(){if(QP)return QP; const A=[[],[],[],[],[]], seen=new Set();
+ R.forEach(r=>{const k=r.no||r.n; if(!r.q||seen.has(k))return; seen.add(k); qparts(r).forEach((x,i)=>A[i].push(x[1]));});
+ if(A[0].length<100)return null; A.forEach(a=>a.sort((x,y)=>x-y)); return QP=A;}
+function qpPct(i,v){const a=QP[i]; let qa=0,qb=a.length; while(qa<qb){const m=(qa+qb)>>1; if(a[m]<v)qa=m+1; else qb=m;} return Math.round(qa/a.length*100);}
+function radar5(c,r){if(!r.q||!qpTable())return '';
+ const L=['주변 시세','역 접근','급행역','연식','단지 규모'], Q=qparts(r), P=Q.map((x,i)=>qpPct(i,x[1]));
+ const cx=160,cy=128,RR=84, pt=(i,f)=>{const a=-Math.PI/2+i*2*Math.PI/5;return [cx+Math.cos(a)*RR*f, cy+Math.sin(a)*RR*f];}, poly=f=>[0,1,2,3,4].map(i=>pt(i,f).map(v=>v.toFixed(1)).join(',')).join(' ');
+ const shape=P.map((v,i)=>pt(i,Math.max(.06,v/100)).map(x=>x.toFixed(1)).join(',')).join(' ');
+ const lab=P.map((v,i)=>{const [x,y]=pt(i,1.28), an=Math.abs(x-cx)<6?'middle':x>cx?'start':'end', dy=i===0?-6:(i===2||i===3)?10:4;
+  return `<text x="${(x+(an==='start'?-4:an==='end'?4:0)).toFixed(1)}" y="${(y+dy).toFixed(1)}" text-anchor="${an}" font-size="11.5" fill="var(--ink2)" font-weight="600">${L[i]}</text><text x="${(x+(an==='start'?-4:an==='end'?4:0)).toFixed(1)}" y="${(y+dy+16).toFixed(1)}" text-anchor="${an}" font-size="14" font-weight="800" fill="var(--ink)">${v}</text>`;}).join('');
+ return `<div class="chart" style="margin:4px 0 2px"><svg viewBox="0 0 320 262" style="width:100%;max-width:360px;display:block;margin:0 auto;overflow:visible">
+  ${[1,.75,.5,.25].map(f=>`<polygon points="${poly(f)}" fill="${f===1?'var(--surface2)':'none'}" stroke="var(--line)" stroke-width="1"/>`).join('')}
+  ${[0,1,2,3,4].map(i=>{const [x,y]=pt(i,1);return `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--line)"/>`;}).join('')}
+  <polygon points="${shape}" fill="rgba(43,107,243,.18)" stroke="var(--blue)" stroke-width="2.4" stroke-linejoin="round"/>
+  ${P.map((v,i)=>{const [x,y]=pt(i,Math.max(.06,v/100));return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.6" fill="var(--blue)"/>`;}).join('')}${lab}</svg>
+  <div class="sub" style="text-align:center;font-size:.72rem;margin-top:2px">항목별 순위 · 서울·경기·인천 단지 가운데 백분위(100 = 가장 좋음)</div></div>`;}
 // 온보딩 3장
 function onb(i){
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); tabBar(); document.body.classList.add('notab');
