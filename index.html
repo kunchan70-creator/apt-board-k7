@@ -1046,14 +1046,14 @@ let OWQ='';
 function ownFind(){   // 단지 분석 입구: 우리 단지 검색 → rcard(k,'own')
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0);
  app.innerHTML=HOME+`<div class="hq" style="margin:0">어느 단지를<br>분석할까요?</div><div class="bsub">시세·5년 뒤·입지·학교·층별 정상가를 한 화면에</div>
-  <input id="owq" class="tsearch" style="margin-top:18px" type="search" placeholder="단지 이름이나 동 이름" value="${OWQ}" oninput="OWQ=this.value;ownList()">
+  <input id="owq" class="tsearch" style="margin-top:18px" type="search" placeholder="지역+단지 이름 (예: 광명 유플래닛)" value="${OWQ}" oninput="OWQ=this.value;ownList()">
   <div id="owl" style="margin-top:6px"></div>`;
  ownList(); const q=$('#owq'); if(q)q.focus();}
 function ownList(){
  const q=nz(OWQ), el=$('#owl'); if(!el)return;
  if(!q){el.innerHTML='<p class="sub" style="font-size:.84rem;margin:10px 2px">예: 원천레이크파크, 광교, 매교역</p>';return;}
  const L=CPX.filter(c=>srch(q,c)).slice(0,30);
- el.innerHTML=L.length?L.map(c=>`<div class="tl" onclick="rcard('${c.k}','own')"><div class="m"><b>${c.n}</b><span>${c.gu}${c.y?' · '+c.y+'년':''}${c.hh?' · '+c.hh.toLocaleString()+'세대':''}</span></div>${CHV.replace('m6 9 6 6 6-6','m9 6 6 6-6 6').replace('width="12" height="12"','width="16" height="16" style="color:var(--ink3)"')}</div>`).join(''):'<p class="sub" style="margin:10px 2px">찾는 단지가 없어요</p>';}
+ el.innerHTML=L.length?L.map(c=>`<div class="tl" onclick="rcard('${c.k}','own')"><div class="m"><b>${c.n}</b><span>${c.gu}${c.y?' · '+c.y+'년':''}${c.hh?' · '+c.hh.toLocaleString()+'세대':''}</span></div>${CHV.replace('m6 9 6 6 6-6','m9 6 6 6-6 6').replace('width="12" height="12"','width="16" height="16" style="color:var(--ink3)"')}</div>`).join(''):'<p class="sub" style="margin:10px 2px;line-height:1.6">찾는 단지가 없어요.<br>단지 이름 일부(예: 유플래닛)나 동 이름(예: 봉천동)으로 찾아 보세요. 아직 집셈 자료에 없는 단지일 수도 있어요.</p>';}
 /* 09-28 사용자: 단지 분석이 너무 별거 없다 — 집 가진 사람의 욕구·고민(지금 얼마·올랐나·고점 대비·내 대출과 금리·순위와 입지·아이 학교와 학원·팔고 옮기면·전세 놓으면·세금·재건축)을 한 화면에서.
    무거운 자료(최근 실거래·1년 변화·고점·학원 수)는 구별 파일 own/<구>.json 을 열 때만 받는다. */
 let OWN={loan:null,rate:null}, OWNF={}, OWNI=null;
@@ -2272,6 +2272,10 @@ function hit(q,toks,name,alt){   // 0=이름이 같음 1=이름이 검색어로 
  for(const p of regPre(alt)){if(q.length>p.length+1&&q.startsWith(p)){const rest=q.slice(p.length); if(a.startsWith(rest)||a===p+rest||a.startsWith(p+rest))return 1; if(rest.length>=2&&a.includes(rest))return 2;}}   // '관악벽산' = 관악(구) + 벽산…
  if(toks.every(t=>all.includes(t)))return 2;
  const bg=big(q); if(bg.length>=3&&bg.filter(b=>all.includes(b)).length/bg.length>=0.75)return 3;
+ {const sub=(x,t)=>{let i=0;for(const ch of t){if(ch===x[i])i++;if(i===x.length)return true;}return false;}, cs=[q];for(const p of regPre(alt))if(q.length>p.length+1&&q.startsWith(p))cs.push(q.slice(p.length));
+  for(const c of cs)if(c.length>=3&&sub(c,a)&&a.length<=c.length*3)return 3;
+  for(const c of cs.slice(1)){const b2=big(c);if(b2.length>=2&&b2.filter(b=>a.includes(b)).length/b2.length>=0.6)return 3;}
+  for(const c of cs){if(c.length<4)continue;for(let i=0;i+c.length<=a.length;i++){let d=0;for(let j=0;j<c.length&&d<2;j++)if(a[i+j]!==c[j])d++;if(d<2)return 3;}}}   // 10-05 사용자: '영통 황골주공'(=황골마을주공)·'광명 유플레닛'(오타) 같은 입력도 찾게
  return -1;}
 function find(q0){
  const el=$('#found'), q=nz(q0||''), toks=String(q0||'').split(/\s+/).map(nz).filter(t=>t.length); if(q.length<2){el.innerHTML='';return;}

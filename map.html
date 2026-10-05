@@ -737,11 +737,27 @@ const EMD = (() => { const m = new Map(); for (const a of A) { const k = a.gu + 
 const GUS = GROUPS.gu.map(g => ({ t: 'gu', label: g.key, sub: '시·구', items: g.items }));
 for (const p of EMD.concat(GUS)) p.nk = norm(p.label) + (p.t === 'gu' ? '|' + norm(p.label.split(' ').pop()) : '');
 let res = [], hi = -1;
+/* 10-05 사용자: 사람들은 '광명 유플래닛'·'관악 벽산'·'영통 황골주공'처럼 지역을 앞에 붙이거나 이름을 줄여 친다 → 지역 낱말은 떼고, 남은 글자가 이름에 순서대로 들어 있으면(중간 생략) 또는 글자쌍 대부분이 맞으면(오타) 찾는다 */
+const qSub = (s, t) => { let i = 0; for (const ch of t) { if (ch === s[i]) i++; if (i === s.length) return true; } return false; };
+const qBig = s => { const o = []; for (let i = 0; i < s.length - 1; i++) o.push(s.slice(i, i + 2)); return o; };
+function qRegs(a) { if (a.__rg) return a.__rg; const o = new Set(); String(a.gu + ' ' + (a.emd || '')).split(/\s+/).forEach(w => { const n = norm(w); if (n.length < 2) return; o.add(n); if (/[시구군동읍면]$/.test(n) && n.length > 2) o.add(n.slice(0, -1)); }); return a.__rg = [...o]; }
+function qLoose(k, toks, a) {
+  const nm = a.nk.split('|')[0], all = a.nk, rg = qRegs(a), cand = [];
+  for (const p of rg) if (k.length > p.length + 1 && k.startsWith(p)) cand.push(k.slice(p.length));
+  if (toks.length > 1) { const rest = toks.filter(t => !rg.some(p => p === t || p.startsWith(t) && t.length >= 2)); if (rest.length && rest.length < toks.length) cand.push(rest.join('')); if (rest.length && rest.every(t => all.includes(t))) return 3; }
+  for (const c of cand) { if (all.includes(c)) return 3; }
+  for (const c of cand.concat([k])) { if (c.length >= 3 && qSub(c, nm) && nm.length <= c.length * 3) return 4; }
+  for (const c of cand.concat([k])) { const bg = qBig(c); if (bg.length >= 3 && bg.filter(b => all.includes(b)).length / bg.length >= 0.75) return 5; }
+  for (const c of cand.concat([k])) { if (c.length < 4) continue; for (let i = 0; i + c.length <= nm.length; i++) { let d = 0; for (let j = 0; j < c.length && d < 2; j++) if (nm[i + j] !== c[j]) d++; if (d < 2) return 5; } }   // 한 글자 오타('유플레닛'→유플래닛)
+  return -1;
+}
 function search(q) {
   const k = norm(q); if (!k) return [];
   const pl = [], cx = [];
   for (const p of GUS.concat(EMD)) if (p.nk.split('|').some(s => s.startsWith(k))) pl.push(p);
-  for (const a of A) { const i = a.nk.indexOf(k); if (i < 0) continue; const main = a.nk.indexOf('|'), inMain = main < 0 || i < main; cx.push([(i === 0 ? 0 : inMain ? 1 : 2), a]); }
+  const toks = String(q).split(/\s+/).map(norm).filter(t => t.length);
+  for (const a of A) { const i = a.nk.indexOf(k); if (i >= 0) { const main = a.nk.indexOf('|'), inMain = main < 0 || i < main; cx.push([(i === 0 ? 0 : inMain ? 1 : 2), a]); continue; }
+    const r = qLoose(k, toks, a); if (r >= 0) cx.push([r, a]); }
   cx.sort((x, y) => x[0] - y[0] || y[1].score - x[1].score);
   return pl.slice(0, 4).map(p => ({ p })).concat(cx.slice(0, 12).map(x => ({ a: x[1] })));
 }
@@ -766,7 +782,7 @@ function renderRes() {
     if (r.p) h += `<div class="it" role="option" data-i="${i}" aria-selected="${i === hi}"><span class="pl"><svg class="ic"><use href="#i-pin"/></svg></span><span class="t"><b>${hl(r.p.label, q)}</b><span>${esc(r.p.sub)} · 단지 ${fmt(r.p.items.length)}곳</span></span></div>`;
     else h += `<div class="it" role="option" data-i="${i}" aria-selected="${i === hi}"><span class="t"><b>${hl(r.a.name, q)}</b><span>${esc(r.a.gu)} ${esc(r.a.emd)} · ${fmt(r.a.hh)}세대${r.a.built ? ' · ' + r.a.built + '년' : ''}</span></span><span class="sc ${cls(r.a.score)}">${r.a.score}</span></div>`;
   });
-  box.innerHTML = h || '<div class="none">검색 결과가 없습니다. 단지명 일부나 동 이름으로 검색하십시오.</div>';
+  box.innerHTML = h || '<div class="none">찾는 단지가 없어요. 단지 이름 일부(예: 유플래닛)나 동 이름(예: 봉천동)으로 찾아 보세요. 아직 집셈 자료에 없는 단지일 수도 있어요.</div>';
   box.hidden = false; $('#q').setAttribute('aria-expanded', 'true');
 }
 function pick(i) {
