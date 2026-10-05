@@ -1135,7 +1135,7 @@ function phCharts(){
     <div style="font-size:.86rem;font-weight:800">${BY.length}번 중 ${BY.filter(y=>y[1]>y[2]).length}번, 높게 셈한 집이 더 나았어요</div></div>`:'')
    +`<div style="font-size:.72rem;color:var(--ink3);text-align:center">과거로 되돌아가 셈한 ${Q.reduce((a,q)=>a+q.n,0).toLocaleString()}번 · 높게·낮게 = 매수 분석 순위에 쓰는 5년 수익 셈의 상위·하위 20%(입지 점수 아님)</div>`);}
  return out;}
-let PH={};
+let PH={}, PHS=false;
 function philo(entry,i){
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); topIntro();
  if(!document.getElementById('opcss'))document.head.insertAdjacentHTML('beforeend',OPCSS);
@@ -1166,11 +1166,19 @@ function philo(entry,i){
     '대신 시장이 지금 어느 국면인지, 같은 국면이었던 때 1년 뒤 실제 거래가 어땠는지는 보여 드릴 수 있어요.','pulse',
     (()=>{const Q=(DT.ph2||{}).q||{}, nm={LT:'① 상승기',RT:'② 고점권',RB:'③ 조정기',LB:'④ 바닥권'}, hi=Object.keys(nm).filter(k=>Q[k]&&Q[k].dn>=50);
      return (hi.length?`1년 뒤 하락한 곳이 절반을 넘은 건 ${hi.map(k=>nm[k]).join('·')}뿐이었어요. `:'')+'다음 움직임은 예측하지 않아요. 시장 화면에서 새 자료가 나올 때마다 다시 셈해 드려요.';})()]];
+ // 10-05 사용자 '말 많은 페이지' → 첫 실행(entry=1)은 짧은 4장, 홈 카드·메뉴(entry=0/없음)는 전체. entry=null(넘기기)은 모드 유지
+ if(entry===1)PHS=true; else if(entry!==null)PHS=false;
+ if(PHS)P.splice(0,P.length,
+  ['fog','먼저, 솔직하게','시세는 누구도 맞힐 수 없어요.','','지난 20년도 오르기만 한 건 아니었어요.','home',''],
+  ['pin','그래도 분명한 것','좋은 입지는 잘 바뀌지 않아요.','','집은 누구에게나 필요하고, 살고 싶은 자리는 늘어나지 않아요.','pin',''],
+  ['podium','셈해 봤더니','아무거나 고르는 것보다 나았어요.','','과거로 되돌아가 실제 거래로 검증했어요. 빗나간 곳도 함께 공개해요.','fog',''],
+  ['won','그래서 집셈은','내 형편에서 5년 순이익이 높은 집을 찾아 드려요.','','대출·이자·세금까지 넣고, 한 숫자 대신 좋을 때부터 나쁠 때까지 범위로 보여 드려요.','calc','']);
  const N=P.length+1; PHI=i==null?0:Math.max(0,Math.min(N-1,i)); const k=PHI;
+ if(PHS&&k===N-1)jsMark('jsNoOrigin');   // 첫 실행 표시는 끝까지 봤을 때(또는 건너뛰기)만 — 보여 주는 순간 찍던 버그(새로고침·시크릿 새 탭에서 안 뜸) 수정
  const body=k<P.length?(([n,tg,q,a1,a2,c,j])=>`<div style="display:flex;gap:8px;align-items:center;color:var(--blue);font-size:.8rem;font-weight:800">${ic(n,28,1)}${tg}</div>
    <b style="display:block;margin-top:8px;font-size:1.2rem;line-height:1.45;word-break:keep-all">${q}</b>
    ${a1?`<div style="margin:10px 0 0;font-size:1.02rem;font-weight:800;line-height:1.55;word-break:keep-all">${a1}</div>`:''}<div style="margin:6px 0 0;font-size:.92rem;line-height:1.7;color:var(--ink2);word-break:keep-all">${a2}</div>
-   ${C[c]||''}<div style="margin-top:6px;padding:12px 14px;border-radius:14px;background:var(--blue-bg);color:var(--blue);font-size:.9rem;font-weight:700;line-height:1.6;word-break:keep-all">${j}</div>`)(P[k])
+   ${C[c]||''}${j?`<div style="margin-top:6px;padding:12px 14px;border-radius:14px;background:var(--blue-bg);color:var(--blue);font-size:.9rem;font-weight:700;line-height:1.6;word-break:keep-all">${j}</div>`:''}`)(P[k])
   :`<div style="min-height:46vh;display:flex;flex-direction:column;justify-content:center;text-align:center">
     <div style="font-weight:800;font-size:clamp(1.5rem,7vw,1.9rem);line-height:1.4">맞히지 않고,<br>셈합니다.</div>
     <div style="margin:18px auto 0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
@@ -1178,11 +1186,11 @@ function philo(entry,i){
      <div style="background:var(--surface2);border-radius:14px;padding:10px 14px"><b class="num" style="font-size:1.25rem;color:var(--blue)">${(DT.q5p||[]).reduce((a,q)=>a+q.n,0)?Math.round((DT.q5p||[]).reduce((a,q)=>a+q.n,0)/1e4)+'만 건':'-'}</b><div class="sub" style="font-size:.74rem">과거로 되돌아가 검증</div></div></div>
     <div class="sub" style="margin-top:14px;font-size:.84rem">호가가 아닌 국토교통부 실거래만 씁니다.</div></div>`;
  app.innerHTML=HOME+`<div style="font-size:.8rem;font-weight:700;color:var(--blue)">집셈을 보기 전에</div>
- <div class="prog" style="margin:10px 0 4px"><i style="width:${(k+1)/N*100}%"></i></div><div class="sub" style="font-size:.74rem;text-align:right">${k+1} / ${N} · 옆으로 밀어서 넘겨요</div>
+ <div class="prog" style="margin:10px 0 4px"><i style="width:${(k+1)/N*100}%"></i></div><div class="sub" style="font-size:.74rem;display:flex;justify-content:space-between"><span>${k+1} / ${N}</span>${PHS&&k<N-1?`<a href="javascript:void 0" onclick="jsMark('jsNoOrigin');hub()" style="color:var(--ink3);text-decoration:none">건너뛰기 ›</a>`:''}</div>
  <div id="phw" class="op" style="min-height:56vh;padding:10px 0 0">${body}</div>
  <div style="display:flex;gap:8px;margin-top:14px">${k>0?`<button class="btn ghost" style="flex:0 0 30%" onclick="philo(null,${k-1})">‹ 이전</button>`:''}
   ${k<N-1?`<button class="btn" style="flex:1" onclick="philo(null,${k+1})">다음</button>`:`<button class="btn" style="flex:1" onclick="${nextStep()}">집셈 시작하기</button>`}</div>
- ${k===N-1?noAgain('jsNoOrigin'):''}`;
+ ${k===N-1&&!PHS?noAgain('jsNoOrigin'):''}`;
  const w=document.getElementById('phw'); let x0=null;
  w.ontouchstart=e=>{x0=e.touches[0].clientX;}; w.ontouchend=e=>{if(x0==null)return;const d=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(d)>60)philo(null,Math.max(0,Math.min(N-1,k+(d<0?1:-1))));};
  fixDash(w); setTimeout(()=>w.querySelectorAll('.chart').forEach(c=>{c.dataset.w=1;c.classList.add('go');}),60);}
@@ -3200,7 +3208,7 @@ function hub(){
  <div class="wry">${WRY.map(([n,c,t,d,k])=>`<button onclick="startPath('${k}')">${itile(n,c,48)}<span class="t"><b>${t}</b><span>${d}</span></span><i>›</i></button>`).join('')}</div>
  ${m0?`<div class="sec2"><b>지금, 시장은 어떤가요?</b></div>
   <a class="strip" href="market.html"><span class="t"><b><span class="ph${m0[1].st}">${'①②③④'[m0[1].st-1]||''} ${m0[0]} ${(PHC[m0[1].st]||['-'])[0]}</span> · ${m0[1].m||'-'}개월째</b><small style="margin-top:2px">${PL[m0[1].st]||''}</small><em>${mk.slice(1).map(([r,x])=>`${r} ${(PHC[x.st]||['-'])[0]}`).join(' · ')}</em></span>${miniQ(+m0[1].st,44)}<span style="color:var(--ink3)">›</span></a>`:''}
- <button class="strip why2" onclick="philo(null,0)">${itile('shield','b',40)}<span class="t"><b style="font-size:.95rem">집셈은 이런 기준으로 분석합니다</b><small>시세는 못 맞히지만, 분명한 것에 집중해요</small></span><span style="color:var(--ink3)">›</span></button>`;}
+ <button class="strip why2" onclick="philo(0,0)">${itile('shield','b',40)}<span class="t"><b style="font-size:.95rem">집셈은 이런 기준으로 분석합니다</b><small>시세는 못 맞히지만, 분명한 것에 집중해요</small></span><span style="color:var(--ink3)">›</span></button>`;}
 // 메뉴: 중복 없이(데이터와 검증 하나 · 고객센터 하나 · 소개/안내 다시 보기 없음)
 function menu(){
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); topIntro(); tbOn('menu'); tint(1); document.body.classList.remove('nodisc');
@@ -3212,7 +3220,7 @@ function menu(){
   <div class="lst" style="margin-top:10px">${row('tag','','약관 및 정책','termsSheet()')}${row('spark','','앱 정보','infoSheet()','데이터 기준일 '+(DT.asof||'-'))}</div></div>`;}
 // 첫 실행 = '집셈을 보기 전에'(설명할 건 설명한다) → 마지막 장에서 시작 / 이후엔 홈 카드로
 function endSplash(){const sp=$('#splash'); if(!sp||sp.classList.contains('out'))return; clearTimeout(SPL); sp.classList.add('out'); setTimeout(()=>{sp.remove(); topIntro(); tabBar(); const h=location.hash, m=h.match(/^#c=(.+)$/), mv=h.match(/^#v=([^,]+),(.+)$/), mb=h.match(/^#b=(obj|up|def|rb)$/), mt=h.match(/^#t=(find|anal|menu)$/), dc=x=>decodeURIComponent(x);
-   if(m&&CPXK[dc(m[1])])rcard(dc(m[1])); else if(mv&&CPXK[dc(mv[1])]&&CPXK[dc(mv[2])]){CM=[dc(mv[1]),dc(mv[2])];cmp();} else if(mb)board(mb[1]); else if(mt){({find:findTab,anal:anaTab,menu:menu})[mt[1]]();} else if(!jsSeen('jsNoOrigin')){try{localStorage.setItem('jsNoOrigin','1');}catch(e){} philo(1,0);} else hub();},450);}
+   if(m&&CPXK[dc(m[1])])rcard(dc(m[1])); else if(mv&&CPXK[dc(mv[1])]&&CPXK[dc(mv[2])]){CM=[dc(mv[1]),dc(mv[2])];cmp();} else if(mb)board(mb[1]); else if(mt){({find:findTab,anal:anaTab,menu:menu})[mt[1]]();} else if(!jsSeen('jsNoOrigin'))philo(1,0); else hub();},450);}
 function nextStep(){return 'hub()';}
 function termsSheet(){sheet('약관 및 정책',[['terms','이용약관'],['privacy','개인정보처리방침'],['biz','사업자 정보']].map(([k,t])=>`<button class="o" onclick="shClose();mpage('${k}')"><span>${t}</span></button>`).join(''));}
 function infoSheet(){sheet('앱 정보',`<p style="margin:6px 0">데이터 기준일 ${DT.asof||'-'} · 매일 자동 갱신</p><p class="sub">공개 자료(국토교통부 실거래·KB부동산·한국은행 등) 기반 · 참고용 산출치이며 투자 권유가 아닙니다</p>`);}
