@@ -183,6 +183,67 @@ body.notab .tabbar,body.notab .disc{display:none}body.notab{padding-bottom:40px}
 .ofl .ot{flex:0 0 46px;height:46px;border-radius:14px;background:var(--c);color:#fff;display:grid;place-items:center;box-shadow:0 6px 14px color-mix(in srgb,var(--c) 35%,transparent)}
 .ofl b{display:block;font-size:.98rem;color:var(--c)}.ofl span{display:block;font-size:.8rem;color:var(--ink2);line-height:1.45;margin-top:1px}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ofl>div{background:var(--surface2)}}
+
+/* ===== 10-05 v4: ChatGPT 시안·설계(정보 구조·색 체계) — 파랑은 CTA·선택·링크·현재 위치에만 ===== */
+:root{--bg:#F5F7FA;--surface:#fff;--surface2:#F2F4F7;--ink:#171A1F;--ink2:#667085;--ink3:#98A2B3;--line:#E6EAF0;--line2:#EEF1F5;--blue-bg:#EEF4FF;--green:#16A05D;--red:#E5484D;
+ --pu-bg:#EAF7F0;--pu:#16835A;--pp-bg:#FFF4DE;--pp:#C97900;--pd-bg:#FDECEC;--pd:#C74343;--pb-bg:#EEF2F7;--pb:#536273;--shadow:0 1px 3px rgba(16,24,40,.04)}
+body.hm{background:#fff!important}body.hm.tint{background:var(--bg)!important}
+.btn{box-shadow:none}
+.rk{background:var(--surface2);color:var(--ink2)}.rk.r1{background:var(--ink);color:#fff}
+.rc.r1{border:1.5px solid var(--ink)!important}
+.ltab a.on{color:var(--ink);border-color:var(--ink)}
+.seg button.on{box-shadow:none}
+.it2{flex:0 0 auto;display:grid;place-items:center;border-radius:12px;background:var(--surface2);color:#475467}
+.it2.g{background:var(--pu-bg);color:var(--pu)}.it2.p{background:#F1EDFF;color:#6854C7}.it2.a{background:var(--pp-bg);color:var(--pp)}.it2.b{background:var(--blue-bg);color:var(--blue)}
+/* 홈 */
+.hero2{display:block;width:100%;margin-top:4px;padding:20px 18px 18px;border:1px solid #DCE6FB;border-radius:20px;background:linear-gradient(160deg,#F5F8FF,#EAF1FF);color:var(--ink);font:inherit;text-align:left;cursor:pointer;position:relative;overflow:hidden}
+.hero2 small{display:block;font-size:.8rem;font-weight:700;color:var(--blue)}
+.hero2 b{display:block;margin-top:6px;font-size:1.32rem;font-weight:800;letter-spacing:-.02em}
+.hero2 span.d{display:block;margin-top:4px;font-size:.86rem;color:var(--ink2)}
+.hero2 .cta{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:16px;padding:14px;border-radius:14px;background:var(--blue);color:#fff;font-weight:800;font-size:.98rem}
+.hero2 .art{position:absolute;right:12px;top:14px;opacity:.9}
+.sec2{display:flex;justify-content:space-between;align-items:baseline;margin:24px 2px 10px}.sec2 b{font-size:1.06rem;font-weight:800}.sec2 a{font-size:.82rem;color:var(--ink2);cursor:pointer;font-weight:600}
+.qk{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.qk button{display:flex;flex-direction:column;align-items:center;gap:10px;padding:16px 6px 14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;font-size:.86rem;font-weight:700;cursor:pointer;word-break:keep-all;line-height:1.3;text-align:center}
+.qk button:active{transform:scale(.97)}
+.cardx{background:var(--surface);border:1px solid var(--line);border-radius:16px}
+.fvr{display:flex;align-items:center;gap:12px;padding:12px 6px 12px 12px}
+.fvr .th{flex:0 0 64px;height:64px;border-radius:12px;overflow:hidden;background:#DCE8FB url('onb_hero.jpg') 70% 70%/260px auto}
+.fvr .hm{flex:1;min-width:0;display:flex;align-items:center;gap:12px;border:0;background:none;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.fvr .nm{flex:1;min-width:0}.fvr .nm b{display:block;font-size:.98rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fvr .nm .p{display:block;font-size:1.12rem;font-weight:800;margin-top:2px}.fvr .nm span{display:block;font-size:.76rem;color:var(--ink3)}
+.fvr+.fvr{border-top:1px solid var(--line2)}
+.strip{display:flex;align-items:center;gap:12px;width:100%;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);text-decoration:none}
+.strip .t{flex:1;min-width:0}.strip .t small{display:block;font-size:.76rem;color:var(--ink2)}.strip .t b{display:block;font-size:1.02rem;margin-top:2px}.strip .t em{display:block;font-style:normal;font-size:.74rem;color:var(--ink3);margin-top:2px}
+.ph1{color:var(--pu)}.ph2{color:var(--pp)}.ph3{color:var(--pd)}.ph4{color:var(--pb)}
+/* 목록형 화면(단지찾기·분석·메뉴) */
+.pg h1{font-size:1.5rem;margin:6px 2px 4px}.pg .lead{font-size:.88rem;color:var(--ink2);margin:0 2px 14px}
+.grp{margin:20px 2px 8px;font-size:.84rem;font-weight:800;color:var(--ink2)}
+.lst{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.lst>button{display:flex;align-items:center;gap:12px;width:100%;padding:13px 14px;border:0;border-top:1px solid var(--line2);background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.lst>button:first-child{border-top:0}.lst>button .t{flex:1;min-width:0}.lst>button .t b{display:block;font-size:.96rem;font-weight:700}.lst>button .t span{display:block;font-size:.78rem;color:var(--ink3);margin-top:1px}.lst>button i{font-style:normal;color:var(--ink3)}
+.top2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.top2 button{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:16px 14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.top2 b{font-size:.98rem}.top2 span{font-size:.76rem;color:var(--ink2);line-height:1.4}
+.srch2{display:flex;align-items:center;gap:10px;padding:0 14px;height:50px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.srch2 input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:16px;color:var(--ink)}
+.srch2 svg{color:var(--ink3)}
+.rq{display:flex;flex-wrap:wrap;gap:6px}.rq button{border:1px solid var(--line);background:var(--surface);color:var(--ink2);border-radius:10px;padding:7px 11px;font:inherit;font-size:.82rem;cursor:pointer}
+.res{display:flex;width:100%;box-sizing:border-box;align-items:center;gap:10px;padding:12px 6px 12px 14px}.res+.res{border-top:1px solid var(--line2)}
+.res .hm{display:block;flex:1;min-width:0;border:0;background:none;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.res b{display:block;font-size:.98rem}.res span{display:block;font-size:.78rem;color:var(--ink3);margin-top:1px}.res .sc{flex:0 0 auto;text-align:right;font-size:.74rem;color:var(--ink3)}.res .sc b{font-size:.98rem;color:var(--ink)}
+.mapbtn{display:flex;justify-content:center;align-items:center;gap:6px;width:100%;margin-top:12px;padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font:inherit;font-weight:700;cursor:pointer;text-decoration:none}
+/* 소개 1장 */
+.onb1{min-height:calc(100vh - 30px);display:flex;flex-direction:column;padding:8px 0 calc(16px + env(safe-area-inset-bottom))}
+.onb1 .ob-top{display:flex;align-items:center;gap:8px;font-weight:800;font-size:1.05rem;margin-bottom:18px}
+.onb1 h2{font-size:clamp(1.7rem,7.4vw,2rem);font-weight:800;line-height:1.3;letter-spacing:-.035em;margin:0}
+.onb1 p{margin:10px 0 0;font-size:.92rem;line-height:1.6;color:var(--ink2)}
+.onb1 .ph{height:24vh;min-height:150px;margin:14px -16px 6px;background:#DCE8FB url('onb_hero.jpg') center 72%/cover;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 25%);mask-image:linear-gradient(to bottom,transparent 0,#000 25%)}
+.onb1 .vl{display:flex;flex-direction:column;gap:8px;margin:6px 0 14px}
+.onb1 .vl>div{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+.onb1 .vl b{display:block;font-size:.98rem}.onb1 .vl span{display:block;font-size:.8rem;color:var(--ink2);line-height:1.45}
+.onb1 .ft .sub{display:block;text-align:center;margin-top:10px;font-size:.74rem}
+/* 하단 탭: 선택만 파랑 */
+.tabbar a.tb.on,.tabbar button.on{color:var(--blue)}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html" class="brand" style="display:flex;align-items:center;gap:8px;color:inherit;text-decoration:none"><svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg7" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg7)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="22.5" y="31.5" width="19" height="5.2" rx="2.6" fill="url(#lg7)"/><rect x="22.5" y="40.3" width="19" height="5.2" rx="2.6" fill="url(#lg7)"/></svg>집셈</a></div>
 
@@ -488,6 +549,67 @@ body.notab .tabbar,body.notab .disc{display:none}body.notab{padding-bottom:40px}
 .ofl .ot{flex:0 0 46px;height:46px;border-radius:14px;background:var(--c);color:#fff;display:grid;place-items:center;box-shadow:0 6px 14px color-mix(in srgb,var(--c) 35%,transparent)}
 .ofl b{display:block;font-size:.98rem;color:var(--c)}.ofl span{display:block;font-size:.8rem;color:var(--ink2);line-height:1.45;margin-top:1px}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ofl>div{background:var(--surface2)}}
+
+/* ===== 10-05 v4: ChatGPT 시안·설계(정보 구조·색 체계) — 파랑은 CTA·선택·링크·현재 위치에만 ===== */
+:root{--bg:#F5F7FA;--surface:#fff;--surface2:#F2F4F7;--ink:#171A1F;--ink2:#667085;--ink3:#98A2B3;--line:#E6EAF0;--line2:#EEF1F5;--blue-bg:#EEF4FF;--green:#16A05D;--red:#E5484D;
+ --pu-bg:#EAF7F0;--pu:#16835A;--pp-bg:#FFF4DE;--pp:#C97900;--pd-bg:#FDECEC;--pd:#C74343;--pb-bg:#EEF2F7;--pb:#536273;--shadow:0 1px 3px rgba(16,24,40,.04)}
+body.hm{background:#fff!important}body.hm.tint{background:var(--bg)!important}
+.btn{box-shadow:none}
+.rk{background:var(--surface2);color:var(--ink2)}.rk.r1{background:var(--ink);color:#fff}
+.rc.r1{border:1.5px solid var(--ink)!important}
+.ltab a.on{color:var(--ink);border-color:var(--ink)}
+.seg button.on{box-shadow:none}
+.it2{flex:0 0 auto;display:grid;place-items:center;border-radius:12px;background:var(--surface2);color:#475467}
+.it2.g{background:var(--pu-bg);color:var(--pu)}.it2.p{background:#F1EDFF;color:#6854C7}.it2.a{background:var(--pp-bg);color:var(--pp)}.it2.b{background:var(--blue-bg);color:var(--blue)}
+/* 홈 */
+.hero2{display:block;width:100%;margin-top:4px;padding:20px 18px 18px;border:1px solid #DCE6FB;border-radius:20px;background:linear-gradient(160deg,#F5F8FF,#EAF1FF);color:var(--ink);font:inherit;text-align:left;cursor:pointer;position:relative;overflow:hidden}
+.hero2 small{display:block;font-size:.8rem;font-weight:700;color:var(--blue)}
+.hero2 b{display:block;margin-top:6px;font-size:1.32rem;font-weight:800;letter-spacing:-.02em}
+.hero2 span.d{display:block;margin-top:4px;font-size:.86rem;color:var(--ink2)}
+.hero2 .cta{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:16px;padding:14px;border-radius:14px;background:var(--blue);color:#fff;font-weight:800;font-size:.98rem}
+.hero2 .art{position:absolute;right:12px;top:14px;opacity:.9}
+.sec2{display:flex;justify-content:space-between;align-items:baseline;margin:24px 2px 10px}.sec2 b{font-size:1.06rem;font-weight:800}.sec2 a{font-size:.82rem;color:var(--ink2);cursor:pointer;font-weight:600}
+.qk{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.qk button{display:flex;flex-direction:column;align-items:center;gap:10px;padding:16px 6px 14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;font-size:.86rem;font-weight:700;cursor:pointer;word-break:keep-all;line-height:1.3;text-align:center}
+.qk button:active{transform:scale(.97)}
+.cardx{background:var(--surface);border:1px solid var(--line);border-radius:16px}
+.fvr{display:flex;align-items:center;gap:12px;padding:12px 6px 12px 12px}
+.fvr .th{flex:0 0 64px;height:64px;border-radius:12px;overflow:hidden;background:#DCE8FB url('onb_hero.jpg') 70% 70%/260px auto}
+.fvr .hm{flex:1;min-width:0;display:flex;align-items:center;gap:12px;border:0;background:none;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.fvr .nm{flex:1;min-width:0}.fvr .nm b{display:block;font-size:.98rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fvr .nm .p{display:block;font-size:1.12rem;font-weight:800;margin-top:2px}.fvr .nm span{display:block;font-size:.76rem;color:var(--ink3)}
+.fvr+.fvr{border-top:1px solid var(--line2)}
+.strip{display:flex;align-items:center;gap:12px;width:100%;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);text-decoration:none}
+.strip .t{flex:1;min-width:0}.strip .t small{display:block;font-size:.76rem;color:var(--ink2)}.strip .t b{display:block;font-size:1.02rem;margin-top:2px}.strip .t em{display:block;font-style:normal;font-size:.74rem;color:var(--ink3);margin-top:2px}
+.ph1{color:var(--pu)}.ph2{color:var(--pp)}.ph3{color:var(--pd)}.ph4{color:var(--pb)}
+/* 목록형 화면(단지찾기·분석·메뉴) */
+.pg h1{font-size:1.5rem;margin:6px 2px 4px}.pg .lead{font-size:.88rem;color:var(--ink2);margin:0 2px 14px}
+.grp{margin:20px 2px 8px;font-size:.84rem;font-weight:800;color:var(--ink2)}
+.lst{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.lst>button{display:flex;align-items:center;gap:12px;width:100%;padding:13px 14px;border:0;border-top:1px solid var(--line2);background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.lst>button:first-child{border-top:0}.lst>button .t{flex:1;min-width:0}.lst>button .t b{display:block;font-size:.96rem;font-weight:700}.lst>button .t span{display:block;font-size:.78rem;color:var(--ink3);margin-top:1px}.lst>button i{font-style:normal;color:var(--ink3)}
+.top2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.top2 button{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:16px 14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.top2 b{font-size:.98rem}.top2 span{font-size:.76rem;color:var(--ink2);line-height:1.4}
+.srch2{display:flex;align-items:center;gap:10px;padding:0 14px;height:50px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.srch2 input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:16px;color:var(--ink)}
+.srch2 svg{color:var(--ink3)}
+.rq{display:flex;flex-wrap:wrap;gap:6px}.rq button{border:1px solid var(--line);background:var(--surface);color:var(--ink2);border-radius:10px;padding:7px 11px;font:inherit;font-size:.82rem;cursor:pointer}
+.res{display:flex;width:100%;box-sizing:border-box;align-items:center;gap:10px;padding:12px 6px 12px 14px}.res+.res{border-top:1px solid var(--line2)}
+.res .hm{display:block;flex:1;min-width:0;border:0;background:none;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.res b{display:block;font-size:.98rem}.res span{display:block;font-size:.78rem;color:var(--ink3);margin-top:1px}.res .sc{flex:0 0 auto;text-align:right;font-size:.74rem;color:var(--ink3)}.res .sc b{font-size:.98rem;color:var(--ink)}
+.mapbtn{display:flex;justify-content:center;align-items:center;gap:6px;width:100%;margin-top:12px;padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font:inherit;font-weight:700;cursor:pointer;text-decoration:none}
+/* 소개 1장 */
+.onb1{min-height:calc(100vh - 30px);display:flex;flex-direction:column;padding:8px 0 calc(16px + env(safe-area-inset-bottom))}
+.onb1 .ob-top{display:flex;align-items:center;gap:8px;font-weight:800;font-size:1.05rem;margin-bottom:18px}
+.onb1 h2{font-size:clamp(1.7rem,7.4vw,2rem);font-weight:800;line-height:1.3;letter-spacing:-.035em;margin:0}
+.onb1 p{margin:10px 0 0;font-size:.92rem;line-height:1.6;color:var(--ink2)}
+.onb1 .ph{height:24vh;min-height:150px;margin:14px -16px 6px;background:#DCE8FB url('onb_hero.jpg') center 72%/cover;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 25%);mask-image:linear-gradient(to bottom,transparent 0,#000 25%)}
+.onb1 .vl{display:flex;flex-direction:column;gap:8px;margin:6px 0 14px}
+.onb1 .vl>div{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+.onb1 .vl b{display:block;font-size:.98rem}.onb1 .vl span{display:block;font-size:.8rem;color:var(--ink2);line-height:1.45}
+.onb1 .ft .sub{display:block;text-align:center;margin-top:10px;font-size:.74rem}
+/* 하단 탭: 선택만 파랑 */
+.tabbar a.tb.on,.tabbar button.on{color:var(--blue)}
 </style>
 <div id="splash" onclick="endSplash()"><span class="ic"><svg width="92" height="92" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="#ffffff"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#2B6BF3" stroke="#2B6BF3" stroke-width="4" stroke-linejoin="round"/><rect x="22.5" y="31.5" width="19" height="5.2" rx="2.6" fill="#ffffff"/><rect x="22.5" y="40.3" width="19" height="5.2" rx="2.6" fill="#ffffff"/></svg></span><div class="nm">집셈</div><div class="sl">데이터로 더 똑똑한 집 찾기</div><div class="dots"><i></i><i></i><i></i></div></div>
 <div class="card stage" id="app"></div>
@@ -2962,13 +3084,91 @@ function hub(){
 function endSplash(){const sp=$('#splash'); if(!sp||sp.classList.contains('out'))return; clearTimeout(SPL); sp.classList.add('out'); setTimeout(()=>{sp.remove(); topIntro(); tabBar(); const h=location.hash, m=h.match(/^#c=(.+)$/), mv=h.match(/^#v=([^,]+),(.+)$/), mb=h.match(/^#b=(obj|up|def|rb)$/), dc=x=>decodeURIComponent(x);
    if(m&&CPXK[dc(m[1])])rcard(dc(m[1])); else if(mv&&CPXK[dc(mv[1])]&&CPXK[dc(mv[2])]){CM=[dc(mv[1]),dc(mv[2])];cmp();} else if(mb)board(mb[1]); else if(!jsSeen('jsNoOrigin'))onb(0); else hub();},450);}
 
-setTimeout(()=>{[['result','anal'],['setup','anal'],['firstFlow','anal'],['menu','more'],['board','home'],['rcard','home'],['ownFind','home'],['move','home'],['cmp','home'],['jobv','home'],['trust','more']].forEach(([f,t])=>{const o=window[f];if(typeof o!=='function')return;window[f]=function(){tbOn(t);return o.apply(this,arguments);};});},0);
+
+// ===== 10-05 v4: ChatGPT 시안·설계 — 탭 = 홈·단지찾기·분석·시장·메뉴, 홈은 '시작'만(기능 목록은 분석 탭), 소개 1장, 파랑 최소화 =====
+document.body.classList.add('hm');
+const TB4={home:'<path d="M3.5 11 12 4l8.5 7"/><path d="M6 9.5V20h4.5v-5.5h3V20H18V9.5"/>',find:'<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>',anal:'<path d="M5 20V12M12 20V5M19 20v-9"/>',mkt:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',menu:'<path d="M4 7h16M4 12h16M4 17h16"/>'};
+const PHC={1:['상승기','var(--pu)','var(--pu-bg)'],2:['고점권','var(--pp)','var(--pp-bg)'],3:['조정기','var(--pd)','var(--pd-bg)'],4:['바닥권','var(--pb)','var(--pb-bg)']};
+function tabBar(){if(document.querySelector('.tabbar'))return;
+ const T=[['home','홈','hub()'],['find','단지찾기','findTab()'],['anal','분석','anaTab()'],['mkt','시장',"location.href='market.html'"],['menu','메뉴','menu()']];
+ document.body.insertAdjacentHTML('beforeend',`<nav class="tabbar" aria-label="주요 메뉴"><div>${T.map(([k,t,go])=>`<button data-t="${k}" onclick="${go}"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${TB4[k]}</svg>${t}</button>`).join('')}</div></nav>`);}
+function tint(on){document.body.classList.toggle('tint',!!on);}
+function itile(n,c,sz){return `<span class="it2 ${c||''}" style="width:${sz||40}px;height:${sz||40}px">${svgI(n,Math.round((sz||40)*.52))}</span>`;}
+function miniQ(st,sz){const P={1:[0,0],2:[1,0],3:[1,1],4:[0,1]}, c=(k)=>{const [x,y]=P[k];return `<rect x="${x*17+1}" y="${y*17+1}" width="15" height="15" rx="4" fill="${k===st?PHC[k][1]:'var(--line2)'}"/>`;};
+ return `<svg viewBox="0 0 34 34" width="${sz||30}" height="${sz||30}" aria-hidden="true">${[1,2,3,4].map(c).join('')}</svg>`;}
+// 홈: 시작점 — 매수 분석 시작 · 빠른 실행 3 · 관심 단지 · 오늘의 시장 한 줄
+function hub(){
+ TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); topIntro(); FF.force=false; tbOn('home'); tint(1);
+ const sv=hasSaved(), SD=(DT.ph2||{}).sd||{}, FV=favs().map(k=>[k,(window.CPXK||{})[k]]).filter(x=>x[1]);
+ const mk=(DT.mk||[]).map(([r])=>[r,SD[r]||{}]), m0=mk[0];
+ app.innerHTML=`<button class="hero2" onclick="${sv?'result()':'firstFlow(0)'}"><small>내 집 마련의 첫걸음</small><b>${sv?'내 조건 분석 결과':'내 조건으로 시작하기'}</b><span class="d">${sv?'저장한 조건으로 5년 순이익 순위를 다시 봐요':'자본·대출·세금을 넣고 5년 순이익으로 비교해요'}</span>
+  <svg class="art" viewBox="0 0 64 64" width="64" height="64" fill="none"><path d="M10 30 32 12l22 18" stroke="#9DB8F2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 27v25h32V27" fill="#fff" stroke="#C9D8F8" stroke-width="2.5"/><rect x="22" y="33" width="9" height="9" rx="1.5" fill="#C9D8F8"/><rect x="34" y="33" width="9" height="9" rx="1.5" fill="#C9D8F8"/></svg>
+  <span class="cta">${sv?'결과 보기':'매수 분석 시작'} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+ <div class="sec2"><b>빠른 실행</b><a onclick="anaTab()">더보기 ›</a></div>
+ <div class="qk">${[['home','우리 단지 분석','ownFind()','p'],['swap','갈아타기','move()','b'],['bag','직장 근처 찾기','jobv()','g']].map(([n,t,go,c])=>`<button onclick="${go}">${itile(n,c,44)}${t}</button>`).join('')}</div>
+ <div class="sec2"><b>관심 단지</b><a onclick="findTab()">더보기 ›</a></div>
+ ${FV.length?`<div class="cardx">${FV.slice(0,2).map(([k,c])=>{const r=bestRow(c)||c.rows[0];return `<div class="fvr"><button class="hm" onclick="rcard('${k}')"><span class="th"></span><span class="nm"><b>${c.n} <span style="display:inline;color:var(--ink3);font-weight:500">${r.b}㎡</span></b><span class="p num">${eok(r.p)}억</span><span>입지 ${c.sc} · ${c.gu}</span></span></button>${favBtn(k,1)}</div>`;}).join('')}</div>`
+  :`<button class="strip" style="cursor:pointer;font:inherit;text-align:left" onclick="findTab()">${itile('search','',40)}<span class="t"><b style="font-size:.94rem">관심 단지를 담아 보세요</b><small>단지 화면의 하트를 누르면 여기에 모여요</small></span><span style="color:var(--ink3)">›</span></button>`}
+ ${m0?`<div class="sec2"><b>오늘의 시장</b><a href="market.html">자세히 ›</a></div>
+  <a class="strip" href="market.html">${miniQ(+m0[1].st,40)}<span class="t"><small>${m0[0]} 시장 국면</small><b><span class="ph${m0[1].st}">${'①②③④'[m0[1].st-1]||''} ${(PHC[m0[1].st]||['-'])[0]}</span> · ${m0[1].m||'-'}개월째</b><em>${mk.slice(1).map(([r,x])=>`${r} ${(PHC[x.st]||['-'])[0]}`).join(' · ')}</em></span><span style="color:var(--ink3)">›</span></a>`:''}
+ <p class="sub" style="text-align:center;margin:22px 0 0;font-size:.74rem">참고용 산출치이며, 투자 권유가 아닙니다.</p>`;}
+// 단지찾기: 지역+이름·주소 검색, 최근 검색, 관심 단지, 지도
+let FQ='';
+function rqs(){try{return JSON.parse(localStorage.getItem('jsRQ')||'[]');}catch(e){return [];}}
+function rqAdd(q){q=String(q||'').trim();if(q.length<2)return;let a=rqs().filter(x=>x!==q);a.unshift(q);try{localStorage.setItem('jsRQ',JSON.stringify(a.slice(0,6)));}catch(e){}}
+function findTab(){
+ TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); topIntro(); tbOn('find'); tint(1);
+ app.innerHTML=`<div class="pg"><h1>단지 찾기</h1><p class="lead">서울·경기·인천 아파트를 이름·지역·주소로 찾아요</p>
+  <label class="srch2">${svgI('search',20)}<input id="fq" type="search" placeholder="예: 광명 유플래닛 · 봉천동 · 사직로8길 34" value="${FQ.split(String.fromCharCode(34)).join('')}" oninput="FQ=this.value;fList()" autocomplete="off" enterkeyhint="search"></label>
+  <div id="fres"></div></div>`;
+ fList(); const q=$('#fq'); if(q&&!FQ)setTimeout(()=>q.focus(),50);}
+function fList(){const el=$('#fres'); if(!el)return; const q=nz(FQ);
+ if(!q){const R0=rqs(), FV=favs().map(k=>[k,(window.CPXK||{})[k]]).filter(x=>x[1]);
+  el.innerHTML=(R0.length?`<div class="grp">최근 검색</div><div class="rq">${R0.map(x=>`<button onclick="FQ=this.textContent;$('#fq').value=FQ;fList()">${x.replace(/</g,'&lt;')}</button>`).join('')}</div>`:'')
+   +`<div class="grp">관심 단지</div>`+(FV.length?`<div class="lst">${FV.map(([k,c])=>resRow(k,c)).join('')}</div>`:`<p class="sub" style="margin:4px 2px;font-size:.84rem">단지 화면의 하트를 누르면 여기에 모여요</p>`)
+   +`<a class="mapbtn" href="map.html">${svgI('map',18)} 지도에서 찾기</a>`;return;}
+ const L=CPX.filter(c=>srch(q,c)).slice(0,30);
+ el.innerHTML=L.length?`<div class="grp">검색 결과 ${L.length>=30?'30곳 이상':L.length+'곳'}</div><div class="lst">${L.map(c=>resRow(c.k,c)).join('')}</div>`
+  :`<p class="sub" style="margin:14px 2px;line-height:1.6;font-size:.86rem">찾는 단지가 없어요.<br>단지 이름 일부(예: 유플래닛)나 동 이름(예: 봉천동), 도로명 주소로 찾아 보세요. 아직 집셈 자료에 없는 단지일 수도 있어요.</p><a class="mapbtn" href="map.html">${svgI('map',18)} 지도에서 찾기</a>`;}
+function resRow(k,c){const r=bestRow(c)||c.rows[0];return `<div class="res"><button class="hm" onclick="rqAdd(FQ);rcard('${k}','own')"><b>${c.n}</b><span>${c.gu}${c.y?' · '+c.y+'년':''} · ${r.b}㎡ ${eok(r.p)}억</span></button><span class="sc">입지<br><b>${c.sc}</b></span>${favBtn(k)}</div>`;}
+// 분석: 의사결정 도구 모음
+function anaTab(){
+ TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); topIntro(); tbOn('anal'); tint(1);
+ const sv=hasSaved(), row=(n,c,t,d,go)=>`<button onclick="${go}">${itile(n,c,40)}<span class="t"><b>${t}</b><span>${d}</span></span><i>›</i></button>`;
+ app.innerHTML=`<div class="pg"><h1>분석</h1><p class="lead">과거 20년 실거래로 셈한 도구 모음</p>
+  <div class="grp">매수 결정</div><div class="lst">${row('calc','g','매수 분석',sv?'저장한 조건의 5년 순이익 순위':'내 자본·대출·세금으로 5년 순이익 순위',sv?'result()':'firstFlow(0)')}${row('vs','','두 단지 비교','값 차이를 이유별로 나눠 비교','cmp()')}</div>
+  <div class="grp">순위</div><div class="lst">${row('up','','5년 뒤 시세 순위','보통일 때 5년 상승률 순',"board('up')")}${row('pin','p','입지 점수 순위','역·동네 시세·학군으로 매긴 점수 순',"board('obj')")}${row('guard','','하락기 방어 순위','2022 하락기에 덜 떨어진 순',"board('def')")}${row('crane','','분담금 순위','재건축 추가 부담금이 적은 순',"board('rb')")}</div>
+  <div class="grp">단지 · 이동</div><div class="lst">${row('home','p','우리 단지 분석','시세·층별 정상가·학군·보유세','ownFind()')}${row('swap','b','갈아타기','지금 집을 매도하고 옮길 때 순이익','move()')}${row('bag','','직장 근처 찾기','출퇴근 시간 안에서 순이익이 높은 곳','jobv()')}</div></div>`;}
+// 메뉴
+function menu(){
+ TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); topIntro(); tbOn('menu'); tint(1);
+ const row=(n,t,go,d)=>`<button onclick="${go}">${itile(n,'',36)}<span class="t"><b>${t}</b>${d?`<span>${d}</span>`:''}</span><i>›</i></button>`;
+ app.innerHTML=`<div class="pg"><h1>메뉴</h1>
+  <div class="top2" style="margin-top:12px"><button onclick="trust()">${itile('shield','b',40)}<b>데이터와 검증</b><span>20년 실거래 · 과거 검증 결과</span></button><button onclick="mpage('help')">${itile('book','',40)}<b>도움말</b><span>자주 묻는 질문 · 고객센터</span></button></div>
+  <div class="grp">서비스</div><div class="lst">${row('spark','집셈 소개 다시 보기','onb(0)')}${row('home','관심 단지','findTab()')}${row('fog','집셈을 보기 전에','philo()','시세를 어떻게 셈하나')}${row('calc','매수 분석 안내 다시 보기','firstFlow(0,1)')}</div>
+  <div class="grp">신뢰와 데이터</div><div class="lst">${row('calc','계산 방법',"trust(null,'how')")}${row('podium','과거 검증 결과',"trust(null,'test')")}${row('guard','빗나간 곳 공개',"trust(null,'miss')")}${row('book','데이터 출처',"trust(null,'src')")}</div>
+  <div class="grp">고객지원</div><div class="lst">${row('card','자주 묻는 질문',"mpage('faq')")}${row('bill','고객센터 · 정정 요청',"mpage('help')",'문의, 잘못된 정보 알리기')}</div>
+  <div class="grp">약관 · 정책</div><div class="lst">${row('card','이용약관',"mpage('terms')")}${row('shield','개인정보처리방침',"mpage('privacy')")}${row('tag','사업자 정보',"mpage('biz')")}</div>
+  <p class="sub" style="font-size:.74rem;margin:18px 2px 0">데이터 기준일 ${DT.asof||'-'} · 매일 자동 갱신</p></div>`;}
+// 소개: 1장(3개 가치 + 시작하기/둘러보기)
+function onb(){
+ TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); tabBar(); document.body.classList.add('notab'); tint(0);
+ const tp0=document.querySelector('.top'); if(tp0)tp0.style.display='none';
+ const leave=`(function(){const t=document.querySelector('.top');if(t)t.style.display='';try{localStorage.setItem('jsNoOrigin','1')}catch(e){}})();`;
+ app.innerHTML=`<div class="onb1"><div class="ob-top">${pagekit_logo(30)}집셈</div>
+  <h2>복잡한 부동산,<br>이제 쉽게.</h2><p>시세·입지·시장 흐름을 한 번에 보고,<br>내 조건에 맞는 아파트를 판단해 보세요.</p>
+  <div class="ph" role="img" aria-label="강변 아파트 풍경"></div>
+  <div class="vl">${[['calc','g','매수 분석','내 자본·대출 기준 5년 순이익과 손실 가능성'],['pin','p','단지 분석','시세·입지·학군부터 비교와 갈아타기까지'],['pulse','a','시장 분석','지금 국면과 비슷했던 과거 시장의 실제 기록']].map(([n,c,t,d])=>`<div>${itile(n,c,44)}<span><b>${t}</b><span>${d}</span></span></div>`).join('')}</div>
+  <div style="flex:1"></div><div class="ft"><button class="btn" onclick="${leave}firstFlow(0,true)">시작하기</button><button class="btn ghost" style="margin-top:8px" onclick="${leave}hub()">둘러보기</button><span class="sub">공개 자료 기반 · 매일 자동 갱신</span></div></div>`;}
+function endSplash(){const sp=$('#splash'); if(!sp||sp.classList.contains('out'))return; clearTimeout(SPL); sp.classList.add('out'); setTimeout(()=>{sp.remove(); topIntro(); tabBar(); const h=location.hash, m=h.match(/^#c=(.+)$/), mv=h.match(/^#v=([^,]+),(.+)$/), mb=h.match(/^#b=(obj|up|def|rb)$/), mt=h.match(/^#t=(find|anal|menu)$/), dc=x=>decodeURIComponent(x);
+   if(m&&CPXK[dc(m[1])])rcard(dc(m[1])); else if(mv&&CPXK[dc(mv[1])]&&CPXK[dc(mv[2])]){CM=[dc(mv[1]),dc(mv[2])];cmp();} else if(mb)board(mb[1]); else if(mt){({find:findTab,anal:anaTab,menu:menu})[mt[1]]();} else if(!jsSeen('jsNoOrigin'))onb(); else hub();},450);}
+setTimeout(()=>{[['result','anal'],['setup','anal'],['firstFlow','anal'],['board','anal'],['cmp','anal'],['move','anal'],['jobv','anal'],['jres','anal'],['rcard','find'],['ownFind','find'],['trust','menu'],['mpage','menu'],['philo','menu'],['hello','menu']].forEach(([f,t])=>{const o=window[f];if(typeof o!=='function')return;window[f]=function(){tbOn(t);tint(0);return o.apply(this,arguments);};});},0);
 
 // ---- 09-29 사용자: 안드로이드 뒤로가기·아이폰 왼쪽 끝 쓸어 넘기기(둘 다 브라우저 '뒤로')가 앱 밖으로 나가지 말고 이전 화면으로 ----
 //   화면 함수(hub·result·board…)를 부를 때마다 방문 기록에 {화면, 인자}를 쌓고, 뒤로가면 그 화면을 다시 그린다.
 //   화면 안에서 다른 화면을 부르면(jobv→jres) 마지막에 그려진 화면 하나만 쌓는다. 바텀시트가 열린 채 뒤로가면 시트만 닫는다.
 (function(){
- const SCR=['hub','result','setup','board','move','cmp','ownFind','rcard','jobv','jres','trust','menu','mpage','consult','hello','origin','firstFlow'];
+ const SCR=['hub','result','setup','board','move','cmp','ownFind','rcard','jobv','jres','trust','menu','mpage','consult','hello','origin','firstFlow','findTab','anaTab','onb'];
  let POP=false, DEP=0, LAST=null, CUR=null;
  const url=st=>location.pathname+location.search+(st.s==='rcard'&&st.a[0]?'#c='+encodeURIComponent(st.a[0]):'');
  const same=(a,b)=>a&&b&&a.s===b.s&&(!b.a.length||JSON.stringify(a.a)===JSON.stringify(b.a));

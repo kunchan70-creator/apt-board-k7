@@ -183,6 +183,67 @@ body.notab .tabbar,body.notab .disc{display:none}body.notab{padding-bottom:40px}
 .ofl .ot{flex:0 0 46px;height:46px;border-radius:14px;background:var(--c);color:#fff;display:grid;place-items:center;box-shadow:0 6px 14px color-mix(in srgb,var(--c) 35%,transparent)}
 .ofl b{display:block;font-size:.98rem;color:var(--c)}.ofl span{display:block;font-size:.8rem;color:var(--ink2);line-height:1.45;margin-top:1px}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ofl>div{background:var(--surface2)}}
+
+/* ===== 10-05 v4: ChatGPT 시안·설계(정보 구조·색 체계) — 파랑은 CTA·선택·링크·현재 위치에만 ===== */
+:root{--bg:#F5F7FA;--surface:#fff;--surface2:#F2F4F7;--ink:#171A1F;--ink2:#667085;--ink3:#98A2B3;--line:#E6EAF0;--line2:#EEF1F5;--blue-bg:#EEF4FF;--green:#16A05D;--red:#E5484D;
+ --pu-bg:#EAF7F0;--pu:#16835A;--pp-bg:#FFF4DE;--pp:#C97900;--pd-bg:#FDECEC;--pd:#C74343;--pb-bg:#EEF2F7;--pb:#536273;--shadow:0 1px 3px rgba(16,24,40,.04)}
+body.hm{background:#fff!important}body.hm.tint{background:var(--bg)!important}
+.btn{box-shadow:none}
+.rk{background:var(--surface2);color:var(--ink2)}.rk.r1{background:var(--ink);color:#fff}
+.rc.r1{border:1.5px solid var(--ink)!important}
+.ltab a.on{color:var(--ink);border-color:var(--ink)}
+.seg button.on{box-shadow:none}
+.it2{flex:0 0 auto;display:grid;place-items:center;border-radius:12px;background:var(--surface2);color:#475467}
+.it2.g{background:var(--pu-bg);color:var(--pu)}.it2.p{background:#F1EDFF;color:#6854C7}.it2.a{background:var(--pp-bg);color:var(--pp)}.it2.b{background:var(--blue-bg);color:var(--blue)}
+/* 홈 */
+.hero2{display:block;width:100%;margin-top:4px;padding:20px 18px 18px;border:1px solid #DCE6FB;border-radius:20px;background:linear-gradient(160deg,#F5F8FF,#EAF1FF);color:var(--ink);font:inherit;text-align:left;cursor:pointer;position:relative;overflow:hidden}
+.hero2 small{display:block;font-size:.8rem;font-weight:700;color:var(--blue)}
+.hero2 b{display:block;margin-top:6px;font-size:1.32rem;font-weight:800;letter-spacing:-.02em}
+.hero2 span.d{display:block;margin-top:4px;font-size:.86rem;color:var(--ink2)}
+.hero2 .cta{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:16px;padding:14px;border-radius:14px;background:var(--blue);color:#fff;font-weight:800;font-size:.98rem}
+.hero2 .art{position:absolute;right:12px;top:14px;opacity:.9}
+.sec2{display:flex;justify-content:space-between;align-items:baseline;margin:24px 2px 10px}.sec2 b{font-size:1.06rem;font-weight:800}.sec2 a{font-size:.82rem;color:var(--ink2);cursor:pointer;font-weight:600}
+.qk{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.qk button{display:flex;flex-direction:column;align-items:center;gap:10px;padding:16px 6px 14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;font-size:.86rem;font-weight:700;cursor:pointer;word-break:keep-all;line-height:1.3;text-align:center}
+.qk button:active{transform:scale(.97)}
+.cardx{background:var(--surface);border:1px solid var(--line);border-radius:16px}
+.fvr{display:flex;align-items:center;gap:12px;padding:12px 6px 12px 12px}
+.fvr .th{flex:0 0 64px;height:64px;border-radius:12px;overflow:hidden;background:#DCE8FB url('onb_hero.jpg') 70% 70%/260px auto}
+.fvr .hm{flex:1;min-width:0;display:flex;align-items:center;gap:12px;border:0;background:none;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.fvr .nm{flex:1;min-width:0}.fvr .nm b{display:block;font-size:.98rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fvr .nm .p{display:block;font-size:1.12rem;font-weight:800;margin-top:2px}.fvr .nm span{display:block;font-size:.76rem;color:var(--ink3)}
+.fvr+.fvr{border-top:1px solid var(--line2)}
+.strip{display:flex;align-items:center;gap:12px;width:100%;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);text-decoration:none}
+.strip .t{flex:1;min-width:0}.strip .t small{display:block;font-size:.76rem;color:var(--ink2)}.strip .t b{display:block;font-size:1.02rem;margin-top:2px}.strip .t em{display:block;font-style:normal;font-size:.74rem;color:var(--ink3);margin-top:2px}
+.ph1{color:var(--pu)}.ph2{color:var(--pp)}.ph3{color:var(--pd)}.ph4{color:var(--pb)}
+/* 목록형 화면(단지찾기·분석·메뉴) */
+.pg h1{font-size:1.5rem;margin:6px 2px 4px}.pg .lead{font-size:.88rem;color:var(--ink2);margin:0 2px 14px}
+.grp{margin:20px 2px 8px;font-size:.84rem;font-weight:800;color:var(--ink2)}
+.lst{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.lst button{display:flex;align-items:center;gap:12px;width:100%;padding:13px 14px;border:0;border-top:1px solid var(--line2);background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.lst button:first-child{border-top:0}.lst button .t{flex:1;min-width:0}.lst button .t b{display:block;font-size:.96rem;font-weight:700}.lst button .t span{display:block;font-size:.78rem;color:var(--ink3);margin-top:1px}.lst button i{font-style:normal;color:var(--ink3)}
+.top2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.top2 button{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:16px 14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.top2 b{font-size:.98rem}.top2 span{font-size:.76rem;color:var(--ink2);line-height:1.4}
+.srch2{display:flex;align-items:center;gap:10px;padding:0 14px;height:50px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.srch2 input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:16px;color:var(--ink)}
+.srch2 svg{color:var(--ink3)}
+.rq{display:flex;flex-wrap:wrap;gap:6px}.rq button{border:1px solid var(--line);background:var(--surface);color:var(--ink2);border-radius:10px;padding:7px 11px;font:inherit;font-size:.82rem;cursor:pointer}
+.res{display:flex;align-items:center;gap:10px;padding:12px 6px 12px 14px}.res+.res{border-top:1px solid var(--line2)}
+.res .hm{flex:1;min-width:0;border:0;background:none;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.res b{display:block;font-size:.98rem}.res span{display:block;font-size:.78rem;color:var(--ink3);margin-top:1px}.res .sc{flex:0 0 auto;text-align:right;font-size:.74rem;color:var(--ink3)}.res .sc b{font-size:.98rem;color:var(--ink)}
+.mapbtn{display:flex;justify-content:center;align-items:center;gap:6px;width:100%;margin-top:12px;padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font:inherit;font-weight:700;cursor:pointer;text-decoration:none}
+/* 소개 1장 */
+.onb1{min-height:calc(100vh - 30px);display:flex;flex-direction:column;padding:8px 0 calc(16px + env(safe-area-inset-bottom))}
+.onb1 .ob-top{display:flex;align-items:center;gap:8px;font-weight:800;font-size:1.05rem;margin-bottom:18px}
+.onb1 h2{font-size:clamp(1.7rem,7.4vw,2rem);font-weight:800;line-height:1.3;letter-spacing:-.035em;margin:0}
+.onb1 p{margin:10px 0 0;font-size:.92rem;line-height:1.6;color:var(--ink2)}
+.onb1 .ph{height:24vh;min-height:150px;margin:14px -16px 6px;background:#DCE8FB url('onb_hero.jpg') center 72%/cover;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 25%);mask-image:linear-gradient(to bottom,transparent 0,#000 25%)}
+.onb1 .vl{display:flex;flex-direction:column;gap:8px;margin:6px 0 14px}
+.onb1 .vl>div{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+.onb1 .vl b{display:block;font-size:.98rem}.onb1 .vl span{display:block;font-size:.8rem;color:var(--ink2);line-height:1.45}
+.onb1 .ft .sub{display:block;text-align:center;margin-top:10px;font-size:.74rem}
+/* 하단 탭: 선택만 파랑 */
+.tabbar a.tb.on,.tabbar button.on{color:var(--blue)}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html" class="brand" style="display:flex;align-items:center;gap:8px;color:inherit;text-decoration:none"><svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg3)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="22.5" y="31.5" width="19" height="5.2" rx="2.6" fill="url(#lg3)"/><rect x="22.5" y="40.3" width="19" height="5.2" rx="2.6" fill="url(#lg3)"/></svg>집셈</a><a href="index.html" style="font-size:.88rem;font-weight:700;color:var(--ink2);text-decoration:none;padding:8px 4px">‹ 홈</a></div>
 
@@ -259,4 +320,4 @@ body.notab .tabbar,body.notab .disc{display:none}body.notab{padding-bottom:40px}
  var sv=false;try{var j=JSON.parse(localStorage.getItem('v2cfg')||'null');sv=!!(j&&j.done);}catch(e){}
  jsTrack('view',{saved:sv,dark:!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)});
  document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(a&&/\.html/.test(a.getAttribute('href')||''))jsTrack('nav',{to:(a.getAttribute('href')||'').split('#')[0].split('?')[0].replace(/\.html$/,'')});},true);
-})();</script><nav class="tabbar" aria-label="주요 메뉴"><div><a class="tb" href="index.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11 12 4l8.5 7"/><path d="M6 9.5V20h4.5v-5.5h3V20H18V9.5"/></svg>홈</a><a class="tb" href="index.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>분석</a><a class="tb" href="map.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6Z"/><path d="M9 4v14M15 6v14"/></svg>지도</a><a class="tb" href="market.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>시장</a><a class="tb" href="index.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>더보기</a></div></nav></body></html>
+})();</script><nav class="tabbar" aria-label="주요 메뉴"><div><a class="tb" href="index.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11 12 4l8.5 7"/><path d="M6 9.5V20h4.5v-5.5h3V20H18V9.5"/></svg>홈</a><a class="tb" href="index.html#t=find"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>단지찾기</a><a class="tb" href="index.html#t=anal"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V12M12 20V5M19 20v-9"/></svg>분석</a><a class="tb" href="market.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>시장</a><a class="tb" href="index.html#t=menu"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>메뉴</a></div></nav></body></html>
