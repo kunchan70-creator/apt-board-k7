@@ -1204,7 +1204,7 @@ function ownHTML(c,r,k,back,X){
    +(r.hold?kv('보유세',`연 약 <b>${Math.round(r.hold/Math.max(1,r.T)).toLocaleString()}만 원</b>`):'')
    +kv('매도 중개보수',`약 ${Math.round(r.p*.004).toLocaleString()}만 원`));
  return `<button class="linkbtn" style="padding:0;margin:0 0 8px;font-size:.84rem;color:var(--ink3)" onclick="navBack(()=>${back==='own'?'ownFind()':'board()'})">‹ 뒤로</button>
- <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px"><div class="hq" style="margin:0;word-break:keep-all">${c.n}</div><button class="ib" aria-label="이 단지 공유" onclick="shareCx('${k}',this)"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></button></div><div class="bsub">${c.gu}${c.y?' · '+c.y+'년':''}${c.hh?' · '+c.hh.toLocaleString()+'세대':''}<button class="ibi" onclick="ownInfo()" aria-label="숫자 기준">ⓘ</button></div>
+ <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px"><div class="hq" style="margin:0;word-break:keep-all">${c.n}</div><span style="display:flex;align-items:center;gap:2px">${typeof favBtn==='function'?favBtn(k):''}<button class="ib" aria-label="이 단지 공유" onclick="shareCx('${k}',this)"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></button></span></div><div class="bsub">${c.gu}${c.y?' · '+c.y+'년':''}${c.hh?' · '+c.hh.toLocaleString()+'세대':''}<button class="ibi" onclick="ownInfo()" aria-label="숫자 기준">ⓘ</button></div>
  ${rows.length>1?`<div class="fbar" style="margin:14px 0 4px">${rows.map(x=>`<button class="fp${x===r?' on':''}" onclick="rcard('${k}','${back||''}',${x.b})">${x.b}㎡</button>`).join('')}</div>`:''}
  ${mineBar('own',`rcard('${k}',${back?`'${back}'`:'null'},${r.b})`)}${hero}${box('한눈에 보기',rvBox(c,r))}${fut}${box('매수 계획',planMore(r,F))}${gsBox(c,rows)?box('공시가격',gsBox(c,rows)):''}${lc}${flb}${kid}${T.tags.length?box('확인할 점',`<div style="font-weight:800;color:${T.col}">${T.lv}</div><div style="font-size:.86rem;color:var(--ink2);margin:4px 0 2px;line-height:1.55">${T.mean}</div>${tlist(T)}`):''}${c.rb?box('정비사업 분담금',bkTxt(c)):''}${loan}${mv}${tax}
  <section class="os"><button class="btn" onclick="CM=['${k}',null];cmp()">다른 단지와 비교</button>
@@ -2729,6 +2729,11 @@ function radar5(c,r){if(!r.q||!qpTable())return '';
   <polygon points="${shape}" fill="rgba(43,107,243,.18)" stroke="var(--blue)" stroke-width="2.4" stroke-linejoin="round"/>
   ${P.map((v,i)=>{const [x,y]=pt(i,Math.max(.06,v/100));return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.6" fill="var(--blue)"/>`;}).join('')}${lab}</svg>
   <div class="sub" style="text-align:center;font-size:.72rem;margin-top:2px">항목별 순위 · 서울·경기·인천 단지 가운데 백분위(100 = 가장 좋음)</div></div>`;}
+// 10-05 사용자: 분석 기록 대신 관심 단지 — 단지 분석 제목 옆 하트로 담고, 홈에 모아 보기(이 기기 브라우저에만 저장)
+function favs(){try{return JSON.parse(localStorage.getItem('jsFav')||'[]');}catch(e){return [];}}
+function favTog(k,btn,re){let a=favs(); const on=!a.includes(k); a=on?[k,...a]:a.filter(x=>x!==k); try{localStorage.setItem('jsFav',JSON.stringify(a));}catch(e){}
+ if(btn){btn.classList.toggle('on',on);btn.setAttribute('aria-pressed',on);} if(window.jsTrack)jsTrack('fav',{k:k,on:on}); if(re)hub();}
+function favBtn(k,re){const on=favs().includes(k);return `<button class="fav${on?' on':''}" aria-label="관심 단지" aria-pressed="${on}" onclick="event.stopPropagation();favTog('${k}',this${re?',1':''})"><svg viewBox="0 0 24 24" width="23" height="23" stroke-linejoin="round"><path d="M12 20s-7.6-4.7-7.6-10.4A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.6 2.4C19.6 15.3 12 20 12 20Z"/></svg></button>`;}
 // 온보딩 3장
 function onb(i){
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); tabBar(); document.body.classList.add('notab');
@@ -2745,7 +2750,7 @@ function onb(i){
  if(i===0)body=`<div class="ob-top">${pagekit_logo(30)}집셈</div>
   <h2>좋은 집은<br>사는 것보다,<br>좋은 집을<br><em>잘 사는 것.</em></h2>
   <p class="ob-d">실거래부터 5년 순이익, 입지 분석까지<br>집을 매수하기 전 확인해야 할 모든 것.</p>
-  <div class="ob-art">${cityArt()}</div>${dots}
+  <div class="ob-photo" role="img" aria-label="강변 아파트 풍경"></div>${dots}
   <div class="ob-ft"><button class="btn" onclick="onb(1)">다음</button></div>`;
  else if(i===1)body=`<h2 style="margin-top:12px">복잡한 부동산,<br>이제 쉽게.</h2>
   <div class="ofl">${F.map(([n,t,d,c,cb])=>`<div style="--c:${c};--cb:${cb}"><span class="ot">${svgI(n,24)}</span><span><b>${t}</b><span>${d}</span></span></div>`).join('')}</div>
@@ -2771,6 +2776,10 @@ function hub(){
   <svg class="hh" viewBox="0 0 64 64" width="104" height="104" fill="none"><path d="M10 30 32 12l22 18" stroke="rgba(255,255,255,.55)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 27v25h32V27" fill="rgba(255,255,255,.16)" stroke="rgba(255,255,255,.4)" stroke-width="2.5"/><rect x="22" y="33" width="9" height="9" rx="1.5" fill="rgba(255,255,255,.5)"/><rect x="34" y="33" width="9" height="9" rx="1.5" fill="rgba(255,255,255,.5)"/></svg>
   <span class="ha">›</span></button>
  <div class="tiles">${T.map(([n,t,go])=>`<button onclick="${go}">${svgI(n,26)}${t}</button>`).join('')}</div>
+ ${(()=>{const FV=favs().map(k=>[k,(window.CPXK||{})[k]]).filter(x=>x[1]);
+  return `<div class="hsec"><b>관심 단지</b>${FV.length?`<span class="sub" style="font-size:.8rem">${FV.length}곳</span>`:''}</div>`+(FV.length?FV.map(([k,c])=>{const r=bestRow(c)||c.rows[0];
+   return `<div class="hist"><button class="hm" onclick="rcard('${k}')"><span class="th">${cityArt(58,58,1)}</span><span class="nm"><b>${c.n}</b><span>${c.gu} · ${r.b}㎡</span><span>시세 ${eok(r.p)}억</span></span><span class="sc"><i>입지 점수</i><b class="num" style="color:var(--blue)">${c.sc}점</b></span></button>${favBtn(k,1)}</div>`;}).join('')
+   :`<div class="hempty">단지 분석 화면에서 하트를 누르면<br>여기에 모아 볼 수 있어요.<button class="btn ghost" style="margin-top:12px" onclick="ownFind()">단지 찾아보기</button></div>`);})()}
  ${(DT.mk||[]).length?`<div class="hsec"><b>지금 시장</b><a href="market.html">자세히 ›</a></div><div class="mkt">${DT.mk.map(([r])=>{const x=SD[r]||{},st=+x.st,s=SC[st];return `<a href="market.html"><span>${r}</span><b style="color:${s?s[1]:'var(--ink3)'}">${s?s[0]:'-'}</b><em>${x.m?x.m+'개월째':'&nbsp;'}</em></a>`;}).join('')}</div>`:''}
  <p class="sub" style="text-align:center;margin:22px 0 0;font-size:.74rem">참고용 산출치이며, 투자 권유가 아닙니다.</p>`;}
 function endSplash(){const sp=$('#splash'); if(!sp||sp.classList.contains('out'))return; clearTimeout(SPL); sp.classList.add('out'); setTimeout(()=>{sp.remove(); topIntro(); tabBar(); const h=location.hash, m=h.match(/^#c=(.+)$/), mv=h.match(/^#v=([^,]+),(.+)$/), mb=h.match(/^#b=(obj|up|def|rb)$/), dc=x=>decodeURIComponent(x);
@@ -3025,6 +3034,9 @@ body.notab .tabbar,body.notab .disc{display:none}body.notab{padding-bottom:40px}
 .hist .th{flex:0 0 58px;height:58px;border-radius:12px;overflow:hidden;background:#DCE8FB}
 .hist .nm{flex:1;min-width:0}.hist .nm b{display:block;font-size:.98rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hist .nm span{display:block;font-size:.78rem;color:var(--ink3);white-space:nowrap}
 .hist .sc{text-align:right;flex:0 0 auto}.hist .sc i{display:block;font-style:normal;font-size:.68rem;color:var(--ink3);font-weight:600}.hist .sc b{font-size:1.05rem}
+.fav{flex:0 0 auto;border:0;background:none;width:40px;height:40px;display:grid;place-items:center;color:var(--ink3);cursor:pointer;border-radius:10px}.fav svg{fill:none;stroke:currentColor;stroke-width:1.9}.fav.on{color:#F03E5E}.fav.on svg{fill:currentColor}
+.hist{padding:12px 6px 12px 14px}
+.hist .hm{flex:1;min-width:0;display:flex;align-items:center;gap:12px;border:0;background:none;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
 .hempty{padding:20px 16px;border:1px solid var(--line);border-radius:16px;background:var(--surface);text-align:center;color:var(--ink2);font-size:.9rem;box-shadow:var(--shadow)}
 .mkt{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .mkt a{display:block;padding:12px 6px;border:1px solid var(--line);border-radius:14px;background:var(--surface);text-align:center;color:var(--ink);text-decoration:none;box-shadow:var(--shadow)}
@@ -3037,6 +3049,7 @@ body.notab .tabbar,body.notab .disc{display:none}body.notab{padding-bottom:40px}
 .onb p.ob-d{margin:14px 0 0;font-size:.94rem;line-height:1.65;color:var(--ink2)}
 .onb .ob-art{flex:1;display:flex;align-items:flex-end;justify-content:center;margin:18px -16px 0;min-height:220px}
 .onb .ob-art svg{width:100%;height:auto;display:block}
+.onb .ob-photo{flex:1;min-height:250px;margin:18px -16px 0;background:#DCE8FB url('https://images.unsplash.com/photo-1762200967825-70737361849c?w=900&q=72&auto=format&fit=crop') center 60%/cover;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 22%);mask-image:linear-gradient(to bottom,transparent 0,#000 22%)}   /* 10-05 사용자: 소개 배너 사진 배경 — Unsplash 무료 라이선스(RK7sy3cECpo) */
 .onb .ob-dots{display:flex;justify-content:center;gap:6px;margin:16px 0}.onb .ob-dots i{width:6px;height:6px;border-radius:3px;background:var(--line)}.onb .ob-dots i.on{width:18px;background:var(--blue)}
 .onb .ob-ft{padding:0 0 calc(18px + env(safe-area-inset-bottom))}
 .ofl{display:flex;flex-direction:column;gap:10px;margin-top:20px}
