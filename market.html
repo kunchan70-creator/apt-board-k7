@@ -197,6 +197,7 @@ details.card[open]{box-shadow:0 8px 24px rgba(30,64,140,.10)}
 #splash .ic svg{filter:drop-shadow(0 12px 24px rgba(0,30,120,.35))}
 #splash .nm{font-size:2.9rem!important;font-weight:900!important}
 #splash .sl{font-size:1rem!important;opacity:.9!important}
+#splash.quick{background:var(--bg)!important;transition:opacity .15s}#splash.quick>*{display:none}
 #splash .dots{position:absolute;bottom:56px;display:flex;gap:6px}#splash .dots i{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.45)}#splash .dots i:first-child{width:18px;background:#fff}
 /* 하단 탭 */
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;justify-content:center;background:var(--surface);border-top:1px solid var(--line);padding:6px 0 calc(8px + env(safe-area-inset-bottom))}
@@ -313,6 +314,16 @@ body.hm{background:#fff!important}body.hm.tint{background:var(--bg)!important}
 .onb1 .ft .sub{display:block;text-align:center;margin-top:10px;font-size:.74rem}
 /* 하단 탭: 선택만 파랑 */
 .tabbar a.tb.on,.tabbar button.on{color:var(--blue)}
+
+/* ===== 10-05 v5 ===== */
+.it2.r{background:var(--pd-bg);color:var(--pd)}
+body.nodisc .disc{display:none}
+.hi1 h1{font-size:1.55rem;line-height:1.35;margin:8px 2px 4px;letter-spacing:-.03em}.hi1 p{margin:0 2px 16px;color:var(--ink2);font-size:.9rem}
+.wry{display:flex;flex-direction:column;gap:8px}
+.wry button{display:flex;align-items:center;gap:14px;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.wry button .t{flex:1;min-width:0}.wry button b{display:block;font-size:1rem}.wry button .t span{display:block;font-size:.8rem;color:var(--ink2);margin-top:2px}.wry button i{font-style:normal;color:var(--ink3)}
+.wry button:active{transform:scale(.98)}
+.why2{margin-top:10px;font:inherit;text-align:left;cursor:pointer;background:var(--surface)}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html" class="brand" style="display:flex;align-items:center;gap:8px;color:inherit;text-decoration:none"><svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg2)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="22.5" y="31.5" width="19" height="5.2" rx="2.6" fill="url(#lg2)"/><rect x="22.5" y="40.3" width="19" height="5.2" rx="2.6" fill="url(#lg2)"/></svg>집셈</a><a href="index.html" style="font-size:.88rem;font-weight:700;color:var(--ink2);text-decoration:none;padding:8px 4px">‹ 홈</a></div>
 
@@ -654,7 +665,8 @@ function phaseCard(q,P0,S,o){const cur=P0[P0.length-1],ck=(cur[1]>=50?'R':'L')+(
   line:`기록 = 2010년 이후 ${o.who||'이 시·도의 구·시'}가 같은 칸이었던 달의 1년 뒤 집값 · 다음 움직임은 예측할 수 없어요`};}
 function phaseScreen(){const K=KI();if(!K||!K.path||K.path.length<8)return null;return phaseCard('국면',K.path,K.astats||{},{all:1,marks:K.marks,n:12,seq:K.seq,cw:K.cw,px:K.px6||K.px,aid:'anm',short:RG});}
 function areaPhase(a){const K=(MD.ki||{})[a.s],P=areaPath(K,a.n);if(!P||P.length<8)return null;const d0=MD.d0,ym=i=>{const m=(+d0.slice(0,4))*12+(+d0.slice(4,6))-1+i;return `${Math.floor(m/12)}.${String(m%12+1).padStart(2,'0')}`;},px=(a.ix||[]).map((v,i)=>[ym(i),(i>=6&&v&&a.ix[i-6])?+((v/a.ix[i-6]-1)*100).toFixed(1):null]).filter(x=>x[1]!=null);   /* 동네 집값 6개월 변화(월, KB 시·군·구) — 선 색이 한발 늦지 않게 */
- return phaseCard('국면',P,K.astats||{},{n:12,who:`${a.s} 구·시`,seq:(K.aseq||{})[a.n],cw:K.cw,px:areaPx(K,a.n)||px,aid:'ana',short:a.n.split(' ').pop()});}
+ const lv=(a.ix||[]).map((v,i)=>[ym(i),v]).filter(x=>x[1]);   /* 10-05 v5: 우리 동네도 시·도와 같은 국면 카드(nowCard) */
+ return nowCard({lab:a.n.split(' ').pop(),who:`${a.s} 구·시가`,cwLab:a.s,path:P,astats:K.astats||{},seq:(K.aseq||{})[a.n],lv:lv,base:K.base,month:P[P.length-1][0],cw:K.cw,px:areaPx(K,a.n)||px,marks:null,aid:'ana'});}
 function analogScreen(){const K=KI(),A=(K||{}).analog||[];if(!A.length)return null;
  const W=320,H=150,L=34,R=70,T0=10,B=20,all=A.flatMap(a=>a.path||[]),mx=Math.max(4,...all),mn=Math.min(-4,...all),X=i=>L+i/12*(W-L-R),Y=v=>T0+(mx-v)/(mx-mn)*(H-T0-B);
  const tk=nice(mn,mx);
@@ -675,54 +687,75 @@ function sumScreen(T){const K=KI();if(!K)return null;const cur=K.path[K.path.len
  const sn=STG[Object.keys(STG).find(k=>STG[k][1]===QK(cur))];return {q:'요약',big:`${'①②③④'[Object.keys(STG).find(k=>STG[k][1]===QK(cur))-1]} ${sn[3]}${mv?' · '+MVW[mv]:''}`,c:'var(--ink)',v:`<div class="concl" style="line-height:1.75">${L.join('<br>')}</div>`,line:'2010년 이후 이 시·도 구·시들의 기록 · 흐름·부담·방향 = 아래 국면 지도'};}
 /* 10-05 사용자·ChatGPT 디자인 검토: 시장 화면 맨 위 = 지금 국면. 2×2(위=매수 흐름 강함, 오른쪽=구입 부담 높음)에 지금 위치 점 하나, 현재 칸만 파랑.
    예측처럼 보이지 않게 화살표·순서 연결선·국면별 빨강/초록·진행 막대 없음. 최근 흐름(횡보 등)은 국면과 따로 적는다 */
-function nowScreen(){const K=KI();if(!K||!K.path||!K.path.length)return null;const kp=K.path[K.path.length-1],ck=QK(kp),num=+Object.keys(STG).find(k=>STG[k][1]===ck),mv=mvOf(K.path),D=dwell(K.seq,num),T=MD.t[RG]||{};
- /* 10-05 ChatGPT 시안·설계: 국면 4색(상태 분류에만) · 2×2(실제 좌표 점) · 2열 요약 · 과거 같은 국면 · 지금 같이 볼 지표 3개(금융·수요·공급에서 하나씩) · 보조 근거 · 국면 이력 · 예측 아님 */
+/* 10-05 ChatGPT 시안·설계(v5): 국면 4색 · 2×2(실제 좌표 점 + 최근 12개월 경로) · 2열 요약 · 과거 같은 국면 · '과거 20년의 움직임에서 알 수 있는 것'(시계 방향 비율, 집값이 내린 달이 몰린 칸) · 지금 같이 볼 지표 · 보조 근거 · 국면 이력 · 움직임 지도(접힘) · 예측 아님
+   시·도 탭(nowScreen)과 우리 동네 탭(areaPhase)이 같은 카드(nowCard)를 쓴다 */
+function nowCard(o){const P0=o.path;if(!P0||!P0.length)return null;const kp=P0[P0.length-1],ck=QK(kp),num=+Object.keys(STG).find(k=>STG[k][1]===ck),mv=mvOf(P0),D=dwell(o.seq,num),AS=o.astats||{};
  const PC={1:['#16835A','#EAF7F0'],2:['#C97900','#FFF4DE'],3:['#C74343','#FDECEC'],4:['#536273','#EEF2F7']},nm=['상승기','고점권','조정기','바닥권'],pcN=PC[num][0];
  const W=300,H=212,x0=44,y0=6,w=250,h=176,X=v=>x0+Math.max(4,Math.min(96,v))/100*w,Y=v=>y0+(1-Math.max(4,Math.min(96,v))/100)*h,hw=w/2,hh=h/2;
  const Q={1:[0,0],2:[1,0],3:[1,1],4:[0,1]};
  const cells=[1,2,3,4].map(k=>{const [cx,cy]=Q[k],on=k===num,x=x0+cx*hw,y=y0+cy*hh;return `<rect x="${x+2}" y="${y+2}" width="${hw-4}" height="${hh-4}" rx="12" fill="${PC[k][1]}" ${on?`stroke="${PC[k][0]}" stroke-width="1.6"`:'opacity=".75"'}/>
   <text x="${x+14}" y="${y+28}" font-size="13.5" font-weight="700" fill="${PC[k][0]}">${'①②③④'[k-1]} ${nm[k-1]}</text>`;}).join('');
- const px=X(kp[1]),py=Y(kp[2]);
- const svg=`<svg viewBox="0 0 ${W} ${H+22}" style="width:100%;max-width:380px;display:block;margin:10px auto 0" role="img" aria-label="지금 ${RG} 시장: ${nm[num-1]}">${cells}
+ const px=X(kp[1]),py=Y(kp[2]),TR=P0.slice(-12);
+ const trail=TR.length>1?`<path d="${TR.map((p,i)=>(i?'L':'M')+X(p[1]).toFixed(1)+' '+Y(p[2]).toFixed(1)).join('')}" fill="none" stroke="var(--ink2)" stroke-opacity=".45" stroke-width="1.6" stroke-dasharray="3 3" stroke-linejoin="round"/>${TR.slice(0,-1).map((p,i)=>`<circle cx="${X(p[1]).toFixed(1)}" cy="${Y(p[2]).toFixed(1)}" r="2.4" fill="var(--ink2)" opacity="${(.2+.6*i/TR.length).toFixed(2)}"/>`).join('')}
+  <text x="${X(TR[0][1]).toFixed(1)}" y="${(Y(TR[0][2])+15).toFixed(1)}" font-size="9.5" fill="var(--ink2)" text-anchor="middle">1년 전</text>`:'';
+ const svg=`<svg viewBox="0 0 ${W} ${H+22}" style="width:100%;max-width:380px;display:block;margin:10px auto 0" role="img" aria-label="지금 ${o.lab} 시장: ${nm[num-1]}">${cells}${trail}
   <text x="12" y="${y0+hh}" font-size="11" font-weight="600" fill="var(--ink2)" text-anchor="middle" transform="rotate(-90 12 ${y0+hh})">매수 흐름</text>
   <text x="${x0-6}" y="${y0+12}" font-size="10" fill="var(--ink3)" text-anchor="end">강함</text><text x="${x0-6}" y="${y0+h-4}" font-size="10" fill="var(--ink3)" text-anchor="end">약함</text>
   <text x="${x0}" y="${H+14}" font-size="11" fill="var(--ink2)">구입 부담 낮음</text><text x="${x0+w}" y="${H+14}" font-size="11" fill="var(--ink2)" text-anchor="end">구입 부담 높음</text>
   <circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="10" fill="#fff" stroke="${pcN}" stroke-opacity=".35" stroke-width="5"/><circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="5" fill="${pcN}"/>
-  <text x="${(px+(px>x0+w-50?-12:12)).toFixed(1)}" y="${(py-12).toFixed(1)}" font-size="10.5" font-weight="800" fill="var(--ink)" text-anchor="${px>x0+w-50?'end':'start'}">${K.month||''}</text></svg>`;
+  <text x="${px.toFixed(1)}" y="${(py+(py>y0+h-30?-16:24)).toFixed(1)}" font-size="10.5" font-weight="800" fill="var(--ink)" text-anchor="${px>x0+w-40?'end':px<x0+40?'start':'middle'}">지금${o.month?' '+o.month:''}</text></svg>
+  <div class="sub" style="font-size:.72rem;text-align:center;margin-top:2px">점선 = 최근 12개월 동안 지나온 길</div>`;
  const box=(a,b,c)=>`<div style="flex:1;padding:12px 14px;border-radius:14px;background:var(--surface2)"><div style="font-size:.78rem;color:var(--ink2)">${a}</div><b style="display:block;margin-top:2px;font-size:1.15rem${c?';color:'+c:''}">${b}</b></div>`;
- const rec=(K.astats||{})[ck], up=num<=2, sgOn=mv===(up?'-':'+'), sgN=up?'꺾임 신호':'반등 신호';
+ const rec=AS[ck], up=num<=2, sgOn=mv===(up?'-':'+'), sgN=up?'꺾임 신호':'반등 신호';
  const sum=`<div style="display:flex;gap:8px;margin-top:14px">${box('같은 국면',D&&D.cur!=null?D.cur+'개월째':'-')}${box('과거 최장',D&&D.max!=null?D.max+'개월':'-')}</div>`
   +(rec?`<div style="display:flex;gap:8px;margin-top:8px">${box(`과거 ${nm[num-1]} 1년 뒤 평균`,pc(rec.avg),rec.avg>=0?'var(--green)':'var(--red)')}${box('하락 비율',rec.dn+'%')}</div>
-   <div class="sub" style="font-size:.74rem;margin:6px 2px 0">2010년 이후 ${RG}의 구·시가 ${nm[num-1]}이었던 달 기준 · 전체 평균 ${pc(K.base)}</div>`:'');
- /* 지금 같이 볼 지표: 금리·대출 / 수요·심리 / 공급·거래에서 하나씩 — 이 국면에서 방향이 검증된(dir≠0) 것 우선, 그중 과거 평균과의 차이가 큰 것 */
- const G=K.groups||[],pick=re=>{const g=G.find(x=>re.test(x.nm));if(!g)return null;const its=g.items.filter(x=>x.zavg!=null);const a=its.filter(x=>x.dir);return (a.length?a:its).sort((p,q)=>Math.abs(q.zavg-K.base)-Math.abs(p.zavg-K.base))[0]||null;};
- const pk=[pick(/금리|대출/),pick(/수요|심리/),pick(/공급|거래/)].filter(Boolean);
- const zl=x=>x.zone==='hi'?'높음':x.zone==='lo'?'낮음':'보통';
- const ind=pk.length?`<div style="margin-top:20px"><div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:.98rem">지금 같이 볼 지표</b><span class="sub" style="font-size:.74rem">지표 ${K.n||28}개 중 3개</span></div>
+   <div class="sub" style="font-size:.74rem;margin:6px 2px 0">2010년 이후 ${o.who} ${nm[num-1]}이었던 달 기준${o.base!=null?' · 전체 평균 '+pc(o.base):''}</div>`:'');
+ /* 과거 20년의 움직임에서 알 수 있는 것: ① 시계 방향 순서 비율(cw) ② 집값이 내린 달(직전 6개월 하락)이 어느 칸에 있었나 */
+ let mvH='';{const pxm=new Map(o.px||[]),SM=P0.map((p,i)=>{const w=P0.slice(Math.max(0,i-5),i+1);return [p[0],w.reduce((a,x)=>a+x[1],0)/w.length,w.reduce((a,x)=>a+x[2],0)/w.length];});
+  const qd={};let nd=0;SM.forEach(p=>{const v=pxm.get(p[0]);if(v==null||v>=0)return;nd++;const q=(p[1]>=50?'R':'L')+(p[2]>=50?'T':'B');qd[q]=(qd[q]||0)+1;});
+  const r34=nd?Math.round(((qd.RB||0)+(qd.LB||0))/nd*100):null,r3=nd?Math.round((qd.RB||0)/nd*100):null;
+  const donut=(v,c,lab)=>{const R0=26,C=2*Math.PI*R0;return `<svg viewBox="0 0 64 64" width="64" height="64" aria-hidden="true"><circle cx="32" cy="32" r="${R0}" fill="none" stroke="var(--line2)" stroke-width="8"/><circle cx="32" cy="32" r="${R0}" fill="none" stroke="${c}" stroke-width="8" stroke-dasharray="${(C*v/100).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 32 32)" stroke-linecap="round"/><text x="32" y="37" text-anchor="middle" font-size="14" font-weight="800" fill="var(--ink)">${lab}</text></svg>`;};
+  const other=o.cwOther?`<span style="display:block;color:var(--ink3);margin-top:2px">${o.cwOther}</span>`:'';
+  if(o.cw!=null||r34!=null)mvH=`<div style="margin-top:22px"><b style="font-size:.98rem">과거 움직임에서 알 수 있는 것</b>
+   <div style="display:flex;gap:8px;margin-top:10px">${o.cw!=null?`<div style="flex:1;padding:12px;border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;gap:8px">${donut(o.cw,'var(--ink2)',o.cw+'%')}<span style="font-size:.8rem;line-height:1.45;color:var(--ink2)">2010년 이후 ${o.cwLab||o.lab}은 <b style="color:var(--ink)">① → ② → ③ → ④</b> 순서로 ${o.cw}% 움직였어요${other}</span></div>`:''}
+   ${r34!=null?`<div style="flex:1;padding:12px;border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;gap:8px">${donut(r34,'#C74343',r34+'%')}<span style="font-size:.8rem;line-height:1.45;color:var(--ink2)">집값이 내린 ${nd}개월 중 <b style="color:#C74343">${r34}%</b>가 ③ 조정기·④ 바닥권이었어요<span style="display:block;color:var(--ink3);margin-top:2px">③ 조정기만 ${r3}% · ①②에선 드물었어요</span></span></div>`:''}</div>
+   <div class="sub" style="font-size:.72rem;margin:6px 2px 0">내린 달 = 직전 6개월 집값이 내린 달 · 지나간 기록이며 다음 움직임을 뜻하지 않아요</div></div>`;}
+ /* 지금 같이 볼 지표(시·도만) */
+ const G=o.groups||[],pick=re=>{const g=G.find(x=>re.test(x.nm));if(!g)return null;const its=g.items.filter(x=>x.zavg!=null);const a=its.filter(x=>x.dir);return (a.length?a:its).sort((p,q)=>Math.abs(q.zavg-(o.base||0))-Math.abs(p.zavg-(o.base||0)))[0]||null;};
+ const pk=[pick(/금리|대출/),pick(/수요|심리/),pick(/공급|거래/)].filter(Boolean),zl=x=>x.zone==='hi'?'높음':x.zone==='lo'?'낮음':'보통';
+ const ind=pk.length?`<div style="margin-top:22px"><div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:.98rem">지금 같이 볼 지표</b><span class="sub" style="font-size:.74rem">지표 ${o.n||28}개 중 3개</span></div>
   ${pk.map(x=>{const p=Math.max(2,Math.min(98,x.pct||50));return `<div style="display:grid;grid-template-columns:1fr 92px auto;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line2)">
    <span style="min-width:0"><b style="display:block;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x.nm}</b><span style="font-size:.76rem;color:var(--ink2)">지금 ${zl(x)} · 상위 ${100-p}%</span></span>
    <span style="position:relative;height:8px;border-radius:4px;background:var(--line2)"><i style="position:absolute;left:${p}%;top:-3px;width:10px;height:14px;margin-left:-5px;border-radius:4px;background:var(--ink)"></i></span>
    <span style="text-align:right;font-size:.74rem;color:var(--ink2);line-height:1.3">과거 평균<br><b style="font-size:.9rem;color:${x.zavg>=0?'var(--green)':'var(--red)'}">${pc(x.zavg)}</b></span></div>`;}).join('')}
   <div class="sub" style="font-size:.72rem;margin-top:6px">막대 = 2008년 이후 이 지표의 범위에서 지금 위치 · 과거 평균 = 지금과 같은 수준이었던 달의 1년 뒤 집값</div></div>`:'';
- const P=(MD.p||{})[RG==='인천'?'인천':'경기'],sm=(i,t,v)=>`<div style="flex:1;min-width:0;padding:10px;border:1px solid var(--line);border-radius:12px"><div style="font-size:.72rem;color:var(--ink2)">${t}</div><b style="display:block;font-size:.84rem;margin-top:2px;word-break:keep-all">${v}</b></div>`;
- const aux=`<div style="display:flex;gap:6px;margin-top:14px">${sm('',sgN,sgOn?'켜짐':'없음')}${T.streak!=null?sm('','주간 시세',T.streak>0?T.streak+'주 연속 상승':T.streak<0?(-T.streak)+'주 연속 하락':'보합'):''}${P&&P.lagm!=null&&RG==='서울'?sm('','서울 → '+P.o,P.lagm>0?'시차 약 '+P.lagm+'개월':'거의 동시'):mv?sm('','최근 흐름',{'+':'상승','-':'하락','=':'횡보'}[mv]):''}</div>`;
- /* 국면 이력: 띠(월별 국면, 국면 4색) + 집값 지수 선 + 지금 세로선 */
- let hist='';const sq=K.seq&&K.seq[1];if(sq&&K.lv){const ys=K.seq[0],n=sq.length,m0=(+ys.slice(0,4))*12+(+ys.slice(5))-1,ym=i=>{const m=m0+i;return `${Math.floor(m/12)}.${String(m%12+1).padStart(2,'0')}`;};
-  const HC={1:'#7CC8A3',2:'#F2B544',3:'#E58A8A',4:'#B9C3CF'},CW=320,L=4,R=4,XX=i=>L+i/(n-1)*(CW-L-R),lvm=new Map(K.lv),lv0=Array.from({length:n},(_,i)=>lvm.get(ym(i)));
+ const sm=(t,v)=>`<div style="flex:1;min-width:0;padding:10px;border:1px solid var(--line);border-radius:12px"><div style="font-size:.72rem;color:var(--ink2)">${t}</div><b style="display:block;font-size:.84rem;margin-top:2px;word-break:keep-all">${v}</b></div>`;
+ const aux=`<div style="display:flex;gap:6px;margin-top:14px">${sm(sgN,sgOn?'켜짐':'없음')}${o.streak!=null?sm('주간 시세',o.streak>0?o.streak+'주 연속 상승':o.streak<0?(-o.streak)+'주 연속 하락':'보합'):''}${o.lag?sm(o.lag[0],o.lag[1]):mv?sm('최근 흐름',{'+':'상승','-':'하락','=':'횡보'}[mv]):''}</div>`;
+ /* 국면 이력: 띠(월별 국면, 국면 4색) + 집값 지수 선 */
+ let hist='';const sq=o.seq&&o.seq[1];if(sq&&o.lv&&o.lv.length){const ys=o.seq[0],n=sq.length,m0=(+ys.slice(0,4))*12+(+ys.slice(5))-1,ym=i=>{const m=m0+i;return `${Math.floor(m/12)}.${String(m%12+1).padStart(2,'0')}`;};
+  const HC={1:'#7CC8A3',2:'#F2B544',3:'#E58A8A',4:'#B9C3CF'},CW=320,L=4,R=4,XX=i=>L+i/(n-1)*(CW-L-R),lvm=new Map(o.lv),lv0=Array.from({length:n},(_,i)=>lvm.get(ym(i)));
   const lv=[];lv0.forEach((v,i)=>lv.push(v!=null?v:(i?lv[i-1]:null)));
   let bd='',a0=0;for(let i=1;i<=n;i++){if(i===n||sq[i]!==sq[a0]){const x2=i===n?CW-R:XX(i);bd+=`<rect x="${XX(a0).toFixed(1)}" y="0" width="${Math.max(1,x2-XX(a0)).toFixed(1)}" height="14" fill="${HC[sq[a0]]}"/>`;a0=i;}}
-  const vv=lv.filter(v=>v!=null),mn=Math.min(...vv),mx=Math.max(...vv),LY=v=>26+(1-(v-mn)/(mx-mn||1))*64,pts=lv.map((v,i)=>v==null?null:[XX(i),LY(v)]).filter(Boolean);
+  const vv=lv.filter(v=>v!=null);if(vv.length>8){const mn=Math.min(...vv),mx=Math.max(...vv),LY=v=>26+(1-(v-mn)/(mx-mn||1))*64,pts=lv.map((v,i)=>v==null?null:[XX(i),LY(v)]).filter(Boolean);
   const runs=[];{let a=0;for(let i=1;i<=n;i++){if(i===n||sq[i]!==sq[a]){runs.push([sq[a],i-a]);a=i;}}}
   const bg=runs.filter(r=>r[1]>=3),chg=bg.reduce((c,r,i)=>c+(i&&r[0]!==bg[i-1][0]?1:0),0),yl=[];for(let i=0;i<n;i++){const m=m0+i;if(m%12===0&&Math.floor(m/12)%4===2)yl.push(`<text x="${XX(i).toFixed(1)}" y="110" font-size="10" text-anchor="middle" fill="var(--ink3)">${Math.floor(m/12)}</text>`);}
   const lp=pts[pts.length-1];
-  if(lp)hist=`<div style="margin-top:22px;padding:16px 14px 14px;border:1px solid var(--line);border-radius:16px"><div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:.98rem">2010년 이후 국면 이력</b><span class="sub" style="font-size:.74rem">큰 국면 전환 ${chg}번</span></div>
+  hist=`<div style="margin-top:22px;padding:16px 14px 14px;border:1px solid var(--line);border-radius:16px"><div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:.98rem">2010년 이후 국면 이력</b><span class="sub" style="font-size:.74rem">큰 국면 전환 ${chg}번</span></div>
    <svg viewBox="0 0 ${CW} 116" style="width:100%;display:block;margin-top:10px;overflow:visible"><g>${bd}</g>
     <path d="${pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join('')}" fill="none" stroke="var(--ink2)" stroke-width="1.6" stroke-linejoin="round"/>
     <circle cx="${lp[0].toFixed(1)}" cy="${lp[1].toFixed(1)}" r="4" fill="var(--blue)"/><text x="${L}" y="38" font-size="10" fill="var(--ink3)">집값 지수</text>${yl.join('')}</svg>
-   <div style="display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:6px;font-size:.74rem;color:var(--ink2)">${[1,2,3,4].map(k=>`<span><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${HC[k]};margin-right:4px;vertical-align:-1px"></i>${nm[k-1]}</span>`).join('')}</div></div>`;}
- return {q:`지금 ${RG} 시장`,big:`${'①②③④'[num-1]} ${nm[num-1]}`,c:pcN,sub:STG[num][0].replace('흐름 강','매수 흐름 강함').replace('흐름 약','매수 흐름 약함').replace('부담 높음','구입 부담 높음').replace('부담 낮음','구입 부담 낮음'),
-  v:svg+sum+ind+aux+hist,
+   <div style="display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:6px;font-size:.74rem;color:var(--ink2)">${[1,2,3,4].map(k=>`<span><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${HC[k]};margin-right:4px;vertical-align:-1px"></i>${nm[k-1]}</span>`).join('')}</div></div>`;}}
+ /* 움직임 지도(2010년 이후 매달 위치를 이은 선, 재생) — 펼쳐서 보기 */
+ const more=o.aid?`<details style="margin-top:14px;border:1px solid var(--line);border-radius:16px;padding:0 14px" ontoggle="if(this.open)anShow('${o.aid}')"><summary style="cursor:pointer;padding:14px 0;font-size:.92rem;font-weight:700">과거 움직임 자세히 보기</summary>
+  <div class="sub" style="font-size:.76rem;line-height:1.6;margin:0 0 4px">점 = 그달의 시장 위치 · 선 색 = 그때 직전 6개월 집값(초록 상승 · 빨강 하락) · 재생을 누르면 2010년부터 순서대로 그려져요</div>
+  ${anBlock(o.aid,P0,o.px,o.marks)}</details>`:'';
+ return {q:`지금 ${o.lab} 시장`,big:`${'①②③④'[num-1]} ${nm[num-1]}${D&&D.cur!=null?` <span style="font-size:.6em;color:var(--ink2);font-weight:700">${D.cur}개월째</span>`:''}`,c:pcN,sub:STG[num][0].replace('흐름 강','매수 흐름 강함').replace('흐름 약','매수 흐름 약함').replace('부담 높음','구입 부담 높음').replace('부담 낮음','구입 부담 낮음'),
+  v:svg+sum+mvH+ind+aux+hist+more,
   line:'과거 기록을 보여 주는 화면이며, 다음 움직임을 예측하지 않습니다'};}
+function nowScreen(){const K=KI();if(!K||!K.path)return null;const T=MD.t[RG]||{},P=(MD.p||{})[RG==='인천'?'인천':'경기'];
+ const cwO=RG==='서울'?['경기','인천'].filter(r=>(MD.ki||{})[r]).map(r=>`${r} ${(MD.ki[r]||{}).cw}%`).join(' · '):'';
+ return nowCard({lab:RG,who:`${RG}의 구·시가`,path:K.path,astats:K.astats,seq:K.seq,lv:K.lv,base:K.base,month:K.month,groups:K.groups,n:K.n,cw:K.cw,cwOther:cwO,px:K.px6||K.px,marks:K.marks,aid:'anm',streak:T.streak,
+  lag:P&&P.lagm!=null&&RG==='서울'?['서울 → '+P.o,P.lagm>0?'시차 약 '+P.lagm+'개월':'거의 동시']:null});}
 function tScreens(){const a=tScreens0().filter(x=>x&&!['과거 유사 시점','시장 신호','요약','입주 물량','매물 추이'].includes(x.q)&&!/^서울·/.test(x.q)),T=MD.t[RG];
  return [nowScreen(),a[0],kiScreen(),...a.slice(1)].filter(Boolean);}   /* 10-05: 요약(국면 반복)·국면(네 칸 순환+궤적 지도)은 nowScreen 하나로 합침 */   /* 09-30 사용자: 비슷했던 과거는 전부 안 비슷하고 방향도 갈려 의미 없음 → 뺌 */
 function tScreens0(){const T=MD.t[RG],o=T.o26||{n:0},P=MD.p[RG==='인천'?'인천':'경기'],L=T.lst,S=T.sup,V=MD.val,col=LC(T.lab);

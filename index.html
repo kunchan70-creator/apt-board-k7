@@ -128,6 +128,7 @@ details.card[open]{box-shadow:0 8px 24px rgba(30,64,140,.10)}
 #splash .ic svg{filter:drop-shadow(0 12px 24px rgba(0,30,120,.35))}
 #splash .nm{font-size:2.9rem!important;font-weight:900!important}
 #splash .sl{font-size:1rem!important;opacity:.9!important}
+#splash.quick{background:var(--bg)!important;transition:opacity .15s}#splash.quick>*{display:none}
 #splash .dots{position:absolute;bottom:56px;display:flex;gap:6px}#splash .dots i{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.45)}#splash .dots i:first-child{width:18px;background:#fff}
 /* 하단 탭 */
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;justify-content:center;background:var(--surface);border-top:1px solid var(--line);padding:6px 0 calc(8px + env(safe-area-inset-bottom))}
@@ -244,6 +245,16 @@ body.hm{background:#fff!important}body.hm.tint{background:var(--bg)!important}
 .onb1 .ft .sub{display:block;text-align:center;margin-top:10px;font-size:.74rem}
 /* 하단 탭: 선택만 파랑 */
 .tabbar a.tb.on,.tabbar button.on{color:var(--blue)}
+
+/* ===== 10-05 v5 ===== */
+.it2.r{background:var(--pd-bg);color:var(--pd)}
+body.nodisc .disc{display:none}
+.hi1 h1{font-size:1.55rem;line-height:1.35;margin:8px 2px 4px;letter-spacing:-.03em}.hi1 p{margin:0 2px 16px;color:var(--ink2);font-size:.9rem}
+.wry{display:flex;flex-direction:column;gap:8px}
+.wry button{display:flex;align-items:center;gap:14px;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.wry button .t{flex:1;min-width:0}.wry button b{display:block;font-size:1rem}.wry button .t span{display:block;font-size:.8rem;color:var(--ink2);margin-top:2px}.wry button i{font-style:normal;color:var(--ink3)}
+.wry button:active{transform:scale(.98)}
+.why2{margin-top:10px;font:inherit;text-align:left;cursor:pointer;background:var(--surface)}
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html" class="brand" style="display:flex;align-items:center;gap:8px;color:inherit;text-decoration:none"><svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg7" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg7)"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="22.5" y="31.5" width="19" height="5.2" rx="2.6" fill="url(#lg7)"/><rect x="22.5" y="40.3" width="19" height="5.2" rx="2.6" fill="url(#lg7)"/></svg>집셈</a></div>
 
@@ -494,6 +505,7 @@ details.card[open]{box-shadow:0 8px 24px rgba(30,64,140,.10)}
 #splash .ic svg{filter:drop-shadow(0 12px 24px rgba(0,30,120,.35))}
 #splash .nm{font-size:2.9rem!important;font-weight:900!important}
 #splash .sl{font-size:1rem!important;opacity:.9!important}
+#splash.quick{background:var(--bg)!important;transition:opacity .15s}#splash.quick>*{display:none}
 #splash .dots{position:absolute;bottom:56px;display:flex;gap:6px}#splash .dots i{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.45)}#splash .dots i:first-child{width:18px;background:#fff}
 /* 하단 탭 */
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;justify-content:center;background:var(--surface);border-top:1px solid var(--line);padding:6px 0 calc(8px + env(safe-area-inset-bottom))}
@@ -610,8 +622,18 @@ body.hm{background:#fff!important}body.hm.tint{background:var(--bg)!important}
 .onb1 .ft .sub{display:block;text-align:center;margin-top:10px;font-size:.74rem}
 /* 하단 탭: 선택만 파랑 */
 .tabbar a.tb.on,.tabbar button.on{color:var(--blue)}
+
+/* ===== 10-05 v5 ===== */
+.it2.r{background:var(--pd-bg);color:var(--pd)}
+body.nodisc .disc{display:none}
+.hi1 h1{font-size:1.55rem;line-height:1.35;margin:8px 2px 4px;letter-spacing:-.03em}.hi1 p{margin:0 2px 16px;color:var(--ink2);font-size:.9rem}
+.wry{display:flex;flex-direction:column;gap:8px}
+.wry button{display:flex;align-items:center;gap:14px;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.wry button .t{flex:1;min-width:0}.wry button b{display:block;font-size:1rem}.wry button .t span{display:block;font-size:.8rem;color:var(--ink2);margin-top:2px}.wry button i{font-style:normal;color:var(--ink3)}
+.wry button:active{transform:scale(.98)}
+.why2{margin-top:10px;font:inherit;text-align:left;cursor:pointer;background:var(--surface)}
 </style>
-<div id="splash" onclick="endSplash()"><span class="ic"><svg width="92" height="92" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="#ffffff"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#2B6BF3" stroke="#2B6BF3" stroke-width="4" stroke-linejoin="round"/><rect x="22.5" y="31.5" width="19" height="5.2" rx="2.6" fill="#ffffff"/><rect x="22.5" y="40.3" width="19" height="5.2" rx="2.6" fill="#ffffff"/></svg></span><div class="nm">집셈</div><div class="sl">데이터로 더 똑똑한 집 찾기</div><div class="dots"><i></i><i></i><i></i></div></div>
+<div id="splash" onclick="endSplash()"><span class="ic"><svg width="92" height="92" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="#ffffff"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#2B6BF3" stroke="#2B6BF3" stroke-width="4" stroke-linejoin="round"/><rect x="22.5" y="31.5" width="19" height="5.2" rx="2.6" fill="#ffffff"/><rect x="22.5" y="40.3" width="19" height="5.2" rx="2.6" fill="#ffffff"/></svg></span><div class="nm">집셈</div><div class="sl">데이터로 더 똑똑한 집 찾기</div></div><script>try{if(sessionStorage.getItem('jsSp'))document.getElementById('splash').classList.add('quick');}catch(e){}</script>
 <div class="card stage" id="app"></div>
 
 <script>
@@ -1182,7 +1204,7 @@ function story(i){
  stCount();
  const w=$('#stw'); let x0=null; w.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;},{passive:true}); w.addEventListener('touchend',e=>{if(x0==null)return;const d=e.changedTouches[0].clientX-x0;if(Math.abs(d)>60)story(SI+(d<0?1:-1));x0=null;});}
 // ---------------- 메인 화면(09-25 사용자: 기능이 여러 개 — 앱처럼 아이콘) ----------------
-const APPS=[['swap','갈아타기',"move()"],['bag','직장 근처 찾기',"jobv()"],['podium','입지 점수 순위',"board('obj')"],['up','5년 뒤 시세 순위',"board('up')"],
+const APPS=[['swap','갈아타기',"move()"],['bag','출퇴근 편한 집 찾기',"jobv()"],['podium','입지 점수 순위',"board('obj')"],['up','5년 뒤 시세 순위',"board('up')"],
  ['guard','하락기 방어 순위',"board('def')"],['vs','두 단지 비교',"cmp()"],['map','지도로 보기',"location.href='map.html'"],
  ['crane','분담금 순위',"board('rb')"],['home','우리 단지 분석',"ownFind()"]];   // 09-29 사용자: 이름은 기능(무엇을 해 주나)이 읽히게   // 09-25 사용자: 시장·믿을 수 있나·산출 방법은 '기능'이 아니라 따로 자리
 function hub(){   // 09-25 사용자: 기능이 많아 다 별것 아닌 듯 보임 -> 대표 기능 하나를 크게, 나머지는 작게
@@ -2892,7 +2914,7 @@ function jvw(q){return new Promise(res=>{const key='4B38CCC2-121A-444D-B11B-E6F3
 function cnPlacePick(lab,la,lo){CN.a[CSTEP[CN.k].steps[CN.i].id]={lab,lat:la,lon:lo};$('#cnq').value=lab;$('#cnr').innerHTML='';cnShow();}
 function jres(){TT.forEach(clearTimeout);TT=[];window.scrollTo(0,0);shClose();   // 09-29 사용자: 토스식 — 버튼 줄 3겹 → 한 줄 필터(누르면 바텀시트), 결과 카드(row)는 그대로
  const PS=JB.P.slice(0,JB.n);
- app.innerHTML=HOME+`<div class="hq" style="margin:0">직장 근처 찾기</div><div class="bsub">통근 시간 조건에 맞는 단지<button class="ibi" onclick="jInfo()" aria-label="통근 시간 기준">ⓘ</button></div>
+ app.innerHTML=HOME+`<div class="hq" style="margin:0">출퇴근 편한 집 찾기</div><div class="bsub">통근 시간 조건에 맞는 단지<button class="ibi" onclick="jInfo()" aria-label="통근 시간 기준">ⓘ</button></div>
  <div class="frs" style="margin-bottom:0">${PS.map((P,k)=>FR(jwho(k)+'직장',P.lab+' · '+P.max+'분 이내',"JB.done=false;jsave();consult('commute')")).join('')}</div>
  <div id="jlist" style="margin-top:4px"></div>
  <p class="sub" style="margin:18px 2px 0;font-size:.72rem;text-align:center">참고용 산출치 · 투자 권유 아님</p>`;
@@ -2948,7 +2970,7 @@ function jmap(btn){if(btn){btn.disabled=true;btn.textContent='범위 셈하는 �
  setTimeout(()=>{Promise.all([jbload(),JCAR2&&JB.P.slice(0,JB.n).some(P=>P.mode==='car')?jcload():0]).then(()=>{const PS=JB.P.slice(0,JB.n).map(P=>Object.assign({},P,{mode:P.mode==='car'&&JCAR?'car':'pt'})),G=jgridBox(),M=PS.map(P=>jmask(P,G));
   const it=[],seen=new Set();JL.forEach(({c,r,ts})=>{if(it.length>=30||!c.no||seen.has(c.no))return;seen.add(c.no);const F=r.F||fin(r);it.push([c.no,it.length+1,ab(F.p5),r.b,'통근 '+ts.map((t,k)=>(JB.n===2?JWHO[k]+' ':'')+jband(t)).join(' · ')]);});
   const cond=PS.map((P,k)=>(JB.n===2?JWHO[k]+' ':'')+P.lab.split(' · ')[0]+' '+P.max+'분').join(' · ');
-  try{localStorage.setItem('jipsem.rank',JSON.stringify({at:Date.now(),title:'직장 근처 찾기 · 통근 범위',cond,items:it,
+  try{localStorage.setItem('jipsem.rank',JSON.stringify({at:Date.now(),title:'출퇴근 편한 집 찾기 · 통근 범위',cond,items:it,
    area:{la0:G.la0,la1:G.la1,lo0:G.lo0,lo1:G.lo1,nx:G.nx,ny:G.ny,m:M.map(x=>x?x.m:null),s:M.map(x=>x?x.s:null),who:PS.map((P,k)=>JB.n===2?JWHO[k]:'나'),max:PS.map(P=>P.max),car:PS.map(P=>P.mode==='car'&&!JCAR2),cm:PS.map(P=>P.mode==='car')},
    jobs:PS.map((P,k)=>[P.lat,P.lon,(JB.n===2?JWHO[k]+' · ':'')+P.lab.split(' · ')[0]])}));}catch(e){}
   location.href='map.html#rank';}).catch(()=>{if(btn){btn.disabled=false;btn.textContent='지도로 보기';}});},30);}
@@ -3087,6 +3109,8 @@ function endSplash(){const sp=$('#splash'); if(!sp||sp.classList.contains('out')
 
 // ===== 10-05 v4: ChatGPT 시안·설계 — 탭 = 홈·단지찾기·분석·시장·메뉴, 홈은 '시작'만(기능 목록은 분석 탭), 소개 1장, 파랑 최소화 =====
 document.body.classList.add('hm');
+try{sessionStorage.setItem('jsSp','1');}catch(e){}
+if(document.getElementById('splash')&&document.getElementById('splash').classList.contains('quick')){clearTimeout(SPL);setTimeout(endSplash,0);}
 const TB4={home:'<path d="M3.5 11 12 4l8.5 7"/><path d="M6 9.5V20h4.5v-5.5h3V20H18V9.5"/>',find:'<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>',anal:'<path d="M5 20V12M12 20V5M19 20v-9"/>',mkt:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',menu:'<path d="M4 7h16M4 12h16M4 17h16"/>'};
 const PHC={1:['상승기','var(--pu)','var(--pu-bg)'],2:['고점권','var(--pp)','var(--pp-bg)'],3:['조정기','var(--pd)','var(--pd-bg)'],4:['바닥권','var(--pb)','var(--pb-bg)']};
 function tabBar(){if(document.querySelector('.tabbar'))return;
@@ -3117,7 +3141,7 @@ let FQ='';
 function rqs(){try{return JSON.parse(localStorage.getItem('jsRQ')||'[]');}catch(e){return [];}}
 function rqAdd(q){q=String(q||'').trim();if(q.length<2)return;let a=rqs().filter(x=>x!==q);a.unshift(q);try{localStorage.setItem('jsRQ',JSON.stringify(a.slice(0,6)));}catch(e){}}
 function findTab(){
- TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); topIntro(); tbOn('find'); tint(1);
+ TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); topIntro(); tbOn('find'); tint(1); document.body.classList.add('nodisc');
  app.innerHTML=`<div class="pg"><h1>단지 찾기</h1><p class="lead">서울·경기·인천 아파트를 이름·지역·주소로 찾아요</p>
   <label class="srch2">${svgI('search',20)}<input id="fq" type="search" placeholder="예: 광명 유플래닛 · 봉천동 · 사직로8길 34" value="${FQ.split(String.fromCharCode(34)).join('')}" oninput="FQ=this.value;fList()" autocomplete="off" enterkeyhint="search"></label>
   <div id="fres"></div></div>`;
@@ -3133,12 +3157,12 @@ function fList(){const el=$('#fres'); if(!el)return; const q=nz(FQ);
 function resRow(k,c){const r=bestRow(c)||c.rows[0];return `<div class="res"><button class="hm" onclick="rqAdd(FQ);rcard('${k}','own')"><b>${c.n}</b><span>${c.gu}${c.y?' · '+c.y+'년':''} · ${r.b}㎡ ${eok(r.p)}억</span></button><span class="sc">입지<br><b>${c.sc}</b></span>${favBtn(k)}</div>`;}
 // 분석: 의사결정 도구 모음
 function anaTab(){
- TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); topIntro(); tbOn('anal'); tint(1);
+ TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); topIntro(); tbOn('anal'); tint(1); document.body.classList.add('nodisc');
  const sv=hasSaved(), row=(n,c,t,d,go)=>`<button onclick="${go}">${itile(n,c,40)}<span class="t"><b>${t}</b><span>${d}</span></span><i>›</i></button>`;
  app.innerHTML=`<div class="pg"><h1>분석</h1><p class="lead">과거 20년 실거래로 셈한 도구 모음</p>
   <div class="grp">매수 결정</div><div class="lst">${row('calc','g','매수 분석',sv?'저장한 조건의 5년 순이익 순위':'내 자본·대출·세금으로 5년 순이익 순위',sv?'result()':'firstFlow(0)')}${row('vs','','두 단지 비교','값 차이를 이유별로 나눠 비교','cmp()')}</div>
   <div class="grp">순위</div><div class="lst">${row('up','','5년 뒤 시세 순위','보통일 때 5년 상승률 순',"board('up')")}${row('pin','p','입지 점수 순위','역·동네 시세·학군으로 매긴 점수 순',"board('obj')")}${row('guard','','하락기 방어 순위','2022 하락기에 덜 떨어진 순',"board('def')")}${row('crane','','분담금 순위','재건축 추가 부담금이 적은 순',"board('rb')")}</div>
-  <div class="grp">단지 · 이동</div><div class="lst">${row('home','p','우리 단지 분석','시세·층별 정상가·학군·보유세','ownFind()')}${row('swap','b','갈아타기','지금 집을 매도하고 옮길 때 순이익','move()')}${row('bag','','직장 근처 찾기','출퇴근 시간 안에서 순이익이 높은 곳','jobv()')}</div></div>`;}
+  <div class="grp">단지 · 이동</div><div class="lst">${row('home','p','우리 단지 분석','시세·층별 정상가·학군·보유세','ownFind()')}${row('swap','b','갈아타기','지금 집을 매도하고 옮길 때 순이익','move()')}${row('bag','a','출퇴근 편한 집 찾기','출퇴근 시간 안에서 순이익이 높은 곳','jobv()')}</div></div>`;}
 // 메뉴
 function menu(){
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); topIntro(); tbOn('menu'); tint(1);
@@ -3162,7 +3186,36 @@ function onb(){
   <div style="flex:1"></div><div class="ft"><button class="btn" onclick="${leave}firstFlow(0,true)">시작하기</button><button class="btn ghost" style="margin-top:8px" onclick="${leave}hub()">둘러보기</button><span class="sub">공개 자료 기반 · 매일 자동 갱신</span></div></div>`;}
 function endSplash(){const sp=$('#splash'); if(!sp||sp.classList.contains('out'))return; clearTimeout(SPL); sp.classList.add('out'); setTimeout(()=>{sp.remove(); topIntro(); tabBar(); const h=location.hash, m=h.match(/^#c=(.+)$/), mv=h.match(/^#v=([^,]+),(.+)$/), mb=h.match(/^#b=(obj|up|def|rb)$/), mt=h.match(/^#t=(find|anal|menu)$/), dc=x=>decodeURIComponent(x);
    if(m&&CPXK[dc(m[1])])rcard(dc(m[1])); else if(mv&&CPXK[dc(mv[1])]&&CPXK[dc(mv[2])]){CM=[dc(mv[1]),dc(mv[2])];cmp();} else if(mb)board(mb[1]); else if(mt){({find:findTab,anal:anaTab,menu:menu})[mt[1]]();} else if(!jsSeen('jsNoOrigin'))onb(); else hub();},450);}
-setTimeout(()=>{[['result','anal'],['setup','anal'],['firstFlow','anal'],['board','anal'],['cmp','anal'],['move','anal'],['jobv','anal'],['jres','anal'],['rcard','find'],['ownFind','find'],['trust','menu'],['mpage','menu'],['philo','menu'],['hello','menu']].forEach(([f,t])=>{const o=window[f];if(typeof o!=='function')return;window[f]=function(){tbOn(t);tint(0);return o.apply(this,arguments);};});},0);
+setTimeout(()=>{[['result','anal'],['setup','anal'],['firstFlow','anal'],['board','anal'],['cmp','anal'],['move','anal'],['jobv','anal'],['jres','anal'],['rcard','find'],['ownFind','find'],['trust','menu'],['mpage','menu'],['philo','home'],['hello','home']].forEach(([f,t])=>{const o=window[f];if(typeof o!=='function')return;window[f]=function(){tbOn(t);tint(0);document.body.classList.remove('nodisc');return o.apply(this,arguments);};});},0);
+
+// ===== 10-05 v5: 운영자 피드백 11개 + ChatGPT 시안 — 홈 = 고민 5개(예전 '이런 게 있어?' 느낌) · 종 아이콘 제거 · '집셈을 보기 전에' = 첫 실행 + 홈 카드 · 메뉴 중복 정리 =====
+function topIntro(){const b=document.getElementById('tpi');if(b)b.remove();}   // 알림 기능이 없으니 아이콘도 없음
+const WRY=[['home','g','첫 집, 어디가 좋을까요?','내 자본·대출로 5년 순이익이 높은 곳','first'],['swap','b','지금 집을 팔고 갈아탈까요?','팔고 옮기면 남는 돈 비교','move'],
+ ['pin','p','우리 단지, 괜찮은가요?','시세·입지·학군·층별 정상가 진단','mine'],['bag','a','출퇴근이 편한 집을 찾고 있어요','출퇴근 시간 안에서 순이익 높은 곳','commute'],['pulse','r','지금 사도 되는 시점일까요?','지금 시장 국면과 과거 같은 때의 기록','timing']];
+function hub(){
+ TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); topIntro(); FF.force=false; tbOn('home'); tint(1); document.body.classList.add('nodisc');
+ const SD=(DT.ph2||{}).sd||{}, mk=(DT.mk||[]).map(([r])=>[r,SD[r]||{}]), m0=mk[0];
+ const PL={1:'매수 흐름 강함 · 구입 부담 낮음',2:'매수 흐름 강함 · 구입 부담 높음',3:'매수 흐름 약함 · 구입 부담 높음',4:'매수 흐름 약함 · 구입 부담 낮음'};
+ app.innerHTML=`<div class="hi1"><h1>안녕하세요,<br>어떤 고민으로 오셨나요?</h1><p>데이터로, 더 나은 선택을 도와드려요.</p></div>
+ <div class="wry">${WRY.map(([n,c,t,d,k])=>`<button onclick="startPath('${k}')">${itile(n,c,48)}<span class="t"><b>${t}</b><span>${d}</span></span><i>›</i></button>`).join('')}</div>
+ ${m0?`<div class="sec2"><b>지금, 시장은 어떤가요?</b></div>
+  <a class="strip" href="market.html"><span class="t"><b><span class="ph${m0[1].st}">${'①②③④'[m0[1].st-1]||''} ${m0[0]} ${(PHC[m0[1].st]||['-'])[0]}</span> · ${m0[1].m||'-'}개월째</b><small style="margin-top:2px">${PL[m0[1].st]||''}</small><em>${mk.slice(1).map(([r,x])=>`${r} ${(PHC[x.st]||['-'])[0]}`).join(' · ')}</em></span>${miniQ(+m0[1].st,44)}<span style="color:var(--ink3)">›</span></a>`:''}
+ <button class="strip why2" onclick="philo(null,0)">${itile('shield','b',40)}<span class="t"><b style="font-size:.95rem">집셈은 이런 기준으로 분석합니다</b><small>시세는 못 맞히지만, 분명한 것에 집중해요</small></span><span style="color:var(--ink3)">›</span></button>`;}
+// 메뉴: 중복 없이(데이터와 검증 하나 · 고객센터 하나 · 소개/안내 다시 보기 없음)
+function menu(){
+ TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); topIntro(); tbOn('menu'); tint(1); document.body.classList.remove('nodisc');
+ const row=(n,c,t,go,d)=>`<button onclick="${go}">${itile(n,c,40)}<span class="t"><b>${t}</b>${d?`<span>${d}</span>`:''}</span><i>›</i></button>`;
+ app.innerHTML=`<div class="pg"><h1>메뉴</h1><p class="lead">더 나은 선택을 위한 집셈의 약속</p>
+  <div class="lst">${row('home','b','관심 단지','findTab()','하트로 담아 둔 단지')}</div>
+  <div class="lst" style="margin-top:10px">${row('shield','p','데이터와 검증','trust()','20년 실거래 · 과거 검증 결과 · 빗나간 곳 공개 · 데이터 출처')}${row('calc','g','계산 방법',"trust(null,'how')",'순이익·세금·대출 이자를 어떻게 셈하나요?')}</div>
+  <div class="lst" style="margin-top:10px">${row('card','','자주 묻는 질문',"mpage('faq')")}${row('bill','a','고객센터',"mpage('help')",'문의하기 · 정정 요청')}</div>
+  <div class="lst" style="margin-top:10px">${row('tag','','약관 및 정책','termsSheet()')}${row('spark','','앱 정보','infoSheet()','데이터 기준일 '+(DT.asof||'-'))}</div></div>`;}
+// 첫 실행 = '집셈을 보기 전에'(설명할 건 설명한다) → 마지막 장에서 시작 / 이후엔 홈 카드로
+function endSplash(){const sp=$('#splash'); if(!sp||sp.classList.contains('out'))return; clearTimeout(SPL); sp.classList.add('out'); setTimeout(()=>{sp.remove(); topIntro(); tabBar(); const h=location.hash, m=h.match(/^#c=(.+)$/), mv=h.match(/^#v=([^,]+),(.+)$/), mb=h.match(/^#b=(obj|up|def|rb)$/), mt=h.match(/^#t=(find|anal|menu)$/), dc=x=>decodeURIComponent(x);
+   if(m&&CPXK[dc(m[1])])rcard(dc(m[1])); else if(mv&&CPXK[dc(mv[1])]&&CPXK[dc(mv[2])]){CM=[dc(mv[1]),dc(mv[2])];cmp();} else if(mb)board(mb[1]); else if(mt){({find:findTab,anal:anaTab,menu:menu})[mt[1]]();} else if(!jsSeen('jsNoOrigin')){try{localStorage.setItem('jsNoOrigin','1');}catch(e){} philo(1,0);} else hub();},450);}
+function nextStep(){return 'hub()';}
+function termsSheet(){sheet('약관 및 정책',[['terms','이용약관'],['privacy','개인정보처리방침'],['biz','사업자 정보']].map(([k,t])=>`<button class="o" onclick="shClose();mpage('${k}')"><span>${t}</span></button>`).join(''));}
+function infoSheet(){sheet('앱 정보',`<p style="margin:6px 0">데이터 기준일 ${DT.asof||'-'} · 매일 자동 갱신</p><p class="sub">공개 자료(국토교통부 실거래·KB부동산·한국은행 등) 기반 · 참고용 산출치이며 투자 권유가 아닙니다</p>`);}
 
 // ---- 09-29 사용자: 안드로이드 뒤로가기·아이폰 왼쪽 끝 쓸어 넘기기(둘 다 브라우저 '뒤로')가 앱 밖으로 나가지 말고 이전 화면으로 ----
 //   화면 함수(hub·result·board…)를 부를 때마다 방문 기록에 {화면, 인자}를 쌓고, 뒤로가면 그 화면을 다시 그린다.
