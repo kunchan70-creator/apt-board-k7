@@ -2780,13 +2780,13 @@ function hub(){
   <span class="hcta">${sv?'내 분석 결과 보기':'분석 시작'} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
   <svg class="hh" viewBox="0 0 64 64" width="96" height="96" fill="none"><path d="M10 30 32 12l22 18" stroke="rgba(255,255,255,.5)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 27v25h32V27" fill="rgba(255,255,255,.14)" stroke="rgba(255,255,255,.35)" stroke-width="2.5"/><rect x="22" y="33" width="9" height="9" rx="1.5" fill="rgba(255,255,255,.45)"/><rect x="34" y="33" width="9" height="9" rx="1.5" fill="rgba(255,255,255,.45)"/></svg></button>
  <div class="keys">${K3.map(([n,t,go])=>`<button onclick="${go}">${svgI(n,26)}<b>${t}</b></button>`).join('')}</div>
- <div class="hsec"><b>다른 분석</b></div>
- <div class="mlist">${MO.map(([n,t,go])=>`<button onclick="${go}">${svgI(n,20)}<span>${t}</span><i>›</i></button>`).join('')}</div>
+ <div class="hsec" style="margin-top:30px"><b>다른 분석</b></div>
+ <div class="mlist">${MO.map(([n,t,go],i)=>`<button onclick="${go}"${i>=4?' hidden':''}>${svgI(n,20)}<span>${t}</span><i>›</i></button>`).join('')}<button class="mall" onclick="this.parentNode.querySelectorAll('[hidden]').forEach(b=>b.hidden=false);this.remove()">전체 보기</button></div>
  ${(()=>{const FV=favs().map(k=>[k,(window.CPXK||{})[k]]).filter(x=>x[1]);
   return `<div class="hsec"><b>관심 단지</b>${FV.length?`<span class="sub" style="font-size:.8rem">${FV.length}곳</span>`:''}</div>`+(FV.length?FV.map(([k,c])=>{const r=bestRow(c)||c.rows[0];
    return `<div class="hist"><button class="hm" onclick="rcard('${k}')"><span class="th">${cityArt(58,58,1)}</span><span class="nm"><b>${c.n}</b><span>${c.gu} · ${r.b}㎡</span><span>시세 ${eok(r.p)}억</span></span><span class="sc"><i>입지 점수</i><b class="num" style="color:var(--blue)">${c.sc}점</b></span></button>${favBtn(k,1)}</div>`;}).join('')
    :`<div class="hempty">단지 분석 화면에서 하트를 누르면<br>여기에 모아 볼 수 있어요.<button class="btn ghost" style="margin-top:12px" onclick="ownFind()">단지 찾아보기</button></div>`);})()}
- ${(DT.mk||[]).length?`<div class="hsec"><b>시장 국면</b><a href="market.html">자세히 ›</a></div><div class="mkt">${DT.mk.map(([r])=>{const x=SD[r]||{},st=+x.st,s=PHZ[st];return `<a href="market.html">${miniQ(st,30)}<span>${r}</span><b>${s?'①②③④'[st-1]+' '+s[0]:'-'}</b><em>${x.m?x.m+'개월째':'&nbsp;'}</em></a>`;}).join('')}</div>
+ ${(DT.mk||[]).length?`<div class="hsec"><b>시장 국면</b><a href="market.html">자세히 ›</a></div><div class="mkt">${DT.mk.map(([r])=>{const x=SD[r]||{},st=+x.st,s=PHZ[st];return `<a href="market.html">${miniQ(st,44)}<span>${r}</span><b>${s?'①②③④'[st-1]+' '+s[0]:'-'}</b><em>${x.m?x.m+'개월째':'&nbsp;'}</em></a>`;}).join('')}</div>
   <p class="sub" style="font-size:.74rem;margin:8px 2px 0">매수 흐름(위·아래)과 구입 부담(왼쪽·오른쪽)으로 나눈 지금 상태 · 앞으로의 방향을 예측하지 않습니다</p>`:''}
  <p class="sub" style="text-align:center;margin:22px 0 0;font-size:.74rem">참고용 산출치이며, 투자 권유가 아닙니다.</p>`;}
 function endSplash(){const sp=$('#splash'); if(!sp||sp.classList.contains('out'))return; clearTimeout(SPL); sp.classList.add('out'); setTimeout(()=>{sp.remove(); topIntro(); tabBar(); const h=location.hash, m=h.match(/^#c=(.+)$/), mv=h.match(/^#v=([^,]+),(.+)$/), mb=h.match(/^#b=(obj|up|def|rb)$/), dc=x=>decodeURIComponent(x);
@@ -3033,11 +3033,12 @@ body.notab .tabbar,body.notab .disc{display:none}body.notab{padding-bottom:40px}
 .hero .hh{position:absolute;right:44px;bottom:-12px;opacity:.9}
 .hero .ha{position:absolute;right:18px;bottom:20px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;font-size:1.2rem;font-weight:700}
 .hero .hcta{display:inline-flex;align-items:center;gap:4px;margin-top:14px;padding:9px 14px;border-radius:12px;background:rgba(255,255,255,.2);font-size:.9rem;font-weight:800}
-.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
-.keys button{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:12px;min-height:92px;padding:14px 12px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer;box-shadow:var(--shadow)}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}
+.mlist .mall{justify-content:center;border-bottom:0;color:var(--ink2);font-size:.88rem}.mlist button[hidden]{display:none}
+.keys button{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:12px;min-height:86px;padding:14px 12px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer;box-shadow:var(--shadow)}
 .keys button svg{color:var(--blue)}.keys button b{font-size:.92rem;line-height:1.3;word-break:keep-all}.keys button:active{transform:scale(.97)}
-.mlist{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.mlist button{display:flex;align-items:center;gap:8px;min-height:50px;padding:0 12px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font:inherit;font-size:.86rem;font-weight:700;text-align:left;cursor:pointer}
+.mlist{display:flex;flex-direction:column}
+.mlist button{display:flex;align-items:center;gap:12px;min-height:50px;padding:0 4px;border:0;border-bottom:1px solid var(--line2);border-radius:0;background:none;color:var(--ink);font:inherit;font-size:.95rem;font-weight:600;text-align:left;cursor:pointer}
 .mlist button svg{color:var(--blue);flex:0 0 auto}.mlist button span{flex:1;min-width:0;word-break:keep-all;line-height:1.3}.mlist button i{font-style:normal;color:var(--ink3)}
 .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
 .tiles button{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 4px 13px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;box-shadow:var(--shadow);word-break:keep-all;line-height:1.3}
