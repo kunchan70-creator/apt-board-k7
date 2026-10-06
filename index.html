@@ -1591,7 +1591,7 @@ function cmpRes(){
   +`</div><button class="btn" style="margin-top:16px" onclick="shareCmp(this)">이 비교 공유하기</button><div style="display:flex;gap:8px;margin-top:8px"><button class="tmore" style="flex:1;margin:0" onclick="rcard('${A.k}')">${A.n} 자세히</button><button class="tmore" style="flex:1;margin:0" onclick="rcard('${B.k}')">${B.n} 자세히</button></div><p class="sub" style="margin:18px 2px 0;font-size:.72rem;text-align:center">참고용 산출치 · 투자 권유 아님</p>`;}
 
 // ---------------- 갈아타기: 지금 집 매도 후 자기자본으로 이동 vs 유지 ----------------
-let MV={k:null,b:null,loan:null,add:null,size:null,regions:null,age:[],shown:5,by:null,bp:null,lv:null}, MVON=false;   // by·bp·lv: 지금 집 산 해·산 가격·실거주 연수(양도세, 10-01)   // size: 옮길 집 면적(기본 = 지금 집과 같거나 넓게) · regions: 옮길 지역(기본 = 같은 시·군, 09-29 사용자: 세 버튼으론 지역을 못 골라 → 매수 분석과 같은 시·구 격자) · MVON: 지역 격자(tog/refresh)가 CF 대신 MV를 만지는 동안
+let MV={t:null,k:null,b:null,loan:null,add:null,size:null,regions:null,age:[],shown:5,by:null,bp:null,lv:null}, MVON=false;   // by·bp·lv: 지금 집 산 해·산 가격·실거주 연수(양도세, 10-01)   // size: 옮길 집 면적(기본 = 지금 집과 같거나 넓게) · regions: 옮길 지역(기본 = 같은 시·군, 09-29 사용자: 세 버튼으론 지역을 못 골라 → 매수 분석과 같은 시·구 격자) · MVON: 지역 격자(tog/refresh)가 CF 대신 MV를 만지는 동안
 function mvK(){const c=MV.k&&CPXK[MV.k], h=c&&c.rows.find(r=>r.b===MV.b); return h?Math.round(h.p-brk(h.p)-(MV.loan||0)+(MV.add||0)-cgtHome(h,h.p,0)):null;}   // 매도 후 자기자본(중개보수 법정 요율·지금 집 양도세 차감)
 /* 10-01 지금 집 양도세(1세대 1주택). 산 해·가격을 넣었을 때만 셈하고, 비우면 비과세 가정(화면에 표시).
    2년 보유(산 때 조정대상지역이면 2년 거주도 — 산 해의 지정으로 어림, isAdjAt) 비과세, 12억 넘는 몫만 과세.
@@ -1612,7 +1612,10 @@ function mvWrap(fn){const s={cash:CF.cash,useU:CF.useU,regions:CF.regions,size:C
 const FR=(l,v,js,ph)=>`<button class="frw" onclick="${js}"><span>${l}</span><b class="${v?'':'ph'}">${v||ph||'선택'}</b>${CHV.replace('m6 9 6 6 6-6','m9 6 6 6-6 6')}</button>`;
 const FRI=(l,v,js)=>`<label class="frw"><span>${l}</span><input type="text" inputmode="decimal" autocomplete="off" placeholder="0" value="${v==null?'':v/1e4}" oninput="${js}"><em>억</em></label>`;
 function mvSel(k,b){MV.k=k;MV.b=b;MV.size=null;MV.regions=null;shClose();move();}
+/* 10-06 사용자: 갈아타는 사람은 가고 싶은 집을 딱 골라 보고 싶다 → MV.t(갈아탈 집). 고르면 결론·두 막대·시장 경우별·비용·나란히 표가 전부 그 집 기준, 안 고르면 순이익 1위 */
+function mvTgt(k,b){MV.t={k,b};shClose();if(MV.res)mvRun();else move();}
 function mvSheet(w){
+ if(w==='tgt'){sheet('갈아탈 집',`<input id="mvq" class="tsearch" style="margin:4px 0 6px" type="search" placeholder="가고 싶은 단지 이름으로 찾기" oninput="mvFind(this.value,1)"><div id="mvf"></div>`);setTimeout(()=>{const e=$('#mvq');e&&e.focus();},50);}
  if(w==='home'){sheet('지금 사는 집',`<input id="mvq" class="tsearch" style="margin:4px 0 6px" type="search" placeholder="단지 이름으로 찾기" oninput="mvFind(this.value)"><div id="mvf"></div>`);setTimeout(()=>{const e=$('#mvq');e&&e.focus();},50);}
  if(w==='reg'){const c=MV.k&&CPXK[MV.k], same=c?c.gu.split(' ')[0]:'', sameL=same?GUS.filter(g=>g.split(' ')[0]===same):[];
   const q=[[same?same+' 안':null,'MV.regions='+JSON.stringify(sameL)],[CF.regions.length?'내 조건 지역':null,'MV.regions=CF.regions.slice()'],['전체','MV.regions=[]']].filter(x=>x[0]);
@@ -1628,7 +1631,7 @@ function mvSheet(w){
  if(w==='info')sheet('이렇게 비교해요',`<ul style="margin:0;padding-left:18px;color:var(--ink2);font-size:.9rem;line-height:1.8"><li>5년 순이익 = 5년 뒤 값 − 지금 값 − 대출이자·세금·중개·수리비 (시장이 보통일 때)</li><li>갈아타는 쪽은 매수 분석과 같은 셈이에요 · 연소득·대출·생활 조건·세금 혜택도 매수 분석의 '내 조건'을 그대로 써요</li><li>이미 집을 가진 적이 있어 생애최초 혜택(취득세 감면·대출 70%)은 빠져요</li><li>지금 집 양도세: 산 해·가격을 넣으면 1세대 1주택 비과세(12억 넘는 몫만 과세)·장기보유특별공제로 셈해요. 비우면 비과세로 셈해요</li><li>보유하는 쪽도 5년 뒤 매도할 때 양도세·실제 공시가격 보유세를 넣고, 추가 현금은 예금 이자(세후)로 셈해요</li><li>'지금 집 보유보다'는 지금 집 매도 중개보수·양도세까지 뺀 차이예요 · 나쁠 때·좋을 때는 두 집이 같은 시장을 겪는다고 보고 같은 경우끼리 비교해요 · 이사비는 넣지 않았어요</li><li><b>먼저 사고 나중에 팔면</b>(일시적 2주택): 두 집 모두 조정대상지역이면 새 집을 산 날부터 <b>2년 안에</b> 지금 집을 팔아야 양도세 비과세·취득세 중과 제외·종부세 1주택 간주를 받아요 — 2026년 10월 1일 시행(2026년 8월 4일 이후 새 집 취득분, 그 전은 3년)</li><li>재건축·리모델링이 진행 중인 단지는 뺐어요</li></ul>${missLink()}`);
 }
 function move(){
- TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); MVON=true; shClose();
+ TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); MVON=true; MV.res=0; shClose();
  const c=MV.k&&CPXK[MV.k];
  if(c&&MV.b&&!MV.size)MV.size=Object.keys(SZL).filter(k=>+k>=+szOf(MV.b));   // 09-28: 84㎡ 사는 사람에게 49㎡를 권하던 것 → 기본은 지금 집과 같거나 넓은 면적
  const same=c?c.gu.split(' ')[0]:'', sameL=same?GUS.filter(g=>g.split(' ')[0]===same):[];
@@ -1642,12 +1645,12 @@ function move(){
  <div class="frs">${FR('지금 사는 집',home,"mvSheet('home')",'단지 찾기')}
  ${FRI('남은 대출',MV.loan,"MV.loan=parseMoney(this.value)")}${FRI('추가 현금',MV.add,"MV.add=parseMoney(this.value)")}
  ${FR('지금 집 양도세',MV.by&&MV.bp?MV.by+'년 · '+eok(MV.bp)+'억에 매수':'',"mvSheet('cgt')",'비과세로 셈')}
- ${FR('갈아탈 지역',regT,"mvSheet('reg')")}${FR('갈아탈 집 면적',lst(MV.size,SZL),"mvSheet('sz')")}${FR('갈아탈 집 연식',lst(MV.age,AGL),"mvSheet('age')")}</div>
+ ${FR('갈아탈 집',(()=>{const t=MV.t&&CPXK[MV.t.k];return t?t.n+' '+MV.t.b+'㎡':'';})(),"mvSheet('tgt')",'정하지 않음 · 순위에서 고르기')}${FR('갈아탈 지역',regT,"mvSheet('reg')")}${FR('갈아탈 집 면적',lst(MV.size,SZL),"mvSheet('sz')")}${FR('갈아탈 집 연식',lst(MV.age,AGL),"mvSheet('age')")}</div>
  <div class="sec2" style="margin-top:18px">내 조건 <span>매수 분석과 같아요</span></div><div class="frs">${mvWrap(()=>myRows('move',['inc','loan','life','perk']))}</div>
  <div class="cta"><button class="btn" ${c&&MV.b?'':'disabled style="opacity:.5"'} onclick="MV.shown=5;mvRun()">비교하기</button></div>`;}
-function mvFind(v){const q=nz(v), el=$('#mvf'); if(!el)return; if(!q){el.innerHTML='';return;}
+function mvFind(v,t){const q=nz(v), el=$('#mvf'); if(!el)return; if(!q){el.innerHTML='';return;}
  const L=CPX.filter(c=>nz(c.n+' '+(c.al2||'')).includes(q)).slice(0,8);
- el.innerHTML=L.map(c=>{const rs=c.rows.slice().sort((a,b)=>a.b-b.b);return `<div class="mvh"><div><b>${c.n}</b><span>${c.gu}</span></div><div class="gg" style="grid-template-columns:repeat(4,1fr)">${rs.map(r=>`<button onclick="mvSel('${c.k}',${r.b})">${r.b}㎡</button>`).join('')}</div></div>`;}).join('')||'<p class="sub" style="padding:14px 0">검색 결과 없음</p>';}
+ el.innerHTML=L.map(c=>{const rs=c.rows.slice().sort((a,b)=>a.b-b.b);return `<div class="mvh"><div><b>${c.n}</b><span>${c.gu}</span></div><div class="gg" style="grid-template-columns:repeat(4,1fr)">${rs.map(r=>`<button onclick="${t?'mvTgt':'mvSel'}('${c.k}',${r.b})">${r.b}㎡</button>`).join('')}</div></div>`;}).join('')||'<p class="sub" style="padding:14px 0">검색 결과 없음</p>';}
 /* 10-06 사용자: 갈아타기가 성의 없다 — 매수 결과만큼 보여 줘야. 결과를 따로 한 화면으로:
    결론 한 줄 → 보유 vs 갈아타기 두 막대(매수 분석과 같은 손실·이익 막대) → 시장 경우별 차이(나쁠 때·보통·좋을 때) → 갈아타는 비용 → 무엇이 달라지나
    → 후보 카드(매수 결과와 같은 row 카드, 펼치면 지금 집과 나란히 + 순이익 구성·자금 계획). 계산은 전부 fin 하나(유지 쪽도 같은 시세 범위) */
@@ -1674,7 +1677,7 @@ function mvTbl(h,r,KF,SF){   // 지금 집과 나란히 — 좋아진 칸은 파
  return `<div class="mvt"><span></span><b>지금 집</b><b>갈아탈 집</b>`+L.map(([k,a,b,d])=>`<span>${k}</span><em>${a}</em><em${d>0?' class="up"':''}>${b}</em>`).join('')+`</div>`;}
 function mvRun(){
  const c=CPXK[MV.k], h=c&&c.rows.find(r=>r.b===MV.b); if(!h)return;
- if(!document.getElementById('stcss'))document.head.insertAdjacentHTML('beforeend',STCSS); TT.forEach(clearTimeout); TT=[]; shClose(); const sy=mvRun.keep?window.scrollY:0; mvRun.keep=0;
+ if(!document.getElementById('stcss'))document.head.insertAdjacentHTML('beforeend',STCSS); TT.forEach(clearTimeout); TT=[]; shClose(); MV.res=1; const sy=mvRun.keep?window.scrollY:0; mvRun.keep=0;
  R.forEach(r=>r.F=null);   // 다른 화면에서 셈한 값이 섞이지 않게
  const mc=Math.round(brk(h.p)), K=mvK(), L=MV.lens||'bal';
  const H=mvWrap(()=>{
@@ -1682,29 +1685,34 @@ function mvRun(){
   // 필터 ok()(지역·면적·연식은 이 화면 것), 정비사업 진행 단지 제외(isMid), 정렬 = 기준 시나리오 순이익(p5, 매수 분석과 같은 셈)
   let V2=R.filter(r=>r.no!==c.no&&!isMid(r)).filter(ok).map(r=>(r.F=fin(r),r)).filter(r=>r.F.ok).sort((a,b)=>b.F.p5-a.F.p5);
   V2.forEach(r=>r._sw=mvSw(r,x,mc,cg0));
-  const best=V2[0], BF=best&&best._sw, dif=best?BF.p5-KF.p5:null, win=V2.filter(r=>r._sw.p5>KF.p5).length;
+  const tc=MV.t&&CPXK[MV.t.k], tr=tc&&tc.rows.find(r=>r.b===MV.t.b), own=!!(tr&&tr.no!==c.no);
+  if(own){if(!tr.F)tr.F=fin(tr); tr._sw=mvSw(tr,x,mc,cg0);}
+  const best=own?tr:V2[0], BF=best&&best._sw, dif=best?BF.p5-KF.p5:null, win=V2.filter(r=>r._sw.p5>KF.p5).length, t1=V2[0], rk=own?V2.indexOf(tr)+1:1;
   MVV=L==='obj'?V2.slice().sort((a,b)=>(b.sc||0)-(a.sc||0)||b.F.p5-a.F.p5):L==='eff'?effFront(V2):V2;
   const sgn=v=>v>=0?'pos':'neg', m0=KF.L*KF.i/12;
   const cbar=`<div class="cbar"><span><em>지금 집</em>${c.n} ${h.b}㎡ · 매도 후 자기자본 ${eok(K)}억 · ${(()=>{const R_=MV.regions||[], cs=[...new Set(R_.map(g=>g.split(' ')[0]))];return !R_.length?'서울·경기·인천 전체':cs.length===1?cs[0]+(R_.length>1?'':' '+short(R_[0]).replace(cs[0],'').trim()):short(R_[0])+' 외 '+(R_.length-1)+'곳';})()}</span><button onclick="move()">조건 바꾸기</button></div>`;
-  if(!best)return cbar+`<div class="res-h"><div class="hq" style="margin:0">이 조건으로 갈아탈 수 있는 집이 없어요</div><div class="bsub">지역이나 면적을 넓혀 보세요 · 매도 후 자기자본 ${eok(K)}억 기준</div></div><button class="btn" style="margin-top:16px" onclick="move()">조건 바꾸기</button>`;
-  const head=dif>=1000?`갈아타면 5년 순이익이<br><span style="color:var(--blue)">약 ${ab1(dif)}</span> 더 높게 셈돼요`:dif<=-1000?`지금 집을 보유하면 순이익이<br><span style="color:var(--blue)">약 ${ab1(-dif)}</span> 더 높게 셈돼요`:'갈아타도 5년 순이익이<br>거의 같게 셈돼요';   // 10-01 예상은 '셈돼요'·0.1억
+  const pick=`<div class="frs" style="margin:12px 0 0">${FR('갈아탈 집',own?best.n+' '+best.b+'㎡':'',"mvSheet('tgt')",'순이익 1위 · 직접 고르기')}</div>${own?`<button class="linkbtn" style="margin:6px 2px 0;font-size:.8rem;color:var(--ink3)" onclick="MV.t=null;mvRun()">순이익 1위로 되돌리기</button>`:''}`;
+  if(!best)return cbar+pick+`<div class="res-h"><div class="hq" style="margin:0">이 조건으로 갈아탈 수 있는 집이 없어요</div><div class="bsub">지역이나 면적을 넓혀 보세요 · 매도 후 자기자본 ${eok(K)}억 기준</div></div><button class="btn" style="margin-top:16px" onclick="move()">조건 바꾸기</button>`;
+  const who=own?`${best.n}${JO(best.n,'으로','로')} `:'';
+  const head=own&&!BF.ok?`${who}갈아타려면<br><span style="color:var(--red)">약 ${ab1(BF.own-K)}</span>이 더 필요해요`:dif>=1000?`${who}갈아타면 5년 순이익이<br><span style="color:var(--blue)">약 ${ab1(dif)}</span> 더 높게 셈돼요`:dif<=-1000?`지금 집을 보유하면 순이익이<br><span style="color:var(--blue)">약 ${ab1(-dif)}</span> 더 높게 셈돼요`:'갈아타도 5년 순이익이<br>거의 같게 셈돼요';   // 10-01 예상은 '셈돼요'·0.1억
   const blk=(t,nm,F,l2,on)=>`<div class="mvs${on?' on':''}"><div class="mvs1"><span>${t}</span><b class="num ${sgn(F.p5)}">${ab(F.p5)}</b></div><div class="mvs2">${nm}${l2?' · '+l2:''}</div>${cells(F)}</div>`;
-  const vs=`<section class="mvh">${blk('지금 집 5년 더 보유',c.n+' '+h.b+'㎡',KF,m0<1?'대출 없음':'월 이자 <b>'+mTxt(m0)+'</b>')}${blk('1위 단지로 갈아타기',best.n+' '+best.b+'㎡',BF,monthly(best,BF)<1?'대출 없음':'월 이자 <b>'+mTxt(monthly(best,BF))+'</b>',1)}</section>`;
+  const vs=`<section class="mvh">${blk('지금 집 5년 더 보유',c.n+' '+h.b+'㎡',KF,m0<1?'대출 없음':'월 이자 <b>'+mTxt(m0)+'</b>')}${blk(own?'고른 집으로 갈아타기':'1위 단지로 갈아타기',best.n+' '+best.b+'㎡',BF,monthly(best,BF)<1?'대출 없음':'월 이자 <b>'+mTxt(monthly(best,BF))+'</b>',1)}</section>`;
   // 시장 경우별 차이: 두 집 모두 같은 시장을 겪는다고 보고 같은 경우끼리 뺀다(나쁠 때 = 하위 10%)
   const D=[['나쁠 때',(BF.p1-KF.p1)/1e4],['보통',(BF.p5-KF.p5)/1e4],['좋을 때',(BF.p9-KF.p9)/1e4]], fav=D.filter(d=>d[1]>=0.05).map(d=>d[0]), unf=D.filter(d=>d[1]<=-0.05).map(d=>d[0]);
   const dHead=fav.length===3?'세 경우 모두 갈아타기가 높게 셈돼요':unf.length===3?'세 경우 모두 보유가 높게 셈돼요':fav.length&&unf.length?`${fav.join('·')}일 때는 갈아타기, ${unf.join('·')}일 때는 보유가 높게 셈돼요`:fav.length?`${fav.join('·')}일 때 갈아타기가 높고, 나머지는 거의 같게 셈돼요`:unf.length?`${unf.join('·')}일 때 보유가 높고, 나머지는 거의 같게 셈돼요`:'세 경우 모두 거의 같게 셈돼요';
   const big=best.p+best.fee>h.p*1.15, scen=`<section class="os"><h4>시장 경우별 차이 <span class="mvq">갈아타기 − 보유</span></h4><div class="mva">${dHead}</div>${dbars(D,'억',1)}<div class="sub" style="font-size:.76rem;line-height:1.55">두 집 모두 같은 시장을 겪는다고 보고 같은 경우끼리 비교했어요 · 나쁠 때·좋을 때 = 10번 중 1번꼴${big&&fav.length&&unf.length?' · 더 비싼 집으로 옮기면 시장 방향에 따라 차이가 커져요':''}</div></section>`;
   // 갈아타는 비용(한 번에 나가는 돈): 지금 집 매도 중개보수·양도세 + 새 집 취득세·중개보수·등기 (수리비는 보유 쪽에도 있어 갈아타는 비용이 아님 — 순이익 구성에만)
   const aq=Math.max(0,acqT(best.p,best.b)-(BF.ac||0)), CO=[['매도 중개',mc],['양도세',cg0],['취득세',aq],['중개·등기',Math.max(0,best.fee-acqT(best.p,best.b))]].filter(z=>z[1]>=10), tot=CO.reduce((a,z)=>a+z[1],0);
-  const cost=`<section class="os"><h4>갈아타는 비용 <span class="mvq">1위 단지 기준</span></h4><div class="mva">한 번에 <b>약 ${mTxt(Math.round(tot/100)*100)}</b>이 나가요</div>${hbars(CO.map(z=>[z[0],z[1],mTxt(Math.round(z[1]/10)*10)]),Math.max(...CO.map(z=>z[1])),'red')}<div class="sub" style="font-size:.76rem;line-height:1.55">${MV.by&&MV.bp?'':'지금 집 양도세는 산 해·가격을 넣지 않아 비과세로 셈했어요 · '}위 순이익에 이미 반영됐어요 · 이사비는 넣지 않았어요</div></section>`;
+  const cost=`<section class="os"><h4>갈아타는 비용 <span class="mvq">${own?'고른 집':'1위 단지'} 기준</span></h4><div class="mva">한 번에 <b>약 ${mTxt(Math.round(tot/100)*100)}</b>이 나가요</div>${hbars(CO.map(z=>[z[0],z[1],mTxt(Math.round(z[1]/10)*10)]),Math.max(...CO.map(z=>z[1])),'red')}<div class="sub" style="font-size:.76rem;line-height:1.55">${MV.by&&MV.bp?'':'지금 집 양도세는 산 해·가격을 넣지 않아 비과세로 셈했어요 · '}위 순이익에 이미 반영됐어요 · 이사비는 넣지 않았어요</div></section>`;
   const G=mvGain(h,best), gain=`<section class="os"><h4>무엇이 달라지나 <span class="mvq">${best.n}</span></h4>${G.length?`<div class="mvcs">${G.map(mvChip).join('')}</div>`:''}${mvTbl(h,best,KF,BF)}</section>`;
   const keepNb=fold('지금 집 5년 더 보유 · 순이익 구성',nb({...h,C:h.p+KF.hold,bu:0},KF));
   const tabs=`<div class="ltab">`+[['bal','순이익'],['eff','자본 효율'],['obj','입지']].map(([k,t])=>`<a class="${L===k?'on':''}" onclick="MV.lens='${k}';MV.shown=5;mvRun()">${t}</a>`).join('')+`</div>`;
   const leg=L==='obj'?'<div class="rleg">입지 점수 순이에요. 입지가 좋다고 순이익이 반드시 큰 건 아니에요.</div>':L==='eff'?`<div class="rleg">더 적은 돈으로 순이익이 더 큰 단지가 없는 곳만, 0.5억 간격으로 모았어요(${MVV.length}곳).</div>`:'';
   const n=Math.min(MVV.length,MV.shown||5);
   const card=(r,k)=>{const d=r._sw.p5-KF.p5, g=mvGain(h,r).slice(0,3), ex=(L==='eff'?effEx(r):'')+`<div class="rc3">지금 집 보유보다 <b style="color:var(--${d>=0?'green':'red'})">${ab(d)}</b>${g.length?' · '+g.map(z=>`<span style="color:var(--${z[0]?'blue':'ink3'})">${z[1]}</span>`).join(' · '):''}</div>`;
-   return row(r,k,ex,{F:r._sw,lbl:'갈아타면 5년 순이익 · 예상',dx:`<div class="dsec"><div class="dh">지금 집과 나란히</div>${mvTbl(h,r,KF,r._sw)}</div>`});};
-  return cbar+`<div class="res-h" style="margin-top:14px"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px"><div class="hq" style="margin:0">${head}</div><button class="linkbtn" style="flex:0 0 auto;padding:4px 0;font-size:.8rem;color:var(--ink3)" onclick="mvSheet('info')">셈하는 법</button></div><p class="sub" style="margin:6px 0 0;font-size:.86rem;line-height:1.5">${best.n} ${best.b}㎡(1위) 기준 · 조건에 맞는 ${V2.length.toLocaleString()}곳 중 <b style="color:var(--ink)">${win.toLocaleString()}곳</b>이 보유보다 높게 셈돼요</p></div>
+   const key=r.no||(r.n+'|'+r.gu), me=own&&r===best;
+   return row(r,k,(me?'<div class="rc3"><b style="color:var(--blue)">고른 집</b></div>':'')+ex,{F:r._sw,lbl:'갈아타면 5년 순이익 · 예상',dx:(me?'':`<button class="btn outline" style="width:100%;margin:12px 0 2px;padding:11px 0" onclick="mvTgt('${key}',${r.b})">이 집으로 자세히 비교</button>`)+`<div class="dsec"><div class="dh">지금 집과 나란히</div>${mvTbl(h,r,KF,r._sw)}</div>`});};
+  return cbar+pick+`<div class="res-h" style="margin-top:14px"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px"><div class="hq" style="margin:0">${head}</div><button class="linkbtn" style="flex:0 0 auto;padding:4px 0;font-size:.8rem;color:var(--ink3)" onclick="mvSheet('info')">셈하는 법</button></div><p class="sub" style="margin:6px 0 0;font-size:.86rem;line-height:1.5">${!own?`${best.n} ${best.b}㎡(1위) 기준 · 조건에 맞는 ${V2.length.toLocaleString()}곳 중 <b style="color:var(--ink)">${win.toLocaleString()}곳</b>이 보유보다 높게 셈돼요`:!BF.ok?`매도 후 자기자본 ${eok(K)}억 + 대출 한도로는 모자라요 · 모자란 돈을 채운다면 5년 순이익이 보유보다 <b style="color:var(--${dif>=0?'green':'red'})">약 ${ab1(Math.abs(dif))}</b> ${dif>=0?'높게':'낮게'} 셈돼요`:rk?`조건에 맞는 ${V2.length.toLocaleString()}곳 중 <b style="color:var(--ink)">${rk}위</b>${rk>1&&t1?` · 1위 ${t1.n}보다 ${ab1(Math.abs(t1._sw.p5-BF.p5))} ${t1._sw.p5>=BF.p5?'낮게':'높게'} 셈돼요`:''}`:'지역·면적·연식 조건 밖이라 순위에는 없는 집이에요'}</p></div>
   ${vs}${keepNb}${scen}${cost}${gain}
   <div class="hq" style="margin:26px 0 4px;font-size:1.15rem">갈아탈 만한 단지</div><div class="rleg" style="font-size:.86rem;margin:0 2px 8px">조건에 맞는 ${V2.length.toLocaleString()}곳 · 매도 후 자기자본 ${eok(K)}억</div>${tabs}${leg}
   ${MVV.slice(0,n).map((r,k)=>card(r,k+1)).join('')}
