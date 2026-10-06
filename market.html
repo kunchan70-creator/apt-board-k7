@@ -658,7 +658,7 @@ function anInit(){Object.keys(ANM).forEach(id=>{if(!document.getElementById(id+'
 function anShow(id){const A=ANM[id];if(A){A._drawn=0;anDraw(id);}}
 function areaPx(K,nm){const a=K&&K.areas&&K.areas[nm];if(!a||!a[2])return null;const [y0,,v]=a,m0=(+y0.slice(0,4))*12+(+y0.slice(5))-1;return v.map((x,i)=>{const m=m0+i;return [`${Math.floor(m/12)}.${String(m%12+1).padStart(2,'0')}`,x];}).filter(z=>z[1]!=null);}
 function areaPath(K,nm){const a=K&&K.areas&&K.areas[nm];if(!a)return null;if(Array.isArray(a[0]))return a;const [y0,f]=a,m0=(+y0.slice(0,4))*12+(+y0.slice(5))-1,o=[];for(let i=0;i<f.length/2;i++){const m=m0+i;o.push([`${Math.floor(m/12)}.${String(m%12+1).padStart(2,'0')}`,f[2*i],f[2*i+1]]);}return o;}
-/* 09-30 사용자: 다음 움직임은 예측할 수 없다, 하지만 영원히 '흐름 강'에 머물 수는 없다고 볼 수 있지 않나 → 예측 대신 사실: 지금 칸 몇 개월째 vs 과거 같은 칸 머문 기간 */
+/* 09-30 사용자: 다음 움직임은 예측할 수 없다, 하지만 영원히 '흐름 강'에 머물 수는 없다고 볼 수 있지 않나 → 예측 대신 사실: 지금 칸 몇 개월 지속 vs 과거 같은 칸 머문 기간 */
 function dwell(seq,num){if(!seq||!seq[1])return null;const st=seq[1],E=[];for(let i=0;i<st.length;i++){if(st[i]!==String(num))continue;const e=E[E.length-1];if(e&&i-e[1]<=4)e[1]=i;else E.push([i,i]);}
  if(!E.length)return null;const cur=E[E.length-1][1]===st.length-1?E[E.length-1][1]-E[E.length-1][0]+1:null,past=E.slice(0,cur!=null?-1:E.length).map(e=>e[1]-e[0]+1).filter(x=>x>=3);
  return {cur,max:past.length?Math.max(...past):null,n:past.length,y0:seq[0].slice(0,4)};}
@@ -681,7 +681,7 @@ function phaseCard(q,P0,S,o){const cur=P0[P0.length-1],ck=(cur[1]>=50?'R':'L')+(
  const up=num<=2,sgKey=up?'-':'+',sgOn=mv===sgKey,sgName=up?'꺾임 신호':'반등 신호',zr=S[ck+sgKey];
  const signal=`<div style="display:flex;align-items:center;gap:12px;padding:12px 2px;border-bottom:1px solid var(--line2)"><span style="width:12px;height:12px;border-radius:6px;flex:0 0 auto;background:${sgOn?(up?'var(--red)':'var(--green)'):'var(--line)'};box-shadow:0 0 0 4px ${sgOn?(up?'rgba(229,83,75,.18)':'rgba(46,158,107,.18)'):'transparent'}"></span>
   <span style="flex:1"><b style="font-size:.95rem">${sgName} ${sgOn?'켜짐':'없음'}</b><span class="sub" style="display:block;font-size:.76rem">${up?'매수 위축 쪽으로 내려가기 시작하면 켜져요':'매수 활발 쪽으로 올라가기 시작하면 켜져요'}</span></span>${zr?`<span style="text-align:right;font-size:.76rem;color:var(--ink2)">켜졌던 때 1년 뒤<br>${rec(zr)}</span>`:''}</div>`;
- const dw=D&&D.cur!=null?`<div style="display:flex;justify-content:space-between;align-items:baseline;padding:12px 2px;border-bottom:1px solid var(--line2)"><b style="font-size:.95rem">${nm}에 머문 기간</b><span style="font-size:.9rem;font-weight:800">${D.cur}개월째${D.max!=null?` <span class="sub" style="font-weight:500">· 과거 최장 ${D.max}개월</span>`:''}</span></div>`:'';
+ const dw=D&&D.cur!=null?`<div style="display:flex;justify-content:space-between;align-items:baseline;padding:12px 2px;border-bottom:1px solid var(--line2)"><b style="font-size:.95rem">${nm}에 머문 기간</b><span style="font-size:.9rem;font-weight:800">${D.cur}개월 지속${D.max!=null?` <span class="sub" style="font-weight:500">· 과거 최장 ${D.max}개월</span>`:''}</span></div>`:'';
  const more=`<details style="margin-top:12px" ontoggle="if(this.open)anShow('${o.aid||'anm'}')"><summary style="cursor:pointer;font-size:.88rem;font-weight:700;color:var(--blue)">2010년 이후 움직임 지도로 보기</summary>
   <div class="sub" style="font-size:.76rem;line-height:1.6;margin:10px 0 4px">점 = 그달의 시장 위치 · 위로 갈수록 사려는 사람이 많고, 오른쪽으로 갈수록 집 사기 부담이 커요 · 선 색 = 그때 직전 6개월 집값(초록 상승 · 빨강 하락)</div>
   ${anBlock(o.aid||'anm',P0,o.px,o.marks)}${stageStrip(o.seq,null)}</details>`;
@@ -763,7 +763,7 @@ function pzUpdate(id){const z=PZ[id];if(!z)return;const {P,n,RS,LV,d6,d12,X,Y,BX
  const dl=$('dl');dl.setAttribute('x',px.toFixed(1));dl.setAttribute('y',(py+(py>160?-13:20)).toFixed(1));dl.textContent=isNow?'현재':cur[0];
  const sx=BX(sel+f),sy=LV[sel]!=null?LY(LV[sel]+((LV[Math.min(n-1,sel+1)]??LV[sel])-LV[sel])*f):30;$('bl').setAttribute('x1',sx.toFixed(1));$('bl').setAttribute('x2',sx.toFixed(1));$('bp').setAttribute('cx',sx.toFixed(1));$('bp').setAttribute('cy',sy.toFixed(1));$('bp').setAttribute('fill',dc);$('bh').setAttribute('x',(sx-7).toFixed(1));
  const y1=d12[sel],d=d6[sel],h1=$('h1'),h2=$('h2');
- if(h1){h1.style.color=PCQ[num][0];h1.innerHTML=`${STG[num][3]} ${k}개월째${isNow?'':` <span class="pzym">${cur[0]}</span>`}`;}
+ if(h1){h1.style.color=PCQ[num][0];h1.innerHTML=`${STG[num][3]} ${k}개월 지속${isNow?'':` <span class="pzym">${cur[0]}</span>`}`;}
  if(h2)h2.innerHTML=`${isNow?(mx?(k>mx?`역대 최장(${mx}개월) 경신`:`역대 최장 ${mx}개월`):'첫 진입'):`${P[run[1]][0]} 진입`} · 12개월 <b style="color:${y1==null?'var(--ink)':y1>=0?'var(--green)':'var(--red)'}">${y1==null?'-':pc(y1)}</b> · 6개월 <span style="color:${dc};font-weight:700">${d==null?'-':d>1?'상승':d<-1?'하락':'보합'}</span>`;
  $('pl').textContent=z.raf?'❚❚':'▶';$('nw').style.visibility=isNow?'hidden':'visible';}
 function pzStop(id){const z=PZ[id];if(z&&z.raf){cancelAnimationFrame(z.raf);z.raf=null;}}
@@ -780,9 +780,9 @@ const SGI={'기준금리 1년 변화(%p)':['금리·물가','기준금리가 1�
  '거래량 6개월 추세':['거래·인구','거래가 줄고 있어요'],'수요 대비 공급(거래량 추세−입주 물량)':['거래·인구','거래에 비해 새 아파트 입주가 많아요'],'인구 순유입(12개월, 인구 대비)':['거래·인구','들어오는 사람이 줄었어요']};
 const SGG=['금리·물가','경매','집값 부담','거래·인구','기타'];
 function wnLow(T){const lo=['12|0','12|1','12|2'].map(x=>T[x]).filter(Boolean),n=lo.reduce((a,r)=>a+r.n,0);if(!n)return null;const up=Math.round(lo.reduce((a,r)=>a+r.up*r.n,0)/n),dn=Math.round(lo.reduce((a,r)=>a+r.dn*r.n,0)/n);return {n,up,dn,flat:100-up-dn};}
-function obar(lab,r){return r?`<div class="obr"><span>${lab}</span><span class="obb"><i style="width:${r.up}%;background:var(--green)"></i><i style="width:${r.flat}%;background:var(--ink3);opacity:.35"></i><i style="width:${r.dn}%;background:var(--red)"></i></span></div><div class="obn"><span style="color:var(--green)">오름 ${r.up}%</span> · 횡보 ${r.flat}% · <span style="color:var(--red)">내림 ${r.dn}%</span></div>`:'';}
+function obar(lab,r){return r?`<div class="obr"><span>${lab}</span><span class="obb"><i style="width:${r.up}%;background:var(--green)"></i><i style="width:${r.flat}%;background:var(--ink3);opacity:.35"></i><i style="width:${r.dn}%;background:var(--red)"></i></span></div><div class="obn"><span style="color:var(--green)">상승 ${r.up}%</span> · 횡보 ${r.flat}% · <span style="color:var(--red)">하락 ${r.dn}%</span></div>`:'';}
 function sigSec(sd){const W=(MD.wn||{})[sd];if(!W)return null;const L=W.lit||[],A=W.all&&W.all.length?W.all:L,k=L.length,T=W.tab||{},hi=T['12|3+'],lw=wnLow(T);
- const cmpT=hi&&lw?(hi.up<lw.up-4?'신호가 많을 땐 덜 올랐지만':hi.up>lw.up+4?'신호가 많을 때 오히려 더 올랐고':'오른 비율은 비슷했고')+(Math.abs(hi.dn-lw.dn)<=5?', 내린 비율은 비슷했어요':hi.dn>lw.dn?', 내린 경우도 더 많았어요':', 내린 경우는 오히려 적었어요'):'';
+ const cmpT=hi&&lw?(hi.up<lw.up-4?'신호가 많을 때 상승 비율은 낮았지만':hi.up>lw.up+4?'신호가 많을 때 상승 비율이 오히려 높았고':'상승 비율은 비슷했고')+(Math.abs(hi.dn-lw.dn)<=5?', 하락 비율은 비슷했어요':hi.dn>lw.dn?', 하락 비율도 더 높았어요':', 하락 비율은 오히려 낮았어요'):'';
  const rows=SGG.map(g=>{const its=A.filter(n=>(SGI[n]||['기타'])[0]===g);if(!its.length)return '';const on=its.filter(n=>L.includes(n));
   return `<div class="sgr"><div class="sgh"><b>${g}</b><span class="sgd">${its.map(n=>`<i class="${L.includes(n)?'on':''}"></i>`).join('')}</span><span class="sgc">${on.length}/${its.length}</span></div>
    <div class="sgt${on.length?'':' off'}">${on.length?on.map(n=>(SGI[n]||[0,n])[1]).join('<br>'):'조용해요'}</div>${g==='금리·물가'&&on.length>=2?`<div class="sgn">물가가 오르면 금리도 따라 올라요 — ${on.length}개지만 한 줄기 이야기예요</div>`:''}</div>`;}).join('');
@@ -820,12 +820,12 @@ function nowParts(o){const P0=o.path;if(!P0||!P0.length)return null;const kp=P0[
  const W_=(MD.wn||{})[o.fcsd],FS=((MD.fc||{}).sd||{})[o.fcsd],U=FS?FS.units||[]:[],dnU=U.filter(x=>x[1]==='dn_up').sort((a,b)=>(b[4]||0)-(a[4]||0)),nUp=U.filter(x=>x[1]!=='fall').length,mineU=fcMine(U,o.fcsd,o.fcu);
  const wk=W_?W_.lit.length:0,wt=W_&&(W_.tab||{})[wk>=3?'12|3+':'12|'+wk];
  const row=(k,t,v,s,c)=>`<${k?'button':'div'} class="smr"${k?` onclick="mtGo('${k}','${re}')"`:''}><span class="smt">${t}</span><span class="smv"><b${c?` style="color:${c}"`:''}>${v}</b>${s?`<small>${s}</small>`:''}</span>${k?'<i>›</i>':''}</${k?'button':'div'}>`;
- const rows=[W_?row('sig','주의 신호',`${(W_.all||[]).length||W_.ok}개 중 ${wk}개 켜짐`,wt?`이만큼 켜졌던 달, 1년 뒤 내림 ${wt.dn}%`:''):'',
+ const rows=[W_?row('sig','주의 신호',`${(W_.all||[]).length||W_.ok}개 중 ${wk}개 켜짐`,wt?`이만큼 켜졌던 달의 1년 뒤 하락 비율 ${wt.dn}%`:''):'',
   FS?(mineU?row('flow','사고파는 흐름',(FK[mineU[1]]||FK.fall)[0],(FK[mineU[1]]||FK.fall)[1],mineU[1]==='dn_up'?'#C74343':''):row('flow','매물 쌓이는 곳',`${nUp}곳 중 ${dnU.length}곳`,dnU.slice(0,4).map(x=>fcNm(x[0]).replace(/구$/,'')).join('·')+(dnU.length>4?' 외':''),dnU.length?'#C74343':'')):'',
   row('past','최근 매수세',up?(sgOn?'꺾임 보임':'꺾임 없음'):(sgOn?'반등 보임':'반등 없음'),up?'꺾임 = 매수세가 6개월 새 뚜렷이 약해짐':'반등 = 매수세가 6개월 새 뚜렷이 강해짐',sgOn?(up?'var(--red)':'var(--green)'):'')].join('');
- const recL=rec?`<div class="obx" style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:8px"><span style="font-size:.84rem;color:var(--ink2)">이 상태였던 달의 1년 뒤</span><span style="white-space:nowrap;font-size:.88rem">평균 <b style="color:${rec.avg>=0?'var(--green)':'var(--red)'}">${pc(rec.avg)}</b> · 내림 <b>${rec.dn}%</b></span></div>`:'';
- const sum=map?{q:`지금 ${o.lab} 시장`,big:`<span id="${pid}-h1">${STG[num][3]} ${D&&D.cur!=null?D.cur+'개월째':''}</span>`,c:pcN,sub:`<span id="${pid}-h2">${STG[num][0]}</span>`,
-  v:map+recL+`<div class="sml">${rows}</div>`,line:'지나간 기록이며, 다음 움직임을 예측하지 않아요'}:{q:`지금 ${o.lab} 시장`,big:`${STG[num][3]}${D&&D.cur!=null?` <span style="font-size:.6em;color:var(--ink2);font-weight:700">${D.cur}개월째</span>`:''}`,c:pcN,sub:STG[num][0],v:recL+`<div class="sml">${rows}</div>`,line:'지나간 기록이며, 다음 움직임을 예측하지 않아요'};
+ const recL=rec?`<div class="obx" style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:8px"><span style="font-size:.84rem;color:var(--ink2)">동일 구간 ${rec.n?rec.n.toLocaleString()+'건':''}의 1년 뒤</span><span style="white-space:nowrap;font-size:.88rem">평균 <b style="color:${rec.avg>=0?'var(--green)':'var(--red)'}">${pc(rec.avg)}</b> · 하락 비율 <b>${rec.dn}%</b></span></div>`:'';
+ const sum=map?{q:`지금 ${o.lab} 시장`,big:`<span id="${pid}-h1">${STG[num][3]} ${D&&D.cur!=null?D.cur+'개월 지속':''}</span>`,c:pcN,sub:`<span id="${pid}-h2">${STG[num][0]}</span>`,
+  v:map+recL+`<div class="sml">${rows}</div>`,line:'지나간 기록이며, 다음 움직임을 예측하지 않아요'}:{q:`지금 ${o.lab} 시장`,big:`${STG[num][3]}${D&&D.cur!=null?` <span style="font-size:.6em;color:var(--ink2);font-weight:700">${D.cur}개월 지속</span>`:''}`,c:pcN,sub:STG[num][0],v:recL+`<div class="sml">${rows}</div>`,line:'지나간 기록이며, 다음 움직임을 예측하지 않아요'};
  /* 기록 탭: 지나온 길(구간 칩 + 모션) · 최근 매수 흐름 · 칸마다 1년 뒤 · 국면 이력 */
  const tg=up?(num===1?4:3):(num===3?2:1),zT=AS[STG[tg][1]],F13=P0.slice(-13),fv=F13.map(p=>p[2]),fmn=Math.min(...fv,40),fmx=Math.max(...fv,60),FX=i=>8+i*(284/(F13.length-1)),FY=v=>8+(1-(v-fmn)/((fmx-fmn)||1))*64;
  const spk=F13.length>1?`<svg viewBox="0 0 300 92" style="width:100%;display:block;margin-top:4px"><line x1="8" x2="292" y1="${FY(50).toFixed(1)}" y2="${FY(50).toFixed(1)}" stroke="var(--line)" stroke-dasharray="3 3"/>
@@ -839,8 +839,8 @@ function nowParts(o){const P0=o.path;if(!P0||!P0.length)return null;const kp=P0[
  const recS=R4.length?{q:'구간별 1년 뒤',big:'그 구간이던 달, 1년 뒤 시세',sub:'',v:R4.map(([k,z])=>{const on=k===num;return `<div style="display:grid;grid-template-columns:1fr 64px auto;gap:10px;align-items:center;padding:10px ${on?'10px':'0'};${on?'margin:2px -10px;border-radius:12px;background:'+PCQ[k][1]+';':'border-bottom:1px solid var(--line2);'}">
    <span style="font-size:.88rem;font-weight:${on?800:600};color:${PCQ[k][0]}">${STG[k][3]}${on?' <span style="font-size:.7rem;font-weight:800;color:#fff;background:'+PCQ[k][0]+';border-radius:8px;padding:1px 7px;margin-left:2px">지금</span>':''}</span>
    <span style="height:8px;border-radius:4px;background:var(--line2);position:relative"><i style="position:absolute;left:0;top:0;bottom:0;width:${Math.max(3,z.dn)}%;border-radius:4px;background:${z.dn>=40?'#C74343':'var(--ink3)'}"></i></span>
-   <span style="text-align:right;font-size:.82rem;white-space:nowrap">내림 <b>${z.dn}%</b> · <b style="color:${z.avg>=0?'var(--green)':'var(--red)'}">${pc(z.avg)}</b></span></div>`;}).join(''),
-  line:`2010년 이후 ${o.who} 그 칸이었던 달의 1년 뒤 · 막대 = 내린 비율${o.base!=null?' · 전체 평균 '+pc(o.base):''}`}:null;
+   <span style="text-align:right;font-size:.82rem;white-space:nowrap">하락 비율 <b>${z.dn}%</b> · <b style="color:${z.avg>=0?'var(--green)':'var(--red)'}">${pc(z.avg)}</b></span></div>`;}).join(''),
+  line:`2010년 이후 ${o.who} 그 구간이던 구·월의 1년 뒤 · 막대 = 하락 비율${o.base!=null?' · 전체 평균 '+pc(o.base):''}`}:null;
  let hist=null;const sq=o.seq&&o.seq[1];if(sq&&o.lv&&o.lv.length){const ys=o.seq[0],n=sq.length,m0=(+ys.slice(0,4))*12+(+ys.slice(5))-1,ym=i=>{const m=m0+i;return `${Math.floor(m/12)}.${String(m%12+1).padStart(2,'0')}`;};
   const HC={1:'#9DB7F0',2:'#F0C070',3:'#C9A8EC',4:'#B9C3CF'},CW=320,L=4,R=4,XX=i=>L+i/(n-1)*(CW-L-R),lvm=new Map(o.lv),lv=[];Array.from({length:n},(_,i)=>lvm.get(ym(i))).forEach((v,i)=>lv.push(v!=null?v:(i?lv[i-1]:null)));
   let bd='',a0=0;for(let i=1;i<=n;i++){if(i===n||sq[i]!==sq[a0]){const x2=i===n?CW-R:XX(i);bd+=`<rect x="${XX(a0).toFixed(1)}" y="0" width="${Math.max(1,x2-XX(a0)).toFixed(1)}" height="14" fill="${HC[sq[a0]]}"/>`;a0=i;}}
