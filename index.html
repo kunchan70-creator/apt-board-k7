@@ -248,7 +248,7 @@ body.hm{background:#fff!important}body.hm.tint{background:var(--bg)!important}
 
 /* ===== 10-05 v5 ===== */
 .it2.r{background:var(--pd-bg);color:var(--pd)}
-body.nodisc .disc{display:none}
+body.nodisc .disc,body:has(#splash) .disc{display:none}   /* 10-06 사용자: 스플래시 끝나고 홈 뜨기 전 0.45초 유의사항이 번쩍 → 스플래시 동안·소개(philo) 동안 숨김 */
 .hi1 h1{font-size:1.55rem;line-height:1.35;margin:8px 2px 4px;letter-spacing:-.03em}.hi1 p{margin:0 2px 16px;color:var(--ink2);font-size:.9rem}
 .wry{display:flex;flex-direction:column;gap:8px}
 .wry button{display:flex;align-items:center;gap:14px;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
@@ -625,7 +625,7 @@ body.hm{background:#fff!important}body.hm.tint{background:var(--bg)!important}
 
 /* ===== 10-05 v5 ===== */
 .it2.r{background:var(--pd-bg);color:var(--pd)}
-body.nodisc .disc{display:none}
+body.nodisc .disc,body:has(#splash) .disc{display:none}   /* 10-06 사용자: 스플래시 끝나고 홈 뜨기 전 0.45초 유의사항이 번쩍 → 스플래시 동안·소개(philo) 동안 숨김 */
 .hi1 h1{font-size:1.55rem;line-height:1.35;margin:8px 2px 4px;letter-spacing:-.03em}.hi1 p{margin:0 2px 16px;color:var(--ink2);font-size:.9rem}
 .wry{display:flex;flex-direction:column;gap:8px}
 .wry button{display:flex;align-items:center;gap:14px;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
@@ -3193,7 +3193,7 @@ function onb(){
   <div style="flex:1"></div><div class="ft"><button class="btn" onclick="${leave}firstFlow(0,true)">시작하기</button><button class="btn ghost" style="margin-top:8px" onclick="${leave}hub()">둘러보기</button><span class="sub">공개 자료 기반 · 매일 자동 갱신</span></div></div>`;}
 function endSplash(){const sp=$('#splash'); if(!sp||sp.classList.contains('out'))return; clearTimeout(SPL); sp.classList.add('out'); setTimeout(()=>{sp.remove(); topIntro(); tabBar(); const h=location.hash, m=h.match(/^#c=(.+)$/), mv=h.match(/^#v=([^,]+),(.+)$/), mb=h.match(/^#b=(obj|up|def|rb)$/), mt=h.match(/^#t=(find|anal|menu)$/), dc=x=>decodeURIComponent(x);
    if(m&&CPXK[dc(m[1])])rcard(dc(m[1])); else if(mv&&CPXK[dc(mv[1])]&&CPXK[dc(mv[2])]){CM=[dc(mv[1]),dc(mv[2])];cmp();} else if(mb)board(mb[1]); else if(mt){({find:findTab,anal:anaTab,menu:menu})[mt[1]]();} else if(!jsSeen('jsNoOrigin'))onb(); else hub();},450);}
-setTimeout(()=>{[['result','anal'],['setup','anal'],['firstFlow','anal'],['board','anal'],['cmp','anal'],['move','anal'],['jobv','anal'],['jres','anal'],['rcard','find'],['ownFind','find'],['trust','menu'],['mpage','menu'],['philo','home'],['hello','home']].forEach(([f,t])=>{const o=window[f];if(typeof o!=='function')return;window[f]=function(){tbOn(t);tint(0);document.body.classList.remove('nodisc');return o.apply(this,arguments);};});},0);
+setTimeout(()=>{[['result','anal'],['setup','anal'],['firstFlow','anal'],['board','anal'],['cmp','anal'],['move','anal'],['jobv','anal'],['jres','anal'],['rcard','find'],['ownFind','find'],['trust','menu'],['mpage','menu'],['philo','home'],['hello','home']].forEach(([f,t])=>{const o=window[f];if(typeof o!=='function')return;window[f]=function(){tbOn(t);tint(0);document.body.classList.toggle('nodisc',f==='philo'||f==='hello');return o.apply(this,arguments);};});},0);
 
 // ===== 10-05 v5: 운영자 피드백 11개 + ChatGPT 시안 — 홈 = 고민 5개(예전 '이런 게 있어?' 느낌) · 종 아이콘 제거 · '집셈을 보기 전에' = 첫 실행 + 홈 카드 · 메뉴 중복 정리 =====
 function topIntro(){const b=document.getElementById('tpi');if(b)b.remove();}   // 알림 기능이 없으니 아이콘도 없음
