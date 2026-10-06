@@ -187,7 +187,7 @@ body.notab .tabbar,body.notab .disc{display:none}body.notab{padding-bottom:40px}
 
 /* ===== 10-05 v4: ChatGPT 시안·설계(정보 구조·색 체계) — 파랑은 CTA·선택·링크·현재 위치에만 ===== */
 :root{--bg:#F5F7FA;--surface:#fff;--surface2:#F2F4F7;--ink:#171A1F;--ink2:#667085;--ink3:#98A2B3;--line:#E6EAF0;--line2:#EEF1F5;--blue-bg:#EEF4FF;--green:#16A05D;--red:#E5484D;
- --pu-bg:#EAF7F0;--pu:#16835A;--pp-bg:#FFF4DE;--pp:#C97900;--pd-bg:#FDECEC;--pd:#C74343;--pb-bg:#EEF2F7;--pb:#536273;--shadow:0 1px 3px rgba(16,24,40,.04)}
+ --pu-bg:#EAF7F0;--pu:#16835A;--pp-bg:#FFF4DE;--pp:#C97900;--pd-bg:#FDECEC;--pd:#C74343;--pb-bg:#EEF2F7;--pb:#536273;--p1:#2B5BD7;--p1-bg:#E6EEFF;--p2:#B86E00;--p2-bg:#FFF1DC;--p3:#7A45C9;--p3-bg:#F1E9FB;--p4:#5A6678;--p4-bg:#EEF1F5;--shadow:0 1px 3px rgba(16,24,40,.04)}
 body.hm{background:#fff!important}body.hm.tint{background:var(--bg)!important}
 .btn{box-shadow:none}
 .rk{background:var(--surface2);color:var(--ink2)}.rk.r1{background:var(--ink);color:#fff}
@@ -215,7 +215,7 @@ body.hm{background:#fff!important}body.hm.tint{background:var(--bg)!important}
 .fvr+.fvr{border-top:1px solid var(--line2)}
 .strip{display:flex;align-items:center;gap:12px;width:100%;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);text-decoration:none}
 .strip .t{flex:1;min-width:0}.strip .t small{display:block;font-size:.76rem;color:var(--ink2)}.strip .t b{display:block;font-size:1.02rem;margin-top:2px}.strip .t em{display:block;font-style:normal;font-size:.74rem;color:var(--ink3);margin-top:2px}
-.ph1{color:var(--pu)}.ph2{color:var(--pp)}.ph3{color:var(--pd)}.ph4{color:var(--pb)}
+.ph1{color:var(--p1)}.ph2{color:var(--p2)}.ph3{color:var(--p3)}.ph4{color:var(--p4)}
 /* 목록형 화면(단지찾기·분석·메뉴) */
 .pg h1{font-size:1.5rem;margin:6px 2px 4px}.pg .lead{font-size:.88rem;color:var(--ink2);margin:0 2px 14px}
 .grp{margin:20px 2px 8px;font-size:.84rem;font-weight:800;color:var(--ink2)}
@@ -248,7 +248,7 @@ body.hm{background:#fff!important}body.hm.tint{background:var(--bg)!important}
 
 /* ===== 10-05 v5 ===== */
 .it2.r{background:var(--pd-bg);color:var(--pd)}
-body.nodisc .disc{display:none}
+body.nodisc .disc,body:has(#splash) .disc{display:none}   /* 10-06 사용자: 스플래시 끝나고 홈 뜨기 전 0.45초 유의사항이 번쩍 → 스플래시 동안·소개(philo) 동안 숨김 */
 .hi1 h1{font-size:1.55rem;line-height:1.35;margin:8px 2px 4px;letter-spacing:-.03em}.hi1 p{margin:0 2px 16px;color:var(--ink2);font-size:.9rem}
 .wry{display:flex;flex-direction:column;gap:8px}
 .wry button{display:flex;align-items:center;gap:14px;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
@@ -260,8 +260,8 @@ body.nodisc .disc{display:none}
 
 <div class="card">
 <h2>무엇을 위한 계산인가</h2>
-<p style="margin:6px 0 0;line-height:1.7">집셈은 <b>시세를 맞히는 도구가 아니라, 같은 기준으로 셈하는 도구</b>입니다. 매수를 앞둔 사람이 실제로 결정해야 하는 것은 “시장이 오를까”가 아니라 “내 자본으로 매수할 수 있는 집 가운데 어디가 순이익이 높은가”입니다. 그래서 집셈은 시장 전체의 방향에 베팅하지 않고, 서울·경기·인천 8,365개 단지를 <b>같은 시점·같은 자금 조건</b>에 놓고 5년 뒤 순이익의 범위를 계산합니다.</p>
-<div class="tags"><span class="tag gray">서울·경기·인천 8,365곳</span><span class="tag gray">자기자본·대출·세금·이자 반영</span><span class="tag amber">시장 방향 예측 아님</span></div>
+<p style="margin:6px 0 0;line-height:1.7">집셈은 <b>시세를 맞히는 도구가 아니라, 같은 기준으로 셈하는 도구</b>입니다. 매수를 앞둔 사람이 실제로 결정해야 하는 것은 “시장이 오를까”가 아니라 “내 자본으로 매수할 수 있는 집 가운데 어디가 순이익이 높은가”입니다. 그래서 집셈은 시장 전체의 방향에 베팅하지 않고, 서울·경기·인천 8,369개 단지를 <b>같은 시점·같은 자금 조건</b>에 놓고 5년 뒤 순이익의 범위를 계산합니다.</p>
+<div class="tags"><span class="tag gray">서울·경기·인천 8,369곳</span><span class="tag gray">자기자본·대출·세금·이자 반영</span><span class="tag amber">시장 방향 예측 아님</span></div>
 
 <h2>세 가지 원칙</h2>
 <div style="border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;margin:8px 0"><b>① 시장 수준은 맞히지 않습니다</b><div class="sub" style="font-size:.86rem;line-height:1.6;margin-top:3px">5년 뒤 시장이 얼마나 오르내릴지는 과거 어떤 지표로도 안정적으로 맞힐 수 없었습니다(국면마다 신호의 부호가 뒤집힘). 그래서 집셈은 과거 16번의 매수 시점이 각각 5년 뒤 어떻게 됐는지를 그 비율대로 섞어 <b>비관~낙관 범위</b>로만 둡니다.</div></div>
@@ -310,7 +310,7 @@ body.nodisc .disc{display:none}
 <div class="kv"><span class="k">단지 정보</span><span class="v">K-apt 공동주택 정보 · 건축물대장(건축HUB) · 브이월드 좌표</span></div>
 <div class="kv"><span class="k">교통·학군</span><span class="v">공공 버스·지하철 노선망 · OpenStreetMap 역 좌표 · 교육청 학구도 · 학교알리미 진학률(경기)</span></div>
 <div class="kv"><span class="k">정비사업</span><span class="v">서울 정비사업 정보몽땅 · 경기데이터드림 · 건축HUB 사업계획승인 · 조합 공고(분담금 사례)</span></div>
-<div class="kv"><span class="k">갱신</span><span class="v">매일 실거래·지수 갱신, 매주 월요일 모델 재적합(최근 2026-10-05). 매주 평가를 저장해 12·24·60개월 뒤 실제 실거래와 대조합니다.</span></div>
+<div class="kv"><span class="k">갱신</span><span class="v">매일 실거래·지수 갱신, 매주 월요일 모델 재적합(최근 2026-10-07). 매주 평가를 저장해 12·24·60개월 뒤 실제 실거래와 대조합니다.</span></div>
 <div class="tags"><span class="tag blue">전부 공개 자료</span><span class="tag blue">사람이 손으로 매긴 점수 없음</span></div>
 
 <h2>유의사항</h2>
