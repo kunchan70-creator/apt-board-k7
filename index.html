@@ -3206,32 +3206,31 @@ function hub(){
  // 10-05 사용자 '이 앱의 최대 장점 = 지금 어디를 사면 좋은가' + ChatGPT: 기본 조건 순위를 그냥 띄우면 '추천'으로 읽힘 → 맨 위는 '내 조건으로 비교하는 기능' 자체,
  //   조건을 저장한 사람에게만 그 조건의 상위 3곳(결과형). 추천·BEST·지금 사세요 같은 말은 쓰지 않는다
  const sv=hasSaved(), nC=HNC||(HNC=new Set(R.map(r=>r.no||r.n+r.gu)).size);
- const hero=sv?`<button class="hero2" onclick="result()"><small>내 조건 기준 · 5년 순이익 순</small><b style="font-size:1.12rem">저장한 조건으로 셈한 상위 단지</b><span id="hTop" class="d">셈하는 중…</span><span class="cta">전체 순위 보기 ›</span></button>`
+ const hero=sv?`<div class="hero2" style="cursor:default"><div id="hTop"><small>내 분석 결과</small><b style="font-size:1.12rem">셈하는 중…</b></div></div>`
   :`<button class="hero2" onclick="firstFlow(0)"><small>집셈의 핵심</small><b style="font-size:1.18rem;line-height:1.4">내 조건에서 어디가 유리한지<br>비교해 보세요</b><span class="d">자본·대출·세금을 넣으면 ${nC.toLocaleString()}개 단지의 5년 순이익을 같은 기준으로 비교해요</span><span class="cta">내 조건으로 순위 보기 ›</span></button>`;
  app.innerHTML=`${hero}<div class="sec2" style="margin-top:22px"><b>다른 고민이 있나요?</b></div>
  <div class="wry">${WRY.filter(w=>w[4]!=='first').map(([n,c,t,d,k])=>`<button onclick="startPath('${k}')">${itile(n,c,48)}<span class="t"><b>${t}</b><span>${d}</span></span><i>›</i></button>`).join('')}</div>
  ${m0?`<div class="sec2"><b>지금, 시장은 어떤가요?</b></div>
   <a class="strip" href="market.html"><span class="t"><b><span class="ph${m0[1].st}">${m0[0]} ${(PHC[m0[1].st]||['-'])[0]}</span> · ${m0[1].m||'-'}개월째</b><small style="margin-top:2px">${PL[m0[1].st]||''}</small><em>${mk.slice(1).map(([r,x])=>`${r} ${(PHC[x.st]||['-'])[0]}`).join(' · ')}</em></span>${miniQ(+m0[1].st,44)}<span style="color:var(--ink3)">›</span></a>`:''}
  <button class="strip why2" onclick="philo(0,0)">${itile('shield','b',40)}<span class="t"><b style="font-size:.95rem">집셈은 이런 기준으로 분석합니다</b><small>시세는 못 맞히지만, 분명한 것에 집중해요</small></span><span style="color:var(--ink3)">›</span></button>`
- if(sv)setTimeout(()=>{const el=document.getElementById('hTop');if(!el)return;const T=heroTop();el.innerHTML=T.length?T.map((r,i)=>`<span style="display:flex;justify-content:space-between;gap:8px;padding:5px 0;${i?'border-top:1px solid #DCE6FB;':''}color:var(--ink)"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i+1}. ${r.n} <span style="color:var(--ink3);font-size:.8rem">${r.gu||''} · ${r.b}㎡</span></span><b class="num" style="display:inline;margin:0;font-size:.95rem;white-space:nowrap;color:${r.F.p5>=0?'var(--green)':'var(--red)'}">${ab(r.F.p5)}</b></span>`).join(''):'조건에 맞는 단지가 없어요';},30);}
-// 10-06 사용자: '각 아파트를 사는 사람들의 연봉·대출을 비율로 만들면 지금 부담이 어느 선까지 왔는지 알 수 있지 않나' —
-//   실제 매수자 소득은 공개 자료에 없다 → 지금 대출 규제(DT.rules: LTV·가격별 한도·DSR 40%+스트레스 금리)와 지금 주담대 금리(DT.rate.loan)로
-//   이 집을 살 때 필요한 현금·연소득을 셈하고, 소득 5분위 평균 가구(DT.afq)가 첫 집(금융자산)·갈아타기(순자산)로 닿는지 보여 준다
-function afAnn(r){r=r/1200;return r/(1-Math.pow(1+r,-360));}
-function afCap(p){const C=(DT.rules||{}).caps||[];for(const [lim,c] of C)if(p<=lim)return c;return C.length?C[C.length-1][1]:Infinity;}
-function afMax(cash,inc,ltv){const L=DT.rules,m=+(DT.rate||{}).loan||4.5,ld=L.dsr*inc/(12*afAnn(m+L.stress));const g=[0,600000];for(let i=0;i<50;i++){const p=(g[0]+g[1])/2;if(cash+Math.min(ltv*p,afCap(p),ld)>=p)g[0]=p;else g[1]=p;}return g[0];}
-function afBox(r){const L=DT.rules,A=DT.afq;if(!L||!L.dsr||!A||!r||!r.p||r.as)return '';
- const P=r.p,ltv=r.ltv||L.ltv,m=+(DT.rate||{}).loan||4.5,loan=Math.min(ltv*P,afCap(P)),cash=P-loan,inc=loan*12*afAnn(m+L.stress)/L.dsr;
- const by=(ci)=>{const q=A.q.findIndex(x=>afMax(x[ci],x[0],ltv)>=P);return q<0?null:q+1;},f1=by(1),f2=by(2);
- const qn=q=>q==null?'<b style="color:var(--red)">평균 가구로는 어려워요</b>':`<b>소득 ${q}분위</b>부터`;
- const lim=ltv*P<=afCap(P)?`LTV ${Math.round(ltv*100)}%`:`가격별 한도 ${eok(afCap(P))}억`;
- return `<div style="display:flex;justify-content:space-between;gap:10px;font-size:.88rem;padding:4px 0"><span style="color:var(--ink2)">대출 최대</span><b>${eok(loan)}억 <span style="font-weight:500;color:var(--ink3);font-size:.78rem">· ${lim}</span></b></div>
-  <div style="display:flex;justify-content:space-between;gap:10px;font-size:.88rem;padding:4px 0"><span style="color:var(--ink2)">필요한 현금</span><b>${eok(cash)}억</b></div>
-  <div style="display:flex;justify-content:space-between;gap:10px;font-size:.88rem;padding:4px 0"><span style="color:var(--ink2)">그 대출에 필요한 연소득</span><b>연 ${(Math.round(inc/100)*100).toLocaleString()}만 원</b></div>
-  <div style="margin-top:8px;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:.84rem;line-height:1.75">
-   <div style="display:flex;justify-content:space-between;gap:8px"><span>첫 집으로 <span style="color:var(--ink3);font-size:.76rem">(금융자산으로)</span></span><span>${qn(f1)}</span></div>
-   <div style="display:flex;justify-content:space-between;gap:8px"><span>갈아타기로 <span style="color:var(--ink3);font-size:.76rem">(집 포함 순자산으로)</span></span><span>${qn(f2)}</span></div></div>
-  <div class="sub" style="font-size:.72rem;margin-top:6px;line-height:1.55">${L.name||'지금 대출 규제'} · 주담대 ${m}%에 스트레스 금리 +${L.stress}%p로 DSR ${Math.round(L.dsr*100)}% · 분위 = 전국 가구 소득 5분위 평균(가계금융복지조사 ${A.yr}) · 실제 매수자 소득이 아니라 규제로 셈한 선이에요</div>`;}
+ if(sv)setTimeout(()=>{const el=document.getElementById('hTop');if(el)el.innerHTML=heroMine();},30);}
+// 10-06 사용자: 매수 분석을 한 번 하면 홈에 목록 세 줄로만 나와 안 중요해 보인다 → '내 분석 결과' 카드: 조건 요약·1위 크게(5년 순이익·나쁠 때~좋을 때)·2·3위 줄·전체 순위
+function heroMine(){const T=heroTop();if(!T.length)return `<small>내 분석 결과</small><b style="font-size:1.1rem">조건에 맞는 단지가 없어요</b><span class="cta" onclick="setup()" style="cursor:pointer">조건 바꾸기 ›</span>`;
+ const g=CF.regions||[],rg=!g.length?'서울·경기·인천 전체':g.length<=2?g.map(x=>typeof short==='function'?short(x):x).join(' · '):`${typeof short==='function'?short(g[0]):g[0]} 외 ${g.length-1}곳`;
+ const cond=[rg,CF.cash!=null?'자기자본 '+eok(CF.cash)+'억':null,CF.useU?'실거주':'전세 놓기'].filter(Boolean),a=T[0],F=a.F,sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억';
+ const hmn=Math.min(0,F.p1),hmx=Math.max(0,F.p9),W=x=>((x-hmn)/((hmx-hmn)||1)*100).toFixed(1);
+ const chip=t=>`<span style="padding:4px 9px;border-radius:999px;background:#fff;border:1px solid #DCE6FB;font-size:.74rem;font-weight:700;color:var(--ink2)">${t}</span>`;
+ return `<div style="display:flex;justify-content:space-between;align-items:center"><small>내 분석 결과 · 5년 순이익 순</small><button onclick="setup()" style="border:0;background:none;color:var(--ink3);font:inherit;font-size:.8rem;cursor:pointer;padding:0">조건 바꾸기 ›</button></div>
+  <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px">${cond.map(chip).join('')}</div>
+  <button onclick="rcard('${a.no||''}',null,${a.b})" style="display:block;width:100%;margin-top:12px;padding:14px;border:0;border-radius:16px;background:#fff;text-align:left;font:inherit;color:var(--ink);cursor:pointer;box-shadow:0 2px 10px rgba(43,107,243,.08)">
+   <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><span style="font-size:.74rem;font-weight:800;color:var(--blue)">1위</span><span style="font-size:.74rem;color:var(--ink3)">단지 분석 ›</span></div>
+   <div style="font-size:1.18rem;font-weight:800;margin-top:2px;word-break:keep-all">${a.n}</div>
+   <div style="font-size:.8rem;color:var(--ink2);margin-top:2px">${a.gu||''} · ${a.b}㎡ · 시세 ${eok(a.p)}억</div>
+   <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:12px"><span style="font-size:.82rem;color:var(--ink2)">5년 순이익 <span style="color:var(--ink3)">보통일 때</span></span><b class="num" style="display:inline;margin:0;font-size:1.6rem;color:${F.p5>=0?'var(--green)':'var(--red)'}">${sg(F.p5)}</b></div>
+   <div style="position:relative;height:8px;border-radius:4px;background:var(--line2);margin-top:10px"><i style="position:absolute;top:0;bottom:0;left:${W(F.p1)}%;width:${(W(F.p9)-W(F.p1)).toFixed(1)}%;border-radius:4px;background:#BFD3FA"></i><i style="position:absolute;top:-3px;width:3px;height:14px;border-radius:2px;left:${W(F.p5)}%;background:var(--blue)"></i>${hmn<0?`<i style="position:absolute;top:-2px;bottom:-2px;left:${W(0)}%;width:1px;background:var(--ink3)"></i>`:''}</div>
+   <div style="display:flex;justify-content:space-between;font-size:.74rem;color:var(--ink3);margin-top:5px"><span>나쁠 때 ${sg(F.p1)}</span><span>좋을 때 ${sg(F.p9)}</span></div></button>
+  ${T.slice(1).map((r,i)=>`<button onclick="rcard('${r.no||''}',null,${r.b})" style="display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;margin-top:8px;padding:11px 14px;border:0;border-radius:14px;background:rgba(255,255,255,.7);font:inherit;color:var(--ink);cursor:pointer;text-align:left"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><span style="font-size:.8rem;font-weight:800;color:var(--ink3);margin-right:6px">${i+2}위</span>${r.n} <span style="color:var(--ink3);font-size:.78rem">${r.gu||''} · ${r.b}㎡</span></span><b class="num" style="display:inline;margin:0;font-size:.95rem;white-space:nowrap;color:${r.F.p5>=0?'var(--green)':'var(--red)'}">${sg(r.F.p5)}</b></button>`).join('')}
+  <span class="cta" onclick="result()" style="cursor:pointer">전체 순위 보기 ›</span>`;}
 let HNC=0;
 function heroTop(){try{const W=R.filter(ok);W.forEach(r=>r.F=fin(r));return W.filter(r=>!isMid(r)).sort((a,b)=>lscore(b)-lscore(a)).slice(0,3);}catch(e){return [];}}
 // 메뉴: 중복 없이(데이터와 검증 하나 · 고객센터 하나 · 소개/안내 다시 보기 없음)
