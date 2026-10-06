@@ -927,7 +927,7 @@ function aScreens(){const a=MD.a.find(x=>x.n===AN);if(!a)return [];
   {q:`${a.n} 시세`,big:STREAK(a.st,'개월'),c:'',sub:a.y!=null?`1년 ${pc(a.y)}`:'새로 생긴 구예요',v:line(pts,{lab:1,mark:pk,pre:"'"}),
    line:a.pk?(a.pk>=100?`지난 고점보다 ${a.pk-100}% 높아요`:`지난 고점의 ${a.pk}%예요`):''};
  const N=areaPhase(a);AHT=!!N;if(!N)return [pr];if(MT==='ind')MT='sum';
- const L=(({sum:[pr,N.sum],sig:[N.sig],flow:[N.flow],past:N.past})[MT]||[pr,N.sum]).filter(Boolean);return L.length?L:[{q:'',big:'아직 자료가 없어요',c:'var(--ink3)'}];}   /* 10-02 사용자: 맨 밑 거래량은 왜 있나 → 뺌(시세·국면만) */
+ const L=(({sum:[N.sum,pr],sig:[N.sig],flow:[N.flow],past:N.past})[MT]||[N.sum,pr]).filter(Boolean);   /* 10-06 사용자: 우리 동네도 시·도처럼 지금 상태 먼저, 시세는 그 아래 */return L.length?L:[{q:'',big:'아직 자료가 없어요',c:'var(--ink3)'}];}   /* 10-02 사용자: 맨 밑 거래량은 왜 있나 → 뺌(시세·국면만) */
 let AHT=false;
 function aGo(){if(ANM.ana){anStop('ana');delete ANM.ana;}const sc=aScreens().filter(Boolean);if(!sc.length)return;const bx=$m('areabox');bx.innerHTML=(AHT?mtBar('a'):'')+'<div id="amtp"></div>';mountAll($m('amtp'),sc);setTimeout(()=>{anInit();mvStart();},0);}   /* 09-30: 지우기를 새로 그리기 전에(뒤에 두면 방금 만든 애니메이션 상태까지 지워 동네 지도가 안 그려짐) */
 function show(n){AN=n;$m('asug').innerHTML='';$m('aq').value=n;try{localStorage.setItem('mkArea',n);}catch(e){}aGo();}
