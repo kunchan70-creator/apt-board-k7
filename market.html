@@ -790,7 +790,7 @@ function sigSec(sd){const W=(MD.wn||{})[sd];if(!W)return null;const L=W.lit||[],
   v:(hi&&lw?`<div class="obx"><b style="font-size:.92rem">많이 켜지면 꼭 내렸을까?</b><div class="sub" style="font-size:.74rem;margin:2px 0 4px">${sd} · 그 뒤 1년 실제 집값</div>${obar(`3개 이상 켜진 ${hi.n}달`,hi)}${obar(`2개 이하 ${lw.n}달`,lw)}<div style="font-size:.86rem;margin-top:10px;font-weight:700;word-break:keep-all">${cmpT}</div></div>`:'')+`<div style="margin-top:8px">${rows}</div>`,
   line:`신호는 '조심할 이유'의 목록이지 하락 예고가 아니에요${W.asof?` · ${W.asof} 기준`:''}`};}
 /* 사고파는 흐름: 가격 오르는 곳 중 거래·매물 방향 — 칩 지도 */
-const FK={dn_up:['매물 쌓임','거래↓ 매물↑','파는 쪽이 급해지는 중','#C74343','#FDECEC'],dn_dn:['서로 버팀','거래↓ 매물↓','서로 눈치 보는 중','#536273','#EEF2F7'],up_dn:['매물 소화','거래↑ 매물↓','나온 집이 팔리는 중','#2B6BF3','#E8F0FE'],up_up:['모두 활발','거래↑ 매물↑','사고팔기 모두 활발','#16835A','#EAF7F0'],fall:['가격 내림','6개월 시세 내림','','#8A94A6','#F2F4F6']};
+const FK={dn_up:['매물 쌓임','거래↓ 매물↑','파는 쪽이 급해지는 중','#C74343','#FDECEC'],dn_dn:['서로 버팀','거래↓ 매물↓','서로 눈치 보는 중','#536273','#EEF2F7'],up_dn:['매물 소화','거래↑ 매물↓','나온 집이 팔리는 중','#2B6BF3','#E8F0FE'],up_up:['모두 활발','거래↑ 매물↑','사고팔기 모두 활발','#16835A','#EAF7F0'],fall:['시세 하락','6개월 시세 하락','','#8A94A6','#F2F4F6']};
 const fcNm=x=>x.replace(/^.+시 /,'');
 function fcMine(U,sd,un){return un?U.find(x=>x[0]===un||un.endsWith(' '+x[0])||un===sd+' '+x[0]):null;}
 function fcPick(b){const g=b.parentNode,x=g.nextElementSibling;if(x){x.textContent=b.dataset.t;x.classList.add('on');}g.querySelectorAll('.fcc').forEach(c=>c.classList.toggle('sel',c===b));}
@@ -833,7 +833,7 @@ function nowParts(o){const P0=o.path;if(!P0||!P0.length)return null;const kp=P0[
   <circle cx="${FX(F13.length-1).toFixed(1)}" cy="${FY(fv[fv.length-1]).toFixed(1)}" r="4" fill="${sgOn?(up?'var(--red)':'var(--green)'):'var(--ink)'}"/>
   <text x="8" y="88" font-size="10" fill="var(--ink3)">${F13[0][0]}</text><text x="292" y="88" font-size="10" fill="var(--ink3)" text-anchor="end">${F13[F13.length-1][0]}</text></svg>`:'';
  const turn={q:'최근 매수세',big:up?(sgOn?'꺾임 보임':'꺾임 없음'):(sgOn?'반등 보임':'반등 없음'),c:sgOn?(up?'var(--red)':'var(--green)'):'',sub:`최근 6개월 매수세 ${({'+':'강해짐','-':'약해짐','=':'비슷함'})[mv]||'-'}`,
-  v:spk+`<div class="obx" style="font-size:.85rem;line-height:1.65;word-break:keep-all"><b>${up?'꺾임':'반등'}</b> = 매수세가 6개월 새 뚜렷이 ${up?'약해지는':'강해지는'} 것. 이어지면 <b style="color:${PCQ[tg][0]}">${STG[tg][3]}</b> 구간으로 넘어가요${zT?`<br><span style="color:var(--ink2)">그 칸이던 달의 1년 뒤 평균 <b style="color:${zT.avg>=0?'var(--green)':'var(--red)'}">${pc(zT.avg)}</b> · 내림 ${zT.dn}%</span>`:''}</div>`,
+  v:spk+`<div class="obx" style="font-size:.85rem;line-height:1.65;word-break:keep-all"><b>${up?'꺾임':'반등'}</b> = 매수세가 6개월 새 뚜렷이 ${up?'약해지는':'강해지는'} 것. 이어지면 <b style="color:${PCQ[tg][0]}">${STG[tg][3]}</b> 구간으로 넘어가요${zT?`<br><span style="color:var(--ink2)">그 구간이던 구·월의 1년 뒤 평균 <b style="color:${zT.avg>=0?'var(--green)':'var(--red)'}">${pc(zT.avg)}</b> · 하락 비율 ${zT.dn}%</span>`:''}</div>`,
   line:'매수세 = 매수우위지수 · 주택가격전망 심리 · 거래량 합성'};
  const R4=[1,2,3,4].map(k=>[k,AS[STG[k][1]]]).filter(x=>x[1]);
  const recS=R4.length?{q:'구간별 1년 뒤',big:'그 구간이던 달, 1년 뒤 시세',sub:'',v:R4.map(([k,z])=>{const on=k===num;return `<div style="display:grid;grid-template-columns:1fr 64px auto;gap:10px;align-items:center;padding:10px ${on?'10px':'0'};${on?'margin:2px -10px;border-radius:12px;background:'+PCQ[k][1]+';':'border-bottom:1px solid var(--line2);'}">
