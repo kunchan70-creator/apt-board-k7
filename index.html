@@ -2692,7 +2692,7 @@ function planMore(r,F){const kv=(k,v)=>`<div class="kv"><span class="k">${k}</sp
  {if(tmf(r.gu))h+=sec('단기 국면',`<a class="kv" style="text-decoration:none;color:inherit" href="market.html#a=${encodeURIComponent(r.gu)}"><span class="k">${(r.gu||'').split(' ').pop()} 국면 해석기</span><span class="v">시장에서 보기 ›</span></a>`);}   // 09-29 사용자: 단지에 '오름'이라 단정하지 않고, 시장 화면 국면 해석기(과거 비슷한 상태의 결과 비율)로 안내
  h+=sec('이 가격에 매수한다면',`<div id="ppfb-${r._i}" style="margin-bottom:8px"></div><div class="fr" style="border:0;padding-top:4px"><span><b>매수 예정가</b><em>계약하려는 가격을 넣으면 다시 셈해요</em></span><label><input type="text" inputmode="decimal" autocomplete="off" placeholder="${(r.p/1e4).toFixed(2)}" oninput="ppCalc(${r._i},this)" id="ppv-${r._i}"><i>억</i></label></div><div class="fr" style="border:0;padding-top:0"><span><b>층</b><em>층을 넣으면 그 층대 정상가와 급매 선을 같이 봐요</em></span><label><input type="text" inputmode="numeric" autocomplete="off" placeholder="예: 12" id="ppf-${r._i}" oninput="ppCalc(${r._i},document.getElementById('ppv-${r._i}'))"><i>층</i></label></div><div id="pp-${r._i}"></div>`);
  let more='';
- more+=fold('입지 '+r.sc+' · 단지 '+(r.bs??'-')+' — 점수 근거',why(r));
+ more+=fold('점수 근거 — 입지 '+r.sc+' · 건물 몫 '+(r.bs??'-')+' (위 육각형과 다른 셈)',why(r));
  {const past=(r.h5&&(r.h5[0]!=null||r.h5[1]!=null)?kv('최근 5년 상승률 (단지 / 구)',(r.h5[0]!=null?pc(r.h5[0]):'-')+' / '+(r.h5[1]!=null?pc(r.h5[1]):'-')):'')
    +(r.dd!=null?kv('2021 고점 → 2022~23 저점',pc(r.dd)):'');
   more+=fold('지난 가격 흐름',past);}
