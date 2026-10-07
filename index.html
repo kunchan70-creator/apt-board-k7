@@ -906,12 +906,12 @@ function vPrice(r){   // 5년 시세 범위 막대 + 오를 확률
   <div class="sub" style="display:flex;justify-content:space-between;font-size:.72rem"><span>하위 10% ${sg(P.p1)}</span><span>상위 10% ${sg(P.p9)}</span></div><div style="margin-top:6px">${tpill(r,3)}</div></div>`;}
 function vChips(c){const [g,b]=goodBad(c);return `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">`+g.map((x,k)=>`<span class="sp" style="padding:5px 10px;border-radius:999px;background:var(--green-bg);color:var(--green);font-size:.78rem;font-weight:700;${D_(500+k*120)}">▲ ${x}</span>`).join('')+b.map((x,k)=>`<span class="sp" style="padding:5px 10px;border-radius:999px;background:var(--surface2);color:var(--ink2);font-size:.78rem;font-weight:700;${D_(800+k*120)}">▼ ${x}</span>`).join('')+`</div>`;}
 function vWater(pp,L){   // 매도가 → 대출 → 중개보수 → 내 자본(폭포 막대)
- const fee=Math.round(pp*.004), K=Math.max(0,pp-L-fee), mx=pp, row=(t,v,off,col,d)=>`<div style="display:grid;grid-template-columns:5.5em 1fr 4.2em;gap:8px;align-items:center;margin:6px 0"><span style="font-size:.78rem">${t}</span><span style="position:relative;height:16px"><i class="sg" style="position:absolute;top:0;bottom:0;left:${off/mx*100}%;width:${Math.max(.8,v/mx*100)}%;background:${col};border-radius:4px;${D_(d)}"></i></span><b style="font-size:.78rem;text-align:right">${eok(v)}억</b></div>`;
+ const fee=Math.round(brk(pp)), K=Math.max(0,pp-L-fee), mx=pp, row=(t,v,off,col,d)=>`<div style="display:grid;grid-template-columns:5.5em 1fr 4.2em;gap:8px;align-items:center;margin:6px 0"><span style="font-size:.78rem">${t}</span><span style="position:relative;height:16px"><i class="sg" style="position:absolute;top:0;bottom:0;left:${off/mx*100}%;width:${Math.max(.8,v/mx*100)}%;background:${col};border-radius:4px;${D_(d)}"></i></span><b style="font-size:.78rem;text-align:right">${eok(v)}억</b></div>`;
  return `<div style="margin-top:10px">${row('매도 금액',pp,0,'var(--ink3)',200)}${row('− 대출',L,K+fee,'var(--red)',500)}${row('− 중개보수',fee,K,'var(--red)',700)}${row('= 내 자본',K,0,'var(--blue)',950)}</div>`;}
 function vKeepMove(a){   // 유지 vs 이동 상위 3 (mvRun 과 같은 계산)
- const c=CPXK[a.C], h=c.rows.slice().sort((x,y)=>Math.abs(x.b-84)-Math.abs(y.b-84))[0], loan=a.L||0, i=(CF.irate==null?DT.rate.loan:CF.irate)/100, K=Math.round(h.p*(1-.004)-loan);
+ const c=CPXK[a.C], h=c.rows.slice().sort((x,y)=>Math.abs(x.b-84)-Math.abs(y.b-84))[0], loan=a.L||0, i=(CF.irate==null?DT.rate.loan:CF.irate)/100, K=Math.round(h.p-brk(h.p)-loan);
  const kc=CF.cash,ku=CF.useU,kg=CF.regions; CF.cash=K;CF.useU=true;CF.regions=[]; const keep=Math.round(h.v5-h.p-(h.hold||0)-loan*i*h.T-repair(h));
- const V_=R.filter(r=>r.no!==c.no).filter(ok).map(r=>(r.F=fin(r),r)).filter(r=>r.F.ok).map(r=>({n:r.n,b:r.b,g:r.F.p5-Math.round(h.p*.004),w:r.F.p1-Math.round(h.p*.004)})).sort((x,y)=>(y.g+y.w)-(x.g+x.w)).slice(0,3);
+ const V_=R.filter(r=>r.no!==c.no).filter(ok).map(r=>(r.F=fin(r),r)).filter(r=>r.F.ok).map(r=>({n:r.n,b:r.b,g:r.F.p5-Math.round(brk(h.p)),w:r.F.p1-Math.round(brk(h.p))})).sort((x,y)=>(y.g+y.w)-(x.g+x.w)).slice(0,3);
  CF.cash=kc;CF.useU=ku;CF.regions=kg; R.forEach(r=>r.F=null);
  const L_=[['지금 집 유지',keep,'var(--ink3)']].concat(V_.map(x=>[x.n+' '+x.b+'㎡',x.g,'var(--blue)'])), mx=Math.max(...L_.map(x=>Math.abs(x[1])),1), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억';
  return `<div style="margin:4px 0 14px">`+L_.map(([t,v,col],k)=>`<div style="margin:8px 0"><div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px"><span style="font-weight:${k?600:800};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:70%">${t}</span><b class="${v>=0?'pos':'neg'}">${sg(v)}</b></div><div style="height:14px;background:var(--line2);border-radius:6px;overflow:hidden"><i class="sg" style="display:block;height:100%;width:${Math.abs(v)/mx*100}%;background:${col};border-radius:6px;${D_(300+k*200)}"></i></div></div>`).join('')+`<div class="sub" style="font-size:.7rem">5년 순이익 중앙값 · 대출이자·세금·수리비 반영 · 이동은 매도 비용 반영 · 지역 제한 없이 계산</div></div>`;}
@@ -928,7 +928,7 @@ const CSTEP={
  move:{title:'갈아타기 상담',done:'보유와 이동,<br>비교 계산을 준비했습니다',steps:[
   {id:'C',q:'현재 보유 중인<br>단지를 검색해 주세요',h:'단지명 또는 동 이름으로 검색합니다.',search:1,f:k=>{const c=CPXK[k],r=bestRow(c)||c.rows[0],F=fin(r),s1=GRS(F.sv1),s5=GRS(F.sv5),s9=GRS(F.sv9);return ['지금 시세 ('+r.b+'㎡)',eok(r.p)+'억',c.n+' · '+c.gu,'최근 실거래 기준 · 5년 뒤 범위는 과거 실거래 20년으로 셈함',r.as?'':`<div style="margin-top:10px;font-size:.9rem">계속 살면 5년 뒤 중앙값 <b>${eok(s5)}억</b></div>`+pbar(r.p,s1,s5,s9)];}},
   {id:'L',q:'남은 주택담보대출을<br>입력해 주세요',h:'매도 후 쓸 수 있는 자기자본을 계산합니다.',money:'예: 2억 (없으면 0)',
-   f:v=>{const c=CPXK[CN.a.C],b=c.rows.slice().sort((x,y)=>Math.abs(x.b-84)-Math.abs(y.b-84))[0],K=Math.max(0,Math.round(b.p*(1-.004)-v));return ['매도 후 가용 자기자본(추정)',eok(K)+'억',`${b.b}㎡ 최근 실거래 ${eok(b.p)}억 기준`,'1주택 양도소득세 비과세 가정 · 이사 비용 제외',vWater(b.p,v)];}}],
+   f:v=>{const c=CPXK[CN.a.C],b=c.rows.slice().sort((x,y)=>Math.abs(x.b-84)-Math.abs(y.b-84))[0],K=Math.max(0,Math.round(b.p-brk(b.p)-v));return ['매도 후 가용 자기자본(추정)',eok(K)+'억',`${b.b}㎡ 최근 실거래 ${eok(b.p)}억 기준`,'1주택 양도소득세 비과세 가정 · 이사 비용 제외',vWater(b.p,v)];}}],
   pre:a=>'<div style="font-size:.84rem;font-weight:800;margin-bottom:2px">지금 집 유지 vs 옮겼을 때 상위 3곳</div>'+vKeepMove(a),
   sum:a=>{const c=CPXK[a.C];return [['보유 단지',c.n],['남은 대출',wonTxt(a.L)]];},
   go:['갈아타기 비교 결과 보기',a=>{const c=CPXK[a.C],b=c.rows.slice().sort((x,y)=>Math.abs(x.b-84)-Math.abs(y.b-84))[0];if(MV.k!==a.C)MV.by=MV.bm=MV.bp=MV.lv=null;MV.k=a.C;MV.b=b.b;MV.size=null;MV.regions=null;MV.shown=5;MV.loan=a.L;move();mvCalc();}]},
@@ -1542,13 +1542,13 @@ function ownHTML(c,r,k,back,X){
    +kv('준공 · 규모',[r.y?r.y+'년 ('+age+'년차)':null,r.hh?r.hh.toLocaleString()+'세대':null,r.hi?'최고 '+r.hi+'층':null].filter(Boolean).join(' · ')||'-')
    +(c.dd!=null?kv('2022 하락기',`<b style="color:${gc(c.dd)}">${c.dd>0?'+':''}${Math.round(c.dd)}%</b>`):''));
  /* ⑤ 아이 키우기 */
- const SM=sch&&sch[2], kid=(sch||(X&&X.hg!=null))?box('학교',(sch?kv('배정 초등학교',sch[0]+'등학교'+(sch[5]?` <span class="sub">(공동 ${sch[5]})</span>`:''))+(sch[1]?kv('중학교 학군',sch[1]):'')+(SM?kv('가까운 중학교',`${SM[0].replace('중학교','중')} <span class="sub">${SM[1]<1000?SM[1]+'m':(SM[1]/1000).toFixed(1)+'km'}</span>`):'')+(sch[3]!=null?kv('특목·자사고 진학률',`<b>${sch[3]}%</b>`):''):'')+((X&&X.hg!=null)||(sch&&sch[4]!=null)?kv('학원 (1km 안)',`<b>${X&&X.hg!=null?X.hg:sch[4]}곳</b>`):(X?'':kv('학원',ld)))):'';
+ const SM=sch&&sch[2], kid=(sch||(X&&X.hg!=null))?box('학교',(sch?kv('배정 초등학교',schN(sch[0])+(sch[5]?` <span class="sub">(공동 ${sch[5]})</span>`:''))+(sch[1]?kv('중학교 학군',sch[1]):'')+(SM?kv('가까운 중학교',`${SM[0].replace('중학교','중')} <span class="sub">${SM[1]<1000?SM[1]+'m':(SM[1]/1000).toFixed(1)+'km'}</span>`):'')+(sch[3]!=null?kv('특목·자사고 진학률',`<b>${sch[3]}%</b>`):''):'')+((X&&X.hg!=null)||(sch&&sch[4]!=null)?kv('학원 (1km 안)',`<b>${X&&X.hg!=null?X.hg:sch[4]}곳</b>`):(X?'':kv('학원',ld)))):'';
  /* ⑥ 팔고 옮기면 */
  const mv=box('매도하고 갈아타면?',`<div id="owMove" style="font-size:.9rem;line-height:1.65;color:var(--ink2)">위에 대출을 넣으면 같은 기준으로 비교해요</div><button class="tmore" onclick="if(MV.k!=='${k}')MV.by=MV.bm=MV.bp=MV.lv=null;MV.k='${k}';MV.b=${r.b};MV.size=null;MV.regions=null;MV.shown=10;MV.loan=OWN.loan!=null?OWN.loan*1e4:null;move();if(MV.loan!=null)mvCalc()">갈아타기로 자세히 보기</button>`);
  /* ⑦ 전세·세금 */
  const tax=box('임대하거나 매도할 때',(jd?kv('전세로 임대하면',`약 <b>${eok(jd)}억</b> <span class="sub">(전세가율 ${r.jr}%)</span>`):'')
-   +(r.hold?kv('보유세',`연 약 <b>${Math.round(r.hold/Math.max(1,r.T)).toLocaleString()}만 원</b>`):'')
-   +kv('매도 중개보수',`약 ${Math.round(r.p*.004).toLocaleString()}만 원`));
+   +((holdReal(r)??r.hold)?kv('보유세',`연 약 <b>${Math.round((holdReal(r)??r.hold)/Math.max(1,r.T)).toLocaleString()}만 원</b>`+(gsOf(r)?' <small style="color:var(--ink3)">(공시가격 기준)</small>':' <small style="color:var(--ink3)">(공시가격 없어 추정)</small>')):'')
+   +kv('매도 중개보수',`약 ${Math.round(brk(r.p)).toLocaleString()}만 원 <small style="color:var(--ink3)">(지금 시세 · 법정 상한요율+부가세)</small>`));
  return `<button class="linkbtn" style="padding:0;margin:0 0 8px;font-size:.84rem;color:var(--ink3)" onclick="navBack(()=>${back==='own'?'ownFind()':'board()'})">‹ 뒤로</button>
  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px"><div class="hq" style="margin:0;word-break:keep-all">${c.n}</div><span style="display:flex;align-items:center;gap:2px">${typeof favBtn==='function'?favBtn(k):''}<button class="ib" aria-label="이 단지 공유" onclick="shareCx('${k}',this)"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></button></span></div><div class="bsub">${c.gu}${c.y?' · '+c.y+'년':''}${c.hh?' · '+c.hh.toLocaleString()+'세대':''}<button class="ibi" onclick="ownInfo()" aria-label="숫자 기준">ⓘ</button></div>
  ${rows.length>1?`<div class="fbar" style="margin:14px 0 4px">${rows.map(x=>`<button class="fp${x===r?' on':''}" onclick="rcard('${k}','${back||''}',${x.b})">${x.b}㎡</button>`).join('')}</div>`:''}
@@ -1564,7 +1564,7 @@ function ownCalc(k,b){   /* 내 대출·금리 → 지금 내 몫, 월 이자, �
  const c=CPXK[k]; if(!c)return; const r=c.rows.find(x=>x.b===b)||c.rows[0], el=document.getElementById('owCalc'); if(!el)return;
  const lv=$('#owL')?$('#owL').value:'', rv=$('#owR')?$('#owR').value:''; OWN.loan=lv===''?null:+lv; OWN.rate=rv===''?null:+rv; try{localStorage.setItem('jsOwn',JSON.stringify(OWN));}catch(e){}
  const L=(OWN.loan||0)*1e4, i=(OWN.rate!=null?OWN.rate:DT.rate.loan)/100, T=r.T||5, F=fin(r), s1=GRS(F.sv1), s5=GRS(F.sv5), s9=GRS(F.sv9), sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', mm=v=>Math.round(v).toLocaleString()+'만 원';
- const kc=CF.useU; CF.useU=true; const rp=repair(r); CF.useU=kc; const hold=r.hold||0, it=L*i*T, g=v=>v-r.p-hold-it-rp;
+ const kc=CF.useU; CF.useU=true; const rp=repair(r); CF.useU=kc; const hold=holdReal(r)??(r.hold||0), it=L*i*T, g=v=>v-r.p-hold-it-rp;
  const mo=L*i/12, up=L*(i+.01)/12-mo, dn=mo-L*Math.max(0,i-.005)/12;
  const kv=(a,b)=>`<div class="kv"><span class="k">${kvIc(a)}${a}</span><span class="v">${b}</span></div>`, gc=v=>v>=0?'var(--green)':'var(--red)';   // 09-29 토스식: 한 줄 = 이름·값 하나
  el.innerHTML=kv('지금 내 몫',`<b>${eok(r.p-L)}억</b>`)
@@ -1652,7 +1652,7 @@ function cmpRes(){
  const I=cmpItems(A,B,ra,rb), sn=n=>n.length>5?n.slice(0,4):n, head=vsVerdict(I,A.n,B.n), mine=mineOn('cmp');
  const card=(c,r,i)=>{const F=r.as?null:fin(r);return `<div><span>${c.gu}</span><b>${c.n}</b><button class="vpy" onclick="cmpB(${i})">${r.b}㎡ ▾</button><small>${eok(r.p)}억${F?' → 5년 뒤 '+ab1(GRS(F.sv5)):''}</small></div>`;};
  const SA=(DT.sch||{})[A.no], SB=(DT.sch||{})[B.no], tg=r=>(T=>T.tags.length?T.tags.slice(0,2).map(z=>z.t).join(' · '):'없음')(trustOf(r));
- const TX=[['배정 초등학교',SA?SA[0]+(SA[5]?` <span class="sub">(공동 ${SA[5]})</span>`:''):'-',SB?SB[0]+(SB[5]?` <span class="sub">(공동 ${SB[5]})</span>`:''):'-'],['중학교 학군',SA&&SA[1]?SA[1]:'-',SB&&SB[1]?SB[1]:'-'],['주의할 점',tg(ra),tg(rb)]];
+ const TX=[['배정 초등학교',SA?schN(SA[0])+(SA[5]?` <span class="sub">(공동 ${SA[5]})</span>`:''):'-',SB?schN(SB[0])+(SB[5]?` <span class="sub">(공동 ${SB[5]})</span>`:''):'-'],['중학교 학군',SA&&SA[1]?SA[1]:'-',SB&&SB[1]?SB[1]:'-'],['주의할 점',tg(ra),tg(rb)]];
  return `<div class="res-h"><div class="hq" style="margin:0;font-size:1.3rem">${head}</div><div class="bsub">${I.filter(i=>!i.neu).length}개 항목을 분야별로 맞댔어요${mine?' · 내 조건 반영':' · 내 조건을 켜면 순이익·매달 나가는 돈도 맞대요'}</div></div>
   <div class="vsh cvs">${card(A,ra,0)}<i>VS</i>${card(B,rb,1)}</div>
   ${vsCats(I,sn(A.n),sn(B.n))}
@@ -2257,6 +2257,8 @@ function gsTxt(g,p){if(!g)return null;const e=v=>eok(v)+'억';return e(g[0])+(g[
 function gsBox(c,rows){const G=(DT.gs||{})[c.no];if(!G)return '';const kv=(a,b)=>`<div class="kv"><span class="k">${a}</span><span class="v">${b}</span></div>`;
  const L=Object.keys(G).map(Number).sort((a,b)=>a-b).map(b=>{const r=rows.find(x=>x.b===b), g=G[String(b)];return kv(b+'㎡대',gsTxt(g,r&&r.p)+(g[0]<=60000?(g[2]>60000?' <span class="sub">· 일부 호수 6억 넘음</span>':''):''));}).join('');
  return L+`<div class="sub" style="font-size:.76rem;margin-top:6px;line-height:1.55">${GSY()}년 공동주택 공시가격(국토교통부) 면적대 중앙값과 최저~최고 · 취득세 감면·이자 소득공제·보유세 판단에 쓰여요</div><a class="btn ghost" style="display:block;text-decoration:none;text-align:center;margin-top:10px" href="https://www.realtyprice.kr" target="_blank" rel="noopener">내 호수 공시가격 확인 ›</a>`;}
+/* 10-07 QA: '성호초운암초공동'+'등학교' = '성호초운암초공동등학교' 깨짐 → 공동 통학구역 이름을 풀어 씀 */
+function schN(n){if(!n)return '-';if(/초$/.test(n))return n+'등학교';const m=n.replace(/공동$/,''),p=m.match(/[^초]+초/g);return p&&p.join('')===m?p.map(x=>x+'등학교').join('·')+(n.endsWith('공동')?' (공동 통학구역)':''):n;}
 function gsOf(r){const g=(DT.gs||{})[r.no];return g?g[String(r.b)]:null;}
 function incTax(ti){const B=[[1400,.06],[5000,.15],[8800,.24],[15000,.35],[30000,.38],[50000,.40],[100000,.42],[1e12,.45]];let t=0,lo=0;for(const [hi,rt] of B){if(ti<=lo)break;t+=(Math.min(ti,hi)-lo)*rt;lo=hi;}return t;}
 function taxable(g){const wd=g<=500?g*.7:g<=1500?350+(g-500)*.4:g<=4500?750+(g-1500)*.15:g<=10000?1200+(g-4500)*.05:1475+(g-10000)*.02;return Math.max(0,g-wd-150-g*.08);}   /* 총급여 - 근로소득공제 - 본인 기본공제 - 4대보험(약 8%) */
@@ -2635,7 +2637,7 @@ function invUpd(k){const r=INVR[k], el=document.getElementById('inv-'+k); if(!r|
 function nb(r,F){const up=F.q5, rent=CF.useU?0:-(r.U||0), etc=F.p5-up-rent, U=CF.useU?(r.U||0):0;
  const m=v=>{const a=Math.abs(v);return a>=1000?(Math.round(a/1000)/10).toFixed(1)+'억':(Math.round(a/100)*100).toLocaleString()+'만';}, sg=v=>(v>=0?'+':'−')+m(v);
  const mx=Math.max(Math.abs(up),Math.abs(etc),Math.abs(rent),U,1), w=v=>Math.max(2,Math.abs(v)/mx*100).toFixed(1);
- const cost=-(r.C-r.p-r.bu)-(GRS(F.sv5)-F.sv5), sub=[['대출이자',-F.it],['세금·중개',cost],['예금 이자',F.di||0],['소득공제',F.tx||0],['취득세 감면',F.ac||0],['보유세',-(F.hd||0)],['양도세',-(F.cg||0)],['수리비',-F.rp],['지금 집 매도 중개',-(F.mvs||0)],['지금 집 양도세',-(F.mvc||0)]].filter(x=>Math.abs(x[1])>=50);
+ const cost=-(r.C-r.p-r.bu-(r.hold||0))-(GRS(F.sv5)-F.sv5), sub=[['대출이자',-F.it],['세금·중개',cost],['예금 이자',F.di||0],['소득공제',F.tx||0],['취득세 감면',F.ac||0],['보유세',-((r.hold||0)+(F.hd||0))],['양도세',-(F.cg||0)],['수리비',-F.rp],['지금 집 매도 중개',-(F.mvs||0)],['지금 집 양도세',-(F.mvc||0)]].filter(x=>Math.abs(x[1])>=50);
  const row=(k,v,c,txt)=>`<div class="nbr"><span>${k}</span><span class="nbb"><i style="width:${w(v)}%;background:${c}"></i></span><b style="color:${c}">${txt||sg(v)}</b></div>`;
  return `<div class="nb"><div class="nbh">5년 순이익 구성</div>`
   +row(r.bu?'시세 차익(분담금 뺌)':'시세 차익',up,up>=0?'var(--green)':'var(--red)')
@@ -2652,7 +2654,7 @@ function detail(r,F0){   // 09-30 사용자: 결과 카드엔 필요한 것만(�
  let h=`<div style="padding:0 12px 14px">`+nb(r,F)+(trustOf(r).tags.length?tbox(r):'')   // 10-03 사용자: 펼치면 맨 위 = 순이익 구성, 경고는 그다음
   +sec('단지 정보',kv('준공 · 규모',[r.y?r.y+'년 ('+age+'년차)':null,r.hh?r.hh.toLocaleString()+'세대':null].filter(Boolean).join(' · ')||'-')
     +kv('가까운 역',st)
-    +(sch&&sch[0]?kv('초등학교',sch[0]+'등학교'+(el!=null?` <span class="sub">(${el<=300?'초품아 · ':''}${el}m)</span>`:'')):'')
+    +(sch&&sch[0]?kv('초등학교',schN(sch[0])+(el!=null?` <span class="sub">(${el<=300?'초품아 · ':''}${el}m)</span>`:'')):'')
     +kv('이 평형','전용 '+r.b+'㎡대 · 최근 실거래 <b>'+eok(r.p)+'억</b>')
     +(gsOf(r)?kv('공시가격',gsTxt(gsOf(r),r.p)):'')
     +(!CF.useU&&r.jr?kv('전세 시세','약 '+eok(r.p*r.jr/100)+'억 <span class="sub">(매매가의 '+r.jr+'%)</span>'):''));
@@ -2678,10 +2680,10 @@ function planMore(r,F){const kv=(k,v)=>`<div class="kv"><span class="k">${k}</sp
   more+=fold('재건축 사업성 (참고)',kv('용적률',`${r.rb[0]}% → ${r.rb[1]}%${r.rb[4]?'':' (가정)'}`)+(k?kv('조합 발표 분담금',k.slice(0,3).map(x=>Math.round(x[0])+'→'+Math.round(x[1])+'㎡ '+BKW(x[2])+' ('+x[3]+')').join('<br>')):'')
    +kv('준공 후 순가치','현재가의 '+(r.rb[3]/r.p).toFixed(1)+'배'));}
  more+=fold('계약 전 확인',DT.cku.map(x=>`<div class="sub" style="margin-top:6px">· <b>${x.title}</b> — ${x.ask}</div>`).join(''));
- more+=fold('계산 기준',kv('매매가 기준',(r.anc==='3m'?'최근 3개월 실거래 · 오늘 기준 중간층 값':'최근 1년 거래를 지역 흐름으로 환산'))
+ more+=fold('계산 기준',kv('매매가 기준',(r.anc==='3m'?'최근 3개월 실거래 · 오늘 기준 중간층 값':'최근 1~2년 중개 거래(직거래 제외)를 지역 흐름으로 오늘 값에 환산'))
    +kv('대출 규제',(RU.name||'-')+(RU.until?' (~'+RU.until+')':'')+' · 확인 '+(RU.checked||'-'))
-   +kv('금리',(F.i*100).toFixed(2)+'%'+(CF.irate==null?' (한국은행 '+DT.rate.ym.slice(0,4)+'.'+DT.rate.ym.slice(4)+' 평균)':' (직접 입력)'))
-   +kv('취득세','무주택·1주택 기본세율 (다주택 중과 미반영)')+kv('보유 기간',Math.round(r.T)+'년 · 보유세 '+eok(r.hold)+'억 포함'));
+   +kv('금리',(F.i*100).toFixed(2)+'%'+(CF.irate!=null?' (직접 입력)':F.ln?' ('+F.ln+')':' (한국은행 '+DT.rate.ym.slice(0,4)+'.'+DT.rate.ym.slice(4)+' 평균)'))
+   +kv('취득세','무주택·1주택 기본세율 (다주택 중과 미반영)')+kv('보유 기간',Math.round(r.T)+'년 · 보유세 '+eok(holdReal(r)??r.hold)+'억 포함'));
  h+=`<div style="margin-top:8px">${more}</div>`;
  return h;}
 // 한 줄(2026-09-23 사용자: "100점이 가장 좋은 결과, 그 안에 얼마 이득·들어가는 돈 대비 연 몇 %"):
