@@ -4,8 +4,6 @@
 <title>단지 지도 · 집셈</title><meta property="og:type" content="website"><meta property="og:site_name" content="집셈"><meta property="og:title" content="단지 지도 · 집셈"><meta property="og:description" content="내 자본으로 매수할 수 있는 집 가운데 순이익이 가장 높은 곳을 셈해 봅니다. 서울·경기·인천 아파트, 국토부 실거래 20년."><meta property="og:image" content="https://kunchan70-creator.github.io/apt-board-k7/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="description" content="내 자본으로 매수할 수 있는 집 가운데 순이익이 가장 높은 곳을 셈해 봅니다."><link rel="icon" href="data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 64 64' aria-hidden='true' style='flex:0 0 auto'%3E%3Cdefs%3E%3ClinearGradient id='lg1' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%236b83ff'/%3E%3Cstop offset='1' stop-color='%233346c9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='%232B6BF3'/%3E%3Cpath d='M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z' fill='%23ffffff' stroke='%23ffffff' stroke-width='4' stroke-linejoin='round'/%3E%3Crect x='22.5' y='31.5' width='19' height='5.2' rx='2.6' fill='%232B6BF3'/%3E%3Crect x='22.5' y='40.3' width='19' height='5.2' rx='2.6' fill='%232B6BF3'/%3E%3C/svg%3E"><meta name="theme-color" content="#4263eb">
 <meta name="description" content="서울·경기·인천 아파트 단지의 입지(주변 시세·역 접근성)를 지도에서 확인합니다.">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 /* 토큰: pagekit.py CSS와 같은 값(색·반경·그림자). 지도 전용 값(점수 색 단계 --c1~--c5)만 여기서 더한다 */
 :root{
@@ -80,7 +78,7 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
 #wrap{position:relative;flex:1 1 auto;min-height:0}
 #map{position:absolute;inset:0;z-index:0;background:var(--mapbg)}
 .nbase .leaflet-bottom.leaflet-right{bottom:14px}   /* N 지도 로고(오른쪽 아래)가 가리지 않게 */
-#nmap{position:absolute!important;top:0;left:0;width:100%!important;height:100%!important;z-index:0;pointer-events:none}.nbase.leaflet-container{background:transparent}
+#nmap{position:absolute!important;top:0;left:0;width:100%!important;height:100%!important;z-index:0}.nbase.leaflet-container{background:transparent}
 .leaflet-container{font-family:inherit;background:var(--mapbg);outline:0}
 .leaflet-control-attribution{font-size:10.5px;background:rgba(255,255,255,.78)!important;color:#6b717c;border-radius:8px 0 0 0;padding:1px 7px!important}
 .leaflet-control-attribution a{color:#4c5566}
@@ -90,7 +88,7 @@ details.menu .mdate{font-size:.72rem;color:var(--ink3);padding:6px 12px 4px}
 #noleaf{position:absolute;inset:0;z-index:1500;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--ink2);font-size:.95rem;background:var(--bg)}
 
 /* 점수 말풍선: 단지 = 둥근 알약 + 꼬리(좌표를 가리킴), 시·구 = 둥근 사각 */
-.mk{background:none;border:0}
+.mk{position:relative;width:0;height:0;background:none;border:0}.mk>*{animation:mkIn .2s ease-out}@keyframes mkIn{from{opacity:0}to{opacity:1}}   /* 10-08: 확대 뒤 새로 놓이는 말풍선은 부드럽게 나타남 */
 .s1{--c:var(--c1);--f:var(--f1)}.s2{--c:var(--c2);--f:var(--f2)}.s3{--c:var(--c3);--f:var(--f3)}.s4{--c:var(--c4);--f:var(--f4)}.s5{--c:var(--c5);--f:var(--f5)}
 .bb{position:absolute;left:0;bottom:6px;transform:translateX(-50%);display:flex;align-items:center;height:24px;min-width:32px;padding:0 7px;border-radius:12px;
  background:var(--c);color:var(--f);border:1.5px solid var(--mkb);box-shadow:var(--mks);font-weight:800;font-size:13px;line-height:1;font-variant-numeric:tabular-nums;justify-content:center;white-space:nowrap;cursor:pointer;
@@ -327,7 +325,7 @@ const DATA = JSON.parse(document.getElementById('data').textContent);
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt = n => n == null ? '-' : Number(n).toLocaleString('ko-KR');
-if (!window.L) { $('#noleaf').style.display = 'flex'; return; }
+
 
 // ---------- 데이터 풀기 ----------
 const S = DATA.str, CI = {}; DATA.cols.forEach((c, i) => CI[c] = i);
@@ -455,25 +453,85 @@ document.querySelectorAll('#chips button').forEach(b => b.onclick = () => {
 });
 
 // ---------- 지도 ----------
+/* 10-08 사용자: 확대할 때마다 다른 지도 앱과 느낌이 다르다(순위 표시가 따로 논다).
+   전엔 Leaflet 이 조작하고 N 지도가 뒤따라가(정수 줌·애니메이션 끔) 확대가 툭툭 끊겼다
+   → N 지도가 끌기·두 손가락 확대·애니메이션을 직접 하고, 말풍선도 N 지도 마커로 얹는다(지도와 한 몸으로 움직임).
+   아래 코드가 쓰던 Leaflet 문법(L.marker · map.flyTo …)은 얇은 어댑터로 그대로 둔다. 좌표 변환은 웹 메르카토르(256px 타일) 직접 셈 */
 const isDark = () => { const t = document.documentElement.getAttribute('data-theme'); return t === 'dark' || (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches); };
-let bb = L.latLngBounds(A.map(a => [a.lat, a.lon]));
-const map = L.map('map', { zoomControl: false, minZoom: 8, maxZoom: 18, zoomSnap: 0.5, zoomDelta: 1, wheelPxPerZoomLevel: 90,
-  maxBounds: bb.pad(0.35), maxBoundsViscosity: 0.85, preferCanvas: true });
-map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
-map.attributionControl.addAttribution('역·노선 © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>');
-// 바탕지도 = N 지도 하나(10-01 사용자: 다른 지도는 쓰지 말 것 — 예비 바탕 OpenFreeMap·Esri 폐기). 못 불러오면 안내 문구만
-let baseKind = '';
-const loadJs = src => new Promise((ok, no) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = no; document.head.appendChild(s); });
-// ---------- N 지도 바탕(09-29 사용자: 익숙한 국내 지도로) ----------
-// 말풍선·노선·조작은 지금처럼 Leaflet 이 맡고, 그 아래에 NCP Web Dynamic Map 을 깔아 화면(중심·줌)만 맞춘다.
-// 사이트 주소가 등록되지 않았거나 인증이 실패하면 스스로 걷어내고 기존 컬러 지도로 돌아간다.
-const NVK = 'oeq5r2o6gg';
+const TSZ = 256, WX = (lon, z) => (lon + 180) / 360 * TSZ * 2 ** z, WY = (lat, z) => { const s = Math.sin(lat * Math.PI / 180); return (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * TSZ * 2 ** z; };
+const UX = (x, z) => x / (TSZ * 2 ** z) * 360 - 180, UY = (y, z) => { const n = Math.PI - 2 * Math.PI * y / (TSZ * 2 ** z); return 180 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))); };
+const PT = (x, y) => ({ x, y, add(a) { return PT(x + (a.x != null ? a.x : a[0]), y + (a.y != null ? a.y : a[1])); } });
+const LL = v => Array.isArray(v) ? { lat: v[0], lng: v[1] } : { lat: v.lat, lng: v.lng != null ? v.lng : v.lon };
+class BD {
+  constructor(ps) { this.s = 90; this.n = -90; this.w = 180; this.e = -180; for (const p of ps) { const q = LL(p); this.s = Math.min(this.s, q.lat); this.n = Math.max(this.n, q.lat); this.w = Math.min(this.w, q.lng); this.e = Math.max(this.e, q.lng); } }
+  pad(r) { const dy = (this.n - this.s) * r, dx = (this.e - this.w) * r; return new BD([[this.s - dy, this.w - dx], [this.n + dy, this.e + dx]]); }
+  contains(p) { const q = LL(p); return q.lat >= this.s && q.lat <= this.n && q.lng >= this.w && q.lng <= this.e; }
+  getCenter() { return { lat: (this.s + this.n) / 2, lng: (this.w + this.e) / 2 }; }
+}
 let nmap = null;
+const NLL = q => new naver.maps.LatLng(q.lat, q.lng);
+const mkIcon = html => ({ content: `<div class="mk">${html}</div>`, anchor: new naver.maps.Point(0, 0) });
+class MK {   // L.marker 대신: N 지도 마커(HTML)
+  constructor(ll, o) { this.ll = LL(ll); this.o = o || {}; this.h = []; this.nm = null; }
+  on(ev, f) { if (ev === 'click') this.h.push(f); return this; }
+  addTo(m) { m._add(this); return this; }
+  _mk() {
+    const o = this.o;
+    this.nm = new naver.maps.Marker({ position: NLL(this.ll), map: nmap, icon: mkIcon(o.icon.html), zIndex: o.zIndexOffset || 0, clickable: this.h.length > 0, title: o.title || '' });
+    if (this.h.length) naver.maps.Event.addListener(this.nm, 'click', e => { if (e && e.domEvent) e.domEvent.stopPropagation(); this.h.forEach(f => f(e)); });
+  }
+  setIcon(ic) { this.o.icon = ic; if (this.nm) this.nm.setIcon(mkIcon(ic.html)); return this; }
+  setZIndexOffset(z) { this.o.zIndexOffset = z; if (this.nm) this.nm.setZIndex(z); return this; }
+  _rm() { if (this.nm) { this.nm.setMap(null); this.nm = null; } }
+}
+class IO {   // L.imageOverlay 대신: N 지도 그라운드 오버레이
+  constructor(url, b) { this.url = url; this.b = new BD(b); this.nm = null; }
+  addTo(m) { m._add(this); return this; }
+  _mk() { this.nm = new naver.maps.GroundOverlay(this.url, new naver.maps.LatLngBounds(NLL({ lat: this.b.s, lng: this.b.w }), NLL({ lat: this.b.n, lng: this.b.e })), { map: nmap, clickable: false }); }
+  _rm() { if (this.nm) { this.nm.setMap(null); this.nm = null; } }
+}
+const L = { latLngBounds: ps => new BD(ps), point: (x, y) => PT(x, y), divIcon: o => ({ html: o.html }), marker: (ll, o) => new MK(ll, o), imageOverlay: (u, b, o) => new IO(u, b, o) };
+let bb = L.latLngBounds(A.map(a => [a.lat, a.lon]));
+const box = document.getElementById('map');
+const map = {
+  _loaded: false, _q: [], _ev: {}, _st: { z: 10, c: bb.getCenter() }, options: { maxBounds: bb.pad(0.35) },
+  getContainer: () => box,
+  getSize() { return PT(box.clientWidth, box.clientHeight); },
+  getZoom() { return nmap ? nmap.getZoom() : this._st.z; },
+  getCenter() { if (nmap) { const c = nmap.getCenter(); return { lat: c.lat(), lng: c.lng() }; } return this._st.c; },
+  project(ll, z) { const q = LL(ll); return PT(WX(q.lng, z), WY(q.lat, z)); },
+  unproject(p, z) { return { lat: UY(p.y, z), lng: UX(p.x, z) }; },
+  latLngToContainerPoint(ll) { const z = this.getZoom(), c = this.getCenter(), s = this.getSize(), q = LL(ll); return PT(WX(q.lng, z) - WX(c.lng, z) + s.x / 2, WY(q.lat, z) - WY(c.lat, z) + s.y / 2); },
+  getBounds() { const z = this.getZoom(), c = this.getCenter(), s = this.getSize(), cx = WX(c.lng, z), cy = WY(c.lat, z); return new BD([[UY(cy + s.y / 2, z), UX(cx - s.x / 2, z)], [UY(cy - s.y / 2, z), UX(cx + s.x / 2, z)]]); },
+  getBoundsZoom(b, inside, pad) { const s = this.getSize(), px = pad ? pad.x * 2 : 0, py = pad ? pad.y * 2 : 0; for (let z = 18; z > 8; z--) if (WX(b.e, z) - WX(b.w, z) <= s.x - px && WY(b.s, z) - WY(b.n, z) <= s.y - py) return z; return 8; },
+  _go(c, z, anim) {
+    z = Math.round(Math.min(18, Math.max(8, z))); c = LL(c);
+    if (!nmap) { this._st = { c, z }; return; }
+    if (anim) nmap.morph(NLL(c), z, { duration: 450, easing: 'easeOutCubic' }); else { nmap.setZoom(z, false); nmap.setCenter(NLL(c)); }
+  },
+  setView(c, z) { this._go(c, z, false); return this; },
+  setZoom(z) { if (nmap) nmap.setZoom(Math.round(z), true); else this._st.z = Math.round(z); },
+  flyTo(c, z) { this._go(c, z == null ? this.getZoom() : z, true); },
+  panTo(c) { if (nmap) nmap.panTo(NLL(LL(c)), { duration: 350, easing: 'easeOutCubic' }); else this._st.c = LL(c); },
+  _fit(b, o, anim) { o = o || {}; const pd = o.padding || [0, 0]; let z = this.getBoundsZoom(b, false, PT(pd[0], pd[1])); if (o.maxZoom != null) z = Math.min(z, Math.floor(o.maxZoom)); this._go(b.getCenter(), z, anim); },
+  fitBounds(b, o) { this._fit(b, o, false); }, flyToBounds(b, o) { this._fit(b, o, true); },
+  zoomIn() { if (nmap) nmap.setZoom(Math.min(18, nmap.getZoom() + 1), true); }, zoomOut() { if (nmap) nmap.setZoom(Math.max(8, nmap.getZoom() - 1), true); },
+  on(evs, f) { evs.split(/\s+/).forEach(e => (this._ev[e] = this._ev[e] || []).push(f)); return this; },
+  _fire(e, a) { (this._ev[e] || []).forEach(f => f(a)); },
+  _add(l) { if (nmap) l._mk(); else this._q.push(l); },
+  removeLayer(l) { l._rm(); const i = this._q.indexOf(l); if (i >= 0) this._q.splice(i, 1); },
+  createPane() {},
+  locate(o) {
+    if (!navigator.geolocation) { this._fire('locationerror'); return; }
+    navigator.geolocation.getCurrentPosition(p => this._fire('locationfound', { latlng: { lat: p.coords.latitude, lng: p.coords.longitude } }), () => this._fire('locationerror'), { enableHighAccuracy: !!(o && o.enableHighAccuracy), timeout: (o && o.timeout) || 10000 });
+  }
+};
+// 바탕지도 = N 지도 하나(10-01 사용자: 다른 지도는 쓰지 말 것). 못 불러오면 안내 카드
+const loadJs = src => new Promise((ok, no) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = no; document.head.appendChild(s); });
+const NVK = 'oeq5r2o6gg';
 let nTry = 0;
 function nFail() {   // 10-02 사용자: 고객이 보는 화면 — 엉뚱한 지도·빈 바탕 금지. 한 번 다시 시도, 그래도 안 되면 지도 자리를 카드로 덮는다
-  if (nmap) { try { nmap.destroy(); } catch (e) {} nmap = null; }
-  const el = document.getElementById('nmap'); if (el) el.remove();
-  map.getContainer().classList.remove('nbase'); baseKind = '';
+  if (nmap) { try { nmap.destroy(); } catch (e) {} nmap = null; map._loaded = false; }
   if (NVK && ++nTry < 2) { setTimeout(() => nBase().catch(() => nFail()), 3000); return; }
   const m = $('#noleaf');
   // 10-02 사용자: 'PC에서 지도가 안 보인다' — 지도 키는 공개 주소에만 등록돼 있어 파일(file://)·localhost 로 열면 인증이 거부된다 → 공개 주소로 안내
@@ -488,21 +546,19 @@ function nFail() {   // 10-02 사용자: 고객이 보는 화면 — 엉뚱한 �
 async function nBase() {
   await new Promise((ok, no) => { window.navermap_authFailure = () => { no(new Error('auth')); nFail(); }; loadJs('https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=' + NVK).then(ok, no); });
   if (!window.naver || !naver.maps) throw new Error('nolib');
-  const box = map.getContainer(), el = document.createElement('div'); el.id = 'nmap'; el.setAttribute('aria-hidden', 'true');
-  box.insertBefore(el, box.firstChild); box.classList.add('nbase');
-  map.options.zoomSnap = 1; map.options.zoomDelta = 1; map._zoomAnimated = false;   // 바탕은 정수 줌·즉시 이동이라 위 레이어도 같게(어긋남 방지)
-  if (map.getZoom() % 1) map.setZoom(Math.round(map.getZoom()), { animate: false });
-  const c = map.getCenter();
-  nmap = new naver.maps.Map(el, { center: new naver.maps.LatLng(c.lat, c.lng), zoom: map.getZoom(), draggable: false, pinchZoom: false, scrollWheel: false,
-    keyboardShortcuts: false, disableDoubleTapZoom: true, disableDoubleClickZoom: true, disableTwoFingerTapZoom: true, disableKineticPan: true,
-    zoomControl: false, mapTypeControl: false, scaleControl: false, mapDataControl: true, logoControl: true, minZoom: 6, maxZoom: 21 });
-  nmap.setSize(new naver.maps.Size(box.clientWidth, box.clientHeight));   // N 지도가 칸 크기를 덮어써 높이 0이 되는 것 방지
-  const sync = () => { if (!nmap) return; const p = map.getCenter(); nmap.setCenter(new naver.maps.LatLng(p.lat, p.lng)); nmap.setZoom(map.getZoom(), false); };
-  map.on('move zoom moveend zoomend', sync);
-  map.on('resize', () => { if (nmap) { nmap.setSize(new naver.maps.Size(box.clientWidth, box.clientHeight)); sync(); } });
-  baseKind = 'nmap'; sync(); later();
+  let el = document.getElementById('nmap'); if (!el) { el = document.createElement('div'); el.id = 'nmap'; box.appendChild(el); }
+  const st = map._st, mb = map.options.maxBounds;
+  nmap = new naver.maps.Map(el, { center: NLL(st.c), zoom: st.z, minZoom: 8, maxZoom: 18, maxBounds: new naver.maps.LatLngBounds(NLL({ lat: mb.s, lng: mb.w }), NLL({ lat: mb.n, lng: mb.e })),
+    zoomControl: false, mapTypeControl: false, scaleControl: false, mapDataControl: true, logoControl: true, disableKineticPan: false, tileTransition: true });
+  nmap.setSize(new naver.maps.Size(box.clientWidth, box.clientHeight));
+  map._loaded = true;
+  naver.maps.Event.addListener(nmap, 'idle', () => map._fire('moveend'));   // 끌기·확대 애니메이션이 끝나면 한 번
+  naver.maps.Event.addListener(nmap, 'click', () => map._fire('click'));
+  map._q.splice(0).forEach(l => l._mk());
+  later();
 }
 if (NVK) nBase().catch(() => nFail()); else nFail();   // 09-29 사용자: 다크 모드에서도 N 지도 그대로
+window.addEventListener('resize', () => { if (nmap) nmap.setSize(new naver.maps.Size(box.clientWidth, box.clientHeight)); });
 map.createPane('stlab');
 
 // ---------- 마커(보이는 범위만 DOM으로, 바뀐 것만 넣고 뺀다) ----------
@@ -587,7 +643,7 @@ function refresh() {
   // 상태 줄
   const tot = RK ? (RK.area ? `조건에 맞는 단지 <b>${RK.m.size}</b>곳` : `내 순위 <b>${RK.m.size}</b>곳`) : active() ? `<b>${fmt(FILT.length)}</b>곳 / ${fmt(N)}곳` : `<b>${fmt(N)}</b>곳`;
   const hint = RK ? (z < 13 ? ' · 확대하면 이름·예상 순이익' : '') : md !== 'cx' ? (md === 'si' ? ' · 시·군별 가운데 값' : ' · 구별 가운데 값') : (hidden ? ' · 확대하면 더 보여요' : '');   // 09-29 토스식: 설명 꼬리 짧게
-  $('#status').innerHTML = tot + hint;
+  $('#status').innerHTML = tot + hint + '<span style="opacity:.7"> · 역 © OpenStreetMap</span>';
   saveHash();
 }
 function zoomGroup(g, md) {
