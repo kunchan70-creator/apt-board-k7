@@ -2668,7 +2668,8 @@ function detail(r,F0){   // 09-30 사용자: 결과 카드엔 필요한 것만(�
   h+=sec('자금 계획',kv('총 매수 비용','<b>'+eok(tot)+'억</b> <span class="sub">(매매가 '+eok(r.p)+' + 세금·중개 '+eok(r.fee)+(r.bu?' + 분담금 '+eok(r.bu):'')+(F.rp?' + 수리 '+eok(F.rp):'')+')</span>')
    +(F.jd?kv('세입자 전세보증금','− '+eok(F.jd)+'억'):'')
    +kv('대출',F.L>0?(F.ln?'<b>'+F.ln+'</b> '+eok(F.L)+'억 <span class="sub">(연 '+(F.i*100).toFixed(2)+'% <a href="javascript:void(0)" onclick="loanInfo()" style="color:var(--blue)">ⓘ</a>)</span>':eok(F.L)+'억 <span class="sub">(연 '+(F.i*100).toFixed(2)+'% · LTV '+Math.round(l*100)+'%)</span>'):'없음')
-   +(F.L>0?kv('월 상환','약 '+Math.round(pay).toLocaleString()+'만 원'):'')
+   +(F.L>0?kv('월 상환','약 '+Math.round(pay).toLocaleString()+'만 원'+(CF.inc?(()=>{const sh=Math.round(pay/(CF.inc/12)*100);return ' <span class="'+(sh>40?'neg':'sub')+'">· 세전 월 소득의 '+sh+'%'+(sh>40?' — 부담이 커요':'')+'</span>';})():'')):'')   /* 10-07 QA: 월 상환이 월급 절반인데 경고가 없었다 */
+   +(polWhy(r,F)?`<div class="sub" style="font-size:.76rem;margin:-2px 0 6px">${polWhy(r,F)}</div>`:'')
    +kv('자기자본','<b>'+eok(F.own)+'억</b>'+(CF.cash!=null?(F.ok?'':' <span class="neg">· '+eok(F.own-CF.cash)+'억 부족</span>'):'')));}
  h+=sec('5년 뒤 (추정)',kv('예상 시세','<b>'+eok(GRS(F.sv5))+'억</b> <span class="sub">(비관 '+eok(GRS(F.sv1))+' ~ 낙관 '+eok(GRS(F.sv9))+'억)</span>'));
  return h+'</div>';}
@@ -2682,6 +2683,10 @@ function buyBox(r,F){const kv=(a,b)=>`<div class="kv"><span class="k">${a}</span
   +(F.L>0?kv('매달 이자',`약 ${Math.round(mo).toLocaleString()}만 원`):'')
   +kv('들어가는 내 자본',`${eok(F.own)}억`+(F.left>0?` <small style="color:var(--ink3)">(남는 ${eok(F.left)}억은 예금으로 셈)</small>`:''))
   +(short>0?`<div class="hint" style="margin-top:6px;color:var(--red)">자기자본이 ${eok(short)}억 모자라요</div>`:'');}
+/* 10-07 QA: 정책대출 자동 비교를 켰는데 은행 대출로만 셈하면 이유를 알려 준다 */
+function polWhy(r,F){if(CF.pol===false||CF.inc==null||!CF.useU||r.be||F.ln||!(F.L>0)||CF.loan!=null||CF.lmode==='max'||CF.irate!=null)return '';
+ const P=polLoans(r);if(!P.length)return '정책대출은 소득·집값·면적 조건에 안 맞아 은행 대출로 셈했어요';
+ const need=F.L;return `정책대출 한도(최대 ${eok(Math.max(...P.map(o=>o.cap)))}억, 소액임차보증금 차감 포함)가 필요한 대출보다 작아 은행 대출로 셈했어요`;}
 function planMore(r,F){const kv=(k,v)=>`<div class="kv"><span class="k">${k}</span><span class="v">${v}</span></div>`, sec=(t,b)=>`<div class="dsec"><div class="dh">${t}</div>${b}</div>`;
  let h=whyUp(r)+(CF.cash!=null?invBox(r):'');
  {if(tmf(r.gu))h+=sec('단기 국면',`<a class="kv" style="text-decoration:none;color:inherit" href="market.html#a=${encodeURIComponent(r.gu)}"><span class="k">${(r.gu||'').split(' ').pop()} 국면 해석기</span><span class="v">시장에서 보기 ›</span></a>`);}   // 09-29 사용자: 단지에 '오름'이라 단정하지 않고, 시장 화면 국면 해석기(과거 비슷한 상태의 결과 비율)로 안내
