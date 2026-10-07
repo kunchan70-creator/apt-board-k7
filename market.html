@@ -857,16 +857,12 @@ function nowParts(o){const P0=o.path;if(!P0||!P0.length)return null;const kp=P0[
  const pk=[pick(/금리|대출/),pick(/수요|심리/),pick(/공급|거래/)].filter(Boolean),zl=x=>x.zone==='hi'?'높음':x.zone==='lo'?'낮음':'보통';
  /* 10-08 사용자: '지켜볼 지표 3개'가 뭘 보라는 건지 모르겠다 → 지표 탭처럼 그래프로. 지표마다 = 이름·지금 위치 · 그래프(지표 선 + 집값 선 + 과거 상·하위 30% 띠) · 기록 한 줄(1년 뒤 평균, 전체 평균과 나란히 — 절대값·상대값 섞지 않게) */
  const GN=[['금리·대출',/금리|대출/],['수요·심리',/수요|심리/],['공급·거래',/공급|거래/]];
+ /* 10-08 사용자 2차: 아래 지표 목록처럼 줄로 두고 누르면 그래프가 열리게(같은 kiOpen) — id 는 아래 목록(ki)과 겹치지 않게 kp */
  const ind=pk.length?{q:'같이 볼 지표',big:`지금 눈여겨볼 지표 ${pk.length}개`,sub:'금리·대출 · 수요·심리 · 공급·거래 묶음에서 하나씩 — 과거 기록이 가장 크게 갈린 지표',
-  v:`<div style="display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.74rem;color:var(--ink2);margin-top:2px"><span><b style="color:var(--blue)">━</b> 지표</span><span><b style="color:var(--ink3)">━</b> 집값</span><span><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--ink3);opacity:.25;vertical-align:-1px"></i> 과거 상·하위 30%</span><span><b style="color:var(--green)">▮</b><b style="color:var(--red)">▮</b> 집값 1년 변화</span></div>`
-   +pk.map((x,i)=>{const g=(GN.find(([t,rx])=>G.some(gg=>rx.test(gg.nm)&&gg.items.includes(x)))||[''])[0];
-    return `<div style="padding:14px 0 12px;border-bottom:1px solid var(--line2)">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><span style="min-width:0"><span style="font-size:.72rem;font-weight:700;color:var(--ink3)">${g}</span><b style="display:block;font-size:.95rem">${x.nm}</b></span>
-     <span style="text-align:right;white-space:nowrap"><b style="font-size:.95rem">${kval(x,x.now)}</b><small style="display:block;font-size:.74rem;color:var(--ink2)">${kpos(x.pct)}</small></span></div>
-    ${kplot('ind'+i,x,'lvl')}
-    ${x.zone&&x.zavg!=null?`<div style="font-size:.8rem;line-height:1.55;margin-top:6px;word-break:keep-all">지금처럼 <b>${ZW[x.zone]}</b>이던 달의 1년 뒤 집값 평균 <b style="color:${x.zavg>=0?'var(--green)':'var(--red)'}">${pc(x.zavg)}</b> <span style="color:var(--ink3)">· 전체 평균 ${pc(o.base)}</span></div>`:''}</div>`;}).join('')
+  v:pk.map(x=>{const gi=G.findIndex(g=>g.items.includes(x)),ii=gi<0?-1:G[gi].items.indexOf(x),gn=(GN.find(([t,rx])=>gi>=0&&rx.test(G[gi].nm))||[''])[0],id=`kp${gi}_${ii}`;
+    return `<div class="kig" style="margin-top:10px">${gn}</div><div role="button" tabindex="0" class="kir" onclick="kiOpen('${id}',${gi},${ii})"><span class="kin">${x.nm}<small style="display:block;margin-top:4px">${kchip(x)}</small></span>${kspark(x)}<span class="kiv"><b>${kval(x,x.now)}</b><small>${kpos(x.pct)}</small></span></div><div id="${id}" class="kid" hidden></div>`;}).join('')
    +(o.lag?`<div style="margin-top:12px;font-size:.8rem;line-height:1.55;color:var(--ink2);word-break:keep-all"><b style="color:var(--ink)">서울과 ${o.lag[0].replace(/^서울 → /,'')}의 시차</b> — 서울 집값이 움직이면 ${o.lag[0].replace(/^서울 → /,'')}는 ${/^시차/.test(o.lag[1])?o.lag[1].replace(/^시차 /,'')+' 뒤에 따라 움직였어요':'거의 같은 때 움직였어요'}(과거 기록)</div>`:''),
-  line:'2008년 이후 · 같은 수준 = 그 지표가 지금과 같은 구간(상위 30% · 가운데 · 하위 30%)이던 달 · 두 손가락으로 벌리면 기간 확대 · 지표 탭에 나머지 지표'}:null;
+  line:'누르면 그래프 · 막대 = 과거 이 수준일 때 1년 뒤 집값 − 전체 평균 · 지표 탭 아래에 나머지 지표'}:null;
  return {sum,sig:sigSec(o.fcsd),flow:flowSec(o.fcsd,o.fcu),past:[turn,recS,hist],ind};}
 function nowScreen(){const K=KI();if(!K||!K.path)return null;const T=MD.t[RG]||{},P=(MD.p||{})[RG==='인천'?'인천':'경기'];
  const cwO=RG==='서울'?['경기','인천'].filter(r=>(MD.ki||{})[r]).map(r=>`${r} ${(MD.ki[r]||{}).cw}%`).join(' · '):'';

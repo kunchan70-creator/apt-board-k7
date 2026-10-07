@@ -495,7 +495,7 @@ async function nBase() {
   const c = map.getCenter();
   nmap = new naver.maps.Map(el, { center: new naver.maps.LatLng(c.lat, c.lng), zoom: map.getZoom(), draggable: false, pinchZoom: false, scrollWheel: false,
     keyboardShortcuts: false, disableDoubleTapZoom: true, disableDoubleClickZoom: true, disableTwoFingerTapZoom: true, disableKineticPan: true,
-    zoomControl: false, mapTypeControl: false, scaleControl: false, mapDataControl: false, logoControl: true, minZoom: 6, maxZoom: 21 });
+    zoomControl: false, mapTypeControl: false, scaleControl: false, mapDataControl: true, logoControl: true, minZoom: 6, maxZoom: 21 });
   nmap.setSize(new naver.maps.Size(box.clientWidth, box.clientHeight));   // N 지도가 칸 크기를 덮어써 높이 0이 되는 것 방지
   const sync = () => { if (!nmap) return; const p = map.getCenter(); nmap.setCenter(new naver.maps.LatLng(p.lat, p.lng)); nmap.setZoom(map.getZoom(), false); };
   map.on('move zoom moveend zoomend', sync);
