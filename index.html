@@ -931,7 +931,7 @@ const CSTEP={
    f:v=>{const c=CPXK[CN.a.C],b=c.rows.slice().sort((x,y)=>Math.abs(x.b-84)-Math.abs(y.b-84))[0],K=Math.max(0,Math.round(b.p*(1-.004)-v));return ['매도 후 가용 자기자본(추정)',eok(K)+'억',`${b.b}㎡ 최근 실거래 ${eok(b.p)}억 기준`,'1주택 양도소득세 비과세 가정 · 이사 비용 제외',vWater(b.p,v)];}}],
   pre:a=>'<div style="font-size:.84rem;font-weight:800;margin-bottom:2px">지금 집 유지 vs 옮겼을 때 상위 3곳</div>'+vKeepMove(a),
   sum:a=>{const c=CPXK[a.C];return [['보유 단지',c.n],['남은 대출',wonTxt(a.L)]];},
-  go:['갈아타기 비교 결과 보기',a=>{const c=CPXK[a.C],b=c.rows.slice().sort((x,y)=>Math.abs(x.b-84)-Math.abs(y.b-84))[0];MV.k=a.C;MV.b=b.b;MV.size=null;MV.regions=null;MV.shown=5;MV.loan=a.L;move();mvCalc();}]},
+  go:['갈아타기 비교 결과 보기',a=>{const c=CPXK[a.C],b=c.rows.slice().sort((x,y)=>Math.abs(x.b-84)-Math.abs(y.b-84))[0];if(MV.k!==a.C)MV.by=MV.bm=MV.bp=MV.lv=null;MV.k=a.C;MV.b=b.b;MV.size=null;MV.regions=null;MV.shown=5;MV.loan=a.L;move();mvCalc();}]},
  mine:{title:'우리 단지 진단',done:'진단 결과를<br>요약했습니다',steps:[
   {id:'C',q:'진단할 단지를<br>검색해 주세요',h:'단지명 또는 동 이름으로 검색합니다.',search:1,f:k=>{const c=CPXK[k],r=bestRow(c)||c.rows[0],F=fin(r),s1=GRS(F.sv1),s5=GRS(F.sv5),s9=GRS(F.sv9);return ['지금 시세 ('+r.b+'㎡)',eok(r.p)+'억',c.n+' · '+c.gu,'최근 실거래 기준',r.as?'':`<div style="margin-top:10px;font-size:.9rem">계속 살면 5년 뒤 중앙값 <b>${eok(s5)}억</b></div>`+pbar(r.p,s1,s5,s9)];}}],
   sum:a=>{const c=CPXK[a.C],r=bestRow(c)||c.rows[0],P=PC(r),sg=v=>(v>=0?'+':'')+Math.round(v)+'%';return [['단지',c.n+' · '+c.gu],['입지 · 단지',c.sc+' · '+(c.bs??'-')],['5년 뒤 시세(가운데 값)',r.as?'입주권 단계':sg(P.p5)],['오를 확률',r.as?'-':'약 '+P.up+'%'],['확인할 점',(T=>T.lv+(T.tags.length?' ('+T.tags.map(z=>z.t).join(' · ')+')':''))(trustOf(r))]];},
@@ -1010,7 +1010,7 @@ async function chMove(tk){
  const L=await choose2([['없어요',0],['1억 안팎',10000],['2~3억',25000],['4억 이상',40000]],tk); if(tk!==CHT)return;
  if(!await say('그럼 지금 집을 매도한 뒤의 자기자본으로<br>갈아탈 수 있는 곳과 비교해 볼게요.',tk))return;
  const go=await choose2([['비교해 보기',1],['나중에 할게요',0]],tk); if(tk!==CHT)return;
- if(go){const b=c.rows.slice().sort((x,y)=>Math.abs(x.b-84)-Math.abs(y.b-84))[0];MV.k=k;MV.b=b.b;MV.loan=L;move();mvCalc();} else hub();}
+ if(go){const b=c.rows.slice().sort((x,y)=>Math.abs(x.b-84)-Math.abs(y.b-84))[0];if(MV.k!==k)MV.by=MV.bm=MV.bp=MV.lv=null;MV.k=k;MV.b=b.b;MV.loan=L;move();mvCalc();} else hub();}
 async function chMine(tk){
  if(!await say('우리 단지가 궁금하시군요.',tk))return;
  if(!await say('단지 이름을 알려 주세요.',tk))return;
@@ -1544,7 +1544,7 @@ function ownHTML(c,r,k,back,X){
  /* ⑤ 아이 키우기 */
  const SM=sch&&sch[2], kid=(sch||(X&&X.hg!=null))?box('학교',(sch?kv('배정 초등학교',sch[0]+'등학교'+(sch[5]?` <span class="sub">(공동 ${sch[5]})</span>`:''))+(sch[1]?kv('중학교 학군',sch[1]):'')+(SM?kv('가까운 중학교',`${SM[0].replace('중학교','중')} <span class="sub">${SM[1]<1000?SM[1]+'m':(SM[1]/1000).toFixed(1)+'km'}</span>`):'')+(sch[3]!=null?kv('특목·자사고 진학률',`<b>${sch[3]}%</b>`):''):'')+((X&&X.hg!=null)||(sch&&sch[4]!=null)?kv('학원 (1km 안)',`<b>${X&&X.hg!=null?X.hg:sch[4]}곳</b>`):(X?'':kv('학원',ld)))):'';
  /* ⑥ 팔고 옮기면 */
- const mv=box('매도하고 갈아타면?',`<div id="owMove" style="font-size:.9rem;line-height:1.65;color:var(--ink2)">위에 대출을 넣으면 같은 기준으로 비교해요</div><button class="tmore" onclick="MV.k='${k}';MV.b=${r.b};MV.size=null;MV.regions=null;MV.shown=10;MV.loan=OWN.loan!=null?OWN.loan*1e4:null;move();if(MV.loan!=null)mvCalc()">갈아타기로 자세히 보기</button>`);
+ const mv=box('매도하고 갈아타면?',`<div id="owMove" style="font-size:.9rem;line-height:1.65;color:var(--ink2)">위에 대출을 넣으면 같은 기준으로 비교해요</div><button class="tmore" onclick="if(MV.k!=='${k}')MV.by=MV.bm=MV.bp=MV.lv=null;MV.k='${k}';MV.b=${r.b};MV.size=null;MV.regions=null;MV.shown=10;MV.loan=OWN.loan!=null?OWN.loan*1e4:null;move();if(MV.loan!=null)mvCalc()">갈아타기로 자세히 보기</button>`);
  /* ⑦ 전세·세금 */
  const tax=box('임대하거나 매도할 때',(jd?kv('전세로 임대하면',`약 <b>${eok(jd)}억</b> <span class="sub">(전세가율 ${r.jr}%)</span>`):'')
    +(r.hold?kv('보유세',`연 약 <b>${Math.round(r.hold/Math.max(1,r.T)).toLocaleString()}만 원</b>`):'')
@@ -1662,19 +1662,30 @@ function cmpRes(){
   <button class="btn" style="margin-top:16px" onclick="shareCmp(this)">이 비교 공유하기</button><div style="display:flex;gap:8px;margin-top:8px"><button class="tmore" style="flex:1;margin:0" onclick="rcard('${A.k}',null,${ra.b})">${A.n} 자세히</button><button class="tmore" style="flex:1;margin:0" onclick="rcard('${B.k}',null,${rb.b})">${B.n} 자세히</button></div><p class="sub" style="margin:18px 2px 0;font-size:.72rem;text-align:center">참고용 산출치 · 투자 권유 아님</p>`;}
 
 // ---------------- 갈아타기: 지금 집 매도 후 자기자본으로 이동 vs 유지 ----------------
-let MV={t:null,k:null,b:null,loan:null,add:null,size:null,regions:null,age:[],shown:5,by:null,bp:null,lv:null}, MVON=false;   // by·bp·lv: 지금 집 산 해·산 가격·실거주 연수(양도세, 10-01)   // size: 옮길 집 면적(기본 = 지금 집과 같거나 넓게) · regions: 옮길 지역(기본 = 같은 시·군, 09-29 사용자: 세 버튼으론 지역을 못 골라 → 매수 분석과 같은 시·구 격자) · MVON: 지역 격자(tog/refresh)가 CF 대신 MV를 만지는 동안
+let MV={t:null,k:null,b:null,loan:null,add:null,size:null,regions:null,age:[],shown:5,by:null,bm:null,bp:null,lv:null}, MVON=false;   // by·bp·lv: 지금 집 산 해·산 가격·실거주 연수(양도세, 10-01)   // size: 옮길 집 면적(기본 = 지금 집과 같거나 넓게) · regions: 옮길 지역(기본 = 같은 시·군, 09-29 사용자: 세 버튼으론 지역을 못 골라 → 매수 분석과 같은 시·구 격자) · MVON: 지역 격자(tog/refresh)가 CF 대신 MV를 만지는 동안
 function mvK(){const c=MV.k&&CPXK[MV.k], h=c&&c.rows.find(r=>r.b===MV.b); return h?Math.round(h.p-brk(h.p)-(MV.loan||0)+(MV.add||0)-cgtHome(h,h.p,0)):null;}   // 매도 후 자기자본(중개보수 법정 요율·지금 집 양도세 차감)
 /* 10-01 지금 집 양도세(1세대 1주택). 산 해·가격을 넣었을 때만 셈하고, 비우면 비과세 가정(화면에 표시).
    2년 보유(산 때 조정대상지역이면 2년 거주도 — 산 해의 지정으로 어림, isAdjAt) 비과세, 12억 넘는 몫만 과세.
    장기보유특별공제: 3년 보유·2년 거주면 보유 4%+거주 4%/년(각 40%), 아니면 3년부터 2%/년(30%), 정부 개정안은 2029년 이후 매도분 거주 8%/년.
    2년 안 매도 = 단일세율 1년 미만 70%·2년 미만 60%. 필요경비 = 취득세·사고팔 때 중개보수. 공동명의는 반씩 각자 250만 공제 */
-/* 산 해의 조정대상지역(거주 요건은 2017.8.3 이후 취득분부터): 2017~19 서울·경기 일부(지금 지정과 비슷) · 2020~22 수도권 거의 전역 · 2023~25 강남·서초·송파·용산 · 2026~ 지금 지정 */
-function isAdjAt(h,y){if(y<2017)return false;if(y>=2023&&y<=2025)return /^(강남구|서초구|송파구|용산구)$/.test(h.gu);
- if(y>=2020&&y<=2022)return !['연천군','동두천시','포천시','가평군','양평군','여주시','이천시','안성시','강화군','옹진군'].some(x=>(h.gu||'').includes(x)||(h.ad||'').includes(x));return isAdj(h);}
+/* 10-07 QA(영통 2018 취득에 거주 요건을 걸어 1.2억 과세 — 영통은 2020.2.21 지정): 산 때 조정대상지역 = 월 단위 지정·해제 이력표.
+   거주 요건은 2017.8.3 이후 취득분부터. 산 달을 모르면 그해 7월로 어림. [시작, 끝) = YYYYMM, 끝 1e6 = 지금까지.
+   출처: 국토부 보도자료(2016.11.3 · 2017.6.19 · 2018.8.27 · 2018.12.31 · 2019.11.6 · 2020.2.21 · 2020.6.19 · 2020.11.20 · 2020.12.18 · 2021.8.30 · 2022.9.26 · 2022.11.14 · 2023.1.5 · 2025.10.16 · 2026.7.1).
+   어림: 고양·남양주 2019.11 이후 남은 일부 택지지구, 2018.8 광교지구(영통·수지 일부)는 뺐어요 */
+const ADJH=[[/^서울 (강남구|서초구|송파구|용산구)$/,[[201611,1e6]]],[/^서울 /,[[201611,202301],[202510,1e6]]],
+ [/^인천 (강화군|옹진군)/,[]],[/^인천 /,[[202006,202211]]],
+ [/^경기 (과천시|성남시 분당구|성남시 수정구|하남시)/,[[201611,202301],[202510,1e6]]],[/^경기 성남시 중원구/,[[201611,202211],[202510,1e6]]],[/^경기 광명시/,[[201706,202301],[202510,1e6]]],
+ [/^경기 (고양시|남양주시)/,[[201611,201911],[202006,202211]]],[/^경기 화성시 동탄구/,[[201611,202211],[202607,1e6]]],[/^경기 구리시/,[[201808,202211],[202607,1e6]]],
+ [/^경기 안양시 동안구/,[[201808,202211],[202510,1e6]]],[/^경기 (수원시 팔달구|용인시 수지구)/,[[201812,202211],[202510,1e6]]],[/^경기 용인시 기흥구/,[[201812,202211],[202607,1e6]]],
+ [/^경기 (수원시 영통구|수원시 장안구|의왕시)/,[[202002,202211],[202510,1e6]]],[/^경기 (수원시 권선구|안양시 만안구)/,[[202002,202211]]],
+ [/^경기 (연천군|포천시|가평군|양평군|여주시|이천시)/,[]],[/^경기 동두천시/,[[202108,202209]]],[/^경기 김포시/,[[202011,202211]]],[/^경기 (파주시|안성시)/,[[202012,202209]]],[/^경기 (평택시|양주시)/,[[202006,202209]]],
+ [/^경기 /,[[202006,202211]]]];
+function isAdjAt(h,y,m){const ym=y*100+(m||7);if(ym<201708)return false;const a=h.ad||'', g=h.gu||'', k=(a.startsWith('서울')||(!a&&SEOULG.has(g))?'서울 ':a.startsWith('인천')?'인천 ':'경기 ')+g;
+ for(const [re,R] of ADJH)if(re.test(k))return R.some(([s,e])=>ym>=s&&ym<e);return false;}
 function cgtHome(h,sale,yrs){if(!MV.by||!MV.bp)return 0;const held=YEAR+yrs-MV.by, lived=(MV.lv==null?YEAR-MV.by:Math.min(MV.lv,YEAR-MV.by))+yrs, gain=sale-MV.bp-acqT(MV.bp,h.b)-brk(MV.bp)-brk(sale);if(gain<=0)return 0;
  const per=v=>CF.joint?[v/2,v/2]:[v];
  if(held<2)return per(gain).reduce((a,x)=>a+Math.max(0,x-250)*(held<1?.7:.6)*1.1,0);
- const ex=lived>=2||!isAdjAt(h,MV.by), tg=ex?(sale<=120000?0:gain*(sale-120000)/sale):gain;if(tg<=0)return 0;
+ const ex=lived>=2||!isAdjAt(h,MV.by,MV.bm), tg=ex?(sale<=120000?0:gain*(sale-120000)/sale):gain;if(tg<=0)return 0;
  const ltd=CF.law==='plan'&&YEAR+yrs>=2029&&ex?Math.min(.8,.08*lived):ex&&lived>=2&&held>=3?Math.min(.4,.04*held)+Math.min(.4,.04*lived):held>=3?Math.min(.3,.02*held):0;
  return per(tg*(1-ltd)).reduce((a,x)=>a+incTax(Math.max(0,x-250))*1.1,0);}
 function mvWrap(fn){const s={cash:CF.cash,useU:CF.useU,regions:CF.regions,size:CF.size,age:CF.age,first:CF.first}; CF.cash=mvK(); CF.useU=true; CF.regions=MV.regions||[]; CF.size=MV.size||[]; CF.age=MV.age||[]; CF.first=false;   // 갈아타기는 집을 가진 적이 있어 생애최초 아님
@@ -1682,7 +1693,7 @@ function mvWrap(fn){const s={cash:CF.cash,useU:CF.useU,regions:CF.regions,size:C
 // 09-29 사용자: 매수 분석·직장 근처 찾기 말고는 전부 토스식 → 입력은 '항목 줄'(누르면 바텀시트), 결과는 결론 한 문장 + 비교 두 줄 + 목록(이름·숫자)
 const FR=(l,v,js,ph)=>`<button class="frw" onclick="${js}"><span>${l}</span><b class="${v?'':'ph'}">${v||ph||'선택'}</b>${CHV.replace('m6 9 6 6 6-6','m9 6 6 6-6 6')}</button>`;
 const FRI=(l,v,js)=>`<label class="frw"><span>${l}</span><input type="text" inputmode="decimal" autocomplete="off" placeholder="0" value="${v==null?'':v/1e4}" oninput="${js}"><em>억</em></label>`;
-function mvSel(k,b){MV.k=k;MV.b=b;MV.size=null;MV.regions=null;shClose();move();}
+function mvSel(k,b){if(MV.k!==k)MV.by=MV.bm=MV.bp=MV.lv=null;MV.k=k;MV.b=b;MV.size=null;MV.regions=null;shClose();move();}
 /* 10-06 사용자: 갈아타는 사람은 가고 싶은 집을 딱 골라 보고 싶다 → MV.t(갈아탈 집). 고르면 결론·두 막대·시장 경우별·비용·나란히 표가 전부 그 집 기준, 안 고르면 순이익 1위 */
 function mvTgt(k,b){MV.t={k,b};shClose();if(MV.res)mvRun();else move();}
 function mvSheet(w){
@@ -1695,9 +1706,10 @@ function mvSheet(w){
   sheet(w==='sz'?'갈아탈 집 면적':'갈아탈 집 연식',`<p class="sub" style="margin:0 0 4px;font-size:.82rem">여러 개 고를 수 있어요 · 안 고르면 전체</p>`+Object.keys(L).map(k=>`<button class="o${sel.includes(k)?' on':''}" onclick="MV.${key}=(MV.${key}||[]).includes('${k}')?MV.${key}.filter(x=>x!=='${k}'):(MV.${key}||[]).concat('${k}');mvSheet('${w}')"><span>${L[k]}${w==='age'?`<small>${k==='n'?'10년 이내':k==='m'?'20년 이내':'20년 넘음'}</small>`:''}</span></button>`).join('')+`<button class="btn" style="margin-top:12px" onclick="shClose();move()">확인</button>`);}
  if(w==='cgt')sheet('지금 집 양도세',`<p class="sub" style="margin:0 0 6px;font-size:.84rem">비워 두면 1세대 1주택 비과세로 셈해요</p>`
   +`<label class="frw"><span>산 해</span><input type="number" inputmode="numeric" placeholder="예: 2019" value="${MV.by||''}" oninput="MV.by=this.value===''?null:+this.value"><em>년</em></label>`
+  +`<label class="frw"><span>산 달<small>조정대상지역 판정용 · 비우면 7월</small></span><input type="number" inputmode="numeric" min="1" max="12" placeholder="예: 5" value="${MV.bm||''}" oninput="MV.bm=this.value===''?null:Math.min(12,Math.max(1,+this.value))"><em>월</em></label>`
   +FRI('산 가격',MV.bp,"MV.bp=parseMoney(this.value)")
   +`<label class="frw"><span>실거주 기간<small>비우면 산 뒤로 계속 거주</small></span><input type="number" inputmode="numeric" placeholder="계속" value="${MV.lv==null?'':MV.lv}" oninput="MV.lv=this.value===''?null:+this.value"><em>년</em></label>`
-  +`<div class="hint" style="margin-top:8px">새 집을 먼저 사면 두 집 모두 조정대상지역일 때 2년 안에 지금 집을 팔아야 비과세(2026.10.1 시행, 종전 3년) · 2년 보유(산 때 조정대상지역이면 2년 거주도) 비과세, 12억 원 넘는 몫만 과세 · 장기보유특별공제 반영 · 거주 요건(산 때 조정대상지역)은 산 해의 지정 지역으로 어림해요</div>`
+  +`<div class="hint" style="margin-top:8px">새 집을 먼저 사면 두 집 모두 조정대상지역일 때 2년 안에 지금 집을 팔아야 비과세(2026.10.1 시행, 종전 3년) · 2년 보유(산 때 조정대상지역이면 2년 거주도) 비과세, 12억 원 넘는 몫만 과세 · 장기보유특별공제 반영 · 거주 요건(산 때 조정대상지역)은 산 해·달의 지정·해제 이력으로 판정해요(2017.8.3 이전 취득은 거주 요건 없음)</div>`
   +`<button class="btn" style="margin-top:14px" onclick="shClose();move()">확인</button>`);
  if(w==='info')sheet('이렇게 비교해요',`<ul style="margin:0;padding-left:18px;color:var(--ink2);font-size:.9rem;line-height:1.8"><li><b>매달 나가는 돈</b> = 대출 이자 + 보유세(재산세·종부세)를 달로 나눈 값 · 원금 갚는 돈은 재산으로 남아 빠져요</li><li><b>한 번에 나가는 돈</b> = 지금 집 매도 중개보수·양도세 + 새 집 취득세·중개보수·등기</li><li><b>5년 동안 나가는 돈</b> = 이자·보유세 5년 + 한 번에 나가는 돈 + 수리비 어림</li><li><b>고루 나은 순</b> = 순이익·나쁠 때·매달 나가는 돈·5년 지출·입지·연식·면적·단지 규모·역·초등학교 10개 중 지금 집보다 나은 항목 수</li><li>5년 순이익 = 5년 뒤 값 − 지금 값 − 대출이자·세금·중개·수리비 (시장이 보통일 때)</li><li>갈아타는 쪽은 매수 분석과 같은 셈이에요 · 연소득·대출·생활 조건·세금 혜택도 매수 분석의 '내 조건'을 그대로 써요</li><li>이미 집을 가진 적이 있어 생애최초 혜택(취득세 감면·대출 70%)은 빠져요</li><li>지금 집 양도세: 산 해·가격을 넣으면 1세대 1주택 비과세(12억 넘는 몫만 과세)·장기보유특별공제로 셈해요. 비우면 비과세로 셈해요</li><li>보유하는 쪽도 5년 뒤 매도할 때 양도세·실제 공시가격 보유세를 넣고, 추가 현금은 예금 이자(세후)로 셈해요</li><li>'지금 집 보유보다'는 지금 집 매도 중개보수·양도세까지 뺀 차이예요 · 나쁠 때·좋을 때는 두 집이 같은 시장을 겪는다고 보고 같은 경우끼리 비교해요 · 이사비는 넣지 않았어요</li><li><b>먼저 사고 나중에 팔면</b>(일시적 2주택): 두 집 모두 조정대상지역이면 새 집을 산 날부터 <b>2년 안에</b> 지금 집을 팔아야 양도세 비과세·취득세 중과 제외·종부세 1주택 간주를 받아요 — 2026년 10월 1일 시행(2026년 8월 4일 이후 새 집 취득분, 그 전은 3년)</li><li>재건축·리모델링이 진행 중인 단지는 뺐어요</li></ul>${missLink()}`);
 }
@@ -1715,7 +1727,7 @@ function move(){
  app.innerHTML=HOME+`<div class="hq" style="margin:0">갈아타기</div><div class="bsub">지금 집 5년 더 보유 vs 매도 후 갈아타기<button class="ibi" onclick="mvSheet('info')" aria-label="어떻게 비교하나요">ⓘ</button></div>
  <div class="frs">${FR('지금 사는 집',home,"mvSheet('home')",'단지 찾기')}
  ${FRI('남은 대출',MV.loan,"MV.loan=parseMoney(this.value)")}${FRI('추가 현금',MV.add,"MV.add=parseMoney(this.value)")}
- ${FR('지금 집 양도세',MV.by&&MV.bp?MV.by+'년 · '+eok(MV.bp)+'억에 매수':'',"mvSheet('cgt')",'비과세로 셈')}
+ ${FR('지금 집 양도세',MV.by&&MV.bp?MV.by+'년'+(MV.bm?' '+MV.bm+'월':'')+' · '+eok(MV.bp)+'억에 매수':'',"mvSheet('cgt')",'비과세로 셈')}
  ${FR('갈아탈 집',(()=>{const t=MV.t&&CPXK[MV.t.k];return t?t.n+' '+MV.t.b+'㎡':'';})(),"mvSheet('tgt')",'정하지 않음 · 순위에서 고르기')}${FR('갈아탈 지역',regT,"mvSheet('reg')")}${FR('갈아탈 집 면적',lst(MV.size,SZL),"mvSheet('sz')")}${FR('갈아탈 집 연식',lst(MV.age,AGL),"mvSheet('age')")}</div>
  <div class="sec2" style="margin-top:18px">내 조건 <span>매수 분석과 같아요</span></div><div class="frs">${mvWrap(()=>myRows('move',['inc','loan','life','perk']))}</div>
  <div class="cta"><button class="btn" ${c&&MV.b?'':'disabled style="opacity:.5"'} onclick="mvCalc()">비교하기</button></div>`;}
