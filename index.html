@@ -268,7 +268,7 @@ body.nodisc .disc,body:has(#splash) .disc{display:none}   /* 10-06 사용자: �
 .fact{word-break:keep-all;background:var(--surface2);border-radius:16px;padding:18px;margin-top:16px;line-height:1.6}
 .fact b.k{display:block;font-size:.8rem;color:var(--ink3);margin-bottom:6px}
 .fact .n{font-size:1.9rem;font-weight:800;color:var(--blue);letter-spacing:-.03em;display:block;margin:4px 0}
-.cta{position:sticky;bottom:12px;margin-top:18px}
+.cta{position:sticky;bottom:calc(76px + env(safe-area-inset-bottom));margin-top:18px}
 .sec{margin:22px 0 6px;font-weight:800;font-size:1.02rem}
 .hint{font-size:.84rem;color:var(--ink3);margin:2px 0 10px}
 .tl{display:flex;align-items:center;gap:12px;padding:13px 4px;margin:0 -4px;border-radius:12px;cursor:pointer;-webkit-tap-highlight-color:transparent}.tl:active{background:var(--surface2)}
@@ -2163,7 +2163,7 @@ function setup(i){
  const Q=(t,h)=>`<div class="hq" style="margin:0 0 6px;word-break:keep-all">${t}</div>${h?`<div class="hint" style="margin-bottom:14px">${h}</div>`:''}`;
  let body='', cta=`<div class="cta"><button class="btn" id="go" onclick="${nx}">다음</button></div>`;
  if(k==='purpose'){
-  body=Q('매수한 집에 실거주하실 건가요?')+[[true,'네, 실거주할 거예요','직접 거주로 셈해요 · 대출은 다음 단계에서 정해요(대출 없이도 돼요)'],[false,'아니요, 전세를 놓을 거예요','전세금만큼 자기자본이 덜 들어요 (토지거래허가구역 제외)']].map(([v,t,d])=>`<button class="opt${CF.useU===v?' on':''}" onclick="CF.useU=${v};save();${nx}"><b>${t}</b><span class="sub" style="display:block;font-size:.82rem;font-weight:500;margin-top:3px">${d}</span></button>`).join('');}
+  body=Q('매수한 집에 실거주하실 건가요?')+[[true,'네, 실거주할 거예요','직접 거주로 셈해요 · 대출은 다음 단계에서 정해요(대출 없이도 돼요)'],[false,'아니요, 전세를 놓을 거예요','전세금만큼 자기자본이 덜 들어요 (토지거래허가구역 제외) · 세금은 무주택 기준이라 이미 집이 있으면 취득세 중과(조정지역 2주택 8%)·양도세가 더 나와요']].map(([v,t,d])=>`<button class="opt${CF.useU===v?' on':''}" onclick="CF.useU=${v};save();${nx}"><b>${t}</b><span class="sub" style="display:block;font-size:.82rem;font-weight:500;margin-top:3px">${d}</span></button>`).join('');}
  else if(k==='cash'){
   body=Q('매수에 쓸 수 있는<br>자기자본은 얼마인가요?','대출을 뺀 보유 현금만 적어 주세요')
   +`<div class="inp"><input id="i_cash" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 3" value="${CF.cash==null?'':(CF.cash/1e4)}" oninput="CF.cash=parseMoney(this.value);document.querySelectorAll('#qcash button').forEach(b=>b.classList.toggle('on',+b.dataset.v===CF.cash));count()"><b>억</b></div>
@@ -2657,7 +2657,7 @@ function nb(r,F){const up=F.q5, rent=CF.useU?0:-(r.U||0), etc=F.p5-up-rent, U=CF
  return `<div class="nb"><div class="nbh">5년 순이익 구성</div>`
   +row(r.bu?'시세 차익(분담금 뺌)':'시세 차익',up,up>=0?'var(--green)':'var(--red)')
   +(rent?row('임차 주거비',rent,'var(--red)'):'')
-  +row('이자·세금 등',etc,etc>=0?'var(--green)':'var(--red)')
+  +row(etc>=0?'그 밖 (남는 자본 예금 이자 − 세금·비용)':'그 밖 (대출이자·세금·비용 − 예금 이자)',etc,etc>=0?'var(--green)':'var(--red)')   /* 10-07 QA: 대출 없는데 '이자·세금 등 +0.1억' */
   +(sub.length?`<div class="nbs">${sub.map(([k,v])=>`<span>${k}<em>${sg(v)}</em></span>`).join('')}</div>`:'')
   +`<div class="nbt"><span>5년 순이익</span><b class="${F.p5>=0?'pos':'neg'}">${ab(F.p5)}</b></div>`
   +(U?`<div class="nbv">${row('전·월세 안 내는 가치',U,'var(--vio)','약 '+m(U))}<div class="nbn">순이익과 별도 · 이 집에 사는 5년 동안 전·월세를 내지 않아 얻는 가치</div></div>`:'')
