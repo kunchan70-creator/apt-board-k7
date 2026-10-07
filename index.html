@@ -1248,6 +1248,8 @@ let BF={lens:'obj',gu:'',size:[],q:'',n:30,hv:false,pb:'',us:'m'};
 // 09-29 사용자: 5년 뒤 시세 순위 = 상승률 순(값 순이면 비싼 순서일 뿐). 가격대 칩으로 비슷한 값끼리 비교
 const PBL={a:'5억 이하',b:'5~10억',c:'10~20억',d:'20억 이상'}, PBF={a:p=>p<=50000,b:p=>p>50000&&p<=100000,c:p=>p>100000&&p<=200000,d:p=>p>200000};
 const CPX=(()=>{const m=new Map();R.forEach(r=>{const k=r.no||(r.n+'|'+r.gu);let c=m.get(k);if(!c){c={k,n:r.n,gu:r.gu,no:r.no,sc:r.sc,bs:r.bs,mk:r.mk,y:r.y,hh:r.hh,al2:r.al2,rows:[]};m.set(k,c);}c.rows.push(r);});
+ /* 10-07 QA: 국토부 건축년도가 평형마다 1년씩 달라(시범한양 1991/1992) 한 화면에 두 연도 → 단지 안 가장 많은 연도(같으면 이른 해)로 통일 */
+ m.forEach(c=>{const n={};c.rows.forEach(r=>{if(r.y)n[r.y]=(n[r.y]||0)+1;});const ys=Object.keys(n).map(Number).sort((a,b)=>n[b]-n[a]||a-b);if(ys.length){c.y=ys[0];c.rows.forEach(r=>{if(r.y&&Math.abs(r.y-c.y)<=2)r.y=c.y;});}});
  const L=[...m.values()], by=(a,b)=>b.sc-a.sc||((b.rows[0].ce||0)-(a.rows[0].ce||0))||(b.hh||0)-(a.hh||0);   // 09-28: 동점을 같은 등수로 주면 목록이 2·2·2…로 보여 순서대로(동점은 5년 시세→세대수)
  L.sort(by).forEach((c,i)=>c.ra=i+1);
  const G={};L.forEach(c=>(G[c.gu]=G[c.gu]||[]).push(c));Object.values(G).forEach(a=>{a.sort(by).forEach((c,i)=>c.rg=i+1);a.forEach(c=>c.ng=a.length);});
