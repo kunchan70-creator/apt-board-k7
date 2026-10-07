@@ -360,7 +360,7 @@ const MD=JSON.parse(document.getElementById('mdata').textContent),$m=id=>documen
 const pc=(v,d)=>v==null?'-':(v>0?'+':'')+v.toFixed(d==null?1:d)+'%';
 // ---- 09-26 사용자: '자세히 보기'에 숨기지 말고 하나하나 설명 + 애니메이션 + 단계적으로 이해 -> 질문 ①~⑥ 이야기 흐름, 보일 때 그래프가 그려진다 ----
 const SVG=(W,H,inner)=>`<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;overflow:visible">${inner}</svg>`;
-function scale(vals,W,H,P,extra){const v=vals.filter(x=>x!=null).concat(extra||[]);let lo=Math.min(...v),hi=Math.max(...v);const pad=(hi-lo)*.1||1;lo-=pad;hi+=pad;
+function scale(vals,W,H,P,extra){const v=vals.filter(x=>x!=null).concat(extra||[]);let lo=Math.min(...v),hi=Math.max(...v);{const mid=(lo+hi)/2,mr=Math.abs(mid)*.04;if(mid>20&&hi-lo<mr){lo=mid-mr/2;hi=mid+mr/2;}}const pad=(hi-lo)*.1||1;lo-=pad;hi+=pad;   /* 10-07 QA: 인천 주간 시세 +0.3%를 V자로 과장(축 100/100) → 지수형 값은 축 폭 최소 ±2% */
  return {X:(i,n)=>P[0]+i/(n-1)*(W-P[0]-P[1]),Y:y=>P[3]+(1-(y-lo)/(hi-lo))*(H-P[2]-P[3]),lo,hi,pad};}
 function path(vals,X,Y){let d='';vals.forEach((y,i)=>{if(y!=null)d+=(d?'L':'M')+X(i,vals.length).toFixed(1)+' '+Y(y).toFixed(1);});return d;}
 const XL=(labs,X,H,n,pre)=>labs.map((l,i)=>l?`<text x="${X(i,n)}" y="${H-3}" font-size="9" text-anchor="middle" fill="var(--ink3)">${pre||''}${l}</text>`:'').join('');
@@ -764,7 +764,7 @@ function pzUpdate(id){const z=PZ[id];if(!z)return;const {P,n,RS,LV,d6,d12,X,Y,BX
  const sx=BX(sel+f),sy=LV[sel]!=null?LY(LV[sel]+((LV[Math.min(n-1,sel+1)]??LV[sel])-LV[sel])*f):30;$('bl').setAttribute('x1',sx.toFixed(1));$('bl').setAttribute('x2',sx.toFixed(1));$('bp').setAttribute('cx',sx.toFixed(1));$('bp').setAttribute('cy',sy.toFixed(1));$('bp').setAttribute('fill',dc);$('bh').setAttribute('x',(sx-7).toFixed(1));
  const y1=d12[sel],d=d6[sel],h1=$('h1'),h2=$('h2');
  if(h1){h1.style.color=PCQ[num][0];h1.innerHTML=`${STG[num][3]} ${k}개월 지속${isNow?'':` <span class="pzym">${cur[0]}</span>`}`;}
- if(h2)h2.innerHTML=`${isNow?(mx?(k>mx?`역대 최장(${mx}개월) 경신`:`역대 최장 ${mx}개월`):'첫 진입'):`${P[run[1]][0]} 진입`} · 월간 지수 12개월 <b style="color:${y1==null?'var(--ink)':y1>=0?'var(--green)':'var(--red)'}">${y1==null?'-':pc(y1)}</b> · 6개월 <span style="color:${dc};font-weight:700">${d==null?'-':d>1?'상승':d<-1?'하락':'보합'}</span><div class="sub" style="font-size:.72rem;font-weight:500;margin-top:2px">강세·약세 = 사려는 사람(매수세)이 평균보다 많은지(가격이 오른다는 뜻은 아니에요) · 고부담·저부담 = 평균 소득으로 집을 살 때 대출 상환 부담이 과거보다 큰지</div>`;   /* 10-07 QA: 인천 '강세 26개월'인데 1년 +0.3% */
+ if(h2)h2.innerHTML=`${isNow?(mx?(k>mx?`이전 최장 ${mx}개월을 넘어섬`:`이전 최장 ${mx}개월`):'첫 진입'):`${P[run[1]][0]} 진입`} · 월간 지수 12개월 <b style="color:${y1==null?'var(--ink)':y1>=0?'var(--green)':'var(--red)'}">${y1==null?'-':pc(y1)}</b> · 6개월 <span style="color:${dc};font-weight:700">${d==null?'-':d>1?'상승':d<-1?'하락':'보합'}</span><div class="sub" style="font-size:.72rem;font-weight:500;margin-top:2px">강세·약세 = 사려는 사람(매수세)이 평균보다 많은지(가격이 오른다는 뜻은 아니에요) · 고부담·저부담 = 평균 소득으로 집을 살 때 대출 상환 부담이 과거보다 큰지</div>`;   /* 10-07 QA: 인천 '강세 26개월'인데 1년 +0.3% */
  $('pl').textContent=z.raf?'❚❚':'▶';$('nw').style.visibility=isNow?'hidden':'visible';}
 function pzStop(id){const z=PZ[id];if(z&&z.raf){cancelAnimationFrame(z.raf);z.raf=null;}}
 function pzPlay(id){const z=PZ[id];if(!z)return;if(z.raf){pzStop(id);pzUpdate(id);return;}const n=z.n,MS=180;let t0=null;const base=z.sel==null?0:z.sel;
@@ -785,12 +785,12 @@ function sigSec(sd){const W=(MD.wn||{})[sd];if(!W)return null;const L=W.lit||[],
  const cmpT=hi&&lw?(hi.up<lw.up-4?'신호가 많을 때 상승 비율은 낮았지만':hi.up>lw.up+4?'신호가 많을 때 상승 비율이 오히려 높았고':'상승 비율은 비슷했고')+(Math.abs(hi.dn-lw.dn)<=5?', 하락 비율은 비슷했어요':hi.dn>lw.dn?', 하락 비율도 더 높았어요':', 하락 비율은 오히려 낮았어요'):'';
  const rows=SGG.map(g=>{const its=A.filter(n=>(SGI[n]||['기타'])[0]===g);if(!its.length)return '';const on=its.filter(n=>L.includes(n));
   return `<div class="sgr"><div class="sgh"><b>${g}</b><span class="sgd">${its.map(n=>`<i class="${L.includes(n)?'on':''}"></i>`).join('')}</span><span class="sgc">${on.length}/${its.length}</span></div>
-   <div class="sgt${on.length?'':' off'}">${on.length?on.map(n=>(SGI[n]||[0,n])[1]).join('<br>'):'조용해요'}</div>${g==='금리·물가'&&on.length>=2?`<div class="sgn">물가가 오르면 금리도 따라 올라요 — ${on.length}개지만 한 줄기 이야기예요</div>`:''}</div>`;}).join('');
+   <div class="sgt${on.length?'':' off'}">${on.length?on.map(n=>(SGI[n]||[0,n])[1]).join('<br>'):'조용해요'}</div>${g==='금리·물가'&&on.length>=2?`<div class="sgn">물가와 금리 신호는 함께 켜지는 경우가 많아요 — ${on.length}개지만 한 묶음으로 보세요</div>`:''}</div>`;}).join('');
  return {q:'주의 신호',big:`${A.length}개 중 ${k}개 켜짐`,c:k*2>=A.length?'#C97900':'',sub:'켜졌던 때 1년 뒤 집값이 덜 올랐던 신호예요',
   v:(hi&&lw?`<div class="obx"><b style="font-size:.92rem">많이 켜지면 꼭 내렸을까?</b><div class="sub" style="font-size:.74rem;margin:2px 0 4px">${sd} · 그 뒤 1년 실제 집값</div>${obar(`3개 이상 켜진 ${hi.n}달`,hi)}${obar(`2개 이하 ${lw.n}달`,lw)}<div style="font-size:.86rem;margin-top:10px;font-weight:700;word-break:keep-all">${cmpT}</div></div>`:'')+`<div style="margin-top:8px">${rows}</div>`,
   line:`신호는 '조심할 이유'의 목록이지 하락 예고가 아니에요${W.asof?` · ${W.asof} 기준`:''}`};}
 /* 사고파는 흐름: 가격 오르는 곳 중 거래·매물 방향 — 칩 지도 */
-const FK={dn_up:['매물 쌓임','거래↓ 매물↑','파는 쪽이 급해지는 중','#C74343','#FDECEC'],dn_dn:['서로 관망','거래↓ 매물↓','서로 눈치 보는 중','#536273','#EEF2F7'],up_dn:['매물 소화','거래↑ 매물↓','나온 집이 팔리는 중','#2B6BF3','#E8F0FE'],up_up:['모두 활발','거래↑ 매물↑','사고팔기 모두 활발','#16835A','#EAF7F0'],fall:['시세 하락','6개월 시세 하락','','#8A94A6','#F2F4F6']};
+const FK={dn_up:['매물 쌓임','거래↓ 매물↑','','#C74343','#FDECEC'],dn_dn:['서로 관망','거래↓ 매물↓','','#536273','#EEF2F7'],up_dn:['매물 소화','거래↑ 매물↓','나온 집이 팔리는 중','#2B6BF3','#E8F0FE'],up_up:['모두 활발','거래↑ 매물↑','사고팔기 모두 활발','#16835A','#EAF7F0'],fall:['시세 하락','6개월 시세 하락','','#8A94A6','#F2F4F6']};
 const fcNm=x=>x.replace(/^.+시 /,'');
 function fcMine(U,sd,un){return un?U.find(x=>x[0]===un||un.endsWith(' '+x[0])||un===sd+' '+x[0]):null;}
 function fcPick(b){const g=b.parentNode,x=g.nextElementSibling;if(x){x.textContent=b.dataset.t;x.classList.add('on');}g.querySelectorAll('.fcc').forEach(c=>c.classList.toggle('sel',c===b));}
@@ -803,9 +803,9 @@ function flowSec(sd,un){const F=MD.fc;if(!F||!F.sd||!F.sd[sd])return null;const 
  const r22=(RC.dn_up||{})['2021~22'],r23=(RC.dn_up||{})['2023~'],cl=v=>v>=0?'var(--green)':'var(--red)';
  const rb=r22&&r23?`<div class="obx"><b style="font-size:.92rem">'매물 쌓임'이던 곳, 1년 뒤 집값은?</b>
   <div class="frr" style="margin-top:6px"><span>금리 오르던 2021~22년</span><b style="color:${cl(r22[0])}">${pc(r22[0])}</b></div><div class="frr"><span>2023년 이후</span><b style="color:${cl(r23[0])}">${pc(r23[0])}</b></div>
-  <div class="sub" style="font-size:.74rem;margin-top:4px;word-break:keep-all">금리가 오를 때 특히 약했어요 · 한 번의 기록이라 확률은 아니에요${S.bok12!=null?` · 지금 기준금리 1년 ${S.bok12>0?'+':''}${S.bok12}%p`:''}</div></div>`:'';
+  <div class="sub" style="font-size:.74rem;margin-top:4px;word-break:keep-all">서울·경기·인천 모든 구를 합친 기록(${r22[2]||'-'}개월·${r23[2]||'-'}개월치) · 2021~22년이 특히 약했어요 · 한 번의 기록이라 확률은 아니에요</div></div>`:'';
  const w=S.who;let wh='';if(w&&w.y30!=null&&w.o50!=null){const m40=Math.max(0,+(100-w.y30-w.o50).toFixed(1)),ym=x=>x?`${x.slice(0,4)}.${x.slice(4,6)}`:'';
-  wh=`<div style="margin-top:24px"><b style="font-size:.98rem">누가 샀나</b> <span class="sub" style="font-size:.74rem">최근 3개월 · ${ym(w.ym)}까지</span>
+  wh=`<div style="margin-top:24px"><b style="font-size:.98rem">누가 샀나</b> <span class="sub" style="font-size:.74rem">${un?sd+' 전체 · ':''}최근 3개월 · ${ym(w.ym)}까지</span>
    <div class="agb"><i style="width:${w.y30}%;background:#5E8FE6"></i><i style="width:${m40}%;background:#9CC0F5"></i><i style="width:${w.o50}%;background:#D3E2FA"></i></div>
    <div class="agl"><span><i style="background:#5E8FE6"></i>20·30대 ${w.y30}%</span><span><i style="background:#9CC0F5"></i>40대 ${m40}%</span><span><i style="background:#D3E2FA"></i>50대 이상 ${w.o50}%</span></div>
    ${w.pk?`<div class="sub" style="font-size:.76rem;margin-top:6px;word-break:keep-all">2019년 이후 20·30대 비중이 가장 높았던 때는 ${ym(w.pk[0])}(${w.pk[1]}%)예요</div>`:''}
@@ -817,7 +817,7 @@ function flowSec(sd,un){const F=MD.fc;if(!F||!F.sd||!F.sd[sd])return null;const 
 /* 지금 국면 + 탭별 내용(시·도 탭·우리 동네 탭 공용) */
 function nowParts(o){const P0=o.path;if(!P0||!P0.length)return null;const kp=P0[P0.length-1],ck=QK(kp),num=cellN(kp),mv=mvOf(P0),D=dwell(o.seq,num),AS=o.astats||{},pcN=PCQ[num][0],rec=AS[ck],up=num<=2,sgOn=mv===(up?'-':'+'),re=o.fcu?'a':'t';
  /* 요약: 2×2 + 최근 1년 길을 따라 움직이는 점 */
- const pid='pz-'+(o.aid||'x'),map=(o.fcu?`<div class="sub" style="font-size:.74rem;margin:2px 0 4px">구간 이름·지속 개월은 ${o.fcsd} 전체 기준 · 그래프의 점은 ${o.lab||o.fcu}</div>`:'')+pzBlock(pid,P0,o.seq,o.lv,o.marks);   /* 10-07 QA: 평택 화면에 경기 값(15개월)이 표기 없이 */
+ const pid='pz-'+(o.aid||'x'),map=(o.fcu?`<div class="sub" style="font-size:.74rem;margin:2px 0 4px">구간·지속 개월은 ${o.lab||o.fcu} 기준 · 아래 '동일 구간'·'주의 신호'·'누가 샀나'는 ${o.fcsd} 전체 기준</div>`:'')+pzBlock(pid,P0,o.seq,o.lv,o.marks);   /* 10-07 QA: 평택 화면에 경기 값(15개월)이 표기 없이 */
  const W_=(MD.wn||{})[o.fcsd],FS=((MD.fc||{}).sd||{})[o.fcsd],U=FS?FS.units||[]:[],dnU=U.filter(x=>x[1]==='dn_up').sort((a,b)=>(b[4]||0)-(a[4]||0)),nUp=U.filter(x=>x[1]!=='fall').length,mineU=fcMine(U,o.fcsd,o.fcu);
  const wk=W_?W_.lit.length:0,wt=W_&&(W_.tab||{})[wk>=3?'12|3+':'12|'+wk];
  const row=(k,t,v,s,c)=>`<${k?'button':'div'} class="smr"${k?` onclick="mtGo('${k}','${re}')"`:''}><span class="smt">${t}</span><span class="smv"><b${c?` style="color:${c}"`:''}>${v}</b>${s?`<small>${s}</small>`:''}</span>${k?'<i>›</i>':''}</${k?'button':'div'}>`;
@@ -834,7 +834,7 @@ function nowParts(o){const P0=o.path;if(!P0||!P0.length)return null;const kp=P0[
   <circle cx="${FX(F13.length-1).toFixed(1)}" cy="${FY(fv[fv.length-1]).toFixed(1)}" r="4" fill="${sgOn?(up?'var(--red)':'var(--green)'):'var(--ink)'}"/>
   <text x="8" y="88" font-size="10" fill="var(--ink3)">${F13[0][0]}</text><text x="292" y="88" font-size="10" fill="var(--ink3)" text-anchor="end">${F13[F13.length-1][0]}</text></svg>`:'';
  const turn={q:'최근 매수세',big:up?(sgOn?'꺾임 보임':'꺾임 없음'):(sgOn?'반등 보임':'반등 없음'),c:sgOn?(up?'var(--red)':'var(--green)'):'',sub:`최근 6개월 매수세 ${({'+':'강해짐','-':'약해짐','=':'비슷함'})[mv]||'-'}`,
-  v:spk+`<div class="obx" style="font-size:.85rem;line-height:1.65;word-break:keep-all"><b>${up?'꺾임':'반등'}</b> = 매수세가 6개월 새 뚜렷이 ${up?'약해지는':'강해지는'} 것. 이어지면 <b style="color:${PCQ[tg][0]}">${STG[tg][3]}</b> 구간으로 넘어가요${zT?`<br><span style="color:var(--ink2)">그 구간이던 구·월의 1년 뒤 평균 <b style="color:${zT.avg>=0?'var(--green)':'var(--red)'}">${pc(zT.avg)}</b> · 하락 비율 ${zT.dn}%</span>`:''}</div>`,
+  v:spk+`<div class="obx" style="font-size:.85rem;line-height:1.65;word-break:keep-all"><b>${up?'꺾임':'반등'}</b> = 매수세가 6개월 새 뚜렷이 ${up?'약해지는':'강해지는'} 것. 매수세가 더 약해지면 <b style="color:${PCQ[tg][0]}">${STG[tg][3]}</b> 칸에 들어가요(칸 정의)${zT?`<br><span style="color:var(--ink2)">그 구간이던 구·월의 1년 뒤 평균 <b style="color:${zT.avg>=0?'var(--green)':'var(--red)'}">${pc(zT.avg)}</b> · 하락 비율 ${zT.dn}%</span>`:''}</div>`,
   line:'매수세 = 매수우위지수 · 주택가격전망 심리 · 거래량 합성'};
  const R4=[1,2,3,4].map(k=>[k,AS[STG[k][1]]]).filter(x=>x[1]);
  const recS=R4.length?{q:'구간별 1년 뒤',big:'그 구간이던 달, 1년 뒤 시세',sub:'',v:R4.map(([k,z])=>{const on=k===num;return `<div style="display:grid;grid-template-columns:1fr 64px auto;gap:10px;align-items:center;padding:10px ${on?'10px':'0'};${on?'margin:2px -10px;border-radius:12px;background:'+PCQ[k][1]+';':'border-bottom:1px solid var(--line2);'}">
@@ -867,7 +867,7 @@ function nowScreen(){const K=KI();if(!K||!K.path)return null;const T=MD.t[RG]||{
 function tScreens(){const a=tScreens0().filter(x=>x&&!['과거 유사 시점','시장 신호','요약','입주 물량','매물 추이'].includes(x.q)&&!/^서울·/.test(x.q)),N=nowScreen();
  if(!N)return [a[0],kiScreen()].filter(Boolean);
  const L=(({sum:[N.sum,a[0]],sig:[N.sig],flow:[N.flow],past:N.past,ind:[N.ind,kiScreen()]})[MT]||[N.sum,a[0]]).filter(Boolean);
- return L.length?L:[{q:'',big:'아직 자료가 없어요',c:'var(--ink3)',sub:'이 지역은 과거 기록이 짧아(인천은 2026년 구 개편 등) 신호를 검증할 표본이 모자라요 — 서울·경기 화면을 참고하세요'}];}   /* 10-06 사용자: 탭으로 나눔(요약·신호·거래·기록·지표) */   /* 10-05: 요약(국면 반복)·국면(네 칸 순환+궤적 지도)은 nowScreen 하나로 합침 */   /* 09-30 사용자: 비슷했던 과거는 전부 안 비슷하고 방향도 갈려 의미 없음 → 뺌 */
+ return L.length?L:[{q:'',big:'아직 자료가 없어요',c:'var(--ink3)',sub:'주의 신호 판정은 서울·경기 기록으로 만들고 검증해서 이 지역엔 아직 쓰지 않아요 — 이 지역의 지표별 과거 기록은 지표 탭에서 볼 수 있어요'}];}   /* 10-06 사용자: 탭으로 나눔(요약·신호·거래·기록·지표) */   /* 10-05: 요약(국면 반복)·국면(네 칸 순환+궤적 지도)은 nowScreen 하나로 합침 */   /* 09-30 사용자: 비슷했던 과거는 전부 안 비슷하고 방향도 갈려 의미 없음 → 뺌 */
 function tScreens0(){const T=MD.t[RG],o=T.o26||{n:0},P=MD.p[RG==='인천'?'인천':'경기'],L=T.lst,S=T.sup,V=MD.val,col=LC(T.lab);
  const up=T.ind.filter(x=>x.dir>0).length,dn=T.ind.filter(x=>x.dir<0).length,mae=!!(L&&L.dir<0),sup=!!(S&&S.nx>=150),mood=T.s<=-1,BT=T.bt,b4=!!(BT&&BT.n>=4),nOn=[mae,sup,mood].filter(Boolean).length;
  const other=RG==='서울'?'경기':'서울';
@@ -912,7 +912,7 @@ function aScreens(){const a=MD.a.find(x=>x.n===AN);if(!a)return [];
   {q:`${a.n} 시세`,big:STREAK(a.st,'개월'),c:'',sub:a.y!=null?`1년 ${pc(a.y)}`:'새로 생긴 구예요',v:line(pts,{lab:1,mark:pk,pre:"'"}),
    line:a.pk?(a.pk>=100?`지난 고점보다 ${a.pk-100}% 높아요`:`지난 고점의 ${a.pk}%예요`):''};
  const N=areaPhase(a);AHT=!!N;if(!N)return [pr];if(MT==='ind')MT='sum';
- const L=(({sum:[N.sum,pr],sig:[N.sig],flow:[N.flow],past:N.past})[MT]||[N.sum,pr]).filter(Boolean);   /* 10-06 사용자: 우리 동네도 시·도처럼 지금 상태 먼저, 시세는 그 아래 */return L.length?L:[{q:'',big:'아직 자료가 없어요',c:'var(--ink3)',sub:'이 지역은 과거 기록이 짧아(인천은 2026년 구 개편 등) 신호를 검증할 표본이 모자라요 — 서울·경기 화면을 참고하세요'}];}   /* 10-02 사용자: 맨 밑 거래량은 왜 있나 → 뺌(시세·국면만) */
+ const L=(({sum:[N.sum,pr],sig:[N.sig],flow:[N.flow],past:N.past})[MT]||[N.sum,pr]).filter(Boolean);   /* 10-06 사용자: 우리 동네도 시·도처럼 지금 상태 먼저, 시세는 그 아래 */return L.length?L:[{q:'',big:'아직 자료가 없어요',c:'var(--ink3)',sub:'주의 신호 판정은 서울·경기 기록으로 만들고 검증해서 이 지역엔 아직 쓰지 않아요 — 이 지역의 지표별 과거 기록은 지표 탭에서 볼 수 있어요'}];}   /* 10-02 사용자: 맨 밑 거래량은 왜 있나 → 뺌(시세·국면만) */
 let AHT=false;
 function aGo(){pzStopAll();if(ANM.ana){anStop('ana');delete ANM.ana;}const sc=aScreens().filter(Boolean);if(!sc.length)return;const bx=$m('areabox');bx.innerHTML=(AHT?mtBar('a'):'')+'<div id="amtp"></div>';mountAll($m('amtp'),sc);setTimeout(()=>{anInit();pzInit();},0);}   /* 09-30: 지우기를 새로 그리기 전에(뒤에 두면 방금 만든 애니메이션 상태까지 지워 동네 지도가 안 그려짐) */
 function show(n){AN=n;$m('asug').innerHTML='';$m('aq').value=n;try{localStorage.setItem('mkArea',n);}catch(e){}aGo();}
