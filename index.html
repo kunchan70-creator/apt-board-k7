@@ -1529,7 +1529,7 @@ function ownHTML(c,r,k,back,X){
   :box('5년 더 보유하면',`<div class="obig"><b class="num">${eok(s5)}억</b><span>지금 ${eok(r.p)}억에서 · 보통일 때</span></div>${pbar(r.p,s1,s5,s9)}`);
  /* ③ 내 대출·금리 */
  const inp=(id,ph,v,u,l)=>`<label class="frw"><span>${l}</span><input id="${id}" type="number" inputmode="decimal" step="0.1" placeholder="${ph}" value="${v==null?'':v}" oninput="ownCalc('${c.k}',${r.b})"><em>${u}</em></label>`;
- const loan=box('내 대출로 셈하기',`<div style="font-size:.84rem;color:var(--ink3);margin:-4px 0 2px">갖고 있으면 남은 대출, 살 생각이면 받을 대출</div>${inp('owL','0',OWN.loan,'억','대출')}${inp('owR',DT.rate.loan,OWN.rate,'%','금리')}<div id="owCalc" style="margin-top:6px"></div>`);
+ const loan=box(mineOn('own')?'이미 갖고 있다면':'내 대출로 셈하기',`<div style="font-size:.84rem;color:var(--ink3);margin:-4px 0 2px">${mineOn('own')?'집주인이면 남은 대출을 넣어 보세요 · 살 때의 셈은 맨 위 칸에 있어요':'갖고 있으면 남은 대출, 살 생각이면 받을 대출'}</div>${inp('owL','0',OWN.loan,'억','대출')}${inp('owR',DT.rate.loan,OWN.rate,'%','금리')}<div id="owCalc" style="margin-top:6px"></div>`);
  /* ④ 입지와 순위 */
  const GB=goodBad(c), chip=(x,col,bg)=>`<span style="padding:6px 10px;border-radius:999px;background:${bg};color:${col};font-size:.8rem;font-weight:700">${x}</span>`;
  const RD=typeof radar5==='function'?radar5(c,r):'';   // 10-05 사용자: 시안의 오각형(theme_ref.radar5) — 자료(home_detail) 오기 전엔 옛 반원 게이지
@@ -1552,7 +1552,7 @@ function ownHTML(c,r,k,back,X){
  return `<button class="linkbtn" style="padding:0;margin:0 0 8px;font-size:.84rem;color:var(--ink3)" onclick="navBack(()=>${back==='own'?'ownFind()':'board()'})">‹ 뒤로</button>
  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px"><div class="hq" style="margin:0;word-break:keep-all">${c.n}</div><span style="display:flex;align-items:center;gap:2px">${typeof favBtn==='function'?favBtn(k):''}<button class="ib" aria-label="이 단지 공유" onclick="shareCx('${k}',this)"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></button></span></div><div class="bsub">${c.gu}${c.y?' · '+c.y+'년':''}${c.hh?' · '+c.hh.toLocaleString()+'세대':''}<button class="ibi" onclick="ownInfo()" aria-label="숫자 기준">ⓘ</button></div>
  ${rows.length>1?`<div class="fbar" style="margin:14px 0 4px">${rows.map(x=>`<button class="fp${x===r?' on':''}" onclick="rcard('${k}','${back||''}',${x.b})">${x.b}㎡</button>`).join('')}</div>`:''}
- ${mineBar('own',`rcard('${k}',${back?`'${back}'`:'null'},${r.b})`)}${hero}${box('한눈에 보기',rvBox(c,r))}${lc}${fut}${trBox}${box('매수 계획',planMore(r,F))}${typeof afBox==='function'&&afBox(r)?box('이 집을 사려면',afBox(r)):''}${gsBox(c,rows)?box('공시가격',gsBox(c,rows)):''}${flb}${kid}${T.tags.length?box('확인할 점',`<div style="font-weight:800;color:${T.col}">${T.lv}</div><div style="font-size:.86rem;color:var(--ink2);margin:4px 0 2px;line-height:1.55">${T.mean}</div>${tlist(T)}`):''}${c.rb?box('정비사업 분담금',bkTxt(c)):''}${loan}${mv}${tax}
+ ${mineBar('own',`rcard('${k}',${back?`'${back}'`:'null'},${r.b})`)}${mineOn('own')&&CF.cash!=null?box('내 조건으로 사면',buyBox(r,F)):''}${hero}${box('한눈에 보기',rvBox(c,r))}${lc}${fut}${trBox}${box('매수 계획',planMore(r,F))}${typeof afBox==='function'&&afBox(r)?box('이 집을 사려면',afBox(r)):''}${gsBox(c,rows)?box('공시가격',gsBox(c,rows)):''}${flb}${kid}${T.tags.length?box('확인할 점',`<div style="font-weight:800;color:${T.col}">${T.lv}</div><div style="font-size:.86rem;color:var(--ink2);margin:4px 0 2px;line-height:1.55">${T.mean}</div>${tlist(T)}`):''}${c.rb?box('정비사업 분담금',bkTxt(c)):''}${loan}${mv}${tax}
  <section class="os"><button class="btn" onclick="CM=['${k}',null];cmp()">다른 단지와 비교</button>
  <div style="display:flex;gap:8px;margin-top:8px"><button class="tmore" style="flex:1;margin:0" onclick="shareCx('${k}',this)">공유하기</button><a class="tmore" style="flex:1;margin:0;text-align:center;text-decoration:none" href="https://rt.molit.go.kr/" target="_blank" rel="noopener">국토부 실거래 ›</a></div>
  <p class="sub" style="margin:16px 0 0;font-size:.72rem;text-align:center">참고용 산출치 · 투자 권유 아님</p></section>`;}
@@ -2618,7 +2618,7 @@ function invCalc(r){const T=r.T||5, FL=finAs(r,true), FI=finAs(r,false), K=CF.ca
 const PCT=v=>v==null?'-':v<0?'0% 미만':v.toFixed(1)+'%';
 function invBox(r){const k=(r.no||r.n)+'-'+r.b; INVR[k]=r; const x=invCalc(r);
  return `<details class="fold" style="margin-top:10px"><summary><span style="font-size:.86rem" data-inv>${invSum(x)}</span></summary><div id="inv-${k}">${invBody(r,x,k)}</div></details>`;}
-function invSum(x){return x.block||x.r5==null?'이 집 대신 자기자본을 운용한다면?':`이 집 대신 ${eok(x.K)}억을 굴린다면 · <b>연 ${PCT(x.r5)}</b>${x.r5<0?'':'면'} 같아요`;}
+function invSum(x){const ML={w:'월세로 살면서',j:'전세로 살면서',t:'세를 주고'};return x.block||x.r5==null?'이 집 대신 자기자본을 운용한다면?':`사지 않고 ${ML[x.mode]||''} 남는 자본을 굴린다면 · 연 <b>${PCT(x.r5)}</b> 벌어야 이 집을 산 것과 같아요`;}   /* 10-07 QA: '1.20억을 굴린다면 연 19.4%면 같아요'가 순이익 +0.2억과 충돌해 보였다 — 무엇과 비교하는지 문장에 */
 function invBody(r,x,k){const t=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', M=[['w','월세로 살면'],['j','전세로 살면'],['t','여기 안 살고 세 주면']];
  const chips=`<div class="cc" style="margin:2px 0 8px">${M.map(([m,l])=>`<button class="${x.mode===m?'on':''}" onclick="INV.mode='${m}';invUpd('${k}')">${l}</button>`).join('')}</div>`;
  const inp=x.mode==='w'?`<label>보증금 <input type="number" step="0.1" min="0" value="${(x.D/1e4).toFixed(1)}" style="width:5em" onchange="INV.dep=this.value===''?null:this.value*1e4;invUpd('${k}')">억</label>
@@ -2670,6 +2670,15 @@ function detail(r,F0){   // 09-30 사용자: 결과 카드엔 필요한 것만(�
  h+=sec('5년 뒤 (추정)',kv('예상 시세','<b>'+eok(GRS(F.sv5))+'억</b> <span class="sub">(비관 '+eok(GRS(F.sv1))+' ~ 낙관 '+eok(GRS(F.sv9))+'억)</span>'));
  return h+'</div>';}
 // 09-30: 결과 카드에서 뺀 것 — 단지 분석 화면 '매수 계획 더 보기'
+/* 10-07 QA(역할 점검 3명 공통): 단지 분석에서 '내 조건 반영'을 켜도 매수 분석의 순이익이 안 보이고 집주인용 '지금 내 몫'만 보였다 → 순위 카드와 같은 셈(fin)을 맨 위에 */
+function buyBox(r,F){const kv=(a,b)=>`<div class="kv"><span class="k">${a}</span><span class="v">${b}</span></div>`, sg=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', gc=v=>v>=0?'var(--green)':'var(--red)';
+ const short=F.ok?0:F.own-CF.cash, mo=F.L*F.i/12;
+ return `<div class="obig"><b class="num" style="color:${gc(F.p5)}">${sg(F.p5)}</b><span>5년 순이익 · 시장이 보통일 때 (순위 카드와 같은 셈)</span></div>`
+  +kv('나쁠 때 ~ 좋을 때',`${sg(F.p1)} ~ ${sg(F.p9)}`)
+  +kv('대출',F.L>0?`${eok(F.L)}억 · ${(F.i*100).toFixed(2)}%${F.ln?' · '+F.ln:''}`:'없음')
+  +(F.L>0?kv('매달 이자',`약 ${Math.round(mo).toLocaleString()}만 원`):'')
+  +kv('들어가는 내 자본',`${eok(F.own)}억`+(F.left>0?` <small style="color:var(--ink3)">(남는 ${eok(F.left)}억은 예금으로 셈)</small>`:''))
+  +(short>0?`<div class="hint" style="margin-top:6px;color:var(--red)">자기자본이 ${eok(short)}억 모자라요</div>`:'');}
 function planMore(r,F){const kv=(k,v)=>`<div class="kv"><span class="k">${k}</span><span class="v">${v}</span></div>`, sec=(t,b)=>`<div class="dsec"><div class="dh">${t}</div>${b}</div>`;
  let h=whyUp(r)+(CF.cash!=null?invBox(r):'');
  {if(tmf(r.gu))h+=sec('단기 국면',`<a class="kv" style="text-decoration:none;color:inherit" href="market.html#a=${encodeURIComponent(r.gu)}"><span class="k">${(r.gu||'').split(' ').pop()} 국면 해석기</span><span class="v">시장에서 보기 ›</span></a>`);}   // 09-29 사용자: 단지에 '오름'이라 단정하지 않고, 시장 화면 국면 해석기(과거 비슷한 상태의 결과 비율)로 안내
