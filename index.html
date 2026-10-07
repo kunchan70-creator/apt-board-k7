@@ -2686,7 +2686,7 @@ function buyBox(r,F){const kv=(a,b)=>`<div class="kv"><span class="k">${a}</span
 /* 10-07 QA: 정책대출 자동 비교를 켰는데 은행 대출로만 셈하면 이유를 알려 준다 */
 function polWhy(r,F){if(CF.pol===false||CF.inc==null||!CF.useU||r.be||F.ln||!(F.L>0)||CF.loan!=null||CF.lmode==='max'||CF.irate!=null)return '';
  const P=polLoans(r);if(!P.length)return '정책대출은 소득·집값·면적 조건에 안 맞아 은행 대출로 셈했어요';
- const need=F.L;return `정책대출 한도(최대 ${eok(Math.max(...P.map(o=>o.cap)))}억, 소액임차보증금 차감 포함)가 필요한 대출보다 작아 은행 대출로 셈했어요`;}
+ const need=F.L;if(P.some(o=>o.cap>=need))return '조건에 맞는 정책대출보다 은행 금리가 낮아 은행 대출로 셈했어요';return `정책대출 한도(최대 ${eok(Math.max(...P.map(o=>o.cap)))}억, 소액임차보증금 차감 포함)가 필요한 대출보다 작아 은행 대출로 셈했어요`;}
 function planMore(r,F){const kv=(k,v)=>`<div class="kv"><span class="k">${k}</span><span class="v">${v}</span></div>`, sec=(t,b)=>`<div class="dsec"><div class="dh">${t}</div>${b}</div>`;
  let h=whyUp(r)+(CF.cash!=null?invBox(r):'');
  {if(tmf(r.gu))h+=sec('단기 국면',`<a class="kv" style="text-decoration:none;color:inherit" href="market.html#a=${encodeURIComponent(r.gu)}"><span class="k">${(r.gu||'').split(' ').pop()} 국면 해석기</span><span class="v">시장에서 보기 ›</span></a>`);}   // 09-29 사용자: 단지에 '오름'이라 단정하지 않고, 시장 화면 국면 해석기(과거 비슷한 상태의 결과 비율)로 안내
