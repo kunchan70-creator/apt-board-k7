@@ -194,8 +194,8 @@ svg.gz-on{cursor:grab;outline:1.5px solid var(--blue);outline-offset:2px;border-
 .smr .smt{flex:0 0 auto;font-size:.88rem;color:var(--ink2)}.smr .smv{flex:1;min-width:0;text-align:right}.smr .smv b{display:block;font-size:.98rem}.smr .smv small{display:block;font-size:.72rem;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.smr i{font-style:normal;color:var(--ink3)}
 .pbs{margin-top:8px;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:.84rem;line-height:1.6}
 </style><style id="ref">
-:root{--bg:#FFFFFF;--surface:#fff;--surface2:#F2F5FA;--ink:#131A2B;--ink2:#4A5468;--ink3:#8A94A6;--line:#E3E9F2;--line2:#EDF1F7;--grid:transparent;
- --blue:#2B6BF3;--blue-bg:#EAF1FF;--green:#12A150;--green-bg:#E6F6EC;--red:#E5484D;--red-bg:#FDECEC;--amber:#F08C00;--amber-bg:#FFF4E5;
+:root{--bg:#FFFFFF;--surface:#fff;--surface2:#F2F5FA;--ink:#131A2B;--ink2:#454D5C;--ink3:#636C7E;--line:#E3E9F2;--line2:#EDF1F7;--grid:transparent;
+ --blue:#2B6BF3;--blue-bg:#EAF1FF;--green:#0F8048;--green-bg:#E6F6EC;--red:#CC3338;--red-bg:#FDECEC;--amber:#F08C00;--amber-bg:#FFF4E5;
  --r:18px;--shadow:0 2px 12px rgba(30,64,140,.06)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--hero-a:#1A2335;--hero-b:#1B2A4A;--hero-l:#283142;--btn-d:#2F63D8;--bg:#0E131D;--surface:#171D29;--surface2:#1F2633;--ink:#EAF0F8;--ink2:#A9B4C6;--ink3:#7A8699;--line:#283142;--line2:#202837;
  --blue:#5B8CFF;--blue-bg:#1B2A4A;--shadow:none}}
@@ -278,7 +278,8 @@ body.notab .tabbar,body.notab .disc{display:none}body.notab{padding-bottom:40px}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ofl>div{background:var(--surface2)}:root:not([data-theme="light"]) .btn:not(.ghost),:root:not([data-theme="light"]) .hero2 .cta{background:var(--btn-d)}}:root[data-theme="dark"] .btn:not(.ghost),:root[data-theme="dark"] .hero2 .cta{background:var(--btn-d)}   /* 10-07 QA: 다크 파란 버튼 흰 글자 3.16:1 → 4.5:1+ */
 
 /* ===== 10-05 v4: ChatGPT 시안·설계(정보 구조·색 체계) — 파랑은 CTA·선택·링크·현재 위치에만 ===== */
-:root{--bg:#F5F7FA;--surface:#fff;--surface2:#F2F4F7;--ink:#171A1F;--ink2:#667085;--ink3:#98A2B3;--line:#E6EAF0;--line2:#EEF1F5;--blue-bg:#EEF4FF;--green:#16A05D;--red:#E5484D;
+/* 10-08 웹 접근성: 회색 글자 대비 4.5:1(KWCAG) — ink2·ink3·초록·빨강 진하게 */
+:root{--bg:#F5F7FA;--surface:#fff;--surface2:#F2F4F7;--ink:#171A1F;--ink2:#454D5C;--ink3:#636C7E;--line:#E6EAF0;--line2:#EEF1F5;--blue-bg:#EEF4FF;--green:#0F8048;--red:#CC3338;
  --pu-bg:#EAF7F0;--pu:#16835A;--pp-bg:#FFF4DE;--pp:#C97900;--pd-bg:#FDECEC;--pd:#C74343;--pb-bg:#EEF2F7;--pb:#536273;--p1:#2B5BD7;--p1-bg:#E6EEFF;--p2:#B86E00;--p2-bg:#FFF1DC;--p3:#7A45C9;--p3-bg:#F1E9FB;--p4:#5A6678;--p4-bg:#EEF1F5;--shadow:0 1px 3px rgba(16,24,40,.04)}
 body.hm{background:var(--bg)!important}body.hm.tint{background:var(--bg)!important}
 .btn{box-shadow:none}
@@ -350,7 +351,7 @@ body.nodisc .disc,body:has(#splash) .disc{display:none}   /* 10-06 사용자: �
 </style></head><body><div class="wrap">
 <div class="top"><a href="index.html" class="brand" style="display:flex;align-items:center;gap:8px;color:inherit;text-decoration:none"><svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="#2B6BF3"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="22.5" y="31.5" width="19" height="5.2" rx="2.6" fill="#2B6BF3"/><rect x="22.5" y="40.3" width="19" height="5.2" rx="2.6" fill="#2B6BF3"/></svg>집셈</a><a href="index.html" style="font-size:.88rem;font-weight:700;color:var(--ink2);text-decoration:none;padding:8px 4px">‹ 홈</a></div>
 
-<div class="card"><div class="mhd"><h1>시장</h1><button class="ibi" onclick="mInfo()" aria-label="이 화면 읽는 법">ⓘ</button></div>
+<main><div class="card"><div class="mhd"><h1>시장</h1><button class="ibi" onclick="mInfo()" aria-label="이 화면 읽는 법">ⓘ</button></div>
 <p class="mk-sub" style="margin:4px 0 0;color:var(--ink3)">지금 상태와, 비슷했던 과거의 실제 거래 · 매일 아침 갱신</p>
 <div id="minfo" hidden style="margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--surface2);font-size:.84rem;line-height:1.65;color:var(--ink2)">시장 방향은 아무도 모릅니다. 집셈은 상승할지 하락할지 말하지 않고, 지금 신호가 과거 기록 중 어디쯤인지와 그때 실제 거래가 어땠는지만 보여 드려요. 해석은 매달 최신 자료로 다시 검증합니다. 참고용이며 투자 권유가 아닙니다.<br><br><b>국면 해석기</b> — 아래 '우리 동네'에서 시·군·구를 찾으면, 최근 시세 흐름과 수요 신호(심리·매수우위·거래량·외지인 매입·금리·미분양·전세·구입 부담)가 지금과 비슷했던 과거에 6개월·1년 뒤 실제로 상승·횡보·하락한 비율을 보여 드려요. 집셈이 직접 셈하고 매일 새로 계산해요.</div>
 <div class="seg" id="rtab"></div><div id="temp"></div></div>
@@ -921,8 +922,8 @@ let AHT=false;
 function aGo(){pzStopAll();if(ANM.ana){anStop('ana');delete ANM.ana;}const sc=aScreens().filter(Boolean);if(!sc.length)return;const bx=$m('areabox');bx.innerHTML=(AHT?mtBar('a'):'')+'<div id="amtp"></div>';mountAll($m('amtp'),sc);setTimeout(()=>{anInit();pzInit();},0);}   /* 09-30: 지우기를 새로 그리기 전에(뒤에 두면 방금 만든 애니메이션 상태까지 지워 동네 지도가 안 그려짐) */
 function show(n){AN=n;$m('asug').innerHTML='';$m('aq').value=n;try{localStorage.setItem('mkArea',n);}catch(e){}aGo();}
 (function(){const hm=/[#&]a=([^&]+)/.exec(location.hash||'');if(hm){try{const n=decodeURIComponent(hm[1]);if(MD.a.some(a=>a.n===n)){AN=n;RG='동네';}}catch(e){}}tGo();})();   // 09-29 단지 상세 '단기 국면 보기' 링크(market.html#a=구 이름) → 우리 동네 탭
-</script>
-<div class="disc"><b>유의사항</b><br>집셈은 공개 자료(국토교통부 실거래·KB부동산 등)를 바탕으로 과거 데이터를 분석한 <b>참고 자료</b>입니다. 특정 부동산의 매수·매도를 권유하거나 자문하지 않습니다. 모든 수치는 가정에 기반한 추정치로 오차가 있을 수 있으며, 과거 실적이 미래 수익을 보장하지 않습니다. <b>투자 판단과 그 결과에 대한 책임은 본인에게 있습니다.</b> 계약 전 실거래가·등기사항증명서·현장을 직접 확인하고, 필요 시 전문가와 상담하십시오.</div><p class="foot">공개 데이터 기반 · 매일 자동 갱신</p>
+</script></main>
+<div class="disc" role="contentinfo"><b>유의사항</b><br>집셈은 공개 자료(국토교통부 실거래·KB부동산 등)를 바탕으로 과거 데이터를 분석한 <b>참고 자료</b>입니다. 특정 부동산의 매수·매도를 권유하거나 자문하지 않습니다. 모든 수치는 가정에 기반한 추정치로 오차가 있을 수 있으며, 과거 실적이 미래 수익을 보장하지 않습니다. <b>투자 판단과 그 결과에 대한 책임은 본인에게 있습니다.</b> 계약 전 실거래가·등기사항증명서·현장을 직접 확인하고, 필요 시 전문가와 상담하십시오.</div><p class="foot">공개 데이터 기반 · 매일 자동 갱신</p>
 </div><script>
 (function(){var EP='',LOC=/^(127\.0\.0\.1|localhost)$/.test(location.hostname);if(!EP&&!LOC){window.jsTrack=function(){};return;}
  function rid(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);}
