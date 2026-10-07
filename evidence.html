@@ -258,6 +258,68 @@ body.nodisc .disc,body:has(#splash) .disc{display:none}   /* 10-06 사용자: �
 .wry button:active{transform:scale(.98)}
 .why2{margin-top:10px;font:inherit;text-align:left;cursor:pointer;background:var(--surface)}
 /* 10-08 사용자: PC 웹 화면에 맞는 글꼴·크기 — 휴대폰용 화면이 720px로 늘면 그래프 속 글자만 커지고 본문은 작아 어긋남 → PC에선 앱 폭을 휴대폰에 가깝게(480px) 가운데, 하단 탭도 같은 폭 */
+/* 10-08 첫 소개(A안) — 전체 화면, 흰 바탕, 큼직한 글자, 장면 전환·그림 그리기·숫자 올라가기 */
+body.intro{overflow:hidden}body.intro .tabbar,body.intro .disc{display:none}
+#intro{position:fixed;inset:0;z-index:3000;background:var(--surface);color:var(--ink);overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.in-wrap{position:relative;max-width:480px;min-height:100%;margin:0 auto;box-sizing:border-box;padding:calc(10px + env(safe-area-inset-top)) 24px calc(22px + env(safe-area-inset-bottom));display:flex;flex-direction:column}
+.in-wrap>*,.in-wrap [style*="--d"]{animation:inIn .5s cubic-bezier(.2,.7,.2,1) both;animation-delay:var(--d,0s)}
+.in-wrap.fw>*,.in-wrap.fw [style*="--d"]{--fx:28px}.in-wrap.bk>*,.in-wrap.bk [style*="--d"]{--fx:-28px}
+@keyframes inIn{from{opacity:0;transform:translate(var(--fx,0),10px)}to{opacity:1;transform:none}}
+.in-top{display:flex;align-items:center;gap:8px;min-height:44px;position:relative;z-index:2}
+.in-back{flex:0 0 44px;height:44px;margin-left:-12px;border:0;background:none;color:var(--ink);font:inherit;font-size:30px;line-height:1;cursor:pointer}
+.in-bar{flex:1;display:flex;gap:6px}.in-bar i{flex:1;height:3px;border-radius:2px;background:var(--line);overflow:hidden;position:relative}
+.in-bar i.on::after{content:"";position:absolute;inset:0;background:var(--blue);animation:inFill .5s ease-out both}@keyframes inFill{from{transform:scaleX(0);transform-origin:left}to{transform:scaleX(1);transform-origin:left}}
+.in-brand{margin-top:16px;font-size:15px;font-weight:800;color:var(--blue);position:relative;z-index:2}
+.in-sp{flex:1 1 auto;min-height:24px}.in-gap{height:min(80px,8vh)}
+.in-h1{margin:0;font-size:40px;line-height:1.24;font-weight:800;letter-spacing:-.035em;position:relative;z-index:2}
+.in-h2{margin:0;font-size:31px;line-height:1.3;font-weight:800;letter-spacing:-.03em}
+.in-p{margin:18px 0 0;font-size:17px;line-height:1.6;color:var(--ink2);position:relative;z-index:2}
+.in-eye{margin:36px 0 8px;font-size:14px;font-weight:700;color:var(--blue)}
+.in-btn{position:relative;z-index:2;width:100%;height:58px;flex:0 0 auto;border:0;border-radius:16px;background:var(--blue);color:#fff;font:inherit;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 8px 20px rgba(43,107,243,.25)}
+.in-btn:active{transform:scale(.985)}
+.in-skip{position:relative;z-index:2;align-self:center;margin-top:8px;padding:12px;border:0;background:none;color:var(--ink2);font:inherit;font-size:14px;cursor:pointer}
+/* 1장: 아파트 숲·떠다니는 말 */
+.in-hero{padding-bottom:calc(22px + env(safe-area-inset-bottom))}
+.in-city{position:absolute;left:0;right:0;bottom:0;width:100%;height:34%;z-index:0;pointer-events:none;opacity:.9}
+.in-hero .in-btn,.in-hero .in-skip{margin-bottom:0}
+.in-hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:46%;background:linear-gradient(to bottom,var(--surface) 0%,transparent 32%,transparent 60%,var(--surface) 100%);pointer-events:none;z-index:1}
+.in-bd{transform-box:fill-box;transform-origin:bottom;animation:inRise .9s cubic-bezier(.2,.8,.2,1) both}@keyframes inRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.in-wn{opacity:0;animation:inWin 4s ease-in-out infinite}@keyframes inWin{0%,100%{opacity:0}30%,70%{opacity:.85}}
+.in-sky{position:relative;height:150px;margin-top:18px}
+.in-chip{position:absolute;padding:8px 14px;border-radius:999px;background:var(--surface2);color:var(--ink2);font-size:14px;font-weight:600;white-space:nowrap;opacity:0;animation:inChip 6s ease-in-out infinite}
+@keyframes inChip{0%{opacity:0;transform:translateY(10px)}15%,70%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-14px)}}
+/* 2장 */
+.in-list{margin-top:30px;border-top:1.5px solid var(--ink)}
+.in-list button{width:100%;display:flex;align-items:center;gap:14px;padding:20px 2px;border:0;border-bottom:1px solid var(--line);background:none;color:var(--ink);font:inherit;font-size:19px;font-weight:700;letter-spacing:-.02em;text-align:left;cursor:pointer;transition:background .15s}
+.in-list button span{flex:1}.in-list button .ic{flex:0 0 auto;color:var(--blue)}
+.in-list button:active,.in-list button:hover{background:var(--surface2)}
+/* 3장 그림 */
+.in-fig{margin:24px 0 0}.in-fig svg{width:100%;height:auto;display:block;overflow:visible}
+.in-cap{margin-top:8px;font-size:12px;line-height:1.5;color:var(--ink2)}
+.in-draw{stroke-dasharray:1;stroke-dashoffset:1;animation:inDraw 1.6s cubic-bezier(.4,0,.2,1) .3s forwards}@keyframes inDraw{to{stroke-dashoffset:0}}
+.in-pk{opacity:0;animation:inPop .4s ease-out forwards}@keyframes inPop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.in-cost{display:flex;gap:3px;height:44px;border-radius:12px;overflow:hidden}
+.in-cost i{display:block;transform-origin:left;animation:inGrowX .6s cubic-bezier(.2,.8,.2,1) both}@keyframes inGrowX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.c0{background:#9DB7F0}.c1{background:#5B86E8}.c2{background:var(--blue)}
+.in-leg{margin-top:14px}.in-leg div{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:15px}.in-leg i{width:12px;height:12px;border-radius:3px}.in-leg span{flex:1;color:var(--ink2)}.in-leg b{font-weight:700}
+.in-tot{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px;padding-top:12px;border-top:1.5px solid var(--ink)}.in-tot span{font-size:15px;font-weight:700}.in-tot b{font-size:28px;font-weight:800;letter-spacing:-.02em}
+.in-cols{display:flex;gap:10px;align-items:flex-end;height:210px}
+.in-cols div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px}
+.in-cols b{font-size:15px;font-weight:800}.in-cols i{display:block;width:100%;border-radius:8px 8px 3px 3px;background:var(--blue);transform-origin:bottom;animation:inGrowY .8s cubic-bezier(.2,.8,.2,1) both}@keyframes inGrowY{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.in-cols span{font-size:11.5px;color:var(--ink2);min-height:16px;white-space:nowrap}
+.in-div div{display:grid;grid-template-columns:5.4em 1fr 4em;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.in-div span{font-size:14px;color:var(--ink2)}.in-div b{font-size:15px;font-weight:800;text-align:right;color:var(--blue)}.in-div b.neg{color:var(--red)}
+.in-div em{position:relative;height:16px}.in-div em::before{content:"";position:absolute;left:50%;top:-4px;bottom:-4px;width:1px;background:var(--ink3)}
+.in-div em i{position:absolute;top:0;height:100%;border-radius:4px;background:var(--blue);transform-origin:left;animation:inGrowX .7s cubic-bezier(.2,.8,.2,1) both}.in-div em i.neg{background:var(--red);transform-origin:right}
+/* 4장 */
+.in-proof{margin-top:24px}
+.in-dots{display:flex;flex-wrap:wrap;gap:7px}.in-dots i{width:20px;height:20px;border-radius:50%;background:var(--line);transform:scale(0);animation:inDot .35s cubic-bezier(.3,1.5,.5,1) both}.in-dots i.w{background:var(--blue)}
+@keyframes inDot{to{transform:scale(1)}}
+.in-big{margin-top:16px}.in-big b{display:block;font-size:30px;font-weight:800;letter-spacing:-.03em}.in-big>span{display:block;margin-top:4px;font-size:16px;color:var(--ink)}
+.in-tr{margin-top:22px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.in-tr div{padding:12px 10px;border-radius:14px;background:var(--surface2)}.in-tr b{display:block;font-size:17px;font-weight:800}.in-tr span{display:block;margin-top:3px;font-size:12px;line-height:1.4;color:var(--ink2)}
+.in-note{margin:10px 0 0;font-size:12px;color:var(--ink2);text-align:center}
+@media (prefers-reduced-motion:reduce){#intro *{animation:none!important}.in-draw{stroke-dashoffset:0}.in-pk,.in-chip,.in-wn{opacity:1}.in-dots i{transform:none}}
 @media (min-width:768px){.wrap{max-width:480px}.tabbar>div{max-width:480px}.bs{max-width:480px}}
 </style></head><body><div class="wrap">
 <div class="top" role="banner"><a href="index.html" class="brand" style="display:flex;align-items:center;gap:8px;color:inherit;text-decoration:none"><svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="#2B6BF3"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="22.5" y="31.5" width="19" height="5.2" rx="2.6" fill="#2B6BF3"/><rect x="22.5" y="40.3" width="19" height="5.2" rx="2.6" fill="#2B6BF3"/></svg>집셈</a><a href="index.html" style="font-size:.88rem;font-weight:700;color:var(--ink2);text-decoration:none;padding:8px 4px">‹ 홈</a></div>
@@ -306,7 +368,7 @@ body.nodisc .disc,body:has(#splash) .disc{display:none}   /* 10-06 사용자: �
 <div class="card">
 <h2>못 맞히는 것</h2>
 <p style="font-weight:700;margin:0 0 4px">시장 전체가 5년에 얼마나 오를지는 못 맞힙니다</p><div class="sub" style="font-size:.8rem">서울·경기·인천 실거래 기준(같은 단지끼리 이은 지수), 매수 연도별 5년 뒤</div>
-<div class="kv"><span class="k">2006년에 매수했다면</span><span class="v">+43%</span></div><div class="kv"><span class="k">2007년에 매수했다면</span><span class="v">+11%</span></div><div class="kv"><span class="k">2008년에 매수했다면</span><span class="v">-3%</span></div><div class="kv"><span class="k">2009년에 매수했다면</span><span class="v">+3%</span></div><div class="kv"><span class="k">2010년에 매수했다면</span><span class="v">+8%</span></div><div class="kv"><span class="k">2011년에 매수했다면</span><span class="v">+12%</span></div><div class="kv"><span class="k">2012년에 매수했다면</span><span class="v">+23%</span></div><div class="kv"><span class="k">2013년에 매수했다면</span><span class="v">+33%</span></div><div class="kv"><span class="k">2014년에 매수했다면</span><span class="v">+31%</span></div><div class="kv"><span class="k">2015년에 매수했다면</span><span class="v">+40%</span></div><div class="kv"><span class="k">2016년에 매수했다면</span><span class="v">+68%</span></div><div class="kv"><span class="k">2017년에 매수했다면</span><span class="v">+68%</span></div><div class="kv"><span class="k">2018년에 매수했다면</span><span class="v">+39%</span></div><div class="kv"><span class="k">2019년에 매수했다면</span><span class="v">+39%</span></div><div class="kv"><span class="k">2020년에 매수했다면</span><span class="v">+27%</span></div><div class="kv"><span class="k">2021년에 매수했다면</span><span class="v">+8%</span></div>
+<div class="kv"><span class="k">2006년에 매수했다면</span><span class="v">+43%</span></div><div class="kv"><span class="k">2007년에 매수했다면</span><span class="v">+11%</span></div><div class="kv"><span class="k">2008년에 매수했다면</span><span class="v">-3%</span></div><div class="kv"><span class="k">2009년에 매수했다면</span><span class="v">+3%</span></div><div class="kv"><span class="k">2010년에 매수했다면</span><span class="v">+8%</span></div><div class="kv"><span class="k">2011년에 매수했다면</span><span class="v">+12%</span></div><div class="kv"><span class="k">2012년에 매수했다면</span><span class="v">+23%</span></div><div class="kv"><span class="k">2013년에 매수했다면</span><span class="v">+33%</span></div><div class="kv"><span class="k">2014년에 매수했다면</span><span class="v">+31%</span></div><div class="kv"><span class="k">2015년에 매수했다면</span><span class="v">+40%</span></div><div class="kv"><span class="k">2016년에 매수했다면</span><span class="v">+68%</span></div><div class="kv"><span class="k">2017년에 매수했다면</span><span class="v">+68%</span></div><div class="kv"><span class="k">2018년에 매수했다면</span><span class="v">+39%</span></div><div class="kv"><span class="k">2019년에 매수했다면</span><span class="v">+39%</span></div><div class="kv"><span class="k">2020년에 매수했다면</span><span class="v">+28%</span></div><div class="kv"><span class="k">2021년에 매수했다면</span><span class="v">+8%</span></div>
 <div class="tags"><span class="tag blue">그래서 장기 평균(5년 +26%, 연 4.8%)에 묶고 범위를 넓게</span><span class="tag green">점수의 답 = '어디가 더 나은가'</span></div>
 </div>
 
