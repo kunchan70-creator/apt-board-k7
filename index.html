@@ -1623,7 +1623,9 @@ function cmpItems(A,B,ra,rb){const I=[], V=(...x)=>vsItem(I,...x), el=DT.el||{},
   V('mine','시장 나쁠 때','drop',ab(fa.p1),ab(fb.p1),fb.p1-fa.p1,500,v=>ab1(v)+' 유리');
   V('mine','매달 나가는 돈','bill',mt(mo(ra,fa)),mt(mo(rb,fb)),mo(ra,fa)-mo(rb,fb),3,v=>mTxt(Math.round(v))+' 적게');
   const kk=F=>eok(F.own)+'억'+(CF.cash!=null&&F.own>CF.cash?'<small style="color:var(--red)">'+eok(F.own-CF.cash)+'억 부족</small>':'');
-  V('mine','필요한 자기자본','key',kk(fa),kk(fb),null,0,null,1);}
+  V('mine','들어가는 내 자본','key',kk(fa),kk(fb),null,0,null,1);
+  const mk=r=>Math.max(0,r.p+r.fee+(r.bu||0)+repair(r)-(r.be?0:Math.min(r.p*Math.max(r.ltv,CF.first?.7:0),lcap(r.p),dsrMax())));   /* 10-07 QA: 넣은 돈(3.00억)만 보여 차이가 안 보였다 → 대출을 최대로 받을 때 최소 자본도 */
+  V('mine','최소 자기자본 (대출 최대)','key',eok(mk(ra))+'억',eok(mk(rb))+'억',mk(ra)-mk(rb),500,v=>ab1(v)+' 적게');}
  V('loc','입지 점수','pin',ra.sc!=null?ra.sc+'점':'-',rb.sc!=null?rb.sc+'점':'-',ra.sc!=null&&rb.sc!=null?rb.sc-ra.sc:null,2,v=>v+'점 높음');
  V('loc','역까지 걸어서','train',wk(ra),wk(rb),ra.ka!=null&&rb.ka!=null?WMIN(ra)-WMIN(rb):null,2,v=>v+'분 가까움');
  V('cx','연식','year',ag(ra)!=null?ag(ra)+'년차':'-',ag(rb)!=null?ag(rb)+'년차':'-',ra.y&&rb.y?rb.y-ra.y:null,2,v=>v+'년 더 새 집');
