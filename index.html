@@ -1322,7 +1322,7 @@ function blist(){
   else if(up){const F=r.F||(r.F=fin(r)), s1=GRS(F.sv1), s5=GRS(F.sv5), s9=GRS(F.sv9), m=(s5/r.p-1)*100; col=m>=0?'var(--green)':'var(--red)'; v=sg(m); vs='하락 확률 '+Math.round(belowP(s1,s5,s9,r.p)*100)+'%';}
   else if(L_==='def'){col=c.dd>-10?'var(--blue)':c.dd<-25?'var(--red)':'var(--ink)'; v=(c.dd>0?'+':c.dd<0?'−':'')+Math.abs(Math.round(c.dd))+'%'; vs='2022 하락기';}
   else {col='var(--blue)'; v=c.sc+'점'; vs=BF.gu?'':c.gu.split(' ').pop()+' '+c.rg+'위';}
-  return `<div class="tl" onclick="rcard('${key}')"><span class="k${k<=3?' t':''}">${k}</span><div class="m"><b>${r.n}</b><span>${r.gu} · ${r.b}㎡ · ${eok(r.p)}억</span></div><div class="v"><b style="color:${col}">${v}</b>${vs?`<span>${vs}</span>`:''}</div></div>`;};
+  return `<div class="tl" onclick="rcard('${key}',null,${r.b})"><span class="k${k<=3?' t':''}">${k}</span><div class="m"><b>${r.n}</b><span>${r.gu} · ${r.b}㎡ · ${eok(r.p)}억</span></div><div class="v"><b style="color:${col}">${v}</b>${vs?`<span>${vs}</span>`:''}</div></div>`;};
  try{$('#bcnt').textContent=`${L.length.toLocaleString()}개 단지 · ${up&&BF.us==='s'?'나쁠 때까지 따진 순':LSUB[L_]}`;
   $('#blist').innerHTML=(L.length?L.slice(0,BF.n).map(it).join(''):'<p class="sub" style="text-align:center;padding:30px 0">조건에 맞는 단지가 없어요</p>')
   +(L.length>BF.n?`<button class="tmore" onclick="BF.n+=30;blist()">더 보기</button>`:'');}finally{CF.cash=kc;CF.useU=ku;}}
@@ -2632,7 +2632,7 @@ function invBody(r,x,k){const t=v=>(v>=0?'+':'−')+eok(Math.abs(v))+'억', M=[[
  if(x.base<=0)return chips+`<p class="sub" style="font-size:.82rem">${x.mode==='j'?'전세금':'보증금'}이 보유 자본(${eok(x.K)}억)과 같거나 커서 운용할 자본이 없어요.</p>`+inputs;
  const lead=x.mode==='t'?`이 집은 전세 ${eok(x.jd)}억을 끼고 자기자본 ${eok(x.own)}억으로 매수해 두고(남는 자본은 예금), 내 주거비는 양쪽이 같다고 봤어요. 그 대신 <b>${eok(x.K)}억 전부</b>를 ${x.T}년 굴린다면`
   :`다른 곳에 ${x.mode==='j'?'전세':'월세'}로 살고, 보유 자본 ${eok(x.K)}억 중 ${x.mode==='j'?'전세금':'보증금'}을 뺀 <b>${eok(x.base)}억</b>을 ${x.T}년 굴린다면`;
- const note=x.mode==='t'?`임대 매수: 시세차익 − 세금·비용 ${t(x.g5)}.`:`실거주 매수: 시세차익 − 세금·이자 ${t(x.g5)}(월세 아낌은 뺌)${x.rent?` · 임차하는 쪽은 5년 월세 ${eok(x.rent)}억을 내고도 같아지는 수익률`:''}.`;
+ const note=x.mode==='t'?`임대 매수: 시세차익 − 세금·비용 ${t(x.g5)}.`:`실거주 매수: 시세차익 − 세금·이자 ${t(x.g5)}(월세 아낌은 뺌)${x.rent?` · 임차하는 쪽은 보증금 ${eok(x.D)}억에 월 ${x.m}만 원씩 5년 월세 ${eok(x.rent)}억(카드의 전·월세 안 내는 가치는 보증금 없이 전부 월세로 환산한 값이라 더 커요)을 내고도 같아지는 수익률`:''}.`;
  return chips+`<div style="font-size:.84rem;line-height:1.65">${lead}</div>
  <div class="mini" style="margin:8px 0 4px"><div style="outline:2px solid var(--blue)"><span>기준만큼 벌려면</span><b>연 ${PCT(x.r5)}</b></div><div><span>비관만큼이면</span><b>연 ${PCT(x.r1)}</b></div><div><span>예금(세후)</span><b style="color:var(--ink3)">연 ${x.dep.toFixed(1)}%</b></div></div>${x.r1!=null&&x.r1<x.dep?`<div class="sub" style="font-size:.76rem">비관이면 예금만 해도 사는 것보다 나아요.</div>`:''}
  ${inputs}<div class="sub" style="font-size:.74rem;line-height:1.55">${note} 수익률은 세전·복리. 기본 금액은 ${x.mode==='j'?'보유 자본의 절반':'이 집 전세금 기준(월세 = 전세금 × 지역 전월세 전환율)'}이고 고칠 수 있어요.</div>`;}
@@ -2742,7 +2742,7 @@ function row(r,k,ex,o){   // 09-28 사용자: 결과판이 지저분 + 순위마
  <div class="rc2"><span>${r.gu}${CF.cash!=null&&CF.useU&&!o.noRng?` · ${monthly(r,F)<1?'대출 없음':`월 이자 <b style="color:var(--ink)">${mTxt(monthly(r,F))}</b>`}`:''}${!CF.useU&&!o.noRng&&r.U?` · 임차 주거비 5년 <b style="color:var(--ink)">${eok(r.U)}억</b>`:''}${o.l2?' · '+o.l2:''}${hi?` <em>${hi.t}</em>`:''}</span><span></span></div>
  ${ex||''}<div class="rc3">${o.l3||`시세 ${eok(r.p)}억${r.bu?` + 분담금 ${eok(r.bu)}억`:''} → 5년 뒤 보통 <b>약 ${ab1(GRS(F.sv5))}</b>`}</div>
  ${o.noRng?'':`<div class="rng1">${cells(F)}</div>`}
- <div class="rchint"><b></b><i>⌄</i></div></summary>${o.dx?`<div style="padding:0 12px">${o.dx}</div>`:''}${detail(r,o.F)}<div style="display:flex;gap:8px;margin:6px 12px 4px"><a class="btn ghost" style="flex:1;text-decoration:none;text-align:center;padding:12px 0" href="map.html#${r.no}">지도에서 보기</a><button class="btn" style="flex:1.4;padding:12px 0" onclick="rcard('${key}')">단지 분석 보기 ›</button></div></details>`;}
+ <div class="rchint"><b></b><i>⌄</i></div></summary>${o.dx?`<div style="padding:0 12px">${o.dx}</div>`:''}${detail(r,o.F)}<div style="display:flex;gap:8px;margin:6px 12px 4px"><a class="btn ghost" style="flex:1;text-decoration:none;text-align:center;padding:12px 0" href="map.html#${r.no}">지도에서 보기</a><button class="btn" style="flex:1.4;padding:12px 0" onclick="rcard('${key}',null,${r.b})">단지 분석 보기 ›</button></div></details>`;}
 let RBV=[], N=10, V=[], RS={lo:-1,hi:1};
 // 10-02 사용자: 순이익은 그대로 보여 주되 한계를 분명히 → 같은 날 '평균이라고 써 두면 엔진이 바보처럼 보인다'로 화면 '가정' 줄(limH)은 뺌(함수만 남김)
 const MKT5=()=>Math.round((Math.pow(1+DT.level/100,5)-1)*100);
