@@ -309,7 +309,7 @@ body.rkon #chips,body.rkon #legend{display:none}body.rkon #status{top:72px}
   <div class="grab"><i></i></div><button class="x" type="button" aria-label="닫기"><svg class="ic"><use href="#i-x"/></svg></button>
   <div class="body">
    <div class="ttl">필터</div>
-   <h3 id="fg-mt">지도에 표시</h3><div class="opts" data-f="mt"><button type="button" data-v="sc">입지 점수</button><button type="button" data-v="p">시세</button><button type="button" data-v="pp">평당가</button><button type="button" data-v="up">5년 상승</button><button type="button" data-v="age">연식</button><button type="button" data-v="hh">세대수</button></div>
+   <h3 id="fg-mt">지도에 표시</h3><div class="opts" data-f="mt"><button type="button" data-v="sc">입지 점수</button><button type="button" data-v="p">시세</button><button type="button" data-v="pp">전용 3.3㎡당</button><button type="button" data-v="up">5년 상승</button><button type="button" data-v="age">연식</button><button type="button" data-v="hh">세대수</button></div>
    <h3 id="fg-sc">입지</h3><div class="opts" data-f="sc"><button type="button" data-v="0">전체</button><button type="button" data-v="50">50 이상</button><button type="button" data-v="70">70 이상</button><button type="button" data-v="85">85 이상</button></div>
    <h3 id="fg-band">전용면적</h3><div class="opts" data-f="band" data-multi="1"><button type="button" data-v="1">49㎡ 이하</button><button type="button" data-v="2">59㎡</button><button type="button" data-v="4">74㎡</button><button type="button" data-v="8">84㎡</button><button type="button" data-v="16">101㎡ 이상</button></div>
    <h3 id="fg-age">준공 연차</h3><div class="opts" data-f="age" data-multi="1"><button type="button" data-v="n">신축<small>10년 이내</small></button><button type="button" data-v="m">준신축<small>10~20년</small></button><button type="button" data-v="o">구축<small>20년 초과</small></button></div>
@@ -354,7 +354,7 @@ const N = A.length, GU_N = DATA.gu_n || {};
 const BYNO = new Map(A.map(a => [a.no, a]));
 const cls = s => s == null ? 's1' : s >= 85 ? 's5' : s >= 70 ? 's4' : s >= 50 ? 's3' : s >= 30 ? 's2' : 's1';
 // 09-29 사용자: 다른 부동산 지도는 정보가 더 많다 → 말풍선에 띄울 값을 고른다(색은 늘 입지 점수)
-const MTL = { sc: '입지 점수', p: '시세', pp: '평당가', up: '5년 상승', age: '연식', hh: '세대수' };
+const MTL = { sc: '입지 점수', p: '시세', pp: '전용 3.3㎡당', up: '5년 상승', age: '연식', hh: '세대수' };
 let MT = 'sc';   // 09-29 사용자: 집셈 컨셉상 처음엔 늘 입지 점수 — 고른 값은 기억하지 않는다
 const repP = a => a.price.length ? a.price.slice().sort((p, q) => Math.abs(p[0] - 84) - Math.abs(q[0] - 84))[0] : null;
 function mval(a) {
@@ -917,6 +917,6 @@ body{background:var(--bg)!important;background-image:none!important}
 .nbtn{border-radius:14px;box-shadow:0 6px 16px rgba(43,107,243,.24)}
 .tabbar{position:relative;flex:0 0 auto;display:flex;justify-content:center;background:var(--surface);border-top:1px solid var(--line);padding:6px 0 calc(8px + env(safe-area-inset-bottom));z-index:1300}
 .tabbar>div{display:flex;width:100%;max-width:720px}
-.tabbar a.tb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.7rem;font-weight:600;color:var(--ink3);padding:6px 0;text-decoration:none}
+.tabbar a.tb{flex:1;min-width:0;overflow:hidden;white-space:nowrap;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.7rem;font-weight:600;color:var(--ink3);padding:6px 0;text-decoration:none}
 .tabbar a.tb.on{color:var(--blue);font-weight:800}
 </style><nav class="tabbar" aria-label="주요 메뉴"><div><a class="tb" href="index.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11 12 4l8.5 7"/><path d="M6 9.5V20h4.5v-5.5h3V20H18V9.5"/></svg>홈</a><a class="tb on" href="index.html#t=find"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>단지찾기</a><a class="tb" href="index.html#t=anal"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V12M12 20V5M19 20v-9"/></svg>분석</a><a class="tb" href="market.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>시장</a><a class="tb" href="index.html#t=menu"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>메뉴</a></div></nav></body></html>
