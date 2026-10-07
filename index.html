@@ -1133,10 +1133,10 @@ function phCharts(){
  if(Q.length){const rows=[['5년 수익을 높게 셈한 집',Q[Q.length-1],'var(--blue)'],...(QA?[['아무거나 고르면',QA,'var(--ink3)']]:[]),['5년 수익을 낮게 셈한 집',Q[0],'var(--ink2)']], mx=Math.max(...rows.map(r=>r[1].med));
   out.fog=phBox(`<div style="font-size:.8rem;color:var(--ink2);text-align:center;margin-bottom:6px">매수 뒤 <b>5년</b>, 실제 거래로 본 시세</div>`+rows.map(([l,q,c],i)=>`<div style="margin:12px 0"><div style="display:flex;justify-content:space-between;align-items:baseline;font-size:.84rem"><b style="color:${c}">${l}</b><b class="num" style="font-size:1.15rem;color:${c}">+${Math.round(q.med)}%</b></div>
     <div style="height:12px;border-radius:7px;background:var(--line2);overflow:hidden;margin-top:4px"><i class="gx" style="display:block;height:100%;width:${q.med/mx*100}%;background:${c};transform-origin:left;animation-delay:${i*250}ms"></i></div>
-    <div class="sub" style="font-size:.72rem;margin-top:3px">손실 난 곳 1,000곳 중 ${Math.round(q.loss*10).toLocaleString()}곳</div></div>`).join('')
+    <div class="sub" style="font-size:.72rem;margin-top:3px">5년 뒤 시세가 내린 곳 1,000곳 중 ${Math.round(q.loss*10).toLocaleString()}곳</div></div>`).join('')
    +(BY.length?`<div style="margin:14px 0 4px;padding-top:10px;border-top:1px solid var(--line2);text-align:center"><div style="font-size:.8rem;color:var(--ink2)">${BY[0][0]}~${BY[BY.length-1][0]}년, 어느 해에 매수했든</div>
     <div style="display:flex;justify-content:center;gap:5px;margin:8px 0 4px">${BY.map((y,i)=>`<i class="fd" title="${y[0]}" style="width:14px;height:14px;border-radius:50%;background:${y[1]>y[2]?'var(--blue)':'var(--line2)'};animation-delay:${900+i*70}ms"></i>`).join('')}</div>
-    <div style="font-size:.86rem;font-weight:800">${BY.length}번 중 ${BY.filter(y=>y[1]>y[2]).length}번, 높게 셈한 집이 더 나았어요</div></div>`:'')
+    <div style="font-size:.86rem;font-weight:800">매수 해 ${BY.length}번 중 ${BY.filter(y=>y[1]>y[2]).length}번, 높게 셈한 집이 더 나았어요</div></div>`:'')
    +`<div style="font-size:.72rem;color:var(--ink3);text-align:center">과거로 되돌아가 셈한 ${Q.reduce((a,q)=>a+q.n,0).toLocaleString()}번 · 높게·낮게 = 매수 분석 순위에 쓰는 5년 수익 셈의 상위·하위 20%(입지 점수 아님)</div>`);}
  return out;}
 let PH={}, PHS=false;
@@ -1159,7 +1159,7 @@ function philo(entry,i){
     '그렇게 셈해 본 것이 집셈이에요.'],
   ['podium','해 봤더니','아무거나 고르는 것보다 나았어요.','',
     '과거 어느 날로 되돌아가 그날까지의 자료만으로 셈하고, 5년 뒤 실제 거래와 맞춰 봤어요.','fog',
-    '완벽하진 않아요.'+(PKW?` 한 집씩 견줘 보면 10번 중 ${10-Math.round(PKW/10)}번은 아무거나 고른 집이 더 나았어요.`:QH?` 높게 셈한 집도 1,000곳 중 ${Math.round(QH.loss*10)}곳은 손실이었어요.`:'')+' 그래서 빗나간 곳까지 함께 공개하고, 매달 다시 검증해요.'],
+    '완벽하진 않아요.'+(PKW?` 한 집씩 견줘 보면 10번 중 ${10-Math.round(PKW/10)}번은 아무거나 고른 집이 더 나았어요.`:QH?` 높게 셈한 집도 1,000곳 중 ${Math.round(QH.loss*10)}곳은 5년 뒤 시세가 내렸어요.`:'')+' 그래서 빗나간 곳까지 함께 공개하고, 매달 다시 검증해요.'],
   ['up','해 보니 알게 된 것','흔히 듣는 말과 다른 것도 있었어요.','',
     '20년 실거래로 하나씩 확인했어요.','myth',
     '그래서 집셈은 통념 대신 실제 거래에 나타난 만큼만 셈해요. 일자리까지 거리를 넣고, 오래된 집은 수리비를 빼요.'],
@@ -1455,12 +1455,12 @@ const PCTL=(a,v)=>{if(!a.length||v==null)return null; let lo=0,hi=a.length; whil
 function review(c,r){
  const P=rvPct(), q=(DT.sch||{})[c.no], age=r.y?YEAR-r.y:null, wm=WMIN(r), pro=[], con=[], tpc=x=>Math.max(1,Math.round(100-x));
  const tpp=Math.max(1,Math.round(c.ra/CPX.length*100));
- if(tpp<=10)pro.push({w:92-tpp,h:'입지가 좋지만',a:'입지가 좋고',t:'입지가 좋아요',d:`동네 시세와 역 접근성으로 본 입지가 서울·경기·인천 상위 ${tpp}%예요`});
+ if(tpp<=10)pro.push({w:92-tpp,h:'입지가 좋지만',a:'입지가 좋고',t:'입지가 좋아요',d:`동네 시세와 역 접근성으로 본 입지가 서울·경기·인천 ${rkP(tpp)}예요`});
  const sp=q&&q[3]!=null?PCTL(P.sp,q[3]):null, hg=q&&q[4]!=null?PCTL(P.hg,q[4]):null;
  if((sp!=null&&sp>=75)||(hg!=null&&hg>=80))pro.push({w:Math.max(sp||0,hg||0)-18,h:'학군이 좋지만',a:'학군이 좋고',t:'학군이 좋아요',d:[sp!=null&&sp>=75?`가까운 중학교 특목·자사고 진학률 ${q[3]}%(상위 ${tpc(sp)}%)`:'',hg!=null&&hg>=80?`1km 안 학원 ${q[4]}곳`:''].filter(Boolean).join(' · ')+' — 자녀 교육 여건이 좋은 편이에요'});
  if(wm!=null&&wm<=10)pro.push({w:72-wm,h:'역세권이지만',a:'역세권이고',t:'역세권이에요',d:`${r.sn?r.sn+'역':'가까운 역'}까지 걸어서 ${wm}분 — 출퇴근이 편해요`});
  const g5=!r.as&&!(r.bu>0)&&r.p?r.v5/r.p-1:null, gp=g5!=null?PCTL(P.up,g5):null;
- if(gp!=null&&gp>=75)pro.push({w:gp-18,h:'5년 시세 전망이 밝지만',a:'5년 시세 전망이 밝고',t:'5년 시세 전망이 밝아요',d:`시장이 보통일 때 5년 +${Math.round(g5*100)}% — 전체 단지 상위 ${tpc(gp)}%예요`});
+ if(gp!=null&&gp>=75)pro.push({w:gp-18,h:'5년 셈 상승률이 높은 편이지만',a:'5년 셈 상승률이 높은 편이고',t:'5년 셈 상승률이 높은 편이에요',d:`시장이 보통일 때 셈한 5년 +${Math.round((GRS(r.v5)/r.p-1)*100)}%(예측이 아니라 과거 흐름으로 셈한 값) — 전체 단지 상위 ${tpc(gp)}%예요`});
  const dp=c.dd!=null&&(c.hh||0)>=300?PCTL(P.dd,c.dd):null;
  if(dp!=null&&dp>=75)pro.push({w:dp-25,h:'하락기에 강했지만',a:'하락기에 강했고',t:'하락기에 강했어요',d:`2021~22 고점 → 2024 바닥 실거래 ${c.dd>0?'+':''}${Math.round(c.dd)}% — 전체 상위 ${tpc(dp)}%로 덜 떨어졌어요`});
  if(age!=null&&age<=10)pro.push({w:62-age*3,h:'신축이지만',a:'신축이고',t:'신축이에요',d:`${age}년차 — 당분간 큰 수리비 부담이 적어요`});
@@ -1533,8 +1533,8 @@ function ownHTML(c,r,k,back,X){
  /* ④ 입지와 순위 */
  const GB=goodBad(c), chip=(x,col,bg)=>`<span style="padding:6px 10px;border-radius:999px;background:${bg};color:${col};font-size:.8rem;font-weight:700">${x}</span>`;
  const RD=typeof radar5==='function'?radar5(c,r):'';   // 10-05 사용자: 시안의 오각형(theme_ref.radar5) — 자료(home_detail) 오기 전엔 옛 반원 게이지
- const lc=box('입지',(RD?`<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px"><div><b class="num" style="font-size:2rem;color:var(--blue)">${c.sc}</b><b style="font-size:1rem">점</b></div><div style="text-align:right;font-size:.86rem;line-height:1.6">${c.gu.split(' ').pop()} <b style="color:var(--blue)">상위 ${gtop}%</b> · 전체 <b style="color:var(--blue)">상위 ${tpp}%</b><div class="sub" style="font-size:.76rem">${c.ng}곳 중 ${c.rg}위</div></div></div>${RD}`:`<div style="display:flex;align-items:center;gap:12px"><div style="flex:0 0 44%">${vGauge(c.sc).replace('width:62%','width:100%')}</div>
-   <div style="flex:1;min-width:0;font-size:.9rem;line-height:1.8"><div>${c.gu.split(' ').pop()} <b style="color:var(--blue)">상위 ${gtop}%</b></div><div>서울·경기·인천 <b style="color:var(--blue)">상위 ${tpp}%</b></div><div class="sub" style="font-size:.78rem">${c.ng}곳 중 ${c.rg}위 · 전체 ${N.toLocaleString()}곳</div></div></div>`)+`
+ const lc=box('입지',(RD?`<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px"><div><b class="num" style="font-size:2rem;color:var(--blue)">${c.sc}</b><b style="font-size:1rem">점</b></div><div style="text-align:right;font-size:.86rem;line-height:1.6">${c.gu.split(' ').pop()} <b style="color:var(--blue)">${rkP(gtop)}</b> · 전체 <b style="color:var(--blue)">${rkP(tpp)}</b><div class="sub" style="font-size:.76rem">${c.ng}곳 중 ${c.rg}위</div></div></div>${RD}`:`<div style="display:flex;align-items:center;gap:12px"><div style="flex:0 0 44%">${vGauge(c.sc).replace('width:62%','width:100%')}</div>
+   <div style="flex:1;min-width:0;font-size:.9rem;line-height:1.8"><div>${c.gu.split(' ').pop()} <b style="color:var(--blue)">${rkP(gtop)}</b></div><div>서울·경기·인천 <b style="color:var(--blue)">${rkP(tpp)}</b></div><div class="sub" style="font-size:.78rem">${c.ng}곳 중 ${c.rg}위 · 전체 ${N.toLocaleString()}곳</div></div></div>`)+`
    ${!RD&&(GB[0].length||GB[1].length)?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px">${GB[0].map(x=>chip(x,'var(--blue)','var(--blue-bg)')).join('')}${GB[1].map(x=>chip(x,'var(--ink2)','var(--surface2)')).join('')}</div>`:''}`
    +(loc!=null?kv('동네 시세',`평균보다 <b style="color:${gc(loc)}">${loc>=0?'+':'−'}${Math.abs(Math.round(loc))}%</b>`):'')
    +kv('가까운 역',STXT(r))
@@ -1876,14 +1876,14 @@ function trust(from,sec){
  const dots=HY.length?`<div style="display:flex;justify-content:center;gap:5px;flex-wrap:wrap;margin:6px 0 4px">${HY.map(h=>`<span title="${h[0]}" style="display:flex;flex-direction:column;align-items:center;gap:2px"><i style="width:16px;height:16px;border-radius:50%;background:${h[1]?'var(--blue)':'var(--line)'}"></i><span style="font-size:.6rem;color:var(--ink3)">'${h[0].slice(2)}</span></span>`).join('')}</div>`:'';
  const pbar=(lab,v,mx,hl)=>`<div style="display:flex;align-items:center;gap:8px;margin:5px 0"><span style="flex:0 0 4.6em;font-size:.76rem;text-align:right;color:${hl?'var(--blue)':'var(--ink2)'};font-weight:${hl?800:600}">${lab}</span><span style="flex:1;height:14px;background:var(--line2);border-radius:5px;overflow:hidden"><i style="display:block;height:100%;width:${Math.max(2,Math.max(0,v)/mx*100)}%;background:${hl?'var(--blue)':'var(--ink3)'};opacity:${hl?1:.45};border-radius:5px"></i></span><b class="num" style="flex:0 0 4.4em;font-size:.8rem;text-align:right">${e1(v)}</b></div>`;
  const pmx=Math.max(1,...SP.map(([p,x])=>x[1]));
- const s3=sect('test','과거 검증 결과',SB?`${HY.length}번 중 ${hwin}번, 순이익 상위 20%가 초과 성과를 냈어요`:'과거 실거래로 대조했어요',
+ const s3=sect('test','과거 검증 결과',SB?`매수 반기 ${HY.length}번 중 ${hwin}번, 순이익 상위 20%가 초과 성과를 냈어요`:'과거 실거래로 대조했어요',
   `이 화면의 순위와 똑같은 셈(자본 ${sK/1e4}억 · 모자란 만큼 대출 · 그때 금리 · 세금·비용)을 과거 매수 시점에 그대로 돌리고, 5년 뒤 실제 거래로 맞춰 봤어요. 만들 때 쓰지 않은 시기의 실거래 ${EVN}건이에요.`,
   dots+SP.map(([p,x])=>`<div style="font-size:.8rem;font-weight:700;margin:14px 0 2px">${p}년 매수 · 5년 뒤 실제 순이익(가운데)</div>`
    +pbar('상위 20%',x[1],pmx,1)+pbar('전체',x[2],pmx,0)+pbar('하위 20%',x[3],pmx,0)).join('')
   +(SP.length?`<div style="display:flex;gap:8px;margin-top:14px">${tile(SP.map(([p,x])=>x[4]+'%').join(' · '),'상위 20% 중 실제 손실<br>'+SP.map(([p])=>p.slice(2,4)+'~'+p.slice(-2)).join(' · ')+'년 매수')}${tile(SP.map(([p,x])=>x[5]+'%').join(' · '),'전체 중 실제 손실<br>'+SP.map(([p])=>p.slice(2,4)+'~'+p.slice(-2)).join(' · ')+'년 매수')}</div>`:''),
   `점 = 매수한 반기 · 파랑 = 그 반기에 순이익 상위 20%가 전체 대비 초과 성과 · 자본 1·3·5억 × 대출 50·70% × 두 기간, 12가지 모두 ${SB&&SB.pass?'같은 결론':'확인 중'} · ‘나쁠 때 손실 적은 순’은 이 시험에서 실제와 거꾸로 나와 순서 기준에서 뺐어요`);
  // 4 빗나간 곳
- const s4=sect('miss','어디서 빗나갔나요',(SP.length?`순이익 상위 20%도 100곳 중 ${Math.round(SP.reduce((t,[p,x])=>t+x[4],0)/SP.length)}곳은 손실이었어요`:`높게 셈한 집도 1,000곳 중 ${Math.round((M?M.pct:(qb.loss||0))*10)}곳은 손실이었어요`),
+ const s4=sect('miss','어디서 빗나갔나요',(SP.length?`순이익 상위 20%도 100곳 중 ${Math.round(SP.reduce((t,[p,x])=>t+x[4],0)/SP.length)}곳은 세금·이자까지 넣으면 손실이었어요`:`높게 셈한 집도 1,000곳 중 ${Math.round((M?M.pct:(qb.loss||0))*10)}곳은 5년 뒤 시세가 내렸어요`),
   M&&M.yrs&&M.yrs[0]?`높게 셈한 집의 손실 가운데 ${M.yrs[0][1]}%는 시세가 가장 높던 ${M.yrs[0][0]}년에 산 경우예요. 단지를 잘 골라도 시장 전체가 내리면 함께 내려요.`:'단지를 잘 골라도 시장 전체가 내리면 함께 내려요.',
   ((M&&M.ex||[]).length?(M.ex||[]).map(e=>`<div class="tl" style="cursor:default"><div class="m"><b>${e[0]}</b><span>${e[1].split(' ').pop()} · ${e[2]}년 매수</span></div><div class="v"><b style="color:var(--red)">−${Math.abs(e[3])}%</b><span>5년 뒤</span></div></div>`).join(''):'')
   +`<div style="font-size:.8rem;font-weight:700;margin:16px 0 0">시장 전체 방향은 못 맞혀요 — 매수한 해별 5년 뒤</div>`+colbars(L,x=>x[1]<0||x[0]===hi[0])
@@ -2258,6 +2258,8 @@ function gsBox(c,rows){const G=(DT.gs||{})[c.no];if(!G)return '';const kv=(a,b)=
  const L=Object.keys(G).map(Number).sort((a,b)=>a-b).map(b=>{const r=rows.find(x=>x.b===b), g=G[String(b)];return kv(b+'㎡대',gsTxt(g,r&&r.p)+(g[0]<=60000?(g[2]>60000?' <span class="sub">· 일부 호수 6억 넘음</span>':''):''));}).join('');
  return L+`<div class="sub" style="font-size:.76rem;margin-top:6px;line-height:1.55">${GSY()}년 공동주택 공시가격(국토교통부) 면적대 중앙값과 최저~최고 · 취득세 감면·이자 소득공제·보유세 판단에 쓰여요</div><a class="btn ghost" style="display:block;text-decoration:none;text-align:center;margin-top:10px" href="https://www.realtyprice.kr" target="_blank" rel="noopener">내 호수 공시가격 확인 ›</a>`;}
 /* 10-07 QA: '성호초운암초공동'+'등학교' = '성호초운암초공동등학교' 깨짐 → 공동 통학구역 이름을 풀어 씀 */
+/* 10-07 QA: '상위 88%'(=하위권)를 상위로 읽게 하던 표기 → 50% 넘으면 하위로 */
+function rkP(p){return p<=50?'상위 '+p+'%':'하위 '+Math.max(1,100-p)+'%';}
 function schN(n){if(!n)return '-';if(/초$/.test(n))return n+'등학교';const m=n.replace(/공동$/,''),p=m.match(/[^초]+초/g);return p&&p.join('')===m?p.map(x=>x+'등학교').join('·')+(n.endsWith('공동')?' (공동 통학구역)':''):n;}
 function gsOf(r){const g=(DT.gs||{})[r.no];return g?g[String(r.b)]:null;}
 function incTax(ti){const B=[[1400,.06],[5000,.15],[8800,.24],[15000,.35],[30000,.38],[50000,.40],[100000,.42],[1e12,.45]];let t=0,lo=0;for(const [hi,rt] of B){if(ti<=lo)break;t+=(Math.min(ti,hi)-lo)*rt;lo=hi;}return t;}
@@ -3522,7 +3524,7 @@ function clSlides(){
  // 과거 검증: 상위 20%가 초과 성과를 낸 반기(신뢰 페이지 '과거 검증 결과'와 같은 셈)
  const SB=DT.sbt, sK=[10000,30000,50000].reduce((a,b)=>Math.abs(b-(CF.cash||30000))<Math.abs(a-(CF.cash||30000))?b:a), SR=SB?SB.r[sK+'_0.5']:null, SP=SR?Object.entries(SR):[];
  const HY=SP.flatMap(([p,x])=>x[6]), hw=HY.filter(h=>h[1]).length;
- if(HY.length)out.push({id:'hit',tag:'과거 기록',q:'상위 셈 단지의 과거 초과 성과',a:`${HY.length}번 중 ${hw}번 초과 성과`,
+ if(HY.length)out.push({id:'hit',tag:'과거 기록',q:'상위 셈 단지의 과거 초과 성과',a:`매수 반기 ${HY.length}번 중 ${hw}번 초과 성과`,
   fig:`<div style="display:flex;justify-content:center;gap:5px;flex-wrap:wrap;margin:10px 0 4px">${HY.map(h=>`<span style="display:flex;flex-direction:column;align-items:center;gap:2px"><i style="width:14px;height:14px;border-radius:50%;background:${h[1]?'var(--blue)':'var(--line)'}"></i><span style="font-size:.58rem;color:var(--ink3)">'${h[0].slice(2)}</span></span>`).join('')}</div>`,
   g:'점 = 매수한 반기 · 파랑 = 순이익 상위 20%가 전체 대비 초과 성과. 표본 외 기간 실거래로 검증했어요.'});
  // 과거 기록: 매수 시점에 따라 5년 결과가 달랐다
@@ -3546,7 +3548,7 @@ function clSlides(){
  // 과거 기록: 높게 셈한 집의 손실은 시장 고점 매수에 몰렸다
  const M=DT.miss;
  if(M&&M.yrs&&M.yrs.length&&SP.length){const lp=Math.round(SP.reduce((t,[p,x])=>t+x[4],0)/SP.length);
-  out.push({id:'mkt',tag:'과거 기록',q:'높게 셈한 집도 손실이 났나요',a:`100곳 중 ${lp}곳은 손실이었어요`,
+  out.push({id:'mkt',tag:'과거 기록',q:'높게 셈한 집도 손실이 났나요',a:`순이익(세금·이자 포함)으로 100곳 중 ${lp}곳은 손실이었어요`,
    fig:hbars(M.yrs.slice(0,4).map(y=>[y[0]+'년 매수',y[1],y[1]+'%']),100,'red'),
    g:`그 손실의 ${M.yrs[0][1]}%는 시세가 가장 높던 ${M.yrs[0][0]}년에 매수한 경우예요. 단지를 잘 골라도 시장 전체가 내리면 함께 내려요.`});}
  return out;}
