@@ -460,6 +460,7 @@ let bb = L.latLngBounds(A.map(a => [a.lat, a.lon]));
 const map = L.map('map', { zoomControl: false, minZoom: 8, maxZoom: 18, zoomSnap: 0.5, zoomDelta: 1, wheelPxPerZoomLevel: 90,
   maxBounds: bb.pad(0.35), maxBoundsViscosity: 0.85, preferCanvas: true });
 map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
+map.attributionControl.addAttribution('역·노선 © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>');
 // 바탕지도 = N 지도 하나(10-01 사용자: 다른 지도는 쓰지 말 것 — 예비 바탕 OpenFreeMap·Esri 폐기). 못 불러오면 안내 문구만
 let baseKind = '';
 const loadJs = src => new Promise((ok, no) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = no; document.head.appendChild(s); });
