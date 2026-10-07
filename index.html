@@ -3387,7 +3387,7 @@ setTimeout(()=>{[['result','anal'],['setup','anal'],['firstFlow','anal'],['board
 // ===== 10-05 v5: 운영자 피드백 11개 + ChatGPT 시안 — 홈 = 고민 5개(예전 '이런 게 있어?' 느낌) · 종 아이콘 제거 · '집셈을 보기 전에' = 첫 실행 + 홈 카드 · 메뉴 중복 정리 =====
 function topIntro(){const b=document.getElementById('tpi');if(b)b.remove();}   // 알림 기능이 없으니 아이콘도 없음
 const WRY=[['home','g','첫 집, 어디가 좋을까요?','내 자본·대출로 5년 순이익이 높은 곳','first'],['swap','b','지금 집을 팔고 갈아탈까요?','팔고 옮기면 남는 돈 비교','move'],
- ['pin','p','우리 단지, 괜찮은가요?','시세·입지·학군·층별 정상가 진단','mine'],['bag','a','출퇴근이 편한 집을 찾고 있어요','출퇴근 시간 안에서 순이익 높은 곳','commute'],['pulse','r','지금 사도 되는 시점일까요?','지금 시장 국면과 과거 같은 때의 기록','timing']];
+ ['pin','p','우리 단지, 괜찮은가요?','시세·입지·학군·층별 정상가 진단','mine'],['bag','a','출퇴근이 편한 집을 찾고 있어요','출퇴근 시간 안에서 순이익 높은 곳','commute'],['pulse','r','지금 시장은 어떤 구간인가요?','지금 시장 국면과 과거 같은 때의 기록','timing']];
 function hub(){
  TT.forEach(clearTimeout); TT=[]; window.scrollTo(0,0); topIntro(); FF.force=false; tbOn('home'); tint(1); document.body.classList.add('nodisc');
  const SD=(DT.ph2||{}).sd||{}, mk=(DT.mk||[]).map(([r])=>[r,SD[r]||{}]), m0=mk[0];
