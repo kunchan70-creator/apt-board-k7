@@ -950,8 +950,7 @@ function nowParts(o){const P0=o.path;if(!P0||!P0.length)return null;const kp=P0[
  /* 10-08 사용자 2차: 아래 지표 목록처럼 줄로 두고 누르면 그래프가 열리게(같은 kiOpen) — id 는 아래 목록(ki)과 겹치지 않게 kp */
  const ind=pk.length?{q:'같이 볼 지표',big:`지금 눈여겨볼 지표 ${pk.length}개`,
   v:pk.map(x=>{const gi=G.findIndex(g=>g.items.includes(x)),ii=gi<0?-1:G[gi].items.indexOf(x),gn=(GN.find(([t,rx])=>gi>=0&&rx.test(G[gi].nm))||[''])[0],id=`kp${gi}_${ii}`;
-    return `<div class="kig" style="margin-top:10px">${gn}</div><div role="button" tabindex="0" class="kir" onclick="kiOpen('${id}',${gi},${ii})"><span class="kin">${x.nm}<small style="display:block;margin-top:4px">${kchip(x)}</small></span>${kspark(x)}<span class="kiv"><b>${kval(x,x.now)}</b><small>${kpos(x.pct)}</small></span></div><div id="${id}" class="kid" hidden></div>`;}).join('')
-
+    return `<div class="kig" style="margin-top:10px">${gn}</div><div role="button" tabindex="0" class="kir" onclick="kiOpen('${id}',${gi},${ii})"><span class="kin">${x.nm}<small style="display:block;margin-top:4px">${kchip(x)}</small></span>${kspark(x)}<span class="kiv"><b>${kval(x,x.now)}</b><small>${kpos(x.pct)}</small></span></div><div id="${id}" class="kid" hidden></div>`;}).join(''),
   line:'누르면 그래프 · 막대 = 과거 이 수준일 때 1년 뒤 집값 − 전체 평균 · 지표 탭 아래에 나머지 지표'}:null;
  return {sum,sig:sigSec(o.fcsd),flow:flowSec(o.fcsd,o.fcu),past:[turn,recS,hist],ind};}
 function nowScreen(){const K=KI();if(!K||!K.path)return null;const T=MD.t[RG]||{},P=(MD.p||{})[RG==='인천'?'인천':'경기'];
