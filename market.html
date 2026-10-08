@@ -180,6 +180,7 @@ svg.gz-on{cursor:grab;outline:1.5px solid var(--blue);outline-offset:2px;border-
 .pzbd{touch-action:none;user-select:none;-webkit-user-select:none}.pzym{display:inline-block;font-size:.6em;font-weight:800;color:#fff;border-radius:8px;padding:1px 7px;vertical-align:4px;background:var(--ink3)}
 .pzpl{transform-box:fill-box;transform-origin:center;animation:pzP 1.8s ease-out infinite}@keyframes pzP{0%{transform:scale(1);opacity:.8}100%{transform:scale(2.4);opacity:0}}
 .obx{margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--surface2)}
+.sgdots{display:flex;flex-wrap:wrap;gap:5px;margin:2px 0 8px}.sgdots i{width:16px;height:16px;border-radius:50%}.sglg{display:flex;gap:12px;font-size:.82rem}.sglg i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px}.sgg{display:flex;align-items:center;gap:8px;margin:14px 0 4px}.sgg b{font-size:.92rem}.sgi{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:var(--surface2);color:var(--ink2)}.sgrow{display:grid;grid-template-columns:6.8em 1fr auto;gap:8px;align-items:center;padding:9px 0 9px 36px;border-bottom:1px solid var(--line2);font-size:.88rem}.sgrow span{font-weight:700}.sgrow em{font-style:normal;color:var(--ink2)}.sgrow i{font-style:normal;font-size:.78rem;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--surface2);color:var(--ink3)}.sgrow.on i{background:#FFF1DC;color:#B86E00}
 .sgyh{font-size:.88rem;font-weight:700;margin:2px 0 8px}.sgys{display:flex;gap:8px}.sgy{flex:1;border:1.5px solid var(--line);border-radius:14px;padding:10px 8px;text-align:center}.sgy b{display:block;font-size:.95rem}.sgy span{display:block;margin-top:2px;font-size:1.15rem;font-weight:800}.sgq{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line2)}.sgq b{flex:1;font-size:.92rem}.sgq .sgc{font-weight:700;font-size:.88rem}
 .obr{display:grid;grid-template-columns:8.4em 1fr;gap:10px;align-items:center;margin-top:10px;font-size:.8rem}.obb{display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--line)}.obb i{display:block;height:100%}
 .obn{font-size:.72rem;color:var(--ink3);margin:3px 0 0 calc(8.4em + 10px)}
@@ -424,6 +425,7 @@ body.intro{overflow:hidden}body.intro .tabbar,body.intro .disc{display:none}
 .tq-v{margin:14px 0 8px}
 .tq-l{font-size:.8rem;color:var(--ink3);line-height:1.55;word-break:keep-all}
 .wrap:has(#app:empty) .disc{display:none}
+@keyframes trGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}@keyframes trGrowY{from{transform:scaleY(0)}to{transform:scaleY(1)}}@keyframes trPop{from{transform:scale(0)}to{transform:scale(1)}}@keyframes trUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}@media (prefers-reduced-motion:reduce){.tq,.tq-v i{animation:none!important}}
 .qk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0 0}.qk a,.qk button{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 6px 12px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;text-decoration:none;cursor:pointer}.qk b{font-size:.9rem;font-weight:700}.qk a:active,.qk button:active{transform:scale(.98)}
 @media (min-width:768px){.wrap{max-width:480px}.tabbar>div{max-width:480px}.bs{max-width:480px}}
 </style></head><body><div class="wrap">
@@ -471,7 +473,7 @@ const LC=l=>'var(--ink)';   // 09-28: 상승=빨강/하락=파랑이 결과 카�
 const IND={lvl:['매수 심리','조용','뜨거움'],chg:['분위기 변화','식는 중','달아오름'],px:['최근 시세','약함','강함'],jx:['최근 전셋값','약함','강함'],js:['전세 구하기','쉬움','어려움'],
  tr3:['실거래 3개월','약함','강함'],tr6:['실거래 6개월','약함','강함'],vol:['거래량 1년','적음','많음'],uns:['미분양 1년','늘어남','줄어듦'],slc:['서울 분위기 변화','식는 중','달아오름']};
 const LITE=(on,name,val)=>`<div class="lt"><i class="${on?'on':''}"></i><b style="flex:1;font-size:.95rem">${name}</b><span class="sub" style="font-size:.84rem">${val}</span><b style="width:3em;text-align:right;font-size:.84rem;color:${on?'var(--amber)':'var(--ink3)'}">${on?'켜짐':'꺼짐'}</b></div>`;
-function sect(sc){return `<section class="step mks"><div class="pq">${sc.q}</div><div class="pb" style="color:${sc.c||'var(--ink)'}">${sc.big}</div>${sc.sub?`<div class="ps">${sc.sub}</div>`:''}${sc.v?`<div class="pv">${sc.v}</div>`:''}${sc.line?`<div class="pl">${sc.line}</div>`:''}</section>`;}
+function sect(sc){return `<section class="step mks"><div class="pq">${sc.q}</div><div class="pb" style="color:${sc.c||'var(--ink)'}">${sc.big}</div>${sc.sub?`<div class="ps">${sc.sub}</div>`:''}${sc.v?`<div class="pv">${sc.v}</div>`:''}</section>`;}
 function fixDash(root){root.querySelectorAll('path[pathLength="1"]').forEach(p=>{try{const L=p.getTotalLength();if(L>0){p.removeAttribute('pathLength');p.style.strokeDasharray=L;p.style.strokeDashoffset=L;}}catch(e){}});}   // 09-28: iOS 사파리 pathLength 선 그리기 문제
 const IO=('IntersectionObserver' in window)?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');IO.unobserve(e.target);}}),{threshold:.2}):null;
 function mountAll(el,scs){el.innerHTML=scs.map(sect).join('');fixDash(el);el.querySelectorAll('.step').forEach((x,i)=>!i||!IO?x.classList.add('vis'):IO.observe(x));}   /* 10-05: 맨 위 카드(지금 국면)는 바로 보이게 */
@@ -782,7 +784,7 @@ function analogScreen(){const K=KI(),A=(K||{}).analog||[];if(!A.length)return nu
   ${[0,3,6,9,12].map(i=>`<text x="${X(i).toFixed(1)}" y="${H-5}" font-size="9.5" text-anchor="middle" fill="var(--ink3)">${i?i+'개월':'그때'}</text>`).join('')}</svg>`;
  const rows=A.map(a=>`<div class="anr" onclick="const n=this.nextElementSibling;n.hidden=!n.hidden"><b>${a.ym}</b><span class="br"><i style="width:${a.sim}%"></i></span><span style="text-align:right;font-weight:700">${a.sim}%</span></div>
   <div class="anx" hidden>비슷했던 지표 — ${a.same.join(' · ')}<br>달랐던 지표 — ${a.diff.map(d=>`${d[0]}(지금 ${d[1]} · 그때 ${d[2]})`).join(' · ')}</div>`).join('');
- return {q:'비슷했던 과거',big:A[0].sim<70?'많이 닮은 과거는 없어요':`${A[0].ym} · 유사도 ${A[0].sim}%`,c:'var(--ink)',sub:`가장 가까운 ${A[0].ym}도 유사도 ${A[0].sim}% · 가까운 5곳의 그 뒤 12개월 집값`,v:svg+rows,
+ return {q:'비슷했던 과거',big:A[0].sim<70?'많이 닮은 과거는 없어요':`${A[0].ym} · 유사도 ${A[0].sim}%`,c:'var(--ink)',v:svg+rows,
   line:`유사도 = 지표 ${K.n}개의 과거 대비 위치가 얼마나 가까운지(100% = 완전히 같음) · 같은 모양이 반복되지는 않아요 · 누르면 비슷했던·달랐던 지표`};}
 const QK=c=>(c[1]>=50?'R':'L')+(c[2]>=50?'T':'B');
 function sumScreen(T){const K=KI();if(!K)return null;const cur=K.path[K.path.length-1],mv=mvOf(K.path),q=(K.astats||{})[QK(cur)+(mv||'')]||(K.astats||{})[QK(cur)],its=K.groups.flatMap(g=>g.items).filter(x=>x.dir);
@@ -861,12 +863,23 @@ const SGI={'기준금리 1년 변화(%p)':['금리·물가','기준금리가 1�
 const SGG=['금리·물가','경매','집값 부담','거래·인구','기타'];
 function wnLow(T){const lo=['12|0','12|1','12|2'].map(x=>T[x]).filter(Boolean),n=lo.reduce((a,r)=>a+r.n,0);if(!n)return null;const up=Math.round(lo.reduce((a,r)=>a+r.up*r.n,0)/n),dn=Math.round(lo.reduce((a,r)=>a+r.dn*r.n,0)/n);return {n,up,dn,flat:100-up-dn};}
 function obar(lab,r){return r?`<div class="obr"><span>${lab}</span><span class="obb"><i style="width:${r.up}%;background:var(--green)"></i><i style="width:${r.flat}%;background:var(--ink3);opacity:.35"></i><i style="width:${r.dn}%;background:var(--red)"></i></span></div><div class="obn"><span style="color:var(--green)">상승 ${r.up}%</span> · 횡보 ${r.flat}% · <span style="color:var(--red)">하락 ${r.dn}%</span></div>`:'';}
-function sigSec(sd){const W=(MD.wn||{})[sd];if(!W)return null;const L=W.lit||[],A=W.all&&W.all.length?W.all:L,k=L.length,cur=(W.ct||{})[W.cb]||{},YR=cur.yr||{};
- const yrs=Object.keys(YR).map(y=>`<div class="sgy"><b>${y}</b><span style="color:${YR[y]>=0?'var(--green)':'var(--red)'}">${YR[y]>0?'+':YR[y]<0?'−':''}${Math.abs(YR[y]).toFixed(1)}%</span></div>`).join('');
- const rows=SGG.map(g=>{const its=A.filter(n=>(SGI[n]||['기타'])[0]===g);if(!its.length)return '';const on=its.filter(n=>L.includes(n)).length;
-  return `<div class="sgq"><b>${g}</b><span class="sgd">${its.map(n=>`<i class="${L.includes(n)?'on':''}" title="${(SGI[n]||[0,n])[1]}"></i>`).join('')}</span><span class="sgc">${on}/${its.length}</span></div>`;}).join('');
- return {q:'주의 신호',big:`${A.length}개 중 ${k}개 켜짐`,
-  v:(yrs?`<div class="sgyh">이만큼 켜졌던 해, 1년 뒤 시세</div><div class="sgys">${yrs}</div>`:'')+`<div style="margin-top:14px">${rows}</div>`};}
+const SGS={'기준금리 1년 변화(%p)':['금리·물가','기준금리','1년 새 올랐나'],'시장이 보는 금리 방향(국고채 3년−기준금리, %p)':['금리·물가','채권 금리','더 오른다고 보나'],'물가 목표 초과(소비자물가 1년−2%, %p)':['금리·물가','물가','2%를 넘었나'],
+ '유가(브렌트, 원화) 1년 변화':['금리·물가','유가','1년 새 올랐나'],'금리 충격(월 상환/소득 1년 증가, %p)':['금리·물가','월 상환액','금리 탓에 늘었나'],'가계 이자 부담(빚×금리/GDP, 10년 평균 대비)':['금리·물가','가계 이자','평소보다 무겁나'],
+ '경매 매각가율 6개월 변화(식음)':['경매','경매 낙찰가','떨어지나'],'경매 매각률 6개월 변화(안 팔림)':['경매','경매 매물','안 팔리나'],
+ '주택 시가총액/GDP(평균 대비)':['집값 부담','집값 총액','경제 규모보다 크나'],'버티면 이득?(1년 시세 상승−주담대 금리, %p)':['집값 부담','집값 오름','이자보다 작나'],'전세 대신 사면 월 추가 비용(소득 대비, %)':['집값 부담','사는 비용','전세보다 큰가'],'구입 부담(10년 평균 대비)':['집값 부담','집 사는 부담','소득보다 커졌나'],'전세가율':['집값 부담','전세가율','매매가보다 많이 낮나'],
+ '거래량 6개월 추세':['거래·인구','거래량','줄었나'],'수요 대비 공급(거래량 추세−입주 물량)':['거래·인구','입주','거래보다 많나'],'인구 순유입(12개월, 인구 대비)':['거래·인구','인구','빠져나가나'],'입주 물량(올해+내년, 재고 대비·10년 평균 대비)':['거래·인구','입주 물량','평소보다 많나']};
+const SGIC={'금리·물가':'<path d="M7 17 17 7"/><circle cx="7.5" cy="7.5" r="2"/><circle cx="16.5" cy="16.5" r="2"/>','경매':'<path d="m14 5 5 5M11 8l5 5M12.5 6.5l5 5-3 3-5-5zM9.5 12.5 4 18"/><path d="M13 20h7"/>',
+ '집값 부담':'<path d="M4 11 12 4l8 7v9H4z"/><path d="M9 20v-5h6v5"/>','거래·인구':'<circle cx="9" cy="8" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 11h5M18.5 8.5 21 11l-2.5 2.5"/>','기타':'<circle cx="12" cy="12" r="8"/>'};
+function sigSec(sd){const W=(MD.wn||{})[sd];if(!W)return null;const L=W.lit||[],A=W.all&&W.all.length?W.all:L,k=L.length,b=W.cb,cur=(W.ct||{})[b]||{},NB=A.length;
+ const lo=b?Math.floor(NB*b/4)+1:0,hi=Math.floor(NB*(b+1)/4),n=cur.n||0,cnt=[['up','var(--green)','오름'],['flat','var(--ink3)','횡보'],['dn','var(--red)','내림']].map(([kk,c,t])=>[Math.round(n*(cur[kk]||0)/100),c,t]);
+ if(cnt.length){const d=n-cnt.reduce((a,x)=>a+x[0],0);cnt[0][0]+=d;}
+ const dots=n?`<div class="sgyh">${NB}개 중 ${lo}~${hi}개 켜졌던 ${n}달${cur.yrs?` <span style="font-weight:600;color:var(--ink2)">${cur.yrs.join('·')}년</span>`:''}</div>
+  <div class="sgdots">${cnt.map(([c,col])=>Array.from({length:c},()=>`<i style="background:${col}"></i>`).join('')).join('')}</div>
+  <div class="sglg">${cnt.map(([c,col,t])=>`<span><i style="background:${col}"></i>1년 뒤 ${t} ${c}</span>`).join('')}</div>`:'';
+ const rows=SGG.map(g=>{const its=A.filter(x=>((SGS[x]||SGI[x]||['기타'])[0])===g);if(!its.length)return '';
+  return `<div class="sgg"><span class="sgi"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${SGIC[g]}</svg></span><b>${g}</b></div>`
+   +its.map(x=>{const S=SGS[x]||[g,x,''],on=L.includes(x);return `<div class="sgrow${on?' on':''}"><span>${S[1]}</span><em>${S[2]}</em><i>${on?'켜짐':'꺼짐'}</i></div>`;}).join('');}).join('');
+ return {q:'주의 신호',big:`${NB}개 중 ${k}개 켜짐`,v:dots+`<div style="margin-top:16px">${rows}</div>`};}
 /* 사고파는 흐름: 가격 오르는 곳 중 거래·매물 방향 — 칩 지도 */
 const FK={dn_up:['매물 쌓임','거래↓ 매물↑','','#C74343','rgba(220,60,60,.13)'],dn_dn:['서로 관망','거래↓ 매물↓','','#536273','rgba(120,135,160,.14)'],up_dn:['매물 소화','거래↑ 매물↓','나온 집이 팔리는 중','#2B6BF3','rgba(43,107,243,.11)'],up_up:['모두 활발','거래↑ 매물↑','사고팔기 모두 활발','#16835A','rgba(30,160,90,.13)'],fall:['시세 하락','6개월 시세 하락','','#8A94A6','rgba(120,135,160,.12)']};
 const fcNm=x=>x.replace(/^.+시 /,'');
@@ -935,7 +948,7 @@ function nowParts(o){const P0=o.path;if(!P0||!P0.length)return null;const kp=P0[
  /* 10-08 사용자: '지켜볼 지표 3개'가 뭘 보라는 건지 모르겠다 → 지표 탭처럼 그래프로. 지표마다 = 이름·지금 위치 · 그래프(지표 선 + 집값 선 + 과거 상·하위 30% 띠) · 기록 한 줄(1년 뒤 평균, 전체 평균과 나란히 — 절대값·상대값 섞지 않게) */
  const GN=[['금리·대출',/금리|대출/],['수요·심리',/수요|심리/],['공급·거래',/공급|거래/]];
  /* 10-08 사용자 2차: 아래 지표 목록처럼 줄로 두고 누르면 그래프가 열리게(같은 kiOpen) — id 는 아래 목록(ki)과 겹치지 않게 kp */
- const ind=pk.length?{q:'같이 볼 지표',big:`지금 눈여겨볼 지표 ${pk.length}개`,sub:'금리·대출 · 수요·심리 · 공급·거래 묶음에서 하나씩 — 과거 기록이 가장 크게 갈린 지표',
+ const ind=pk.length?{q:'같이 볼 지표',big:`지금 눈여겨볼 지표 ${pk.length}개`,
   v:pk.map(x=>{const gi=G.findIndex(g=>g.items.includes(x)),ii=gi<0?-1:G[gi].items.indexOf(x),gn=(GN.find(([t,rx])=>gi>=0&&rx.test(G[gi].nm))||[''])[0],id=`kp${gi}_${ii}`;
     return `<div class="kig" style="margin-top:10px">${gn}</div><div role="button" tabindex="0" class="kir" onclick="kiOpen('${id}',${gi},${ii})"><span class="kin">${x.nm}<small style="display:block;margin-top:4px">${kchip(x)}</small></span>${kspark(x)}<span class="kiv"><b>${kval(x,x.now)}</b><small>${kpos(x.pct)}</small></span></div><div id="${id}" class="kid" hidden></div>`;}).join('')
    +(o.lag?`<div style="margin-top:12px;font-size:.8rem;line-height:1.55;color:var(--ink2);word-break:keep-all"><b style="color:var(--ink)">서울과 ${o.lag[0].replace(/^서울 → /,'')}의 시차</b> — 서울 집값이 움직이면 ${o.lag[0].replace(/^서울 → /,'')}는 ${/^시차/.test(o.lag[1])?o.lag[1].replace(/^시차 /,'')+' 뒤에 따라 움직였어요':'거의 같은 때 움직였어요'}(과거 기록)</div>`:''),
