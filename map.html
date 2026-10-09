@@ -859,7 +859,7 @@ function pick(i) {
     map.flyToBounds(bnd, { padding: [50, 50], maxZoom: 15.5, duration: 0.7 });
   }
 }
-$('#q').addEventListener('input', renderRes);
+let qT=0; $('#q').addEventListener('input', () => { clearTimeout(qT); qT = setTimeout(renderRes, 200); });   // 10-09 사용자: 치자마자 검색해 버벅임 → 입력이 멈추면
 $('#q').addEventListener('focus', () => { if ($('#q').value.trim()) renderRes(); });
 $('#q').addEventListener('keydown', e => {
   if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); if (!res.length) return; hi = (hi + (e.key === 'ArrowDown' ? 1 : -1) + res.length) % res.length; document.querySelectorAll('#qres .it').forEach(el => el.setAttribute('aria-selected', +el.dataset.i === hi ? 'true' : 'false')); const el = document.querySelector('#qres .it[aria-selected=true]'); if (el) el.scrollIntoView({ block: 'nearest' }); }
