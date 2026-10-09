@@ -762,7 +762,7 @@ ${kv('최근 1년 거래', x.n12 ? fmt(x.n12) + '건' : '')}
 ${kv('지난 하락기 (2022)', x.dd != null ? `<b style="color:${x.dd > -10 ? 'var(--blue)' : x.dd < -25 ? 'var(--red)' : 'inherit'}">${pc(x.dd)}</b>` : '')}
 ${kv('최근 5년 상승', x.h5c != null || x.h5g != null ? `단지 <b>${pc(x.h5c) || '-'}</b> · ${esc(a.guS)} ${pc(x.h5g) || '-'}` : '')}
 <a class="mgo" href="index.html#c=${encodeURIComponent(a.no)}" onclick='window.jsTrack&&jsTrack("map_detail",{n:${JSON.stringify(a.name)}})' style="margin-top:18px">세부 분석 보기</a><button type="button" class="mshare" onclick='mshare(${JSON.stringify(a.no)},${JSON.stringify(a.name)})'>이 단지 공유하기</button>
-<p class="note">입지 = 주변 단지 실거래로 본 동네 시세 + 역 접근성. 5년 뒤는 기준 시나리오 중앙값. 참고용 · 투자 권유 아님.</p>`;
+<p class="note">참고용 · 투자 권유 아님</p>`;
 }
 window.mshare = (no, name) => {   // 09-29: 공유 링크는 앱의 단지 분석으로 바로 들어온다
   const url = location.href.split('#')[0].split('?')[0].replace(/map\.html$/, 'index.html') + '#c=' + encodeURIComponent(no), text = name + ' · 집셈 단지 분석';
