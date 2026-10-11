@@ -6,7 +6,7 @@
 <style>
 :root{
  --bg:#f3f2ec;--surface:#fff;--surface2:#f8f7f3;--ink:#1a1f2c;--ink2:#4c5566;--ink3:#8a909b;--line:#e6e3da;--line2:#f1efe8;--grid:rgba(66,99,235,.07);--band:rgba(66,99,235,.24);
- --blue:#4263eb;--blue-bg:#eef1ff;--red:#f04452;--red-bg:#fee;--green:#00a660;--green-bg:#e5f7ee;--amber:#f59e0b;--amber-bg:#fff5e5;
+ --blue:#4263eb;--blue-bg:#eef1ff;--red:#2272EB;--red-bg:#EAF2FE;--green:#E42939;--green-bg:#FFEEF0;--amber:#f59e0b;--amber-bg:#fff5e5;
  --r:16px;--r2:11px;--shadow:0 1px 3px rgba(0,0,0,.04)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
  --bg:#111417;--surface:#191c20;--surface2:#212529;--ink:#eaedf0;--ink2:#a7b0ba;--ink3:#7b848e;--line:#2a2f35;--line2:#212529;--grid:rgba(124,147,255,.06);--band:rgba(124,147,255,.3);
@@ -197,7 +197,7 @@ svg.gz-on{cursor:grab;outline:1.5px solid var(--blue);outline-offset:2px;border-
 .pbs{margin-top:8px;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:.84rem;line-height:1.6}
 </style><style id="ref">
 :root{--bg:#FFFFFF;--surface:#fff;--surface2:#F2F5FA;--ink:#131A2B;--ink2:#454D5C;--ink3:#636C7E;--line:#E3E9F2;--line2:#EDF1F7;--grid:transparent;
- --blue:#2B6BF3;--blue-bg:#EAF1FF;--green:#0F8048;--green-bg:#E6F6EC;--red:#CC3338;--red-bg:#FDECEC;--amber:#F08C00;--amber-bg:#FFF4E5;
+ --blue:#2B6BF3;--blue-bg:#EAF1FF;--green:#E42939;--green-bg:#FFEEF0;--red:#2272EB;--red-bg:#EAF2FE;--amber:#F08C00;--amber-bg:#FFF4E5;
  --r:18px;--shadow:0 2px 12px rgba(30,64,140,.06)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--hero-a:#1A2335;--hero-b:#1B2A4A;--hero-l:#283142;--btn-d:#2F63D8;--bg:#0E131D;--surface:#171D29;--surface2:#1F2633;--ink:#EAF0F8;--ink2:#A9B4C6;--ink3:#7A8699;--line:#283142;--line2:#202837;
  --blue:#5B8CFF;--blue-bg:#1B2A4A;--shadow:none}}
@@ -271,7 +271,7 @@ body.notab .tabbar,body.notab .disc{display:none}body.notab{padding-bottom:40px}
 .onb p.ob-d{margin:14px 0 0;font-size:.94rem;line-height:1.65;color:var(--ink2)}
 .onb .ob-art{flex:1;display:flex;align-items:flex-end;justify-content:center;margin:18px -16px 0;min-height:220px}
 .onb .ob-art svg{width:100%;height:auto;display:block}
-.onb .ob-photo{flex:0 0 38vh;min-height:220px;margin:18px -16px 0;background:#DCE8FB url('onb_hero.jpg') center 72%/cover;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 22%);mask-image:linear-gradient(to bottom,transparent 0,#000 22%)}   /* 10-05 사용자: 소개 배너 = ChatGPT 생성 이미지(report/onb_hero.jpg) */
+.onb .ob-photo{flex:0 0 38vh;min-height:220px;margin:18px -16px 0;background:#DCE8FB url('onb_photo.jpg') center 60%/cover;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 22%);mask-image:linear-gradient(to bottom,transparent 0,#000 22%)}   /* 10-05 사용자: 소개 배너 = ChatGPT 생성 이미지(report/onb_hero.jpg) */
 .onb .ob-dots{display:flex;justify-content:center;gap:6px;margin:16px 0}.onb .ob-dots i{width:6px;height:6px;border-radius:3px;background:var(--line)}.onb .ob-dots i.on{width:18px;background:var(--blue)}
 .onb .ob-ft{padding:0 0 calc(18px + env(safe-area-inset-bottom))}
 .ofl{display:flex;flex-direction:column;gap:10px;margin-top:20px}
@@ -282,7 +282,7 @@ body.notab .tabbar,body.notab .disc{display:none}body.notab{padding-bottom:40px}
 
 /* ===== 10-05 v4: ChatGPT 시안·설계(정보 구조·색 체계) — 파랑은 CTA·선택·링크·현재 위치에만 ===== */
 /* 10-08 웹 접근성: 회색 글자 대비 4.5:1(KWCAG) — ink2·ink3·초록·빨강 진하게 */
-:root{--bg:#F5F7FA;--surface:#fff;--surface2:#F2F4F7;--ink:#171A1F;--ink2:#454D5C;--ink3:#636C7E;--line:#E6EAF0;--line2:#EEF1F5;--blue-bg:#EEF4FF;--green:#0F8048;--red:#CC3338;
+:root{--bg:#F5F7FA;--surface:#fff;--surface2:#F2F4F7;--ink:#171A1F;--ink2:#454D5C;--ink3:#636C7E;--line:#E6EAF0;--line2:#EEF1F5;--blue-bg:#EEF4FF;--green:#E42939;--red:#2272EB;
  --pu-bg:#EAF7F0;--pu:#16835A;--pp-bg:#FFF4DE;--pp:#C97900;--pd-bg:#FDECEC;--pd:#C74343;--pb-bg:#EEF2F7;--pb:#536273;--p1:#2B5BD7;--p1-bg:#E6EEFF;--p2:#B86E00;--p2-bg:#FFF1DC;--p3:#7A45C9;--p3-bg:#F1E9FB;--p4:#5A6678;--p4-bg:#EEF1F5;--shadow:0 1px 3px rgba(16,24,40,.04)}
 body.hm{background:var(--bg)!important}body.hm.tint{background:var(--bg)!important}
 .btn{box-shadow:none}
@@ -290,7 +290,7 @@ body.hm{background:var(--bg)!important}body.hm.tint{background:var(--bg)!importa
 .rc.r1{border:1.5px solid var(--ink)!important}
 .ltab a.on{color:var(--ink);border-color:var(--ink)}
 .seg button.on{box-shadow:none}
-.it2{flex:0 0 auto;display:grid;place-items:center;border-radius:12px;background:var(--surface2);color:#475467}
+.it3{flex:0 0 auto;display:grid;place-items:center}.it2{flex:0 0 auto;display:grid;place-items:center;border-radius:12px;background:var(--surface2);color:#475467}
 .it2.g{background:var(--pu-bg);color:var(--pu)}.it2.p{background:#F1EDFF;color:#6854C7}.it2.a{background:var(--pp-bg);color:var(--pp)}.it2.b{background:var(--blue-bg);color:var(--blue)}
 /* 홈 */
 .hero2{display:block;width:100%;margin-top:4px;padding:20px 18px 18px;border:1px solid var(--hero-l,#DCE6FB);border-radius:20px;background:linear-gradient(160deg,var(--hero-a,#F5F8FF),var(--hero-b,#EAF1FF));color:var(--ink);font:inherit;text-align:left;cursor:pointer;position:relative;overflow:hidden}
@@ -308,7 +308,7 @@ body.hm{background:var(--bg)!important}body.hm.tint{background:var(--bg)!importa
 .qk button:active{transform:scale(.97)}
 .cardx{background:var(--surface);border:1px solid var(--line);border-radius:16px}
 .fvr{display:flex;align-items:center;gap:12px;padding:12px 6px 12px 12px}
-.fvr .th{flex:0 0 64px;height:64px;border-radius:12px;overflow:hidden;background:#DCE8FB url('onb_hero.jpg') 70% 70%/260px auto}
+.fvr .th{flex:0 0 64px;height:64px;border-radius:12px;overflow:hidden;background:#DCE8FB url('onb_photo.jpg') 70% 70%/260px auto}
 .fvr .hm{flex:1;min-width:0;display:flex;align-items:center;gap:12px;border:0;background:none;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
 .fvr .nm{flex:1;min-width:0}.fvr .nm b{display:block;font-size:.98rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fvr .nm .p{display:block;font-size:1.12rem;font-weight:800;margin-top:2px}.fvr .nm span{display:block;font-size:.76rem;color:var(--ink3)}
 .fvr+.fvr{border-top:1px solid var(--line2)}
@@ -337,7 +337,7 @@ body.hm{background:var(--bg)!important}body.hm.tint{background:var(--bg)!importa
 .onb1 .ob-top{display:flex;align-items:center;gap:8px;font-weight:800;font-size:1.05rem;margin-bottom:18px}
 .onb1 h2{font-size:clamp(1.7rem,7.4vw,2rem);font-weight:800;line-height:1.3;letter-spacing:-.035em;margin:0}
 .onb1 p{margin:10px 0 0;font-size:.92rem;line-height:1.6;color:var(--ink2)}
-.onb1 .ph{height:24vh;min-height:150px;margin:14px -16px 6px;background:#DCE8FB url('onb_hero.jpg') center 72%/cover;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 25%);mask-image:linear-gradient(to bottom,transparent 0,#000 25%)}
+.onb1 .ph{height:24vh;min-height:150px;margin:14px -16px 6px;background:#DCE8FB url('onb_photo.jpg') center 60%/cover;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 25%);mask-image:linear-gradient(to bottom,transparent 0,#000 25%)}
 .onb1 .vl{display:flex;flex-direction:column;gap:8px;margin:6px 0 14px}
 .onb1 .vl>div{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
 .onb1 .vl b{display:block;font-size:.98rem}.onb1 .vl span{display:block;font-size:.8rem;color:var(--ink2);line-height:1.45}
@@ -531,9 +531,11 @@ function kph(it){return (it.phc||[]).map(([ph,a,b])=>{const v=(a+b)/2;return `<s
 function kchip(it){const e=keff(it);if(e==null)return kph(it);const c=it.dir>0?'var(--green)':it.dir<0?'var(--red)':'var(--ink3)';
  return `<span style="font-size:.74rem;font-weight:700;color:${c}">1년 뒤 평균 대비 ${e>=0?'+':'−'}${Math.abs(e).toFixed(1)}%p</span>${it.dir?'':'<br>'+kph(it)}`;}
 function kser(it,mode){if(mode!=='chg')return it.ser;const m=new Map(it.ser),o=[];for(const [ym,v] of it.ser){const pv=m.get((+ym.slice(0,4)-1)+ym.slice(4));if(pv!=null)o.push([ym,v-pv]);}return o;}
-function kspark(it){const v=it.ser.slice(-60).map(x=>x[1]);if(v.length<2)return '';const mn=Math.min(...v),mx=Math.max(...v),W=72,H=26,P=v.map((x,i)=>[i/(v.length-1)*(W-4)+2,H-4-(x-mn)/((mx-mn)||1)*(H-8)]),id='sp'+it.k+RG.charCodeAt(0);
- return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="flex:0 0 auto"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--blue)" stop-opacity=".22"/><stop offset="1" stop-color="var(--blue)" stop-opacity="0"/></linearGradient></defs>
-  <path d="${smp(P)}L${P[P.length-1][0]},${H}L${P[0][0]},${H}Z" fill="url(#${id})"/><path d="${smp(P)}" fill="none" stroke="var(--blue)" stroke-width="1.5" stroke-linecap="round"/><circle cx="${P[P.length-1][0].toFixed(1)}" cy="${P[P.length-1][1].toFixed(1)}" r="2.6" fill="var(--blue)"/></svg>`;}
+function kspark(it){const v=it.ser.slice(-60).map(x=>x[1]);if(v.length<2)return '';const mn=Math.min(...v),mx=Math.max(...v),W=76,H=30,P=v.map((x,i)=>[i/(v.length-1)*(W-4)+2,H-4-(x-mn)/((mx-mn)||1)*(H-8)]),id='sp'+it.k+RG.charCodeAt(0);
+ /* 10-11 사용자 시안 확정(증권 관심 종목 줄): 선 색 = 최근 방향(오르면 빨강·내리면 파랑, 국내 관례) */
+ const c=v[v.length-1]>=v[0]?'var(--green)':'var(--red)';
+ return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="flex:0 0 auto"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity=".18"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></linearGradient></defs>
+  <path d="${smp(P)}L${P[P.length-1][0]},${H}L${P[0][0]},${H}Z" fill="url(#${id})"/><path d="${smp(P)}" fill="none" stroke="${c}" stroke-width="1.6" stroke-linecap="round"/><circle cx="${P[P.length-1][0].toFixed(1)}" cy="${P[P.length-1][1].toFixed(1)}" r="2.6" fill="${c}"/></svg>`;}
 function nice(lo,hi){const r=hi-lo||1,st=Math.pow(10,Math.floor(Math.log10(r/3))),m=[1,2,2.5,5,10].find(k=>r/(st*k)<=4)*st;const a=Math.ceil(lo/m)*m,o=[];for(let x=a;x<=hi+1e-9;x+=m)o.push(+x.toFixed(10));return o;}
 /* 지표 그래프: 위 = 지표, 아래 = 같은 달 시세 1년 변화(막대). id 는 화면 안에서 유일 */
 const KW={};   // 10-02 시간 그래프 보기 구간(손가락 확대로 바뀜)
@@ -770,7 +772,7 @@ function phaseCard(q,P0,S,o){const cur=P0[P0.length-1],ck=(cur[1]>=50?'R':'L')+(
   <span style="flex:1"><b style="font-size:.95rem">${sgName} ${sgOn?'켜짐':'없음'}</b><span class="sub" style="display:block;font-size:.76rem">${up?'매수 위축 쪽으로 내려가기 시작하면 켜져요':'매수 활발 쪽으로 올라가기 시작하면 켜져요'}</span></span>${zr?`<span style="text-align:right;font-size:.76rem;color:var(--ink2)">켜졌던 때 1년 뒤<br>${rec(zr)}</span>`:''}</div>`;
  const dw=D&&D.cur!=null?`<div style="display:flex;justify-content:space-between;align-items:baseline;padding:12px 2px;border-bottom:1px solid var(--line2)"><b style="font-size:.95rem">${nm}에 머문 기간</b><span style="font-size:.9rem;font-weight:800">${D.cur}개월 지속${D.max!=null?` <span class="sub" style="font-weight:500">· 과거 최장 ${D.max}개월</span>`:''}</span></div>`:'';
  const more=`<details style="margin-top:12px" ontoggle="if(this.open)anShow('${o.aid||'anm'}')"><summary style="cursor:pointer;font-size:.88rem;font-weight:700;color:var(--blue)">2010년 이후 움직임 지도로 보기</summary>
-  <div class="sub" style="font-size:.76rem;line-height:1.6;margin:10px 0 4px">점 = 그달의 시장 위치 · 위로 갈수록 사려는 사람이 많고, 오른쪽으로 갈수록 집 사기 부담이 커요 · 선 색 = 그때 직전 6개월 시세(초록 상승 · 빨강 하락)</div>
+  <div class="sub" style="font-size:.76rem;line-height:1.6;margin:10px 0 4px">점 = 그달의 시장 위치 · 위로 갈수록 사려는 사람이 많고, 오른쪽으로 갈수록 집 사기 부담이 커요 · 선 색 = 그때 직전 6개월 시세(빨강 상승 · 파랑 하락)</div>
   ${anBlock(o.aid||'anm',P0,o.px,o.marks)}${stageStrip(o.seq,null)}</details>`;
  return {q:`${q} <span style="font-size:.7rem;font-weight:700;padding:2px 7px;border-radius:999px;background:var(--surface2);color:var(--ink3);margin-left:4px">집셈 자체 분석</span>`,
   big:`${nm}`,c:sc,sub:PLN[num],
@@ -827,7 +829,7 @@ function pzBlock(id,P,seq,lv,marks){const n=P.length;if(!n||!seq||!seq[1])return
  const W=320,H=236,x0=34,y0=8,w=278,h=196,hw=w/2,hh=h/2,X=v=>x0+Math.max(2,Math.min(98,v))/100*w,Y=v=>y0+(1-Math.max(2,Math.min(98,v))/100)*h,BW=320,BL=4,BR=4,BX=i=>BL+i/(n-1)*(BW-BL-BR);
  const vv=LV.filter(v=>v!=null),mn=Math.min(...vv),mx=Math.max(...vv),LY=v=>6+(1-(v-mn)/(mx-mn||1))*48,RS=pzRuns(seq[1],n);
  PZ[id]={P,n,RS,LV,d6,d12,X,Y,BX,LY,sel:null,fr:0,raf:null};
- const Q={1:[0,0],2:[1,0],3:[1,1],4:[0,1]},cells=[1,2,3,4].map(c=>{const [qx,qy]=Q[c],x=x0+qx*hw,y=y0+qy*hh;return `<rect id="${id}-c${c}" x="${x}" y="${y}" width="${hw}" height="${hh}" fill="${PCQ[c][1]}"/><text x="${x+10}" y="${qy?y+hh-9:y+20}" font-size="11.5" font-weight="800" fill="${PCQ[c][0]}">${STG[c][3]}</text>`;}).join('')
+ const Q={1:[0,0],2:[1,0],3:[1,1],4:[0,1]},cells=[1,2,3,4].map(c=>{const [qx,qy]=Q[c],x=x0+qx*hw,y=y0+qy*hh;return `<rect id="${id}-c${c}" x="${x}" y="${y}" width="${hw}" height="${hh}" fill="${PCQ[c][1]}"/><text id="${id}-l${c}" x="${x+10}" y="${qy?y+hh-9:y+20}" font-size="11.5" font-weight="800" fill="${PCQ[c][0]}">${STG[c][3]}</text>`;}).join('')
   +`<rect x="${x0}" y="${y0}" width="${w}" height="${h}" rx="16" fill="none" stroke="var(--line)" stroke-width="1.5"/><line x1="${x0+hw}" x2="${x0+hw}" y1="${y0}" y2="${y0+h}" stroke="var(--surface)" stroke-width="2"/><line x1="${x0}" x2="${x0+w}" y1="${y0+hh}" y2="${y0+hh}" stroke="var(--surface)" stroke-width="2"/>`;
  const axes=`<text x="11" y="${y0+hh}" font-size="10.5" font-weight="800" fill="var(--ink)" text-anchor="middle" transform="rotate(-90 11 ${y0+hh})">매수세</text><text x="23" y="${y0+12}" font-size="9.5" font-weight="700" fill="var(--ink2)" text-anchor="middle">강</text><text x="23" y="${y0+h-2}" font-size="9.5" font-weight="700" fill="var(--ink2)" text-anchor="middle">약</text>
   <text x="${x0+hw}" y="${H-5}" font-size="10.5" font-weight="800" fill="var(--ink)" text-anchor="middle">주택구입부담</text><text x="${x0+4}" y="${H-5}" font-size="9.5" font-weight="700" fill="var(--ink2)">낮음</text><text x="${x0+w-4}" y="${H-5}" font-size="9.5" font-weight="700" fill="var(--ink2)" text-anchor="end">높음</text>`;
@@ -844,7 +846,7 @@ function pzBlock(id,P,seq,lv,marks){const n=P.length;if(!n||!seq||!seq[1])return
 function pzUpdate(id){const z=PZ[id];if(!z)return;const {P,n,RS,LV,d6,d12,X,Y,BX,LY}=z,$=k=>document.getElementById(id+'-'+k);if(!$('dt'))return;
  const sel=z.sel==null?n-1:z.sel,run=RS.find(r=>sel>=r[1]&&sel<=r[2])||RS[RS.length-1],num=run[0],k=sel-run[1]+1,isNow=z.sel==null,past=RS.filter(r=>r[0]===num&&r[2]<run[1]).map(r=>r[2]-r[1]+1),mx=past.length?Math.max(...past):0;
  const cur=P[sel],nx=P[Math.min(n-1,sel+1)],f=z.fr,px=X(cur[1]+(nx[1]-cur[1])*f),py=Y(cur[2]+(nx[2]-cur[2])*f);
- [1,2,3,4].forEach(c=>$('c'+c).setAttribute('opacity',c===num?1:.55));RS.forEach(r=>{const e=$('r'+r[1]);if(e)e.setAttribute('opacity',r===run?1:.4);});
+ [1,2,3,4].forEach(c=>{$('c'+c).setAttribute('fill',c===num?PCQ[c][1]:'#F4F5F7');const t=$('l'+c);if(t)t.setAttribute('fill',c===num?PCQ[c][0]:'#9AA3AE');});   /* 10-11 사용자 시안 확정: 지금(고른) 칸만 색, 나머지 회색 */RS.forEach(r=>{const e=$('r'+r[1]);if(e)e.setAttribute('opacity',r===run?1:.4);});
  const a0=Math.max(0,sel-11);$('tr').innerHTML=P.slice(a0,sel).map((p,i,A)=>`<circle cx="${X(p[1]).toFixed(1)}" cy="${Y(p[2]).toFixed(1)}" r="4" fill="${PZD(d6[a0+i])}" fill-opacity="${(.3+.7*i/Math.max(1,A.length)).toFixed(2)}" stroke="var(--surface)" stroke-width="1"/>`).join('');
  const dc=PZD(d6[sel]),dt=$('dt');dt.setAttribute('cx',px.toFixed(1));dt.setAttribute('cy',py.toFixed(1));dt.setAttribute('fill',dc);const dr=$('dr');dr.setAttribute('cx',px.toFixed(1));dr.setAttribute('cy',py.toFixed(1));dr.setAttribute('stroke',dc);dr.setAttribute('opacity',isNow?1:0);
  const dl=$('dl');dl.setAttribute('x',px.toFixed(1));dl.setAttribute('y',(py+(py>160?-13:20)).toFixed(1));dl.textContent=isNow?'현재':cur[0];
@@ -901,10 +903,12 @@ function flowSec(sd,un){const F=MD.fc;if(!F||!F.sd||!F.sd[sd])return null;const 
   <div class="frr" style="margin-top:6px"><span>금리 오르던 2021~22년</span><b style="color:${cl(r22[0])}">${pc(r22[0])}</b></div><div class="frr"><span>2023년 이후</span><b style="color:${cl(r23[0])}">${pc(r23[0])}</b></div>
   <div class="sub" style="font-size:.74rem;margin-top:4px;word-break:keep-all">서울·경기·인천 모든 구를 합친 기록(${r22[2]||'-'}개월·${r23[2]||'-'}개월치) · 2021~22년이 특히 약했어요 · 한 번의 기록이라 확률은 아니에요</div></div>`:'';
  const w=S.who;let wh='';if(w&&w.y30!=null&&w.o50!=null){const m40=Math.max(0,+(100-w.y30-w.o50).toFixed(1)),ym=x=>x?`${x.slice(0,4)}.${x.slice(4,6)}`:'';
-  wh=`<div style="margin-top:24px"><b style="font-size:.98rem">누가 샀나</b> <span class="sub" style="font-size:.74rem">${un?sd+' 전체 · ':''}최근 3개월 · ${ym(w.ym)}까지</span>
-   <div class="agb"><i style="width:${w.y30}%;background:#5E8FE6"></i><i style="width:${m40}%;background:#9CC0F5"></i><i style="width:${w.o50}%;background:#D3E2FA"></i></div>
-   <div class="agl"><span><i style="background:#5E8FE6"></i>20·30대 ${w.y30}%</span><span><i style="background:#9CC0F5"></i>40대 ${m40}%</span><span><i style="background:#D3E2FA"></i>50대 이상 ${w.o50}%</span></div>
-   ${w.pk?`<div class="sub" style="font-size:.76rem;margin-top:6px;word-break:keep-all">2019년 이후 20·30대 비중이 가장 높았던 때는 ${ym(w.pk[0])}(${w.pk[1]}%)예요</div>`:''}
+  /* 10-11 사용자 시안 확정(토스 소비 분석 문법): 큰 숫자 + 밑 비교 한 줄 + 한 줄 나눈 막대 + 색 점 목록 */
+  const AG=[['#2272EB','20·30대',w.y30],['#8DB8F7','40대',m40],['#D1D6DB','50대 이상',w.o50]];
+  wh=`<div style="margin-top:24px"><div class="sub" style="font-size:.8rem">누가 샀나 · ${un?sd+' 전체 · ':''}최근 3개월 · ${ym(w.ym)}까지</div>
+   <div style="font-size:1.45rem;font-weight:800;letter-spacing:-.01em;margin-top:2px">20·30대 ${w.y30}%</div>${w.pk?`<div style="font-size:.86rem;font-weight:600;color:var(--ink2)">2019년 이후 최고 ${w.pk[1]}%(${ym(w.pk[0])})</div>`:''}
+   <div class="agb" style="gap:2px">${AG.map(a=>`<i style="width:${a[2]}%;background:${a[0]}"></i>`).join('')}</div>
+   ${AG.map(a=>`<div class="frr"><span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${a[0]};margin-right:8px"></i>${a[1]}</span><b>${a[2]}%</b></div>`).join('')}
    ${w.s60!=null?`<div class="frr" style="margin-top:8px"><span>판 사람 중 60대 이상</span><b>${w.s60}%</b></div>`:''}${w.gift!=null?`<div class="frr"><span>사고팔기 대신 증여 (6개월)</span><b>${w.gift}%</b></div>`:''}</div>`;}
  const big=mine?`${fcNm(mine[0])} · ${(FK[mine[1]]||FK.fall)[0]}`:`매물 쌓이는 곳 ${dn}곳`;
  return {q:'사고파는 흐름',big,c:(mine?mine[1]==='dn_up':dn>0)?'#C74343':'',sub:mine?`${(FK[mine[1]]||FK.fall)[1]} · ${sd}에선 ${nUp}곳 중 ${dn}곳이 매물 쌓임`:`가격 오르는 ${nUp}곳 중 · 거래는 줄고 팔려는 집은 늘어난 곳`,
@@ -1000,7 +1004,7 @@ function PB(lab,p){if(!p)return '';return `<div style="display:flex;align-items:
 function tmScreen(a){const T=a.tm,p=T.p6,V=MD.tmv||{},A=(V.acc||{})['6']||{},i=p.indexOf(Math.max(...p)),L=['상승','횡보','하락'][i],C=['var(--green)','var(--ink)','var(--red)'][i];
  const oth=[['상승',p[0]],['횡보',p[1]],['하락',p[2]]].filter((_,j)=>j!==i).map(x=>x[0]+' '+x[1]+'%').join(' · ');
  return {q:'국면 해석기',big:`${L} ${p[i]}%`,c:C,sub:`6개월 뒤 · ${oth}`,
-  v:PB('6개월',p)+PB('1년',T.p12)+`<div class="sub" style="font-size:.74rem;margin-top:2px">초록 상승 · 회색 횡보(±1~2%) · 빨강 하락</div>`+((T.up.length||T.dn.length)?`<div style="font-size:.84rem;margin-top:10px;line-height:1.6">${T.up.length?'올리는 쪽: '+T.up.join(', '):''}${T.up.length&&T.dn.length?'<br>':''}${T.dn.length?'누르는 쪽: '+T.dn.join(', '):''}</div>`:''),
+  v:PB('6개월',p)+PB('1년',T.p12)+`<div class="sub" style="font-size:.74rem;margin-top:2px">빨강 상승 · 회색 횡보(±1~2%) · 파랑 하락</div>`+((T.up.length||T.dn.length)?`<div style="font-size:.84rem;margin-top:10px;line-height:1.6">${T.up.length?'올리는 쪽: '+T.up.join(', '):''}${T.up.length&&T.dn.length?'<br>':''}${T.dn.length?'누르는 쪽: '+T.dn.join(', '):''}</div>`:''),
   line:`지금과 비슷했던 과거 ${(T.n6||0).toLocaleString()}번(2010년~, 구·월)의 실제 결과예요. 집셈 자체 계산으로 매일 새로 셈해요(기준 ${V.asof||'-'}). 이 방식으로 2010년부터 매달 판정했을 때 맞힌 비율 ${(A['2010~']||[])[0]||'-'}%(최근 흐름만 따르면 ${(A['2010~']||[])[1]||'-'}%) · 예측이 아니라 참고예요`};}
 function aScreens(){const a=MD.a.find(x=>x.n===AN);if(!a)return [];
  const d0=MD.d0,pts=a.ix.map((v,i)=>{const y=+d0.slice(0,4)+Math.floor((+d0.slice(4)-1+i)/12),m=(+d0.slice(4)-1+i)%12+1;return [m===1&&y%2===1?String(y).slice(2):'',v];});
