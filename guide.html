@@ -6,7 +6,7 @@
 <style>
 :root{
  --bg:#f3f2ec;--surface:#fff;--surface2:#f8f7f3;--ink:#1a1f2c;--ink2:#4c5566;--ink3:#8a909b;--line:#e6e3da;--line2:#f1efe8;--grid:rgba(66,99,235,.07);--band:rgba(66,99,235,.24);
- --blue:#4263eb;--blue-bg:#eef1ff;--red:#2272EB;--red-bg:#EAF2FE;--green:#E42939;--green-bg:#FFEEF0;--amber:#f59e0b;--amber-bg:#fff5e5;
+ --blue:#4263eb;--blue-bg:#eef1ff;--red:#f04452;--red-bg:#fee;--green:#00a660;--green-bg:#e5f7ee;--amber:#f59e0b;--amber-bg:#fff5e5;
  --r:16px;--r2:11px;--shadow:0 1px 3px rgba(0,0,0,.04)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
  --bg:#111417;--surface:#191c20;--surface2:#212529;--ink:#eaedf0;--ink2:#a7b0ba;--ink3:#7b848e;--line:#2a2f35;--line2:#212529;--grid:rgba(124,147,255,.06);--band:rgba(124,147,255,.3);
@@ -103,7 +103,7 @@ small.src{display:block;color:var(--ink3);font-size:.8rem;margin-top:4px;line-he
 ul.plain{padding-left:18px}
 </style><style id="ref">
 :root{--bg:#FFFFFF;--surface:#fff;--surface2:#F2F5FA;--ink:#131A2B;--ink2:#454D5C;--ink3:#636C7E;--line:#E3E9F2;--line2:#EDF1F7;--grid:transparent;
- --blue:#2B6BF3;--blue-bg:#EAF1FF;--green:#E42939;--green-bg:#FFEEF0;--red:#2272EB;--red-bg:#EAF2FE;--amber:#F08C00;--amber-bg:#FFF4E5;
+ --blue:#2B6BF3;--blue-bg:#EAF1FF;--green:#0F8048;--green-bg:#E6F6EC;--red:#CC3338;--red-bg:#FDECEC;--amber:#F08C00;--amber-bg:#FFF4E5;
  --r:18px;--shadow:0 2px 12px rgba(30,64,140,.06)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--hero-a:#1A2335;--hero-b:#1B2A4A;--hero-l:#283142;--btn-d:#2F63D8;--bg:#0E131D;--surface:#171D29;--surface2:#1F2633;--ink:#EAF0F8;--ink2:#A9B4C6;--ink3:#7A8699;--line:#283142;--line2:#202837;
  --blue:#5B8CFF;--blue-bg:#1B2A4A;--shadow:none}}
@@ -188,7 +188,7 @@ body.notab .tabbar,body.notab .disc{display:none}body.notab{padding-bottom:40px}
 
 /* ===== 10-05 v4: ChatGPT 시안·설계(정보 구조·색 체계) — 파랑은 CTA·선택·링크·현재 위치에만 ===== */
 /* 10-08 웹 접근성: 회색 글자 대비 4.5:1(KWCAG) — ink2·ink3·초록·빨강 진하게 */
-:root{--bg:#F5F7FA;--surface:#fff;--surface2:#F2F4F7;--ink:#171A1F;--ink2:#454D5C;--ink3:#636C7E;--line:#E6EAF0;--line2:#EEF1F5;--blue-bg:#EEF4FF;--green:#E42939;--red:#2272EB;
+:root{--bg:#F5F7FA;--surface:#fff;--surface2:#F2F4F7;--ink:#171A1F;--ink2:#454D5C;--ink3:#636C7E;--line:#E6EAF0;--line2:#EEF1F5;--blue-bg:#EEF4FF;--green:#0F8048;--red:#CC3338;
  --pu-bg:#EAF7F0;--pu:#16835A;--pp-bg:#FFF4DE;--pp:#C97900;--pd-bg:#FDECEC;--pd:#C74343;--pb-bg:#EEF2F7;--pb:#536273;--p1:#2B5BD7;--p1-bg:#E6EEFF;--p2:#B86E00;--p2-bg:#FFF1DC;--p3:#7A45C9;--p3-bg:#F1E9FB;--p4:#5A6678;--p4-bg:#EEF1F5;--shadow:0 1px 3px rgba(16,24,40,.04)}
 body.hm{background:var(--bg)!important}body.hm.tint{background:var(--bg)!important}
 .btn{box-shadow:none}
@@ -196,7 +196,7 @@ body.hm{background:var(--bg)!important}body.hm.tint{background:var(--bg)!importa
 .rc.r1{border:1.5px solid var(--ink)!important}
 .ltab a.on{color:var(--ink);border-color:var(--ink)}
 .seg button.on{box-shadow:none}
-.it3{flex:0 0 auto;display:grid;place-items:center}.it2{flex:0 0 auto;display:grid;place-items:center;border-radius:12px;background:var(--surface2);color:#475467}
+.it2{flex:0 0 auto;display:grid;place-items:center;border-radius:12px;background:var(--surface2);color:#475467}
 .it2.g{background:var(--pu-bg);color:var(--pu)}.it2.p{background:#F1EDFF;color:#6854C7}.it2.a{background:var(--pp-bg);color:var(--pp)}.it2.b{background:var(--blue-bg);color:var(--blue)}
 /* 홈 */
 .hero2{display:block;width:100%;margin-top:4px;padding:20px 18px 18px;border:1px solid var(--hero-l,#DCE6FB);border-radius:20px;background:linear-gradient(160deg,var(--hero-a,#F5F8FF),var(--hero-b,#EAF1FF));color:var(--ink);font:inherit;text-align:left;cursor:pointer;position:relative;overflow:hidden}

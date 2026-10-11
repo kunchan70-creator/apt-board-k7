@@ -8,7 +8,7 @@
 /* 토큰: pagekit.py CSS와 같은 값(색·반경·그림자). 지도 전용 값(점수 색 단계 --c1~--c5)만 여기서 더한다 */
 :root{
  --bg:#f3f2ec;--surface:#fff;--surface2:#f8f7f3;--ink:#1a1f2c;--ink2:#4c5566;--ink3:#8a909b;--line:#e6e3da;--line2:#f1efe8;--grid:rgba(66,99,235,.07);
- --blue:#4263eb;--blue-bg:#eef1ff;--red:#2272EB;--red-bg:#EAF2FE;--green:#E42939;--green-bg:#FFEEF0;--amber:#f59e0b;--amber-bg:#fff5e5;
+ --blue:#4263eb;--blue-bg:#eef1ff;--red:#f04452;--red-bg:#fee;--green:#00a660;--green-bg:#e5f7ee;--amber:#f59e0b;--amber-bg:#fff5e5;
  --r:16px;--r2:11px;--shadow:0 1px 3px rgba(0,0,0,.04);--float:0 2px 10px rgba(26,31,44,.13),0 0 0 1px rgba(26,31,44,.05);
  --mapbg:#f2f1ed;--mkb:#fff;--mks:0 0 0 1px rgba(26,31,44,.14),0 2px 6px rgba(26,31,44,.22);--halo:#fff;
  --c1:#e3e6f4;--f1:#4c5566;--c2:#bcc6f6;--f2:#1c2552;--c3:#8497f1;--f3:#0f1640;--c4:#4263eb;--f4:#fff;--c5:#1f2d8a;--f5:#fff;
@@ -966,7 +966,7 @@ window.addEventListener('resize', later);
  document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(a&&/\.html/.test(a.getAttribute('href')||''))jsTrack('nav',{to:(a.getAttribute('href')||'').split('#')[0].split('?')[0].replace(/\.html$/,'')});},true);
 })();</script><style id="ref">
 :root{--bg:#FFFFFF;--surface:#fff;--surface2:#F2F5FA;--ink:#131A2B;--ink2:#454D5C;--ink3:#636C7E;--line:#E3E9F2;--line2:#EDF1F7;--grid:transparent;
- --blue:#2B6BF3;--blue-bg:#EAF1FF;--green:#E42939;--green-bg:#FFEEF0;--red:#2272EB;--red-bg:#EAF2FE;--amber:#F08C00;--amber-bg:#FFF4E5;
+ --blue:#2B6BF3;--blue-bg:#EAF1FF;--green:#0F8048;--green-bg:#E6F6EC;--red:#CC3338;--red-bg:#FDECEC;--amber:#F08C00;--amber-bg:#FFF4E5;
  --r:18px;--shadow:0 2px 12px rgba(30,64,140,.06)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--hero-a:#1A2335;--hero-b:#1B2A4A;--hero-l:#283142;--btn-d:#2F63D8;--bg:#0E131D;--surface:#171D29;--surface2:#1F2633;--ink:#EAF0F8;--ink2:#A9B4C6;--ink3:#7A8699;--line:#283142;--line2:#202837;
  --blue:#5B8CFF;--blue-bg:#1B2A4A;--shadow:none}}
