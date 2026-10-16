@@ -402,7 +402,7 @@ function summary(){const n=D.G.filter(x=>x.on).length,v=D.G[0].v,near=D.G.filter
  $('#sum').innerHTML=`<div class="card"><div class="rk" style="margin:0"><div><div class="h">경보 켜진 곳</div><div class="n" style="color:${n?'var(--amber)':'var(--green)'}">${n}곳</div><div class="s">${D.G.length}개 시·군·구 중</div></div>
  <div><div class="h">국고채 3년 1년 변화</div><div class="n" style="color:${v.ktb>=0.5?'var(--amber)':'var(--ink)'}">${v.ktb>=0?'+':'−'}${Math.abs(v.ktb).toFixed(2)}%p</div><div class="s">${v.ktb>=0.5?'충격형 조건 하나 켜짐':'충격형 조건 아님'} · ${v.ktb_ym}</div></div></div>
  ${v.ktb>=0.5?`<p class="sub" style="margin:8px 0 0">시장 금리 조건은 모든 지역에 켜져 있어 거래가 급감하는 곳부터 보류로 바뀌어요.${near.length?` 거래가 문턱 가까이(1.3배 안) 내려온 곳 ${near.length}곳: ${near.slice(0,6).map(x=>x.g).join('·')}`:''}</p>`:''}</div>`;}
-function list(){$('#list').innerHTML=[0,1,2].map(s=>`<div class="grp">${SDN[s]}</div><div class="lstw">`+D.G.map((x,i)=>[x,i]).filter(([x])=>x.s===s).map(([x,i])=>`<button class="res" onclick="gu(${i})"><span><b>${x.g}</b><span class="m">거래 평소의 ${x.v.vr.toFixed(2)}배 · 문턱 ${x.v.vth!=null?x.v.vth.toFixed(2)+'배':'-'}</span></span>${pill(x.on)}</button>`).join('')+'</div>').join('');}
+function list(){$('#list').innerHTML=[0,1,2].map(s=>`<div class="grp">${SDN[s]}</div><div class="lstw">`+D.G.map((x,i)=>[x,i]).filter(([x])=>x.s===s).map(([x,i])=>`<button class="res" onclick="gu(${i})"><span><b>${x.g}</b><span class="m">${x.an?`닮은 때 ${x.an.sum.top_year}년 · ${x.an.sum.main_phase} · `:''}거래 평소의 ${x.v.vr.toFixed(2)}배</span></span>${pill(x.on)}</button>`).join('')+'</div>').join('');}
 function find(){const q=$('#q').value.trim().replace(/\s/g,'');if(!D||q.length<2){$('#res').innerHTML='';return;}
  const G=D.G.map((x,i)=>[x,i]).filter(([x])=>x.g.replace(/\s/g,'').includes(q)).slice(0,8);
  const L=[];D.C.forEach((c,i)=>{if((c[0]+c[2]).replace(/\s/g,'').includes(q))L.push(i);});
@@ -425,10 +425,23 @@ function gu(i,ci){const x=D.G[i],v=x.v,st=v.shock?'shock':v.slump?'slump':'off',
  <div class="sec">침체형 · 둘 다 켜지면 보류</div><div class="why">
   <div class="w"><div><b>매수 심리 바닥권</b><span class="fx">KB 매수우위지수 ${v.sr} ${v.se!=null?Math.round(v.se):'-'} · 문턱 ${v.seth!=null?Math.round(v.seth)+' 이하':'-'}(역사 하위 20%)</span></div>${on(c3)}</div>
   <div class="w"><div><b>주택담보대출 증가 둔화</b><span class="fx">${v.lr} 잔액 1년 ${v.lny!=null?sg(v.lny):'-'} · 문턱 ${v.lnyth!=null?sg(v.lnyth)+' 이하':'-'}(역사 하위 20%)</span></div>${on(c4)}</div></div>
+ ${x.an?analog(x):''}
  ${ci!=null?hurdle(ci):''}
  <div class="sec">${x.g} 경보와 실제 시세</div>${hist(x)}
  <p class="sub" style="margin:6px 0 0">${S.n?`2012년 이후 경보 ${S.n}개월 · 그 뒤 12개월 보류가 나았던 비율 ${S.hb}% · 그 뒤 12개월 가운데 ${sg(S.y)}`:'2012년 이후 이 지역에서 경보가 켜진 적이 없어요'}</p></div>`;
  window.scrollTo(0,$('#one').offsetTop-70);}
+function analog(x){const A=x.an,S=A.sum,ph=S.phase||{},T=D.ANT,PK={pre_peak:'고점 직전',falling:'하락·횡보 중',rising:'상승기'};
+ const z=Object.entries(A.z).filter(([k])=>A.x[k]!=null).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1])).slice(0,3);
+ const fx=(k,v)=>k==='vr'?`평소의 ${Math.exp(v).toFixed(2)}배`:k==='uns'?`${Math.exp(v).toFixed(2)}배`:k==='se'||k==='se6'?Math.round(v):(v>0?'+':'')+v.toFixed(k==='ktb'||k==='mort'?2:1)+(k==='ktb'||k==='mort'||k==='rel'?'%p':'%');
+ const row=a=>`<div class="gl"><span><b>${a.g}</b> ${a.t} <span class="sub">${a.where}${a.ep?` · ${a.ep.in}개월 뒤 ${a.ep.kind} 시작`:''}</span></span><span class="num" style="color:${a.y12<0?'var(--red)':'var(--green)'}">${sg(a.y12)}</span></div>`;
+ return `<div class="sec">지금과 가장 비슷했던 과거 · 현재 위치</div>
+ <p style="margin:2px 0 6px;font-weight:700">가장 닮은 시기: ${S.top_year}년 · ${S.main_phase}</p>
+ <div class="tags">${Object.entries(ph).map(([k,v])=>`<span class="tag ${k==='falling'?'red':k==='pre_peak'?'amber':'green'}">${PK[k]} ${v}곳</span>`).join('')}<span class="tag gray">비슷한 과거 30곳 중</span></div>
+ <div class="rk" style="margin-top:4px"><div><div class="h">그 뒤 12개월 가운데</div><div class="n" style="color:${S.y12_p50<0?'var(--red)':'var(--green)'}">${sg(S.y12_p50)}</div><div class="s">${sg(S.p10)} ~ ${sg(S.p90)}</div></div><div><div class="h">그 뒤 12개월 하락</div><div class="n">${S.drop}%</div><div class="s">30곳 중</div></div></div>
+ <p class="sub" style="margin:6px 0 2px">지금 두드러진 점: ${z.map(([k,v])=>`${D.ANL[k].replace(/\(.*\)/,"")} ${fx(k,A.x[k])}(${v>0?'높음':'낮음'})`).join(' · ')}</p>
+ <div class="sec" style="margin-top:10px">가장 비슷했던 5곳(수도권 전체) · 그 뒤 12개월</div>${A.all.map(row).join('')}
+ <div class="sec" style="margin-top:10px">${x.g} 자신의 과거 중 비슷했던 때</div>${A.own.map(row).join('')}
+ <p class="sub" style="margin:6px 0 0">설명용이에요. 이 방식으로 1년 뒤를 맞힌 정도는 평소 순위 상관 ${T.ex2021_22.rho.toFixed(2)}, 2021~22년처럼 처음 보는 충격엔 ${T['2020~'].rho.toFixed(2)}로 거의 못 맞혔어요.</p>`;}
 function hurdle(ci){const rs=D.R.filter(r=>r[0]===ci);if(!rs.length)return '';const r=rs.reduce((a,b)=>Math.abs(b[1]-84)<Math.abs(a[1]-84)?b:a),c=D.C[ci],diff=r[5]-r[6];
  return `<div class="sec">${c[0]} ${r[1]}㎡ · 전세 대비 손익분기</div>
  <div class="rk" style="margin-top:6px"><div><div class="h">1년에 이만큼 올라야</div><div class="n">${r[3].toFixed(1)}%</div><div class="s">시세 약 ${eok(r[2])} 기준</div></div><div><div class="h">매수가 더 드는 돈</div><div class="n" style="font-size:1.3rem">${man(diff)}</div><div class="s">1년, 전세 대비</div></div></div>
