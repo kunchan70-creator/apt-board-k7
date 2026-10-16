@@ -368,7 +368,7 @@ body.intro{overflow:hidden}body.intro .tabbar,body.intro .disc{display:none}
 
 <main><div class="bz">
 <div class="seg" id="seg"><button class="on" onclick="tab(0)">단지 판단</button><button onclick="tab(1)">과거 검증</button><button onclick="tab(2)">급지 흐름</button></div>
-<div id="v0"><h1>매수 시점 판단</h1><p class="lead">금리 상승과 거래 급감이 함께 나타날 때만 보류 · 실거래 2026.08 계약까지</p>
+<div id="v0"><h1>매수 시점 판단</h1><p class="lead">금리 상승기에 거래가 급감했거나, 상승이 이자 부담에 못 미칠 때만 보류 · 실거래 2026.08 계약까지</p>
 <input class="q" id="q" placeholder="단지 이름이나 동 이름" autocomplete="off" oninput="find()"><div id="res"></div><div id="one"></div></div>
 <div id="v1" hidden></div><div id="v2" hidden></div>
 <p class="note" id="ld">자료를 불러오는 중입니다…</p></div></main>
@@ -405,58 +405,68 @@ function pick(ci,band){const rs=D.R.filter(r=>r[0]===ci).sort((a,b)=>a[1]-b[1]);
  const c=D.C[ci];location.hash='c='+encodeURIComponent(c[0]);$('#one').innerHTML=card(c,r,rs);window.scrollTo(0,$('#one').offsetTop-70);}
 const on=(b,t)=>`<span class="tag ${b?'amber':'gray'}">${b?t:'아님'}</span>`;
 function card(c,r,rs){
- const gk=SDF[c[1]]+'|'+c[2], G=D.GU[gk]||{}, thin=r[12]===2, hold=r[12]!==0, M=D.MORT, dm=M[0]-M[1], cv=Math.round((D.ML.cover||0)*10), GR=G.res||{};
- const rng=(lo,hi)=>`${eok(r[2]*(1+lo/100))} ~ ${eok(r[2]*(1+hi/100))}`;
+ const gk=SDF[c[1]]+'|'+c[2], G=D.GU[gk]||{}, thin=r[12]===2, hold=r[12]===1, M=D.MORT, dm=M[0]-M[1], cv=Math.round((D.ML.cover||0)*10), GR=G.res||{};
+ const rng=(lo,hi)=>`${eok(r[2]*(1+lo/100))} ~ ${eok(r[2]*(1+hi/100))}`, man=v=>Math.round(v).toLocaleString()+'만 원';
+ const A=r[23]===1, Bf=r[22]===1, rate=!!G.s3, diff=r[19]-r[20];
+ const why=thin?'최근 6개월 거래가 없고 12개월 거래도 1건 이하라 시세를 정하기 어려워요':A?`${c[2]}에 금리 상승과 거래 급감이 함께 나타났어요`:Bf?`금리 상승기에 ${c[2]} 거래가 줄고, 최근 1년 상승(${sg(r[15])})이 이자 부담(연 ${r[17].toFixed(1)}%)에 못 미쳐요`:rate?'금리는 상승 중이지만 거래가 끊기지 않았고 상승이 이자 부담을 넘어요':'금리 상승기가 아니에요';
  return `<div class="card" style="margin-top:12px"><h2 style="margin:0">${c[0]}</h2><p class="sub" style="margin:2px 0 0">${SDN[c[1]]} ${c[2]} ${c[3]} · 전용 ${r[1]}㎡ 시세 약 ${eok(r[2])}</p>
  ${rs.length>1?`<div class="bands">${rs.map(x=>`<button class="${x[1]===r[1]?'on':''}" onclick="pick(${r[0]},${x[1]})">${x[1]}㎡</button>`).join('')}</div>`:''}
- <div class="vd"><span class="pill ${hold?'hold':'buy'}">${thin?'보류 · 자료 부족':hold?'매수 보류':'매수'}</span></div>
- <p class="sub" style="margin:2px 0 0">${thin?'최근 6개월 거래가 없고 12개월 거래도 1건 이하라 시세를 정하기 어려워요':hold?`${c[2]}에 금리 상승과 거래 급감이 함께 나타났어요 — 과거 이 조합 뒤 보류가 유리했던 비율 10번 중 ${Math.round((D.RULES.main_10['전체'].win||0)/10)}번`:(G.s3?'금리는 상승 중이지만 거래가 끊기지 않았어요':'보류 조건이 없어요')}</p>
- <div class="sec">보류 조건 · 둘 다 켜지면 보류</div><div class="why">
-  <div class="w"><div><b>금리 상승</b><span class="fx">주택담보대출 ${M[0].toFixed(2)}% · 1년 ${dm>=0?'+':'−'}${Math.abs(dm).toFixed(2)}%p (${D.MORT_YM})</span></div>${on(G.s3,'켜짐')}</div>
-  <div class="w"><div><b>거래 급감</b><span class="fx">${c[2]} 최근 3개월 거래 평소의 ${G.vr!=null?G.vr.toFixed(1):'-'}배 · 문턱 ${G.vth!=null?G.vth.toFixed(1)+'배 이하':'-'}</span></div>${on(G.s2,'켜짐')}</div>
-  <div class="w"><div><b>매수 심리</b><span class="fx">KB 매수우위지수 ${G.sr||''} ${G.sent!=null?Math.round(G.sent):'-'} · 6개월 최고 ${G.sent_max6!=null?Math.round(G.sent_max6):'-'}</span></div><span class="tag gray">참고</span></div>
-  <div class="w"><div><b>시세 위치</b><span class="fx">${c[2]} 12개월 ${sg(r[15])} · 4년 고점 대비 ${sg(r[16])}${r[14]!=null?` · 이 단지 4년 고점 대비 ${sg(r[14])}`:''}</span></div><span class="tag gray">참고</span></div></div>
+ <div class="vd"><span class="pill ${thin||hold?'hold':'buy'}">${thin?'보류 · 자료 부족':hold?'매수 보류':'매수'}</span></div>
+ <p class="sub" style="margin:2px 0 0">${why}</p>
+ <div class="sec">전세 대비 손익분기 · 1년에 이만큼 올라야 매수가 나아요</div>
+ <div class="rk" style="margin-top:6px"><div><div class="h">손익분기 상승률</div><div class="n">${r[17].toFixed(1)}%</div><div class="s">1년에 약 ${man(diff)}</div></div>
+ <div><div class="h">${c[2]} 최근 1년</div><div class="n" style="color:${r[26]?'var(--amber)':'var(--green)'}">${sg(r[15])}</div><div class="s">${r[26]?'손익분기 미달':'손익분기 이상'}</div></div></div>
+ <div class="why" style="margin-top:4px">
+  <div class="gl"><span>매수 1년 비용 <span class="sub">대출 ${eok(r[18])} 이자 · 자기자본 ${eok(r[2]-r[18])} 예금 이자 · 보유세 ${man(r[21])}</span></span><span class="num">${man(r[19])}</span></div>
+  <div class="gl"><span>전세 1년 비용 <span class="sub">전세금 ${eok(r[24])} 기준</span></span><span class="num">${man(r[20])}</span></div>
+  <div class="gl"><span><b>매수가 더 드는 돈</b></span><span class="num"><b>${man(diff)}</b></span></div></div>
+ <div class="sec">보류 조건 · 금리 상승 + (거래 급감 또는 이자 부담 미달)</div><div class="why">
+  <div class="w"><div><b>금리 상승</b><span class="fx">주택담보대출 ${M[0].toFixed(2)}% · 1년 ${dm>=0?'+':'−'}${Math.abs(dm).toFixed(2)}%p (${D.MORT_YM})</span></div>${on(rate,'켜짐')}</div>
+  <div class="w"><div><b>거래 급감</b><span class="fx">${c[2]} 최근 3개월 거래 평소의 ${G.vr!=null?G.vr.toFixed(1):'-'}배 · 문턱 ${G.vth!=null?G.vth.toFixed(1)+'배 이하':'-'}</span></div>${on(A||G.s2,'켜짐')}</div>
+  <div class="w"><div><b>이자 부담 미달</b><span class="fx">거래 평소의 ${r[25].toFixed(1)}배(1배 미만) · 최근 1년 ${sg(r[15])} &lt; 손익분기 ${r[17].toFixed(1)}%</span></div>${on(Bf,'켜짐')}</div>
+  <div class="w"><div><b>매수 심리</b><span class="fx">KB 매수우위지수 ${G.sr||''} ${G.sent!=null?Math.round(G.sent):'-'} · 6개월 최고 ${G.sent_max6!=null?Math.round(G.sent_max6):'-'}</span></div><span class="tag gray">참고</span></div></div>
  <div class="sec">단지 하락 위험 · 참고(예측력 약함)</div>
  <div class="rk" style="margin-top:6px"><div><div class="h">6개월 뒤 하락 확률</div><div class="n">${r[3]}%</div><div class="s">범위 ${sg(r[4])} ~ ${sg(r[6])}</div></div>
  <div><div class="h">12개월 뒤 하락 확률</div><div class="n">${r[7]}%</div><div class="s">범위 ${sg(r[8])} ~ ${sg(r[10])}</div></div></div>
  <div class="sec">12개월 예상 변동 범위 · 과거 검증에서 10번 중 ${cv}번이 이 안</div>${rbar(r[8],r[9],r[10])}<p class="sub" style="margin:0;text-align:center">${rng(r[8],r[10])}</p>
  <div class="sec">${c[2]} 보류 신호와 실제 시세</div>${hist(G)}
- <p class="sub" style="margin:6px 0 0">${GR.hold_n?`2012년 이후 보류 신호 ${GR.hold_n}개월 · 보류가 유리 ${GR.win}% · 평균 ${GR.wait}개월 대기 · 무조건 매수 대비 판단 1번당 ${sg(GR.gain)}`:'2012년 이후 이 구에서 보류 신호가 켜진 적이 없어요'}</p>
+ <p class="sub" style="margin:6px 0 0">${GR.n?`2012년 이후 이 구 단지 판단 ${GR.n.toLocaleString()}건 중 그해 전세가 나았던 경우 ${GR.rent_better}% · 보류 ${GR.share}%${GR.hold_n?` · 보류가 유리 ${GR.win}% · 무조건 매수 대비 판단 1번당 ${sg2(GR.gain)}`:''}`:''}</p>
  </div>`;}
 function rbar(lo,md,hi){const a=Math.min(-15,lo-3),b=Math.max(15,hi+3),W=320,x=v=>12+(v-a)/(b-a)*(W-24);
  return `<svg viewBox="0 0 ${W} 58" width="100%" style="display:block;margin:6px 0 0"><line x1="12" x2="${W-12}" y1="26" y2="26" stroke="var(--line)" stroke-width="2"/>
  ${lo<0?`<rect x="${x(lo)}" y="19" width="${x(Math.min(0,hi))-x(lo)}" height="14" rx="4" fill="var(--red)" opacity=".75"/>`:''}${hi>0?`<rect x="${x(Math.max(0,lo))}" y="19" width="${x(hi)-x(Math.max(0,lo))}" height="14" rx="4" fill="var(--green)" opacity=".75"/>`:''}
  <line x1="${x(0)}" x2="${x(0)}" y1="12" y2="40" stroke="var(--ink3)" stroke-dasharray="2 2"/><circle cx="${x(md)}" cy="26" r="6" fill="var(--surface)" stroke="var(--ink)" stroke-width="2.5"/>
  <text x="${x(lo)}" y="52" text-anchor="middle" font-size="11" fill="var(--ink3)">${sg(lo)}</text><text x="${x(md)}" y="10" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--ink)">${sg(md)}</text><text x="${x(hi)}" y="52" text-anchor="middle" font-size="11" fill="var(--ink3)">${sg(hi)}</text></svg>`;}
-function hist(G){if(!G.idx)return '';const I=G.idx,S={};(G.hist||[]).forEach(s=>S[s[0]]=s[1]);
+function hist(G){if(!G.idx)return '';const I=G.idx,S={};(G.hist||[]).forEach(s=>{if(s[1])S[s[0]]=1;});((G.res||{}).bq||[]).forEach(q=>{for(let k=0;k<3;k++)S[q[0]+k]=1;});
  const W=340,H=150,t0=I[0][0],t1=I[I.length-1][0],vs=I.map(v=>v[1]),lo=Math.min(...vs)*0.95,hi=Math.max(...vs)*1.03,x=t=>30+(t-t0)/(t1-t0)*(W-40),y=v=>H-20-(v-lo)/(hi-lo)*(H-34),bw=(W-40)/(t1-t0)+0.4;
  let bars='';I.forEach(([t])=>{if(S[t])bars+=`<rect x="${x(t)}" y="8" width="${bw}" height="${H-28}" fill="var(--amber)" opacity=".45"/>`;});
  let yrs='';for(let yy=2012;yy<=Math.floor(t1/12);yy+=2){const t=yy*12;yrs+=`<text x="${x(t)}" y="${H-4}" text-anchor="middle" font-size="10" fill="var(--ink3)">${String(yy).slice(2)}</text>`;}
  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">${bars}<path d="${I.map((v,i)=>(i?'L':'M')+x(v[0]).toFixed(1)+' '+y(v[1]).toFixed(1)).join('')}" fill="none" stroke="var(--blue)" stroke-width="2"/>${yrs}
  <text x="2" y="${y(vs[0])+4}" font-size="10" fill="var(--ink3)">100</text><text x="2" y="${y(vs[vs.length-1])+4}" font-size="10" fill="var(--ink3)">${Math.round(vs[vs.length-1])}</text></svg>
- <div class="lg"><span><i style="background:var(--blue)"></i>실거래 시세(2012.01=100)</span><span><i style="background:var(--amber);opacity:.5"></i>보류 신호가 켜진 달</span></div>`;}
+ <div class="lg"><span><i style="background:var(--blue)"></i>실거래 시세(2012.01=100)</span><span><i style="background:var(--amber);opacity:.5"></i>보류 신호가 켜진 때</span></div>`;}
 // ---------- 과거 검증 ----------
-function valid(){const P=D.PREM,R=D.RULES,M=R.main_10,el=$('#v1');
- const nm={main:'금리 상승 + 거래 급감(채택)',vol:'거래 급감만',sent:'매수 심리 급랭만'};
- const mx=Math.max(...['main','vol','sent'].flatMap(k=>['전체','서울','경기','인천','2021~22 제외'].map(s=>Math.abs(R[k+'_10'][s].gain))))||1;
+function valid(){const P=D.PREM,RA=D.RULES,T=D.RENT,F=T.rules,el=$('#v1');
+ const nm={final:'채택: 금리 상승 + (거래 급감 또는 이자 부담 미달)',A:'금리 상승 + 거래 급감',B:'금리 상승 + 이자 부담 미달'};
+ const sets=['전체','서울','경기','인천','2021~22 제외'];
+ const mx=Math.max(...['final','A','B'].flatMap(k=>sets.map(s=>Math.abs(F[s][k].gain))))||1;
  const bar=v=>{const w=Math.abs(v)/mx*45;return `<svg viewBox="0 0 100 10" width="100" height="11" style="vertical-align:middle"><line x1="50" x2="50" y1="0" y2="10" stroke="var(--ink3)"/><rect x="${v>=0?50:50-w}" y="2" width="${w}" height="6" rx="2" fill="${v>=0?'var(--green)':'var(--red)'}"/></svg>`;};
- const yrs=Object.keys(M).filter(k=>/^\d{4}$/.test(k)).sort();
- el.innerHTML=`<h1>과거 검증</h1><p class="lead">2012~2024년 매달·구마다 지금 매수하려는 사람을 두고, 보류면 풀릴 때까지 기다렸다 매수한 결과를 무조건 매수와 비교했어요</p>
+ const yrs=Object.keys(T.year).sort(), M=F['전체'].final;
+ el.innerHTML=`<h1>과거 검증</h1><p class="lead">2012~2025년 단지마다 분기별로, 보류면 12개월 전세로 살다 매수한 결과를 무조건 매수와 비교했어요. 비용은 그때의 대출 규제·금리·보유세로 셈했어요</p>
  <div class="card"><div class="sec" style="margin-top:0">출발점 · 우리 시장의 사이클</div>
  <div class="rk" style="margin-top:6px"><div><div class="h">상승 구간</div><div class="n" style="color:var(--green)">${P.up_med}개월</div><div class="s">가운데 값</div></div><div><div class="h">하락 구간</div><div class="n" style="color:var(--red)">${P.dn_med}개월</div><div class="s">가운데 하락폭 ${sg(P.dd_med)}</div></div></div>
- <p class="sub">구 실거래 시세 기준 전체 달의 ${P.up_share}%가 상승 국면이에요. 그래서 기본은 매수이고, 보류는 드물게 켜고 짧게 끝내요.</p></div>
+ <p class="sub">구 실거래 시세 기준 전체 달의 ${P.up_share}%가 상승 국면이에요. 이자·보유세를 빼고도 매수가 전세보다 1년 평균 ${sg(T.buy_vs_rent)} 나았어요. 그래서 기본은 매수이고, 보류는 드물게 켜요.</p></div>
  <div class="card"><div class="sec" style="margin-top:0">채택 규칙 성과</div>
- <div class="rk" style="margin-top:6px"><div><div class="h">판단 1번당 초과 성과</div><div class="n" style="color:var(--green)">${sg(M['전체'].gain)}</div><div class="s">무조건 매수 대비</div></div><div><div class="h">보류가 유리</div><div class="n">${M['전체'].win}%</div><div class="s">보류 ${M['전체'].share}% · 평균 ${M['전체'].wait}개월 대기</div></div></div>
- <div class="sec">해마다 초과 성과</div>${yearBars(yrs.map(y=>[y,M[y].gain,M[y].share]))}
+ <div class="rk" style="margin-top:6px"><div><div class="h">판단 1번당 초과 성과</div><div class="n" style="color:var(--green)">${sg2(M.gain)}</div><div class="s">무조건 매수 대비</div></div><div><div class="h">보류가 유리</div><div class="n">${M.win}%</div><div class="s">보류 ${M.share}%</div></div></div>
+ <div class="sec">해마다 초과 성과</div>${yearBars(yrs.map(y=>[y,T.year[y].final.gain,T.year[y].final.share]))}
  <div class="lg"><span><i style="background:var(--green)"></i>보류가 유리</span><span><i style="background:var(--red)"></i>보류가 불리</span><span>막대 위 숫자 = 보류 비율(%)</span></div>
- <p class="sub">2021~22년을 빼면 ${sg2(M['2021~22 제외'].gain)} — 헛경보(2018년 규제 직후 거래 절벽 등)의 비용은 작고, 금리 충격 하락은 크게 피했어요. 거래 자료가 2006년부터라 2008년은 시험하지 못했어요.</p></div>
+ <p class="sub">2021~22년을 빼도 ${sg2(F['2021~22 제외'].final.gain)}. 손실을 본 해는 2017년(8·2 대책 직후 거래 급감에 보류했다가 급등)이에요. 금리가 내리던 해(2013~15·2019~20·2024)에는 보류가 켜지지 않았어요.</p></div>
  <div class="card"><div class="sec" style="margin-top:0">규칙 비교 · 판단 1번당 초과 성과</div>
- ${['전체','서울','경기','인천','2021~22 제외'].map(s=>`<div style="margin:10px 0 2px;font-weight:700;font-size:.86rem">${s}</div>`+['main','vol','sent'].map(k=>{const v=R[k+'_10'][s];return `<div class="gl"><span>${nm[k]} <span class="sub">보류 ${v.share}%</span></span><span class="num">${bar(v.gain)} ${sg2(v.gain)}</span></div>`;}).join('')).join('')}
- <div class="sec">문턱을 바꿔도 · 거래 급감 = 그때까지 역사 하위 n%</div>
- ${[5,10,20].map(p=>{const v=R['main_'+p]['전체'];return `<div class="gl"><span>하위 ${p}%</span><span class="num">${sg2(v.gain)} · 보류 ${v.share}% · 유리 ${v.win}%</span></div>`;}).join('')}
- <p class="sub">문턱은 숫자를 맞춘 게 아니라 지역마다 그때까지 자기 역사의 하위 10%예요. 5%·20%로 바꿔도 결론이 같아요.</p></div>
+ ${sets.map(s=>`<div style="margin:10px 0 2px;font-weight:700;font-size:.86rem">${s}</div>`+['final','A','B'].map(k=>{const v=F[s][k];return `<div class="gl"><span>${nm[k]} <span class="sub">보류 ${v.share}%</span></span><span class="num">${bar(v.gain)} ${sg2(v.gain)}</span></div>`;}).join('')).join('')}
+ <div class="sec">거래 급감 문턱을 바꿔도 · 그때까지 자기 역사 하위 n%</div>
+ ${[5,10,20].map(p=>{const v=RA['main_'+p]['전체'];return `<div class="gl"><span>하위 ${p}%</span><span class="num">${sg2(v.gain)} · 보류 ${v.share}% · 유리 ${v.win}%</span></div>`;}).join('')}
+ <p class="sub">이자 부담 미달 조건은 미리 정한 변형 네 가지(12개월·6개월 기준, 거래 조건 유무, 고점 근처) 중 가장 단순하고 세 시·도와 2021~22 제외가 모두 플러스인 것을 골랐어요. 거래 자료가 2006년부터, 전세 자료가 2011년부터라 2008년은 시험하지 못했어요. 대출은 규제가 허용한 최대치 기준이고 소득 한도(DSR)는 반영하지 않았어요.</p></div>
  <div class="card"><div class="sec" style="margin-top:0">버린 방식 · 과거 패턴 학습 모델</div>
- <p class="sub" style="margin-top:4px">단지 특성·지역 흐름·금리로 학습한 모델은 2022년 2월에 12개월 뒤 +6.5%로 셈했고 실제는 −24%였어요. 2006~2020년 자료엔 금리가 1년에 1%p 넘게 오른 적이 없고, 금리가 오른 때(2008·2017~18) 뒤엔 시세가 올라 금리 상승은 괜찮다고 배웠기 때문이에요. 지금은 단지 하락 확률·범위 참고값으로만 써요.</p>
+ <p class="sub" style="margin-top:4px">단지 특성·지역 흐름·금리로 학습한 모델은 2022년 2월에 12개월 뒤 +6.5%로 셈했고 실제는 −24%였어요. 2006~2020년 자료엔 금리가 1년에 1%p 넘게 오른 적이 없고, 금리가 오른 때(2008·2017~18) 뒤엔 시세가 올라 금리 상승은 괜찮다고 배웠기 때문이에요. 최근 1년 상승만 보고 '상승이 작았으니 보류'하는 규칙도 2013·2019년 반등을 놓쳐 무조건 매수와 같았어요. 학습 모델은 단지 하락 확률·범위 참고값으로만 써요.</p>
  <div class="gl"><span>하락 확률 순위 일치도 <span class="sub">AUC · 0.5=우연</span></span><span class="num">6개월 ${D.ML.auc6.toFixed(2)}<br>12개월 ${D.ML.auc.toFixed(2)}</span></div>
  <div class="gl"><span>범위 적중 <span class="sub">목표 80%</span></span><span class="num">6개월 ${Math.round(D.ML.cover6*100)}%<br>12개월 ${Math.round(D.ML.cover*100)}%</span></div></div>`;}
 function yearBars(Y){const W=340,H=150,n=Y.length,bw=(W-30)/n,mx=Math.max(...Y.map(v=>Math.abs(v[1])))||1,z=H/2,y=v=>z-v/mx*(H/2-22);
