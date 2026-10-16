@@ -119,7 +119,10 @@ ul.plain{padding-left:18px}
 @media (prefers-reduced-motion:reduce){.rise,.mp,.ln{animation:none;opacity:1;transform:none;stroke-dashoffset:0}}
 .ih{display:flex;justify-content:space-between;align-items:baseline}.ih b{font-size:1rem}.ih span{font-size:.74rem;color:var(--ink3)}
 .tch{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}.tch div{background:var(--surface2);border-radius:12px;padding:8px 10px;font-size:.76rem;color:var(--ink3)}.tch i{display:inline-block;width:10px;height:3px;border-radius:2px;margin-right:5px;vertical-align:3px}.tch b{display:block;font-size:1.05rem;color:var(--ink);margin-top:2px}
-.cd{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}.cd span{font-size:.78rem;font-weight:700;padding:5px 10px;border-radius:999px;background:var(--surface2);color:var(--ink3)}.cd span.on{background:var(--amber-bg);color:var(--amber)}
+.cd{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}.cd span{font-size:.78rem;font-weight:700;padding:5px 10px;border-radius:999px;background:var(--surface2);color:var(--ink3)}.cd span.on{background:var(--amber-bg);color:var(--amber)}.cd span.tz{background:var(--blue-bg);color:var(--blue)}
+.ctl{display:grid;grid-template-columns:1fr 1fr;gap:14px}.ch{font-size:.8rem;font-weight:700;color:var(--ink2)}.cn{font-size:1.35rem;font-weight:800;letter-spacing:-.02em;margin-top:2px;font-variant-numeric:tabular-nums}.cs{font-size:.72rem;color:var(--ink3)}
+.br{transform-box:fill-box;transform-origin:bottom;transform:scaleY(0);animation:grow .5s ease forwards}@keyframes grow{to{transform:none}}
+@media (prefers-reduced-motion:reduce){.br{animation:none;transform:none}}
 .vk{margin:14px 0 4px}.vb{display:grid;grid-template-columns:62px 1fr 40px;align-items:center;gap:8px;font-size:.78rem;color:var(--ink3);margin:5px 0}.vb div{height:10px;border-radius:5px;background:var(--surface2);overflow:hidden}.vb b{display:block;height:100%;border-radius:5px}.vb em{font-style:normal;font-weight:800;color:var(--ink);text-align:right}
 #vdt{margin-top:8px}#vdt>summary{padding:10px 0;color:var(--ink3);font-size:.84rem}.pill.hold{background:var(--amber-bg);color:var(--amber)}
 .mini{font-size:.78rem;font-weight:800;padding:3px 9px;border-radius:8px}
@@ -392,7 +395,7 @@ body.intro{overflow:hidden}body.intro .tabbar,body.intro .disc{display:none}
 <div id="minfo" hidden style="margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--surface2);font-size:.84rem;line-height:1.65;color:var(--ink2)">주담대 금리가 1년 전보다 오르고 거래가 줄어든 상태가 3개월 이어지면 관망이에요. 참고용이며 투자 권유가 아닙니다.</div>
 <div class="seg" id="rtab"></div><div class="mtab" id="seg"><button class="on" data-t="0" onclick="tab(0)">지금</button><button onclick="go2('flow')">거래</button><button onclick="go2('ind')">지표</button></div></div>
 <div id="v0">
-<div id="mkt0"></div><div id="sum"></div><div id="one"></div>
+<div id="sum"></div><div id="one"></div><div id="mkt0"></div>
 <input class="q" id="q" placeholder="구·시 이름이나 단지 이름" autocomplete="off" oninput="find()" style="margin-top:12px"><div id="res"></div></div>
 <p class="note" id="ld">자료를 불러오는 중입니다…</p></div></main>
 <div class="disc" role="contentinfo">참고용 산출치이며 투자 권유가 아니에요 · 투자 판단과 결과의 책임은 본인에게 있어요</div>
@@ -424,36 +427,53 @@ let TB=0;
 function rtab(){$('#rtab').innerHTML=['서울','경기','인천'].map(r=>`<button class="${r===SR?'on':''}" onclick="SR='${r}';history.replaceState(null,'','#r='+encodeURIComponent(SR));$('#one').innerHTML='';rtab();if(D){intro();summary();}">${r}</button>`).join('');}
 function tab(i){window.scrollTo(0,0);}
 /* 10-16 사용자: 시장 첫 화면 = 지도 + 시세 지수(급지 흐름을 여기로), 로딩하듯 살짝 떠오르며 */
-function intro(){const M=D.MAP,si=SDN.indexOf(SR),T=D.TIER[SR],S=T.series,n=S['0'].length,lab=['상급지','중급지','하급지'],col=['var(--blue)','var(--amber)','var(--ink3)'];
- const sx=M.lab.find(l=>l[0]==='서울'),op=v=>v<=0?.14:Math.min(.92,.16+v/22*.76);
- const map=`<svg viewBox="0 0 ${M.W} ${M.H}" style="display:block;width:100%;max-height:270px;margin:6px auto 0">${M.r.map(([nm,d,v,h,s,cx,cy])=>`<path class="mp" style="animation-delay:${(250+Math.hypot(cx-sx[1],cy-sx[2])/M.W*900).toFixed(0)}ms" d="${d}" fill="${h?'var(--amber)':v<=0?'var(--ink3)':'var(--blue)'}" fill-opacity="${((h?.9:op(v))*(s===si?1:.3)).toFixed(2)}" stroke="var(--surface)" stroke-width=".7" stroke-linejoin="round"/>`).join('')}
-  ${M.lab.map(([t,x,y])=>`<text x="${x}" y="${y}" text-anchor="middle" font-size="12" font-weight="800" fill="${t===SR?'var(--ink)':'var(--ink3)'}" stroke="var(--surface)" stroke-width="3" paint-order="stroke">${t}</text>`).join('')}</svg>
-  <div class="lg" style="align-items:center"><span><i style="background:color-mix(in srgb,var(--ink3) 14%,var(--surface))"></i>하락</span><span style="display:flex;align-items:center;gap:4px">0<b style="display:inline-block;width:70px;height:8px;border-radius:4px;background:linear-gradient(90deg,color-mix(in srgb,var(--blue) 16%,var(--surface)),var(--blue))"></b>+20%</span>${M.r.some(r=>r[3])?'<span><i style="background:var(--amber)"></i>관망</span>':''}</div>`;
+/* 10-17 사용자: 금리·거래가 관망의 핵심 → 회색 글자 말고 그림으로(색) · 그 아래 시세 지수(상·중·하급지) */
+function intro(){const si=SDN.indexOf(SR),T=D.TIER[SR],S=T.series,n=S['0'].length,lab=['상급지','중급지','하급지'],col=['var(--blue)','var(--amber)','var(--ink3)'],C=D.COND,j=D.G[0].j||{},dm=(j.mort||0)-(j.mort12||0);
+ const L_=D.G.filter(x=>x.s===si),dn=L_.filter(x=>x.j&&x.j.c2).length,nc=L_.filter(x=>x.j&&x.j.toh&&x.j.vr==null).length;
+ // 금리: 최근 4년 선, 1년 전 수준 점선
+ const mo=C.mort,mw=150,mh=64,mlo=Math.min(...mo.filter(v=>v!=null))-.2,mhi=Math.max(...mo.filter(v=>v!=null))+.2,mx=i=>2+i/(mo.length-1)*(mw-4),my=v=>mh-4-(v-mlo)/(mhi-mlo)*(mh-8),last=mo.length-1,ago=mo[last-12];
+ const mc=dm>0?'var(--amber)':'var(--blue)';
+ const msv=`<svg viewBox="0 0 ${mw} ${mh}" width="100%" style="display:block;margin-top:8px"><line x1="2" x2="${mw-2}" y1="${my(ago).toFixed(1)}" y2="${my(ago).toFixed(1)}" stroke="var(--ink3)" stroke-dasharray="3 3" stroke-width="1"/><path class="ln" pathLength="1" d="${mo.map((v,i)=>v==null?'':(i?'L':'M')+mx(i).toFixed(1)+' '+my(v).toFixed(1)).join('')}" fill="none" stroke="${mc}" stroke-width="2.2" stroke-linejoin="round"/><circle cx="${mx(last-12).toFixed(1)}" cy="${my(ago).toFixed(1)}" r="3" fill="var(--surface)" stroke="var(--ink3)" stroke-width="1.5"/><circle cx="${mx(last).toFixed(1)}" cy="${my(mo[last]).toFixed(1)}" r="3.5" fill="${mc}"/></svg>`;
+ // 거래: 최근 4년 막대, 평소(직전 3년 평균) 선, 평소의 0.8배 아래 = 주황
+ const vo=C.vol[si],bs=C.base[si],vw=150,vh=64,vmx=Math.max(...vo,bs)*1.05,bw=(vw-4)/vo.length,vy=v=>vh-2-v/vmx*(vh-6),r3=(vo.slice(-3).reduce((a,b)=>a+b,0)/3)/bs;
+ const vsv=`<svg viewBox="0 0 ${vw} ${vh}" width="100%" style="display:block;margin-top:8px">${vo.map((v,i)=>`<rect class="br" style="animation-delay:${300+i*12}ms" x="${(2+i*bw).toFixed(1)}" y="${vy(v).toFixed(1)}" width="${(bw*.7).toFixed(1)}" height="${(vh-2-vy(v)).toFixed(1)}" rx="1" fill="${v<bs*.8?'var(--amber)':'var(--blue)'}" opacity="${i>=vo.length-3?1:.45}"/>`).join('')}<line x1="2" x2="${vw-2}" y1="${vy(bs).toFixed(1)}" y2="${vy(bs).toFixed(1)}" stroke="var(--ink)" stroke-width="1" stroke-dasharray="3 3"/></svg>`;
+ const rc=r3<.8?'var(--amber)':'var(--blue)';
+ const cond=`<div class="card rise" style="animation-delay:120ms"><div class="ctl">
+  <div><div class="ch">주담대 금리</div><div class="cn" style="color:${mc}">${dm>=0?'+':'−'}${Math.abs(dm).toFixed(2)}%p</div><div class="cs">1년 전 ${(j.mort12||0).toFixed(2)}% → ${(j.mort||0).toFixed(2)}%</div>${msv}</div>
+  <div><div class="ch">${SR} 거래</div><div class="cn" style="color:${rc}">평소의 ${r3.toFixed(2)}배</div><div class="cs">최근 3개월 · 점선 = 평소</div>${vsv}</div></div>
+  <div class="cd">${dn?`<span class="on">거래 감소 ${dn}곳</span>`:''}${nc?`<span class="tz">토지거래허가 뒤 비교 전 ${nc}곳</span>`:''}</div></div>`;
  const a=Math.max(0,n-73),W=340,H=170,m=n-a,x=i=>8+i/(m-1)*(W-16),L=[0,1,2].map(t=>S[t].slice(a).map(v=>v/S[t][a]*100)),all=[].concat(...L),lo=Math.min(...all)*.97,hi=Math.max(...all)*1.02,y=v=>H-20-(v-lo)/(hi-lo)*(H-30);
  const c1=[0,1,2].map(t=>(S[t][n-1]/S[t][n-13]-1)*100);let yrs='';for(let k=0;k<m;k++){const ym=D.tstart+a+k;if(ym%12===0&&(ym/12)%2===0)yrs+=`<text x="${x(k)}" y="${H-4}" text-anchor="middle" font-size="10" fill="var(--ink3)">${ym/12}</text>`;}
  const chart=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;margin-top:6px">${[2,1,0].map(t=>`<path class="ln" pathLength="1" style="animation-delay:${450+t*180}ms" d="${L[t].map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join('')}" fill="none" stroke="${col[t]}" stroke-width="${t?1.8:2.4}" stroke-linejoin="round"/>`).join('')}${yrs}</svg>
   <div class="tch">${[0,1,2].map(t=>`<div><i style="background:${col[t]}"></i><span>${lab[t]}</span><b>${sg(c1[t])}</b></div>`).join('')}</div>`;
- $('#mkt0').innerHTML=`<div class="card rise"><div class="ih"><b>1년 실거래 시세</b><span>${M.d}</span></div>${map}</div>
- <div class="card rise" id="tier" style="animation-delay:160ms"><div class="ih"><b>${SR} 시세 지수</b><span>최근 6년 · 1년 변화</span></div>${chart}</div>`;}
+ $('#mkt0').innerHTML=cond+`<div class="card rise" id="tier" style="animation-delay:240ms"><div class="ih"><b>${SR} 시세 지수</b><span>최근 6년 · 1년 변화</span></div>${chart}</div>`;}
 const dots=r=>`<span class="dt">${[0,1,2].map(k=>`<span class="${k<r?'dtf':''}"></span>`).join('')}</span>`;
 const pill=(on,r)=>on?`<span class="mini pill hold">관망</span>`:r>0?`<span class="mini pill pre">관망까지 ${dots(r)}</span>`:`<span class="mini pill buy">신호 없음</span>`;   /* 10-16 사용자: '매수'는 권유처럼 읽힘 · 관망 전 단계는 점으로(1~2개월 — 수도권 시험 적중 62%, 평균 37%) */
 const conds=v=>[];
-function summary(){const S=SR,si=SDN.indexOf(S),L=D.G.map((x,i)=>[x,i]).filter(([x])=>x.s===si),H=L.filter(([x])=>x.on),j=D.G[0].j||{},dm=(j.mort||0)-(j.mort12||0),K=D.JV.sd[S];
- const run=x=>(x.j&&!x.on&&x.j.raw)?x.j.run:0, dn=L.filter(([x])=>x.j&&x.j.c2).length, nc=L.filter(([x])=>x.j&&x.j.toh&&x.j.vr==null).length, np=L.filter(([x])=>run(x)>0).length;
+/* 10-17 사용자: 지금 탭 = 지도에 관망·관망까지(1/3·2/3) 신호 */
+const lv=x=>x.on?3:(x.j&&x.j.raw?Math.min(2,x.j.run):0);
+function summary(){const S=SR,si=SDN.indexOf(S),L=D.G.map((x,i)=>[x,i]).filter(([x])=>x.s===si),H=L.filter(([x])=>x.on),K=D.JV.sd[S],M=D.MAP,bb=M.bb[si],pd=bb[2]*.04;
+ const np=L.filter(([x])=>!x.on&&lv(x)>0).length,fs=(bb[2]/340*11).toFixed(2),FIL=['color-mix(in srgb,var(--ink3) 12%,var(--surface))','color-mix(in srgb,var(--amber) 30%,var(--surface))','color-mix(in srgb,var(--amber) 58%,var(--surface))','var(--amber)'];
  const vb=(l,v,c)=>`<div class="vb"><span>${l}</span><div><b style="width:${v}%;background:${c}"></b></div><em>${v}%</em></div>`;
- $('#sum').innerHTML=`<div class="card rise" style="animation-delay:320ms"><div style="font-size:1.5rem;font-weight:800;letter-spacing:-.02em">${H.length?`관망 ${H.length}곳`:'관망 신호 없음'}<span style="font-size:.95rem;color:var(--ink3);font-weight:600"> / ${L.length}곳</span></div>
- <div class="cd"><span class="${dm>0?'on':''}">금리 1년 ${dm>=0?'+':'−'}${Math.abs(dm).toFixed(2)}%p</span><span class="${dn?'on':''}">거래 감소 ${dn}곳</span>${nc?`<span>거래 비교 전 ${nc}곳</span>`:''}</div>
- <div class="chg">${L.map(([x,i])=>`<button class="${x.on?'h':run(x)?'p':'b'}" id="c${i}" onclick="gu(${i})">${x.g.replace(/^(\S+시) /,'')}${run(x)?dots(run(x)):''}</button>`).join('')}</div>
- <div class="lg" style="margin:6px 0 0"><span><i style="background:var(--amber-bg);border:1px solid var(--amber)"></i>관망</span>${np?`<span style="display:flex;align-items:center;gap:4px;color:var(--amber)">관망까지 ${dots(1)}</span>`:''}<span><i style="background:var(--surface2);border:1px solid var(--line)"></i>신호 없음</span></div>
+ const sh=n=>n.replace(/(특별시|광역시)$/,'').replace(/(시|군|구)$/,'');
+ const map=`<svg viewBox="${(bb[0]-pd).toFixed(1)} ${(bb[1]-pd).toFixed(1)} ${(bb[2]+2*pd).toFixed(1)} ${(bb[3]+2*pd).toFixed(1)}" width="100%" style="display:block;margin:10px 0 0;max-height:340px">
+  ${M.r.filter(r=>r[2]!==si).map(r=>`<path d="${r[1]}" fill="var(--surface2)" stroke="var(--surface)" stroke-width="1" vector-effect="non-scaling-stroke"/>`).join('')}
+  ${M.r.map((r,k)=>[r,k]).filter(([r])=>r[2]===si).map(([r,k])=>{const v=Math.max(...r[5].map(i=>lv(D.G[i])));return `<path class="mp" style="animation-delay:${200+k*14}ms;cursor:pointer" onclick="mapTap(${k})" d="${r[1]}" fill="${FIL[v]}" stroke="var(--surface)" stroke-width="1.2" vector-effect="non-scaling-stroke"/>`;}).join('')}
+  ${M.r.filter(r=>r[2]===si).map(r=>{const v=Math.max(...r[5].map(i=>lv(D.G[i])));return `<text x="${r[3]}" y="${r[4]}" text-anchor="middle" font-size="${fs}" font-weight="${v?800:600}" fill="${v===3?'#fff':v?'var(--amber)':'var(--ink3)'}" style="pointer-events:none">${sh(r[0])}</text>${v&&v<3?[0,1,2].map(k=>`<circle cx="${(r[3]+(k-1)*fs*.55).toFixed(2)}" cy="${(r[4]+fs*.6).toFixed(2)}" r="${(fs*.17).toFixed(2)}" fill="var(--amber)" opacity="${k<v?1:.25}" style="pointer-events:none"/>`).join(''):''}`;}).join('')}</svg>`;
+ $('#sum').innerHTML=`<div class="card rise"><div style="font-size:1.5rem;font-weight:800;letter-spacing:-.02em">${H.length?`관망 ${H.length}곳`:'관망 신호 없음'}<span style="font-size:.95rem;color:var(--ink3);font-weight:600"> / ${L.length}곳</span></div>
+ ${map}
+ <div class="lg" style="margin:8px 0 0;align-items:center"><span><i style="background:var(--amber)"></i>관망</span><span style="display:flex;align-items:center;gap:4px"><i style="background:${FIL[2]}"></i>관망까지 ${dots(2)}</span><span style="display:flex;align-items:center;gap:4px"><i style="background:${FIL[1]}"></i>${dots(1)}</span><span><i style="background:${FIL[0]};border:1px solid var(--line)"></i>신호 없음</span></div>
  <div class="vk">${vb('관망 적중',K[1],'var(--blue)')}${vb('평균',K[3],'var(--line)')}</div>
  <details id="vdt" ontoggle="if(this.open)valid()"><summary>검증 자세히</summary><div id="vdb"></div></details></div>`;}
+function mapTap(k){const r=D.MAP.r[k];if(r[5].length===1){gu(r[5][0]);return;}
+ $('#one').innerHTML=`<div class="card" style="margin-top:12px"><h2 style="margin:0 0 6px">${r[0]}</h2><div class="lstw">${r[5].map(i=>{const x=D.G[i];return `<button class="res" onclick="gu(${i})"><span><b>${x.g}</b></span>${pill(x.on,lv(x)<3?lv(x):0)}</button>`;}).join('')}</div></div>`;window.scrollTo(0,$('#one').offsetTop-70);}
 function find(){const q=$('#q').value.trim().replace(/\s/g,'');if(!D||q.length<2){$('#res').innerHTML='';return;}
  const G=D.G.map((x,i)=>[x,i]).filter(([x])=>x.g.replace(/\s/g,'').includes(q)).slice(0,8);
  const L=[];D.C.forEach((c,i)=>{if((c[0]+c[2]).replace(/\s/g,'').includes(q))L.push(i);});
  $('#res').innerHTML=(G.length||L.length)?'<div class="lstw">'+G.map(([x,i])=>`<button class="res" onclick="SR=SDN[x.s];rtab();intro();summary();gu(${i})"><span><b>${x.g}</b><span class="m">${SDN[x.s]}</span></span>${pill(x.on,x.j&&x.j.raw?x.j.run:0)}</button>`).join('')
   +L.slice(0,20).map(i=>{const c=D.C[i],x=D.G[c[1]];return `<button class="res" onclick="SR=SDN[x.s];rtab();intro();summary();gu(${c[1]},${i})"><span><b>${c[0]}</b><span class="m">${SDN[x.s]} ${x.g} ${c[2]}</span></span>${pill(x.on,x.j&&x.j.raw?x.j.run:0)}</button>`;}).join('')+'</div>':'<p class="sub" style="margin:10px 2px">찾는 곳이 없어요</p>';}
 const on=b=>`<span class="tag ${b?'amber':'gray'}">${b?'켜짐':'아님'}</span>`;
-function gu(i,ci){document.querySelectorAll('.chg button').forEach(b=>b.classList.remove('sel'));const cb=$('#c'+i);if(cb)cb.classList.add('sel');const x=D.G[i],j=x.j||{},Ds=D.JV.dist[x.on?'on_cap':'off_cap'],dm=(j.mort||0)-(j.mort12||0);
+function gu(i,ci){const x=D.G[i],j=x.j||{},Ds=D.JV.dist[x.on?'on_cap':'off_cap'],dm=(j.mort||0)-(j.mort12||0);
  location.hash='g='+encodeURIComponent(x.k);$('#res').innerHTML='';
  const sec=(t,b)=>`<details><summary>${t}</summary><div style="padding:0 0 12px">${b}</div></details>`;
  $('#one').innerHTML=`<div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">${x.g}</h2><span style="font-size:1.1rem">${pill(x.on,x.j&&x.j.raw?x.j.run:0).replace('mini pill','pill big')}</span></div>
