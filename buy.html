@@ -126,6 +126,9 @@ svg text{font-family:inherit}
 .mtab{position:sticky;top:0;z-index:6;display:flex;margin:2px 0 10px;background:var(--bg);border-bottom:1px solid var(--line)}
 .mtab button{flex:1;padding:12px 0 10px;border:0;border-bottom:2.5px solid transparent;margin-bottom:-1px;background:none;color:var(--ink3);font:inherit;font-size:.86rem;font-weight:700;cursor:pointer;white-space:nowrap}
 .mtab button.on{color:var(--ink);border-bottom-color:var(--ink)}
+#rtab button{flex:1;padding:10px 0;border:0;border-radius:11px;background:none;color:var(--ink3);font:inherit;font-weight:700;font-size:.95rem;cursor:pointer;white-space:nowrap}#rtab{margin-top:12px}#rtab button.on{background:var(--blue);color:#fff;box-shadow:0 4px 12px rgba(43,107,243,.25)}
+.mhd{display:flex;align-items:center;gap:6px}.mhd h1{margin:0}.ibi{border:0;background:none;color:var(--ink3);font-size:1rem;padding:2px 4px;cursor:pointer}
+.bz .mtab{position:static;background:none;margin:2px 0 0}
 .rch{display:flex;gap:6px;margin:4px 0 12px}.rch button{flex:1;padding:9px 0;border-radius:12px;border:1px solid var(--line);background:var(--surface);font:inherit;font-size:.9rem;font-weight:700;color:var(--ink2);cursor:pointer}.rch button.on{background:var(--blue);border-color:var(--blue);color:#fff}
 .chg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0 4px}.chg button{padding:9px 2px;border-radius:10px;border:0;font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;line-height:1.25;word-break:keep-all}
 .chg button.b{background:var(--green-bg);color:var(--green)}.chg button.h{background:var(--amber-bg);color:var(--amber)}.chg button.sel{outline:2px solid var(--ink);outline-offset:-2px}
@@ -374,7 +377,9 @@ body.intro{overflow:hidden}body.intro .tabbar,body.intro .disc{display:none}
 <div class="top" role="banner"><a href="index.html" class="brand" style="display:flex;align-items:center;gap:8px;color:inherit;text-decoration:none"><svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="#2B6BF3"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="22.5" y="31.5" width="19" height="5.2" rx="2.6" fill="#2B6BF3"/><rect x="22.5" y="40.3" width="19" height="5.2" rx="2.6" fill="#2B6BF3"/></svg>집셈</a><a href="index.html" style="font-size:.88rem;font-weight:700;color:var(--ink2);text-decoration:none;padding:8px 4px">‹ 홈</a></div>
 
 <main><div class="bz">
-<h1 style="margin:6px 0 4px">시장</h1><div class="mtab" id="seg"><button class="on" data-t="0" onclick="tab(0)">지금</button><button onclick="go2('flow')">거래</button><button onclick="go2('ind')">지표</button><button data-t="2" onclick="tab(2)">급지 흐름</button><button data-t="1" onclick="tab(1)">검증</button></div>
+<div class="card" style="padding-bottom:4px"><div class="mhd"><h1>시장</h1><button class="ibi" onclick="var m=document.getElementById('minfo');m.hidden=!m.hidden"><span style="font-size:.78rem;font-weight:600;white-space:nowrap">셈하는 법</span></button></div>
+<div id="minfo" hidden style="margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--surface2);font-size:.84rem;line-height:1.65;color:var(--ink2)">주담대 금리가 1년 전보다 오르고 거래가 줄어든 상태가 3개월 이어지면 관망이에요. 참고용이며 투자 권유가 아닙니다.</div>
+<div class="seg" id="rtab"></div><div class="mtab" id="seg"><button class="on" data-t="0" onclick="tab(0)">지금</button><button onclick="go2('flow')">거래</button><button onclick="go2('ind')">지표</button><button data-t="2" onclick="tab(2)">급지 흐름</button><button data-t="1" onclick="tab(1)">검증</button></div></div>
 <div id="v0">
 <div id="sum"></div><div id="one"></div>
 <input class="q" id="q" placeholder="구·시 이름이나 단지 이름" autocomplete="off" oninput="find()" style="margin-top:12px"><div id="res"></div></div>
@@ -401,16 +406,18 @@ const $=s=>document.querySelector(s), SDN=['서울','경기','인천'];
 const sg=v=>v==null?'-':(v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(1)+'%';
 const sg2=v=>v==null?'-':(v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(Math.abs(v)<1?2:1)+'%';
 const eok=m=>(m/10000).toFixed(m>=100000?1:2)+'억', man=v=>Math.round(v).toLocaleString()+'만 원';
+setTimeout(rtab,0);   /* 머리(지역 고르기)는 자료 오기 전에 바로 — 시장 화면과 같은 자리에 같은 때 */
 fetch('buy_data.json').then(r=>r.json()).then(j=>{D=j;$('#ld').remove();summary();const tm=/t=(\d)/.exec(location.hash);if(tm&&+tm[1]>0){tab(+tm[1]);return;}const h=decodeURIComponent(location.hash.slice(3));if(location.hash.startsWith('#g=')&&h){const i=D.G.findIndex(x=>x.k===h);if(i>=0)gu(i);}}).catch(()=>{$('#ld').textContent='자료를 불러오지 못했어요';});
 let SR=(/r=([^&]+)/.exec(location.hash)||[])[1];SR=SR?decodeURIComponent(SR):'서울';if(!['서울','경기','인천'].includes(SR))SR='서울';
 function go2(k){location.href='market.html#'+k+'&r='+encodeURIComponent(SR);}
-function tab(i){[0,1,2].forEach(k=>{$('#v'+k).hidden=k!==i;});[...$('#seg').children].forEach(b=>b.classList.toggle('on',b.dataset.t===String(i)));if(i===1&&D)valid();if(i===2&&D)tiers('수도권');window.scrollTo(0,0);}
+let TB=0;
+function rtab(){$('#rtab').innerHTML=['서울','경기','인천'].map(r=>`<button class="${r===SR?'on':''}" onclick="SR='${r}';history.replaceState(null,'','#r='+encodeURIComponent(SR));$('#one').innerHTML='';rtab();if(TB===2)tiers(SR);else{if(TB!==0)tab(0);summary();}">${r}</button>`).join('')+`<button onclick="if(TB!==0)tab(0);const q=$('#q');q.scrollIntoView({block:'center'});q.focus()">우리 동네</button>`;}
+function tab(i){TB=i;[0,1,2].forEach(k=>{$('#v'+k).hidden=k!==i;});[...$('#seg').children].forEach(b=>b.classList.toggle('on',b.dataset.t===String(i)));if(i===1&&D)valid();if(i===2&&D)tiers(SR);window.scrollTo(0,0);}
 const pill=on=>`<span class="mini pill ${on?'hold':'buy'}">${on?'관망':'매수'}</span>`;
 const conds=v=>[];
 function summary(){const S=SR,si=['서울','경기','인천'].indexOf(S),L=D.G.map((x,i)=>[x,i]).filter(([x])=>x.s===si),H=L.filter(([x])=>x.on),j=D.G[0].j||{},dm=(j.mort||0)-(j.mort12||0);
  const vrs=L.map(([x])=>x.j&&x.j.vr).filter(v=>v!=null).sort((a,b)=>a-b),vm=vrs.length?vrs[Math.floor(vrs.length/2)]:null;
- $('#sum').innerHTML=`<div class="rch">${['서울','경기','인천'].map(r=>`<button class="${r===S?'on':''}" onclick="SR='${r}';history.replaceState(null,'','#r='+encodeURIComponent(SR));$('#one').innerHTML='';summary()">${r}</button>`).join('')}</div>
- <div class="card"><div style="font-size:1.5rem;font-weight:800;letter-spacing:-.02em">${H.length?`관망 ${H.length}곳`:'모두 매수'}<span style="font-size:.95rem;color:var(--ink3);font-weight:600"> / ${L.length}곳</span></div>
+ $('#sum').innerHTML=`<div class="card"><div style="font-size:1.5rem;font-weight:800;letter-spacing:-.02em">${H.length?`관망 ${H.length}곳`:'모두 매수'}<span style="font-size:.95rem;color:var(--ink3);font-weight:600"> / ${L.length}곳</span></div>
  <div class="chg">${L.map(([x,i])=>`<button class="${x.on?'h':'b'}" id="c${i}" onclick="gu(${i})">${x.g.replace(/^(\S+시) /,'')}</button>`).join('')}</div>
  <div class="lg" style="margin:6px 0 0"><span><i style="background:var(--green-bg);border:1px solid var(--green)"></i>매수</span><span><i style="background:var(--amber-bg);border:1px solid var(--amber)"></i>관망</span></div>
  <div class="rk" style="margin:14px 0 0"><div><div class="h">주담대 금리 1년</div><div class="n" style="font-size:1.4rem">${dm>=0?'+':'−'}${Math.abs(dm).toFixed(2)}%p</div><div class="s">${(j.mort||0).toFixed(2)}%</div></div>
@@ -419,8 +426,8 @@ function list(){}
 function find(){const q=$('#q').value.trim().replace(/\s/g,'');if(!D||q.length<2){$('#res').innerHTML='';return;}
  const G=D.G.map((x,i)=>[x,i]).filter(([x])=>x.g.replace(/\s/g,'').includes(q)).slice(0,8);
  const L=[];D.C.forEach((c,i)=>{if((c[0]+c[2]).replace(/\s/g,'').includes(q))L.push(i);});
- $('#res').innerHTML=(G.length||L.length)?'<div class="lstw">'+G.map(([x,i])=>`<button class="res" onclick="SR=SDN[x.s];summary();gu(${i})"><span><b>${x.g}</b><span class="m">${SDN[x.s]}</span></span>${pill(x.on)}</button>`).join('')
-  +L.slice(0,20).map(i=>{const c=D.C[i],x=D.G[c[1]];return `<button class="res" onclick="SR=SDN[x.s];summary();gu(${c[1]},${i})"><span><b>${c[0]}</b><span class="m">${SDN[x.s]} ${x.g} ${c[2]}</span></span>${pill(x.on)}</button>`;}).join('')+'</div>':'<p class="sub" style="margin:10px 2px">찾는 곳이 없어요</p>';}
+ $('#res').innerHTML=(G.length||L.length)?'<div class="lstw">'+G.map(([x,i])=>`<button class="res" onclick="SR=SDN[x.s];rtab();summary();gu(${i})"><span><b>${x.g}</b><span class="m">${SDN[x.s]}</span></span>${pill(x.on)}</button>`).join('')
+  +L.slice(0,20).map(i=>{const c=D.C[i],x=D.G[c[1]];return `<button class="res" onclick="SR=SDN[x.s];rtab();summary();gu(${c[1]},${i})"><span><b>${c[0]}</b><span class="m">${SDN[x.s]} ${x.g} ${c[2]}</span></span>${pill(x.on)}</button>`;}).join('')+'</div>':'<p class="sub" style="margin:10px 2px">찾는 곳이 없어요</p>';}
 const on=b=>`<span class="tag ${b?'amber':'gray'}">${b?'켜짐':'아님'}</span>`;
 function gu(i,ci){document.querySelectorAll('.chg button').forEach(b=>b.classList.remove('sel'));const cb=$('#c'+i);if(cb)cb.classList.add('sel');const x=D.G[i],j=x.j||{},Ds=D.JV.dist[x.on?'on_cap':'off_cap'],dm=(j.mort||0)-(j.mort12||0);
  location.hash='g='+encodeURIComponent(x.k);$('#res').innerHTML='';
@@ -483,7 +490,6 @@ function tiers(nm){const T=D.TIER[nm],el=$('#v2'),col=['var(--blue)','var(--ambe
  let yrs='';for(let yy=2010;yy<=2026;yy+=4){const i=yy*12-D.tstart;yrs+=`<text x="${x(i)}" y="${H-6}" text-anchor="middle" font-size="10" fill="var(--ink3)">${yy}</text>`;}
  const mv=T.moves, lg=T.lag;
  el.innerHTML=`
- <div class="seg">${Object.keys(D.TIER).map(k=>`<button class="${k===nm?'on':''}" onclick="tiers('${k}')">${k}</button>`).join('')}</div>
  <div class="card"><svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">${[0,1,2].map(t=>`<path d="${S[t].map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join('')}" fill="none" stroke="${col[t]}" stroke-width="2"/>`).join('')}${yrs}</svg>
  <div class="lg">${[0,1,2].map(t=>`<span><i style="background:${col[t]}"></i>${lab[t]} ${Math.round(S[t][n-1])}</span>`).join('')}</div></div>
  <details class="grp2"><summary>고점·저점</summary>
