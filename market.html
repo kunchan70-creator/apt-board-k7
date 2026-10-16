@@ -973,7 +973,7 @@ function tScreens0(){const T=MD.t[RG],o=T.o26||{n:0},P=MD.p[RG==='인천'?'인�
   {q:'요약',big:`${T.streak>0?`${T.streak}주 연속 상승`:T.streak<0?`${-T.streak}주 연속 하락`:'보합'}`,c:'var(--ink)',
    v:`<div class="concl">${verdict(T,BT)}</div>`+(L?`<div class="concl"><b>지켜볼 것</b> — 매물. 1년 새 ${L.hi}% 넘게 늘면 첫 경고예요 (지금 ${pc(L.now,0)}).</div>`:''),
    line:`${V&&V.all_ok?'이 해석은 매달 다시 검증해요':'해석을 다시 검토하고 있어요'}${V?` · 마지막 검증 ${V.date.slice(5).replace('-','/')} · ${V.items.filter(x=>x.ok).length}/${V.items.length} 유효`:''}`}].filter(Boolean);}
-function tGo(){$m('rtab').innerHTML=Object.keys(MD.t).map(r=>`<button class="${r===RG?'on':''}" onclick="RG='${r}';tGo()">${r}</button>`).join('')+`<button class="${RG==='동네'?'on':''}" onclick="RG='동네';tGo()">우리 동네</button>`;
+function tGo(){$m('rtab').innerHTML=Object.keys(MD.t).map(r=>`<button class="${r===RG?'on':''}" onclick="RG='${r}';tGo()">${r}</button>`).join('');   /* 10-16 사용자: 우리 동네(4분면) 삭제 — 구별 판단은 '지금' 탭 */
  Object.keys(ANM).forEach(k=>{anStop(k);delete ANM[k];});
  if(RG==='동네'){$m('temp').innerHTML=`<input id="aq" class="msearch" type="search" autocomplete="off" placeholder="시·군·구 이름 (예: 영통, 분당, 마포)" oninput="findArea(this.value)"><div id="asug"></div><div id="areabox"></div>`;
   let sv=AN;if(!sv){try{sv=localStorage.getItem('mkArea')||'';}catch(e){}}if(sv&&MD.a.some(a=>a.n===sv))show(sv);else setTimeout(()=>{const q=$m('aq');if(q)q.focus();},50);return;}
@@ -1003,7 +1003,7 @@ function aScreens(){const a=MD.a.find(x=>x.n===AN);if(!a)return [];
 let AHT=false;
 function aGo(){pzStopAll();if(ANM.ana){anStop('ana');delete ANM.ana;}const sc=aScreens().filter(Boolean);if(!sc.length)return;const bx=$m('areabox');bx.innerHTML=(AHT?mtBar('a'):'')+'<div id="amtp"></div>';mountAll($m('amtp'),sc);setTimeout(()=>{anInit();pzInit();},0);}   /* 09-30: 지우기를 새로 그리기 전에(뒤에 두면 방금 만든 애니메이션 상태까지 지워 동네 지도가 안 그려짐) */
 function show(n){AN=n;$m('asug').innerHTML='';$m('aq').value=n;try{localStorage.setItem('mkArea',n);}catch(e){}aGo();}
-(function(){const hm=/[#&]a=([^&]+)/.exec(location.hash||'');if(hm){try{const n=decodeURIComponent(hm[1]);if(MD.a.some(a=>a.n===n)){AN=n;RG='동네';}}catch(e){}}tGo();})();   // 09-29 단지 상세 '단기 국면 보기' 링크(market.html#a=구 이름) → 우리 동네 탭
+(function(){const hm=/[#&]a=([^&]+)/.exec(location.hash||'');if(hm){try{const n=decodeURIComponent(hm[1]);}catch(e){}}tGo();})();   // 09-29 단지 상세 '단기 국면 보기' 링크(market.html#a=구 이름) → 우리 동네 탭
 </script></main>
 <div class="disc" role="contentinfo">참고용 산출치이며 투자 권유가 아니에요 · 투자 판단과 결과의 책임은 본인에게 있어요</div>
 </div><script>

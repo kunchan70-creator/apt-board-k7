@@ -110,7 +110,7 @@ ul.plain{padding-left:18px}
 .bz .lstw{border-radius:14px;overflow:hidden;border:1px solid var(--line);margin-top:8px}
 .vd{display:flex;align-items:center;gap:12px;margin:6px 0 4px}
 .vd .pill{font-size:1.45rem;font-weight:800;padding:8px 16px;border-radius:14px;letter-spacing:-.02em}
-.pill.buy{background:var(--green-bg);color:var(--green)}.pill.hold{background:var(--amber-bg);color:var(--amber)}
+.pill.buy{background:var(--surface2);color:var(--ink2)}.pill.hold{background:var(--amber-bg);color:var(--amber)}
 .mini{font-size:.78rem;font-weight:800;padding:3px 9px;border-radius:8px}
 .rk{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 4px}
 .rk>div{background:var(--surface2);border-radius:14px;padding:12px 14px}
@@ -131,7 +131,7 @@ svg text{font-family:inherit}
 .bz .mtab{position:static;background:none;margin:2px 0 0}
 .rch{display:flex;gap:6px;margin:4px 0 12px}.rch button{flex:1;padding:9px 0;border-radius:12px;border:1px solid var(--line);background:var(--surface);font:inherit;font-size:.9rem;font-weight:700;color:var(--ink2);cursor:pointer}.rch button.on{background:var(--blue);border-color:var(--blue);color:#fff}
 .chg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0 4px}.chg button{padding:9px 2px;border-radius:10px;border:0;font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;line-height:1.25;word-break:keep-all}
-.chg button.b{background:var(--green-bg);color:var(--green)}.chg button.h{background:var(--amber-bg);color:var(--amber)}.chg button.sel{outline:2px solid var(--ink);outline-offset:-2px}
+.chg button.b{background:var(--surface2);color:var(--ink2)}.chg button.h{background:var(--amber-bg);color:var(--amber)}.chg button.sel{outline:2px solid var(--ink);outline-offset:-2px}
 .gl{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line2);font-size:.86rem}.gl:last-child{border-bottom:0}.gl .num{text-align:right;white-space:nowrap}
 table.tt{font-size:.78rem}table.tt th,table.tt td{padding:8px 4px;white-space:normal}table.tt td:first-child{font-weight:600;min-width:84px}
 </style><style id="ref">
@@ -411,15 +411,15 @@ fetch('buy_data.json').then(r=>r.json()).then(j=>{D=j;$('#ld').remove();summary(
 let SR=(/r=([^&]+)/.exec(location.hash)||[])[1];SR=SR?decodeURIComponent(SR):'서울';if(!['서울','경기','인천'].includes(SR))SR='서울';
 function go2(k){location.href='market.html#'+k+'&r='+encodeURIComponent(SR);}
 let TB=0;
-function rtab(){$('#rtab').innerHTML=['서울','경기','인천'].map(r=>`<button class="${r===SR?'on':''}" onclick="SR='${r}';history.replaceState(null,'','#r='+encodeURIComponent(SR));$('#one').innerHTML='';rtab();if(TB===2)tiers(SR);else{if(TB!==0)tab(0);summary();}">${r}</button>`).join('')+`<button onclick="if(TB!==0)tab(0);const q=$('#q');q.scrollIntoView({block:'center'});q.focus()">우리 동네</button>`;}
+function rtab(){$('#rtab').innerHTML=['서울','경기','인천'].map(r=>`<button class="${r===SR?'on':''}" onclick="SR='${r}';history.replaceState(null,'','#r='+encodeURIComponent(SR));$('#one').innerHTML='';rtab();if(TB===2)tiers(SR);else{if(TB!==0)tab(0);summary();}">${r}</button>`).join('');}
 function tab(i){TB=i;[0,1,2].forEach(k=>{$('#v'+k).hidden=k!==i;});[...$('#seg').children].forEach(b=>b.classList.toggle('on',b.dataset.t===String(i)));if(i===1&&D)valid();if(i===2&&D)tiers(SR);window.scrollTo(0,0);}
-const pill=on=>`<span class="mini pill ${on?'hold':'buy'}">${on?'관망':'매수'}</span>`;
+const pill=on=>`<span class="mini pill ${on?'hold':'buy'}">${on?'관망':'신호 없음'}</span>`;   /* 10-16 사용자: '매수'는 권유처럼 읽힘 */
 const conds=v=>[];
 function summary(){const S=SR,si=['서울','경기','인천'].indexOf(S),L=D.G.map((x,i)=>[x,i]).filter(([x])=>x.s===si),H=L.filter(([x])=>x.on),j=D.G[0].j||{},dm=(j.mort||0)-(j.mort12||0);
  const vrs=L.map(([x])=>x.j&&x.j.vr).filter(v=>v!=null).sort((a,b)=>a-b),vm=vrs.length?vrs[Math.floor(vrs.length/2)]:null;
- $('#sum').innerHTML=`<div class="card"><div style="font-size:1.5rem;font-weight:800;letter-spacing:-.02em">${H.length?`관망 ${H.length}곳`:'모두 매수'}<span style="font-size:.95rem;color:var(--ink3);font-weight:600"> / ${L.length}곳</span></div>
+ $('#sum').innerHTML=`<div class="card"><div style="font-size:1.5rem;font-weight:800;letter-spacing:-.02em">${H.length?`관망 ${H.length}곳`:'관망 신호 없음'}<span style="font-size:.95rem;color:var(--ink3);font-weight:600"> / ${L.length}곳</span></div>
  <div class="chg">${L.map(([x,i])=>`<button class="${x.on?'h':'b'}" id="c${i}" onclick="gu(${i})">${x.g.replace(/^(\S+시) /,'')}</button>`).join('')}</div>
- <div class="lg" style="margin:6px 0 0"><span><i style="background:var(--green-bg);border:1px solid var(--green)"></i>매수</span><span><i style="background:var(--amber-bg);border:1px solid var(--amber)"></i>관망</span></div>
+ <div class="lg" style="margin:6px 0 0"><span><i style="background:var(--surface2);border:1px solid var(--line)"></i>신호 없음</span><span><i style="background:var(--amber-bg);border:1px solid var(--amber)"></i>관망</span></div>
  <div class="rk" style="margin:14px 0 0"><div><div class="h">주담대 금리 1년</div><div class="n" style="font-size:1.4rem">${dm>=0?'+':'−'}${Math.abs(dm).toFixed(2)}%p</div><div class="s">${(j.mort||0).toFixed(2)}%</div></div>
  <div><div class="h">${S} 거래</div><div class="n" style="font-size:1.4rem">${vm!=null?vm.toFixed(2)+'배':'-'}</div><div class="s">평소 대비</div></div></div></div>`;}
 function list(){}
@@ -432,11 +432,11 @@ const on=b=>`<span class="tag ${b?'amber':'gray'}">${b?'켜짐':'아님'}</span>
 function gu(i,ci){document.querySelectorAll('.chg button').forEach(b=>b.classList.remove('sel'));const cb=$('#c'+i);if(cb)cb.classList.add('sel');const x=D.G[i],j=x.j||{},Ds=D.JV.dist[x.on?'on_cap':'off_cap'],dm=(j.mort||0)-(j.mort12||0);
  location.hash='g='+encodeURIComponent(x.k);$('#res').innerHTML='';
  const sec=(t,b)=>`<details><summary>${t}</summary><div style="padding:0 0 12px">${b}</div></details>`;
- $('#one').innerHTML=`<div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">${x.g}</h2><span class="pill ${x.on?'hold':'buy'}" style="font-size:1.1rem;font-weight:800;padding:6px 14px;border-radius:12px">${x.on?'관망':'매수'}</span></div>
+ $('#one').innerHTML=`<div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">${x.g}</h2><span class="pill ${x.on?'hold':'buy'}" style="font-size:1.1rem;font-weight:800;padding:6px 14px;border-radius:12px">${x.on?'관망':'신호 없음'}</span></div>
  ${sec('1년 뒤 시세 · 과거 같은 신호',`<div class="rk" style="margin-top:4px"><div><div class="h">6개월 뒤 하락</div><div class="n">${Ds.y6.drop}%</div><div class="s">${sg(Ds.y6.p10)} ~ ${sg(Ds.y6.p90)}</div></div><div><div class="h">12개월 뒤 하락</div><div class="n">${Ds.y12.drop}%</div><div class="s">${sg(Ds.y12.p10)} ~ ${sg(Ds.y12.p90)}</div></div></div>`)}
  ${sec('조건',`<div class="why">
   <div class="w"><div><b>주담대 금리 1년</b><span class="fx">${dm>=0?'+':'−'}${Math.abs(dm).toFixed(2)}%p</span></div>${on(j.c1)}</div>
-  <div class="w"><div><b>이 지역 거래</b><span class="fx">평소의 ${j.vr!=null?j.vr.toFixed(2):'-'}배 · 전년의 ${j.vry!=null?j.vry.toFixed(2):'-'}배</span></div>${on(j.c2)}</div>
+  <div class="w"><div><b>이 지역 거래</b><span class="fx">${j.vr!=null?`평소의 ${j.vr.toFixed(2)}배`:''}${j.vr!=null&&j.vry!=null?' · ':''}${j.vry!=null?`전년의 ${j.vry.toFixed(2)}배`:''}${j.toh?`${j.vr!=null?' · ':''}토지거래허가 ${j.toh}~`:''}</span></div>${j.toh&&(j.vr==null||j.vry==null)?'<span class="tag gray">비교 전</span>':on(j.c2)}</div>
   <div class="w"><div><b>시장 전체 거래</b><span class="fx">KB 활발도 ${j.act!=null?Math.round(j.act):'-'} · 저조 구 ${j.low_share!=null?j.low_share:'-'}%</span></div>${on(j.c3&&j.c4)}</div></div>`)}
  ${x.an?sec('비슷했던 과거',analog(x)):''}
  ${ci!=null?sec('전세 대비 손익분기',hurdle(ci)):''}
@@ -478,7 +478,7 @@ function valid(){const J=D.JV,el=$('#v1'),P=J.per,yrs=Object.keys(P).filter(y=>P
  <div class="card"><div class="lg" style="margin:0 0 6px"><span><i style="background:var(--blue)"></i>관망 적중</span><span><i style="background:var(--line)"></i>평균</span></div>
  <svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">${b}</svg></div>
  <div class="card"><div class="sec" style="margin-top:0">1년 뒤 시세</div>
- <svg viewBox="0 0 340 64" width="100%" style="display:block"><line x1="${X(0)}" x2="${X(0)}" y1="0" y2="60" stroke="var(--ink3)" stroke-dasharray="2 2"/>${bar(6,on.p50,'var(--red)','관망 뒤')}${bar(36,off.p50,'var(--green)','매수 뒤')}</svg></div>
+ <svg viewBox="0 0 340 64" width="100%" style="display:block"><line x1="${X(0)}" x2="${X(0)}" y1="0" y2="60" stroke="var(--ink3)" stroke-dasharray="2 2"/>${bar(6,on.p50,'var(--red)','관망 뒤')}${bar(36,off.p50,'var(--ink3)','신호 없을 때')}</svg></div>
  <details class="grp2"><summary>판단 규칙</summary><p style="margin:0 0 12px">주담대 금리 상승 + 거래 감소 3개월</p></details>`;}
 function yearBars(Y){const W=340,H=150,n=Y.length,bw=(W-30)/n,mx=Math.max(...Y.map(v=>Math.abs(v[1])))||1,z=H/2,y=v=>z-v/mx*(H/2-22);
  let s=`<line x1="22" x2="${W}" y1="${z}" y2="${z}" stroke="var(--line)"/>`;Y.forEach(([yy,g],i)=>{const x0=24+i*bw;s+=`<rect x="${x0+bw*0.2}" y="${Math.min(z,y(g))}" width="${bw*0.6}" height="${Math.max(1,Math.abs(y(g)-z))}" rx="2" fill="${g>=0?'var(--green)':'var(--red)'}"/>`+
