@@ -105,12 +105,13 @@ ul.plain{padding-left:18px}
 .bz h1{margin:4px 0 2px}.bz .lead{margin:0 0 14px;font-size:.9rem;color:var(--ink3)}
 .bz input.q{width:100%;padding:14px 16px;border-radius:14px;border:1.5px solid var(--line);font:inherit;font-size:1rem;background:var(--surface);color:var(--ink)}
 .bz input.q:focus{outline:0;border-color:var(--blue)}
-.bz .res{display:block;width:100%;text-align:left;padding:12px 14px;border:0;border-bottom:1px solid var(--line2);background:var(--surface);font:inherit;cursor:pointer;color:var(--ink)}
-.bz .res b{display:block;font-size:.95rem}.bz .res span{font-size:.8rem;color:var(--ink3)}
+.bz .res{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;padding:12px 14px;border:0;border-bottom:1px solid var(--line2);background:var(--surface);font:inherit;cursor:pointer;color:var(--ink)}
+.bz .res b{display:block;font-size:.95rem}.bz .res span.m{font-size:.8rem;color:var(--ink3)}
 .bz .lstw{border-radius:14px;overflow:hidden;border:1px solid var(--line);margin-top:8px}
 .vd{display:flex;align-items:center;gap:12px;margin:6px 0 4px}
 .vd .pill{font-size:1.45rem;font-weight:800;padding:8px 16px;border-radius:14px;letter-spacing:-.02em}
-.vd .pill.buy{background:var(--green-bg);color:var(--green)}.vd .pill.hold{background:var(--amber-bg);color:var(--amber)}
+.pill.buy{background:var(--green-bg);color:var(--green)}.pill.hold{background:var(--amber-bg);color:var(--amber)}
+.mini{font-size:.78rem;font-weight:800;padding:3px 9px;border-radius:8px}
 .rk{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 4px}
 .rk>div{background:var(--surface2);border-radius:14px;padding:12px 14px}
 .rk .h{font-size:.78rem;color:var(--ink3);font-weight:700}.rk .n{font-size:1.7rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.2}
@@ -118,12 +119,11 @@ ul.plain{padding-left:18px}
 .why{margin-top:6px}.why .w{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line2);font-size:.9rem}
 .why .w:last-child{border-bottom:0}.why .w b{font-weight:700}.why .w span.fx{color:var(--ink3);font-size:.8rem;display:block}
 .sec{font-size:.8rem;font-weight:800;color:var(--ink3);margin:18px 0 4px}
-.bands{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 2px}
-.bands button{padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font:inherit;font-size:.82rem;font-weight:700;color:var(--ink2);cursor:pointer}
-.bands button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.grp{font-size:.82rem;font-weight:800;color:var(--ink3);margin:16px 2px 6px}
 svg text{font-family:inherit}
 .lg{display:flex;gap:12px;flex-wrap:wrap;font-size:.75rem;color:var(--ink3);margin:4px 0 0}.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
-.gl{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line2);font-size:.86rem}.gl:last-child{border-bottom:0}table.tt{font-size:.78rem}table.tt th,table.tt td{padding:8px 4px;white-space:normal}table.tt td:first-child{font-weight:600;min-width:84px}.gl .num{text-align:right;white-space:nowrap}
+.gl{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line2);font-size:.86rem}.gl:last-child{border-bottom:0}.gl .num{text-align:right;white-space:nowrap}
+table.tt{font-size:.78rem}table.tt th,table.tt td{padding:8px 4px;white-space:normal}table.tt td:first-child{font-weight:600;min-width:84px}
 </style><style id="ref">
 :root{--bg:#FFFFFF;--surface:#fff;--surface2:#F2F5FA;--ink:#131A2B;--ink2:#454D5C;--ink3:#636C7E;--line:#E3E9F2;--line2:#EDF1F7;--grid:transparent;
  --blue:#2B6BF3;--blue-bg:#EAF1FF;--green:#0F8048;--green-bg:#E6F6EC;--red:#CC3338;--red-bg:#FDECEC;--amber:#F08C00;--amber-bg:#FFF4E5;
@@ -367,9 +367,10 @@ body.intro{overflow:hidden}body.intro .tabbar,body.intro .disc{display:none}
 <div class="top" role="banner"><a href="index.html" class="brand" style="display:flex;align-items:center;gap:8px;color:inherit;text-decoration:none"><svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="#2B6BF3"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="22.5" y="31.5" width="19" height="5.2" rx="2.6" fill="#2B6BF3"/><rect x="22.5" y="40.3" width="19" height="5.2" rx="2.6" fill="#2B6BF3"/></svg>집셈</a><a href="index.html" style="font-size:.88rem;font-weight:700;color:var(--ink2);text-decoration:none;padding:8px 4px">‹ 홈</a></div>
 
 <main><div class="bz">
-<div class="seg" id="seg"><button class="on" onclick="tab(0)">단지 판단</button><button onclick="tab(1)">과거 검증</button><button onclick="tab(2)">급지 흐름</button></div>
-<div id="v0"><h1>매수 시점 판단</h1><p class="lead">금리 상승기에 거래가 급감했거나, 거래가 줄고 상승세도 손익분기 아래일 때만 보류 · 실거래 2026.08 계약까지</p>
-<input class="q" id="q" placeholder="단지 이름이나 동 이름" autocomplete="off" oninput="find()"><div id="res"></div><div id="one"></div></div>
+<div class="seg" id="seg"><button class="on" onclick="tab(0)">지역 판단</button><button onclick="tab(1)">과거 검증</button><button onclick="tab(2)">급지 흐름</button></div>
+<div id="v0"><h1>매수 시점 판단</h1><p class="lead">시·군·구마다 하락 경보가 켜지면 보류 · 실거래 2026.08 계약까지</p>
+<div id="sum"></div>
+<input class="q" id="q" placeholder="구·시 이름이나 단지 이름" autocomplete="off" oninput="find()"><div id="res"></div><div id="one"></div><div id="list"></div></div>
 <div id="v1" hidden></div><div id="v2" hidden></div>
 <p class="note" id="ld">자료를 불러오는 중입니다…</p></div></main>
 <div class="disc" role="contentinfo">참고용 산출치이며 투자 권유가 아니에요 · 투자 판단과 결과의 책임은 본인에게 있어요</div>
@@ -388,91 +389,78 @@ body.intro{overflow:hidden}body.intro .tabbar,body.intro .disc{display:none}
  jsTrack('view',{saved:sv,dark:!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)});
  document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(a&&/\.html/.test(a.getAttribute('href')||''))jsTrack('nav',{to:(a.getAttribute('href')||'').split('#')[0].split('?')[0].replace(/\.html$/,'')});},true);
 })();</script><nav class="tabbar" aria-label="주요 메뉴"><div><a class="tb" href="index.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11 12 4l8.5 7"/><path d="M6 9.5V20h4.5v-5.5h3V20H18V9.5"/></svg>홈</a><a class="tb" href="index.html#t=anal"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V12M12 20V5M19 20v-9"/></svg>분석</a><a class="tb" href="map.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6Z"/><path d="M9 4v14M15 6v14"/></svg>지도</a><a class="tb" href="index.html#t=menu"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>메뉴</a></div></nav><script>
-let D=null,CUR=null;
-const $=s=>document.querySelector(s), SDN=['서울','경기','인천'], SDF=['서울특별시','경기도','인천광역시'];
+let D=null;
+const $=s=>document.querySelector(s), SDN=['서울','경기','인천'];
 const sg=v=>v==null?'-':(v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(1)+'%';
 const sg2=v=>v==null?'-':(v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(Math.abs(v)<1?2:1)+'%';
-const eok=m=>(m/10000).toFixed(m>=100000?1:2)+'억';
-const ymS=t=>Math.floor(t/12)+'.'+String(t%12+1).padStart(2,'0');
-fetch('buy_data.json').then(r=>r.json()).then(j=>{D=j;$('#ld').remove();const h=decodeURIComponent(location.hash.slice(3));if(location.hash.startsWith('#c=')&&h){$('#q').value=h;find(true);}}).catch(()=>{$('#ld').textContent='자료를 불러오지 못했어요';});
+const eok=m=>(m/10000).toFixed(m>=100000?1:2)+'억', man=v=>Math.round(v).toLocaleString()+'만 원';
+fetch('buy_data.json').then(r=>r.json()).then(j=>{D=j;$('#ld').remove();summary();list();const h=decodeURIComponent(location.hash.slice(3));if(location.hash.startsWith('#g=')&&h){const i=D.G.findIndex(x=>x.k===h);if(i>=0)gu(i);}}).catch(()=>{$('#ld').textContent='자료를 불러오지 못했어요';});
 function tab(i){[0,1,2].forEach(k=>{$('#v'+k).hidden=k!==i;$('#seg').children[k].classList.toggle('on',k===i);});if(i===1&&D)valid();if(i===2&&D)tiers('수도권');window.scrollTo(0,0);}
-function find(auto){const q=$('#q').value.trim().replace(/\s/g,'');if(!D||q.length<2){$('#res').innerHTML='';return;}
- const L=[];D.C.forEach((c,i)=>{const s=(c[0]+c[3]+c[2]).replace(/\s/g,'');if(s.includes(q))L.push(i);});
- if(auto&&L.length){pick(L[0]);return;}
- $('#res').innerHTML=L.length?'<div class="lstw">'+L.slice(0,30).map(i=>{const c=D.C[i];return `<button class="res" onclick="pick(${i})"><b>${c[0]}</b><span>${SDN[c[1]]} ${c[2]} ${c[3]}</span></button>`;}).join('')+'</div>':'<p class="sub" style="margin:10px 2px">찾는 단지가 없어요. 최근 12개월 실거래가 있는 단지만 셈합니다.</p>';}
-function pick(ci,band){const rs=D.R.filter(r=>r[0]===ci).sort((a,b)=>a[1]-b[1]);if(!rs.length)return;
- const r=rs.find(x=>x[1]===band)||rs.reduce((a,b)=>Math.abs(b[1]-84)<Math.abs(a[1]-84)?b:a);CUR=[ci,r[1]];$('#res').innerHTML='';
- const c=D.C[ci];location.hash='c='+encodeURIComponent(c[0]);$('#one').innerHTML=card(c,r,rs);window.scrollTo(0,$('#one').offsetTop-70);}
-const on=(b,t)=>`<span class="tag ${b?'amber':'gray'}">${b?t:'아님'}</span>`;
-function card(c,r,rs){
- const gk=SDF[c[1]]+'|'+c[2], G=D.GU[gk]||{}, thin=r[12]===2, hold=r[12]===1, M=D.MORT, dm=M[0]-M[1], cv=Math.round((D.ML.cover||0)*10), GR=G.res||{};
- const rng=(lo,hi)=>`${eok(r[2]*(1+lo/100))} ~ ${eok(r[2]*(1+hi/100))}`, man=v=>Math.round(v).toLocaleString()+'만 원';
- const A=r[23]===1, Bf=r[22]===1, rate=!!G.s3, diff=r[19]-r[20];
- const why=thin?'최근 6개월 거래가 없고 12개월 거래도 1건 이하라 시세를 정하기 어려워요':A?`${c[2]}에 금리 상승과 거래 급감이 함께 나타났어요`:Bf?`금리 상승기에 ${c[2]} 거래가 줄고, 최근 1년 상승(${sg(r[15])})도 손익분기(${r[17].toFixed(1)}%)보다 낮아요`:rate?'금리는 상승 중이지만 거래가 줄지 않았거나 상승세가 남아 있어요':'금리 상승기가 아니에요';
- return `<div class="card" style="margin-top:12px"><h2 style="margin:0">${c[0]}</h2><p class="sub" style="margin:2px 0 0">${SDN[c[1]]} ${c[2]} ${c[3]} · 전용 ${r[1]}㎡ 시세 약 ${eok(r[2])}</p>
- ${rs.length>1?`<div class="bands">${rs.map(x=>`<button class="${x[1]===r[1]?'on':''}" onclick="pick(${r[0]},${x[1]})">${x[1]}㎡</button>`).join('')}</div>`:''}
- <div class="vd"><span class="pill ${thin||hold?'hold':'buy'}">${thin?'보류 · 자료 부족':hold?'매수 보류':'매수'}</span></div>
- <p class="sub" style="margin:2px 0 0">${why}</p>
- <div class="sec">전세 대비 손익분기 · 1년에 이만큼 올라야 매수가 나아요</div>
- <div class="rk" style="margin-top:6px"><div><div class="h">손익분기 상승률</div><div class="n">${r[17].toFixed(1)}%</div><div class="s">1년에 약 ${man(diff)}</div></div>
- <div>${(()=>{const K=D.RENT.track[SDN[c[1]]];return hold||thin?`<div class="h">과거 보류 판단 뒤 1년</div><div class="n">${K.hold_below}%</div><div class="s">손익분기를 못 넘음 · ${SDN[c[1]]} ${K.hold_n.toLocaleString()}건</div>`:`<div class="h">과거 매수 판단 뒤 1년</div><div class="n">${K.buy_exceed}%</div><div class="s">손익분기를 넘음 · ${SDN[c[1]]} ${K.buy_n.toLocaleString()}건</div>`;})()}</div></div>
- <p class="sub" style="margin:4px 0 0">앞으로 1년의 확률은 검증을 통과하지 못해, 이 판단의 과거 기록으로 보여 드려요</p>
- <div class="why" style="margin-top:4px">
-  <div class="gl"><span>매수 1년 비용 <span class="sub">대출 ${eok(r[18])} 이자 · 자기자본 ${eok(r[2]-r[18])} 예금 이자 · 보유세 ${man(r[21])}</span></span><span class="num">${man(r[19])}</span></div>
-  <div class="gl"><span>전세 1년 비용 <span class="sub">전세금 ${eok(r[24])} 기준</span></span><span class="num">${man(r[20])}</span></div>
-  <div class="gl"><span><b>매수가 더 드는 돈</b></span><span class="num"><b>${man(diff)}</b></span></div></div>
- <div class="sec">보류 조건 · 금리 상승 + (거래 급감 또는 거래 감소·추세 둔화)</div><div class="why">
-  <div class="w"><div><b>금리 상승</b><span class="fx">주택담보대출 ${M[0].toFixed(2)}% · 1년 ${dm>=0?'+':'−'}${Math.abs(dm).toFixed(2)}%p (${D.MORT_YM})</span></div>${on(rate,'켜짐')}</div>
-  <div class="w"><div><b>거래 급감</b><span class="fx">${c[2]} 최근 3개월 거래 평소의 ${G.vr!=null?G.vr.toFixed(1):'-'}배 · 문턱 ${G.vth!=null?G.vth.toFixed(1)+'배 이하':'-'}</span></div>${on(A||G.s2,'켜짐')}</div>
-  <div class="w"><div><b>거래 감소 + 추세 둔화</b><span class="fx">거래 평소의 ${r[25].toFixed(1)}배(1배 미만이면 해당) · 최근 1년 시세 ${sg(r[15])}가 손익분기 ${r[17].toFixed(1)}%보다 낮으면 해당</span></div>${on(Bf,'켜짐')}</div>
-  <div class="w"><div><b>매수 심리</b><span class="fx">KB 매수우위지수 ${G.sr||''} ${G.sent!=null?Math.round(G.sent):'-'} · 6개월 최고 ${G.sent_max6!=null?Math.round(G.sent_max6):'-'}</span></div><span class="tag gray">참고</span></div></div>
- <div class="sec">단지 하락 위험 · 참고(예측력 약함)</div>
- <div class="rk" style="margin-top:6px"><div><div class="h">6개월 뒤 하락 확률</div><div class="n">${r[3]}%</div><div class="s">범위 ${sg(r[4])} ~ ${sg(r[6])}</div></div>
- <div><div class="h">12개월 뒤 하락 확률</div><div class="n">${r[7]}%</div><div class="s">범위 ${sg(r[8])} ~ ${sg(r[10])}</div></div></div>
- <div class="sec">12개월 예상 변동 범위 · 과거 검증에서 10번 중 ${cv}번이 이 안</div>${rbar(r[8],r[9],r[10])}<p class="sub" style="margin:0;text-align:center">${rng(r[8],r[10])}</p>
- <div class="sec">${c[2]} 보류 신호와 실제 시세</div>${hist(G)}
- <p class="sub" style="margin:6px 0 0">${GR.n?`2012년 이후 이 구 단지 판단 ${GR.n.toLocaleString()}건 중 그해 전세가 나았던 경우 ${GR.rent_better}% · 보류 ${GR.share}%${GR.hold_n?` · 보류가 유리 ${GR.win}% · 무조건 매수 대비 판단 1번당 ${sg2(GR.gain)}`:''}`:''}</p>
- </div>`;}
-function rbar(lo,md,hi){const a=Math.min(-15,lo-3),b=Math.max(15,hi+3),W=320,x=v=>12+(v-a)/(b-a)*(W-24);
- return `<svg viewBox="0 0 ${W} 58" width="100%" style="display:block;margin:6px 0 0"><line x1="12" x2="${W-12}" y1="26" y2="26" stroke="var(--line)" stroke-width="2"/>
- ${lo<0?`<rect x="${x(lo)}" y="19" width="${x(Math.min(0,hi))-x(lo)}" height="14" rx="4" fill="var(--red)" opacity=".75"/>`:''}${hi>0?`<rect x="${x(Math.max(0,lo))}" y="19" width="${x(hi)-x(Math.max(0,lo))}" height="14" rx="4" fill="var(--green)" opacity=".75"/>`:''}
- <line x1="${x(0)}" x2="${x(0)}" y1="12" y2="40" stroke="var(--ink3)" stroke-dasharray="2 2"/><circle cx="${x(md)}" cy="26" r="6" fill="var(--surface)" stroke="var(--ink)" stroke-width="2.5"/>
- <text x="${x(lo)}" y="52" text-anchor="middle" font-size="11" fill="var(--ink3)">${sg(lo)}</text><text x="${x(md)}" y="10" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--ink)">${sg(md)}</text><text x="${x(hi)}" y="52" text-anchor="middle" font-size="11" fill="var(--ink3)">${sg(hi)}</text></svg>`;}
-function hist(G){if(!G.idx)return '';const I=G.idx,S={};(G.hist||[]).forEach(s=>{if(s[1])S[s[0]]=1;});((G.res||{}).bq||[]).forEach(q=>{for(let k=0;k<3;k++)S[q[0]+k]=1;});
- const W=340,H=150,t0=I[0][0],t1=I[I.length-1][0],vs=I.map(v=>v[1]),lo=Math.min(...vs)*0.95,hi=Math.max(...vs)*1.03,x=t=>30+(t-t0)/(t1-t0)*(W-40),y=v=>H-20-(v-lo)/(hi-lo)*(H-34),bw=(W-40)/(t1-t0)+0.4;
- let bars='';I.forEach(([t])=>{if(S[t])bars+=`<rect x="${x(t)}" y="8" width="${bw}" height="${H-28}" fill="var(--amber)" opacity=".45"/>`;});
- let yrs='';for(let yy=2012;yy<=Math.floor(t1/12);yy+=2){const t=yy*12;yrs+=`<text x="${x(t)}" y="${H-4}" text-anchor="middle" font-size="10" fill="var(--ink3)">${String(yy).slice(2)}</text>`;}
- return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">${bars}<path d="${I.map((v,i)=>(i?'L':'M')+x(v[0]).toFixed(1)+' '+y(v[1]).toFixed(1)).join('')}" fill="none" stroke="var(--blue)" stroke-width="2"/>${yrs}
- <text x="2" y="${y(vs[0])+4}" font-size="10" fill="var(--ink3)">100</text><text x="2" y="${y(vs[vs.length-1])+4}" font-size="10" fill="var(--ink3)">${Math.round(vs[vs.length-1])}</text></svg>
- <div class="lg"><span><i style="background:var(--blue)"></i>실거래 시세(2012.01=100)</span><span><i style="background:var(--amber);opacity:.5"></i>보류 신호가 켜진 때</span></div>`;}
+const pill=on=>`<span class="mini pill ${on?'hold':'buy'}">${on?'보류':'매수'}</span>`;
+const conds=v=>[v.ktb>=0.5, v.vth!=null&&v.vr<=v.vth, v.seth!=null&&v.se!=null&&v.se<=v.seth, v.lnyth!=null&&v.lny!=null&&v.lny<=v.lnyth];
+function summary(){const n=D.G.filter(x=>x.on).length,v=D.G[0].v,near=D.G.filter(x=>!x.on&&x.v.vth!=null&&x.v.vr<=x.v.vth*1.3).sort((a,b)=>a.v.vr/a.v.vth-b.v.vr/b.v.vth);
+ $('#sum').innerHTML=`<div class="card"><div class="rk" style="margin:0"><div><div class="h">경보 켜진 곳</div><div class="n" style="color:${n?'var(--amber)':'var(--green)'}">${n}곳</div><div class="s">${D.G.length}개 시·군·구 중</div></div>
+ <div><div class="h">국고채 3년 1년 변화</div><div class="n" style="color:${v.ktb>=0.5?'var(--amber)':'var(--ink)'}">${v.ktb>=0?'+':'−'}${Math.abs(v.ktb).toFixed(2)}%p</div><div class="s">${v.ktb>=0.5?'충격형 조건 하나 켜짐':'충격형 조건 아님'} · ${v.ktb_ym}</div></div></div>
+ ${v.ktb>=0.5?`<p class="sub" style="margin:8px 0 0">시장 금리 조건은 모든 지역에 켜져 있어 거래가 급감하는 곳부터 보류로 바뀌어요.${near.length?` 거래가 문턱 가까이(1.3배 안) 내려온 곳 ${near.length}곳: ${near.slice(0,6).map(x=>x.g).join('·')}`:''}</p>`:''}</div>`;}
+function list(){$('#list').innerHTML=[0,1,2].map(s=>`<div class="grp">${SDN[s]}</div><div class="lstw">`+D.G.map((x,i)=>[x,i]).filter(([x])=>x.s===s).map(([x,i])=>`<button class="res" onclick="gu(${i})"><span><b>${x.g}</b><span class="m">거래 평소의 ${x.v.vr.toFixed(2)}배 · 문턱 ${x.v.vth!=null?x.v.vth.toFixed(2)+'배':'-'}</span></span>${pill(x.on)}</button>`).join('')+'</div>').join('');}
+function find(){const q=$('#q').value.trim().replace(/\s/g,'');if(!D||q.length<2){$('#res').innerHTML='';return;}
+ const G=D.G.map((x,i)=>[x,i]).filter(([x])=>x.g.replace(/\s/g,'').includes(q)).slice(0,8);
+ const L=[];D.C.forEach((c,i)=>{if((c[0]+c[2]).replace(/\s/g,'').includes(q))L.push(i);});
+ $('#res').innerHTML=(G.length||L.length)?'<div class="lstw">'+G.map(([x,i])=>`<button class="res" onclick="gu(${i})"><span><b>${x.g}</b><span class="m">${SDN[x.s]}</span></span>${pill(x.on)}</button>`).join('')
+  +L.slice(0,20).map(i=>{const c=D.C[i],x=D.G[c[1]];return `<button class="res" onclick="gu(${c[1]},${i})"><span><b>${c[0]}</b><span class="m">${SDN[x.s]} ${x.g} ${c[2]}</span></span>${pill(x.on)}</button>`;}).join('')+'</div>':'<p class="sub" style="margin:10px 2px">찾는 곳이 없어요</p>';}
+const on=b=>`<span class="tag ${b?'amber':'gray'}">${b?'켜짐':'아님'}</span>`;
+function gu(i,ci){const x=D.G[i],v=x.v,st=v.shock?'shock':v.slump?'slump':'off',Ds=D.VAL.dist[st],S=x.st||{},[c1,c2,c3,c4]=conds(v);
+ location.hash='g='+encodeURIComponent(x.k);$('#res').innerHTML='';
+ const lab={off:'경보가 꺼져 있던 때',shock:'충격형 경보가 켜졌던 때',slump:'침체형 경보가 켜졌던 때'}[st];
+ $('#one').innerHTML=`<div class="card" style="margin-top:12px"><h2 style="margin:0">${x.g}</h2><p class="sub" style="margin:2px 0 0">${SDN[x.s]} · 시·군·구 단위 판단</p>
+ <div class="vd"><span class="pill ${x.on?'hold':'buy'}">${x.on?'매수 보류':'매수'}</span></div>
+ <p class="sub" style="margin:2px 0 0">${v.shock?'충격형 경보: 시장 금리 급등과 거래 급감이 함께 나타났어요':v.slump?'침체형 경보: 매수 심리가 바닥권이고 주택담보대출 증가가 둔화됐어요':(c1||c2||c3||c4)?'경보 조건 일부만 켜져 있어요 — 같은 유형 두 조건이 함께 켜질 때만 보류':'켜진 경보 조건이 없어요'}</p>
+ <div class="sec">${lab} · 과거 실제 결과(2012년~ 수도권 ${Ds.y12.n.toLocaleString()}건)</div>
+ <div class="rk" style="margin-top:6px"><div><div class="h">6개월 뒤 하락</div><div class="n">${Ds.y6.drop}%</div><div class="s">가운데 ${sg(Ds.y6.p50)} · ${sg(Ds.y6.p10)} ~ ${sg(Ds.y6.p90)}</div></div>
+ <div><div class="h">12개월 뒤 하락</div><div class="n">${Ds.y12.drop}%</div><div class="s">가운데 ${sg(Ds.y12.p50)} · ${sg(Ds.y12.p10)} ~ ${sg(Ds.y12.p90)}</div></div></div>
+ <p class="sub" style="margin:4px 0 0">범위는 10번 중 8번이 들어간 구간 · 전세보다 보류가 나았던 비율 ${Ds.hold_better}%</p>
+ <div class="sec">충격형 · 둘 다 켜지면 보류</div><div class="why">
+  <div class="w"><div><b>시장 금리 급등</b><span class="fx">국고채 3년 ${v.ktb_now.toFixed(2)}% · 1년 ${v.ktb>=0?'+':'−'}${Math.abs(v.ktb).toFixed(2)}%p · 문턱 +0.5%p</span></div>${on(c1)}</div>
+  <div class="w"><div><b>거래 급감</b><span class="fx">최근 3개월 거래 평소의 ${v.vr.toFixed(2)}배 · 문턱 ${v.vth!=null?v.vth.toFixed(2)+'배 이하':'-'}(이 지역 역사 하위 10%)</span></div>${on(c2)}</div></div>
+ <div class="sec">침체형 · 둘 다 켜지면 보류</div><div class="why">
+  <div class="w"><div><b>매수 심리 바닥권</b><span class="fx">KB 매수우위지수 ${v.sr} ${v.se!=null?Math.round(v.se):'-'} · 문턱 ${v.seth!=null?Math.round(v.seth)+' 이하':'-'}(역사 하위 20%)</span></div>${on(c3)}</div>
+  <div class="w"><div><b>주택담보대출 증가 둔화</b><span class="fx">${v.lr} 잔액 1년 ${v.lny!=null?sg(v.lny):'-'} · 문턱 ${v.lnyth!=null?sg(v.lnyth)+' 이하':'-'}(역사 하위 20%)</span></div>${on(c4)}</div></div>
+ ${ci!=null?hurdle(ci):''}
+ <div class="sec">${x.g} 경보와 실제 시세</div>${hist(x)}
+ <p class="sub" style="margin:6px 0 0">${S.n?`2012년 이후 경보 ${S.n}개월 · 그 뒤 12개월 보류가 나았던 비율 ${S.hb}% · 그 뒤 12개월 가운데 ${sg(S.y)}`:'2012년 이후 이 지역에서 경보가 켜진 적이 없어요'}</p></div>`;
+ window.scrollTo(0,$('#one').offsetTop-70);}
+function hurdle(ci){const rs=D.R.filter(r=>r[0]===ci);if(!rs.length)return '';const r=rs.reduce((a,b)=>Math.abs(b[1]-84)<Math.abs(a[1]-84)?b:a),c=D.C[ci],diff=r[5]-r[6];
+ return `<div class="sec">${c[0]} ${r[1]}㎡ · 전세 대비 손익분기</div>
+ <div class="rk" style="margin-top:6px"><div><div class="h">1년에 이만큼 올라야</div><div class="n">${r[3].toFixed(1)}%</div><div class="s">시세 약 ${eok(r[2])} 기준</div></div><div><div class="h">매수가 더 드는 돈</div><div class="n" style="font-size:1.3rem">${man(diff)}</div><div class="s">1년, 전세 대비</div></div></div>
+ <div class="gl"><span>매수 1년 비용 <span class="sub">대출 ${eok(r[4])} 이자 · 자기자본 예금 이자 · 보유세 ${man(r[7])}</span></span><span class="num">${man(r[5])}</span></div>
+ <div class="gl"><span>전세 1년 비용 <span class="sub">전세금 ${eok(r[8])}</span></span><span class="num">${man(r[6])}</span></div>`;}
+function hist(x){const I=x.idx;if(!I)return '';const S={};x.rec.forEach(r=>S[r[0]]=r[1]?2:1);
+ const W=340,H=150,n=I.length,lo=Math.min(...I)*0.95,hi=Math.max(...I)*1.03,X=i=>30+i/(n-1)*(W-40),Y=v=>H-20-(v-lo)/(hi-lo)*(H-34),bw=(W-40)/(n-1)+0.4;
+ let bars='';for(let i=0;i<n;i++){const s=S[D.t0+i];if(s)bars+=`<rect x="${X(i)}" y="8" width="${bw}" height="${H-28}" fill="${s===2?'var(--red)':'var(--amber)'}" opacity=".4"/>`;}
+ let yrs='';for(let yy=2012;yy<=2026;yy+=2){const i=yy*12-D.t0;yrs+=`<text x="${X(i)}" y="${H-4}" text-anchor="middle" font-size="10" fill="var(--ink3)">${String(yy).slice(2)}</text>`;}
+ return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">${bars}<path d="${I.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join('')}" fill="none" stroke="var(--blue)" stroke-width="2"/>${yrs}
+ <text x="2" y="${Y(I[0])+4}" font-size="10" fill="var(--ink3)">100</text><text x="2" y="${Y(I[n-1])+4}" font-size="10" fill="var(--ink3)">${Math.round(I[n-1])}</text></svg>
+ <div class="lg"><span><i style="background:var(--blue)"></i>구 실거래 시세(2012.01=100)</span><span><i style="background:var(--red);opacity:.5"></i>충격형</span><span><i style="background:var(--amber);opacity:.5"></i>침체형</span></div>`;}
 // ---------- 과거 검증 ----------
-function valid(){const P=D.PREM,RA=D.RULES,T=D.RENT,F=T.rules,el=$('#v1');
- const nm={final:'채택: 금리 상승 + (거래 급감 또는 거래 감소·추세 둔화)',A:'금리 상승 + 거래 급감',B:'금리 상승 + 거래 감소·추세 둔화'};
- const sets=['전체','서울','경기','인천','2021~22 제외'];
- const mx=Math.max(...['final','A','B'].flatMap(k=>sets.map(s=>Math.abs(F[s][k].gain))))||1;
- const bar=v=>{const w=Math.abs(v)/mx*45;return `<svg viewBox="0 0 100 10" width="100" height="11" style="vertical-align:middle"><line x1="50" x2="50" y1="0" y2="10" stroke="var(--ink3)"/><rect x="${v>=0?50:50-w}" y="2" width="${w}" height="6" rx="2" fill="${v>=0?'var(--green)':'var(--red)'}"/></svg>`;};
- const yrs=Object.keys(T.year).sort(), M=F['전체'].final;
- el.innerHTML=`<h1>과거 검증</h1><p class="lead">2012~2025년 단지마다 분기별로, 보류면 12개월 전세로 살다 매수한 결과를 무조건 매수와 비교했어요. 비용은 그때의 대출 규제·금리·보유세로 셈했어요</p>
- <div class="card"><div class="sec" style="margin-top:0">출발점 · 우리 시장의 사이클</div>
- <div class="rk" style="margin-top:6px"><div><div class="h">상승 구간</div><div class="n" style="color:var(--green)">${P.up_med}개월</div><div class="s">가운데 값</div></div><div><div class="h">하락 구간</div><div class="n" style="color:var(--red)">${P.dn_med}개월</div><div class="s">가운데 하락폭 ${sg(P.dd_med)}</div></div></div>
- <p class="sub">구 실거래 시세 기준 전체 달의 ${P.up_share}%가 상승 국면이에요. 이자·보유세를 빼고도 매수가 전세보다 1년 평균 ${sg(T.buy_vs_rent)} 나았어요. 그래서 기본은 매수이고, 보류는 드물게 켜요.</p></div>
- <div class="card"><div class="sec" style="margin-top:0">채택 규칙 성과</div>
- <div class="rk" style="margin-top:6px"><div><div class="h">판단 1번당 초과 성과</div><div class="n" style="color:var(--green)">${sg2(M.gain)}</div><div class="s">무조건 매수 대비</div></div><div><div class="h">보류가 유리</div><div class="n">${M.win}%</div><div class="s">보류 ${M.share}%</div></div></div>
- <div class="sec">해마다 초과 성과</div>${yearBars(yrs.map(y=>[y,T.year[y].final.gain,T.year[y].final.share]))}
- <div class="lg"><span><i style="background:var(--green)"></i>보류가 유리</span><span><i style="background:var(--red)"></i>보류가 불리</span><span>막대 위 숫자 = 보류 비율(%)</span></div>
- <p class="sub">2021~22년을 빼도 ${sg2(F['2021~22 제외'].final.gain)}. 손실을 본 해는 2017년(8·2 대책 직후 거래 급감에 보류했다가 급등)이에요. 금리가 내리던 해(2013~15·2019~20·2024)에는 보류가 켜지지 않았어요.</p></div>
- <div class="card"><div class="sec" style="margin-top:0">규칙 비교 · 판단 1번당 초과 성과</div>
- ${sets.map(s=>`<div style="margin:10px 0 2px;font-weight:700;font-size:.86rem">${s}</div>`+['final','A','B'].map(k=>{const v=F[s][k];return `<div class="gl"><span>${nm[k]} <span class="sub">보류 ${v.share}%</span></span><span class="num">${bar(v.gain)} ${sg2(v.gain)}</span></div>`;}).join('')).join('')}
- <div class="sec">거래 급감 문턱을 바꿔도 · 그때까지 자기 역사 하위 n%</div>
- ${[5,10,20].map(p=>{const v=RA['main_'+p]['전체'];return `<div class="gl"><span>하위 ${p}%</span><span class="num">${sg2(v.gain)} · 보류 ${v.share}% · 유리 ${v.win}%</span></div>`;}).join('')}
- <p class="sub">추세 둔화(최근 1년 시세 < 손익분기)는 추세를 따르는 조건이에요. 혼자서는 효과가 없었고(2013·2019 반등을 놓침), 빼면 서울·2021~22 제외 성과가 마이너스가 돼 금리 상승·거래 감소와 겹칠 때만 써요. 비슷한 과거 상황의 빈도로 앞으로 1년 손익분기를 넘을 확률을 셈하는 방식은 그때 알 수 있던 자료로 시험하자 판단당 −0.9%로 실패해 쓰지 않아요. 거래 감소·추세 둔화 조건은 미리 정한 변형 네 가지(12개월·6개월 기준, 거래 조건 유무, 고점 근처) 중 가장 단순하고 세 시·도와 2021~22 제외가 모두 플러스인 것을 골랐어요. 거래 자료가 2006년부터, 전세 자료가 2011년부터라 2008년은 시험하지 못했어요. 대출은 규제가 허용한 최대치 기준이고 소득 한도(DSR)는 반영하지 않았어요.</p></div>
- <div class="card"><div class="sec" style="margin-top:0">버린 방식 · 과거 패턴 학습 모델</div>
- <p class="sub" style="margin-top:4px">단지 특성·지역 흐름·금리로 학습한 모델은 2022년 2월에 12개월 뒤 +6.5%로 셈했고 실제는 −24%였어요. 2006~2020년 자료엔 금리가 1년에 1%p 넘게 오른 적이 없고, 금리가 오른 때(2008·2017~18) 뒤엔 시세가 올라 금리 상승은 괜찮다고 배웠기 때문이에요. 최근 1년 상승만 보고 '상승이 작았으니 보류'하는 규칙도 2013·2019년 반등을 놓쳐 무조건 매수와 같았어요. 학습 모델은 단지 하락 확률·범위 참고값으로만 써요.</p>
- <div class="gl"><span>하락 확률 순위 일치도 <span class="sub">AUC · 0.5=우연</span></span><span class="num">6개월 ${D.ML.auc6.toFixed(2)}<br>12개월 ${D.ML.auc.toFixed(2)}</span></div>
- <div class="gl"><span>범위 적중 <span class="sub">목표 80%</span></span><span class="num">6개월 ${Math.round(D.ML.cover6*100)}%<br>12개월 ${Math.round(D.ML.cover*100)}%</span></div></div>`;}
+function valid(){const V=D.VAL,TY=V.types,el=$('#v1'),F=TY['둘 중 하나(국고채)'];
+ const row=(nm,s1,s2)=>`<div class="gl"><span>${nm}</span><span class="num">${s1?sg2(s1.gain):'-'} · ${s2?sg2(s2.gain):'-'}</span></div>`;
+ const yrs=Object.keys(F.year).sort();
+ el.innerHTML=`<h1>과거 검증</h1><p class="lead">시세 추세와 학습 모델은 쓰지 않았어요. 구마다 보류가 나았던 달을 먼저 정하고, 지표들이 그 달을 얼마나 정확히 짚었는지 셈했어요</p>
+ <div class="card"><div class="sec" style="margin-top:0">정답 · 보류가 나았던 달</div>
+ <p class="sub" style="margin-top:4px">1년 뒤 구 실거래 시세 변화가 전세 대비 손익분기(그때의 대출 규제·금리·보유세로 셈, 연 1~2%)보다 낮았던 달이에요. 2012~2025년 전체 ${V.base.all}% · 2012~2019년 ${V.base.tr}% · 2020년~ ${V.base.te}%</p></div>
+ <div class="card"><div class="sec" style="margin-top:0">채택 경보 · 충격형 또는 침체형</div>
+ <div class="rk" style="margin-top:6px"><div><div class="h">2012~2019 경보 적중</div><div class="n">${F.tr.prec}%</div><div class="s">기본 ${V.base.tr}% · 초과 성과 ${sg2(F.tr.gain)}</div></div><div><div class="h">2020년~ 경보 적중</div><div class="n">${F.te.prec}%</div><div class="s">기본 ${V.base.te}% · 초과 성과 ${sg2(F.te.gain)}</div></div></div>
+ <div class="sec">해마다 초과 성과(무조건 매수 대비, 판단 1번당 %)</div>${yearBars(yrs.map(y=>[y,F.year[y]]))}
+ <p class="sub">서울 ${sg2(F.sd['서울특별시'])} · 경기 ${sg2(F.sd['경기도'])} · 인천 ${sg2(F.sd['인천광역시'])}. 손실을 본 해는 2013·2018·2023년이고 작았어요. 충격형이 실제로 맞힌 하락은 2022년 한 번뿐이에요.</p></div>
+ <div class="card"><div class="sec" style="margin-top:0">지표 하나씩 · 초과 성과 2012~2019 · 2020년~</div>
+ ${V.single.map(s=>row(s.name,s.tr,s.te)).join('')}
+ <p class="sub">같은 지표가 두 기간에 반대로 움직였어요. 금리 상승은 2012~2019년엔 보류가 손실(2017~18년 금리가 올라도 시세 상승), 2020년 이후엔 이익이었어요. 2012~13년 침체(저금리·수요 부진)와 2022년 금리 충격은 성격이 다른 하락이라, 두 유형을 따로 두고 둘 중 하나가 켜지면 보류해요.</p></div>
+ <div class="card"><div class="sec" style="margin-top:0">유형별 경보 적중 · 2012~2019 · 2020년~</div>
+ ${['충격형(국고채 급등+거래 급감)','침체형(매수우위 낮음+주담대 둔화)','충격형(금리 상승+거래 급감)'].map(k=>`<div class="gl"><span>${k}</span><span class="num">${TY[k].tr?TY[k].tr.prec:'-'}% · ${TY[k].te?TY[k].te.prec:'-'}%</span></div>`).join('')}
+ <p class="sub">주담대 금리 대신 시장 금리(국고채 3년)를 쓰면 2017년 헛경보가 사라져요. 유형은 검색으로 고른 게 아니라 하락의 두 종류(충격·침체)로 미리 정했어요. 다만 지표를 하나씩 본 결과를 보고 정했으니 앞으로의 기록이 진짜 검증이에요.</p></div>`;}
 function yearBars(Y){const W=340,H=150,n=Y.length,bw=(W-30)/n,mx=Math.max(...Y.map(v=>Math.abs(v[1])))||1,z=H/2,y=v=>z-v/mx*(H/2-22);
- let s=`<line x1="22" x2="${W}" y1="${z}" y2="${z}" stroke="var(--line)"/>`;Y.forEach(([yy,g,sh],i)=>{const x0=24+i*bw;s+=`<rect x="${x0+bw*0.2}" y="${Math.min(z,y(g))}" width="${bw*0.6}" height="${Math.max(1,Math.abs(y(g)-z))}" rx="2" fill="${g>=0?'var(--green)':'var(--red)'}"/>`+
-  `<text x="${x0+bw/2}" y="${H-3}" text-anchor="middle" font-size="9.5" fill="var(--ink3)">${yy.slice(2)}</text>`+(sh>0?`<text x="${x0+bw/2}" y="${g>=0?y(g)-4:y(g)+11}" text-anchor="middle" font-size="8.5" fill="var(--ink3)">${Math.round(sh)}</text>`:'');});
+ let s=`<line x1="22" x2="${W}" y1="${z}" y2="${z}" stroke="var(--line)"/>`;Y.forEach(([yy,g],i)=>{const x0=24+i*bw;s+=`<rect x="${x0+bw*0.2}" y="${Math.min(z,y(g))}" width="${bw*0.6}" height="${Math.max(1,Math.abs(y(g)-z))}" rx="2" fill="${g>=0?'var(--green)':'var(--red)'}"/>`+
+  `<text x="${x0+bw/2}" y="${H-3}" text-anchor="middle" font-size="9.5" fill="var(--ink3)">${yy.slice(2)}</text>`+(Math.abs(g)>=0.05?`<text x="${x0+bw/2}" y="${g>=0?y(g)-4:y(g)+11}" text-anchor="middle" font-size="8.5" fill="var(--ink3)">${g.toFixed(1)}</text>`:'');});
  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">${s}</svg>`;}
 // ---------- 급지 흐름 ----------
 function tiers(nm){const T=D.TIER[nm],el=$('#v2'),col=['var(--blue)','var(--amber)','var(--ink3)'],lab=['상급지','중급지','하급지'],lab2=['상급','중급','하급'];
