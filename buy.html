@@ -1,7 +1,7 @@
 <!doctype html><html lang="ko" data-theme="light"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="light"><meta name="robots" content="noindex,nofollow">
-<title>매수 시점 판단 · 집셈</title><meta property="og:type" content="website"><meta property="og:site_name" content="집셈"><meta property="og:title" content="매수 시점 판단 · 집셈"><meta property="og:description" content="내 자본으로 매수할 수 있는 집 가운데 순이익이 가장 높은 곳을 셈해 봅니다. 서울·경기·인천 아파트, 국토부 실거래 20년."><meta property="og:image" content="https://kunchan70-creator.github.io/apt-board-k7/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="description" content="내 자본으로 매수할 수 있는 집 가운데 순이익이 가장 높은 곳을 셈해 봅니다."><link rel="icon" href="data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 64 64' aria-hidden='true' style='flex:0 0 auto'%3E%3Cdefs%3E%3ClinearGradient id='lg1' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%236b83ff'/%3E%3Cstop offset='1' stop-color='%233346c9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='%232B6BF3'/%3E%3Cpath d='M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z' fill='%23ffffff' stroke='%23ffffff' stroke-width='4' stroke-linejoin='round'/%3E%3Crect x='22.5' y='31.5' width='19' height='5.2' rx='2.6' fill='%232B6BF3'/%3E%3Crect x='22.5' y='40.3' width='19' height='5.2' rx='2.6' fill='%232B6BF3'/%3E%3C/svg%3E"><meta name="theme-color" content="#4263eb">
+<title>시장 · 집셈</title><meta property="og:type" content="website"><meta property="og:site_name" content="집셈"><meta property="og:title" content="시장 · 집셈"><meta property="og:description" content="내 자본으로 매수할 수 있는 집 가운데 순이익이 가장 높은 곳을 셈해 봅니다. 서울·경기·인천 아파트, 국토부 실거래 20년."><meta property="og:image" content="https://kunchan70-creator.github.io/apt-board-k7/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="description" content="내 자본으로 매수할 수 있는 집 가운데 순이익이 가장 높은 곳을 셈해 봅니다."><link rel="icon" href="data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 64 64' aria-hidden='true' style='flex:0 0 auto'%3E%3Cdefs%3E%3ClinearGradient id='lg1' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%236b83ff'/%3E%3Cstop offset='1' stop-color='%233346c9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='%232B6BF3'/%3E%3Cpath d='M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z' fill='%23ffffff' stroke='%23ffffff' stroke-width='4' stroke-linejoin='round'/%3E%3Crect x='22.5' y='31.5' width='19' height='5.2' rx='2.6' fill='%232B6BF3'/%3E%3Crect x='22.5' y='40.3' width='19' height='5.2' rx='2.6' fill='%232B6BF3'/%3E%3C/svg%3E"><meta name="theme-color" content="#4263eb">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
 :root{
@@ -123,6 +123,12 @@ ul.plain{padding-left:18px}
 svg text{font-family:inherit}
 .lg{display:flex;gap:12px;flex-wrap:wrap;font-size:.75rem;color:var(--ink3);margin:4px 0 0}.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
 .bz details{border:0;border-top:1px solid var(--line2);margin:0}.bz details>summary{font-size:.9rem}.bz details.grp2{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin:8px 0;padding:0 14px}.bz details.grp2>summary{padding:12px 0}
+.mtab{position:sticky;top:0;z-index:6;display:flex;margin:2px 0 10px;background:var(--bg);border-bottom:1px solid var(--line)}
+.mtab button{flex:1;padding:12px 0 10px;border:0;border-bottom:2.5px solid transparent;margin-bottom:-1px;background:none;color:var(--ink3);font:inherit;font-size:.86rem;font-weight:700;cursor:pointer;white-space:nowrap}
+.mtab button.on{color:var(--ink);border-bottom-color:var(--ink)}
+.rch{display:flex;gap:6px;margin:4px 0 12px}.rch button{flex:1;padding:9px 0;border-radius:12px;border:1px solid var(--line);background:var(--surface);font:inherit;font-size:.9rem;font-weight:700;color:var(--ink2);cursor:pointer}.rch button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.chg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0 4px}.chg button{padding:9px 2px;border-radius:10px;border:0;font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;line-height:1.25;word-break:keep-all}
+.chg button.b{background:var(--green-bg);color:var(--green)}.chg button.h{background:var(--amber-bg);color:var(--amber)}.chg button.sel{outline:2px solid var(--ink);outline-offset:-2px}
 .gl{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line2);font-size:.86rem}.gl:last-child{border-bottom:0}.gl .num{text-align:right;white-space:nowrap}
 table.tt{font-size:.78rem}table.tt th,table.tt td{padding:8px 4px;white-space:normal}table.tt td:first-child{font-weight:600;min-width:84px}
 </style><style id="ref">
@@ -368,10 +374,10 @@ body.intro{overflow:hidden}body.intro .tabbar,body.intro .disc{display:none}
 <div class="top" role="banner"><a href="index.html" class="brand" style="display:flex;align-items:center;gap:8px;color:inherit;text-decoration:none"><svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true" style="flex:0 0 auto"><defs><linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6b83ff"/><stop offset="1" stop-color="#3346c9"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="#2B6BF3"/><path d="M17 30.5 L32 18 L47 30.5 V46 Q47 49 44 49 H20 Q17 49 17 46 Z" fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/><rect x="22.5" y="31.5" width="19" height="5.2" rx="2.6" fill="#2B6BF3"/><rect x="22.5" y="40.3" width="19" height="5.2" rx="2.6" fill="#2B6BF3"/></svg>집셈</a><a href="index.html" style="font-size:.88rem;font-weight:700;color:var(--ink2);text-decoration:none;padding:8px 4px">‹ 홈</a></div>
 
 <main><div class="bz">
-<div class="seg" id="seg"><button class="on" onclick="tab(0)">지역 판단</button><button onclick="tab(1)">과거 검증</button><button onclick="tab(2)">급지 흐름</button></div>
-<div id="v0"><h1>매수 시점 판단</h1>
-<div id="sum"></div>
-<input class="q" id="q" placeholder="구·시 이름이나 단지 이름" autocomplete="off" oninput="find()"><div id="res"></div><div id="one"></div><div id="list"></div></div>
+<h1 style="margin:6px 0 4px">시장</h1><div class="mtab" id="seg"><button class="on" data-t="0" onclick="tab(0)">지금</button><button onclick="go2('flow')">거래</button><button onclick="go2('ind')">지표</button><button data-t="2" onclick="tab(2)">급지 흐름</button><button data-t="1" onclick="tab(1)">검증</button></div>
+<div id="v0">
+<div id="sum"></div><div id="one"></div>
+<input class="q" id="q" placeholder="구·시 이름이나 단지 이름" autocomplete="off" oninput="find()" style="margin-top:12px"><div id="res"></div></div>
 <div id="v1" hidden></div><div id="v2" hidden></div>
 <p class="note" id="ld">자료를 불러오는 중입니다…</p></div></main>
 <div class="disc" role="contentinfo">참고용 산출치이며 투자 권유가 아니에요 · 투자 판단과 결과의 책임은 본인에게 있어요</div>
@@ -389,29 +395,34 @@ body.intro{overflow:hidden}body.intro .tabbar,body.intro .disc{display:none}
  var sv=false;try{var j=JSON.parse(localStorage.getItem('v2cfg')||'null');sv=!!(j&&j.done);}catch(e){}
  jsTrack('view',{saved:sv,dark:!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)});
  document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(a&&/\.html/.test(a.getAttribute('href')||''))jsTrack('nav',{to:(a.getAttribute('href')||'').split('#')[0].split('?')[0].replace(/\.html$/,'')});},true);
-})();</script><nav class="tabbar" aria-label="주요 메뉴"><div><a class="tb" href="index.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11 12 4l8.5 7"/><path d="M6 9.5V20h4.5v-5.5h3V20H18V9.5"/></svg>홈</a><a class="tb" href="index.html#t=anal"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V12M12 20V5M19 20v-9"/></svg>분석</a><a class="tb" href="map.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6Z"/><path d="M9 4v14M15 6v14"/></svg>지도</a><a class="tb" href="index.html#t=menu"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>메뉴</a></div></nav><script>
+})();</script><nav class="tabbar" aria-label="주요 메뉴"><div><a class="tb" href="index.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11 12 4l8.5 7"/><path d="M6 9.5V20h4.5v-5.5h3V20H18V9.5"/></svg>홈</a><a class="tb" href="index.html#t=anal"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V12M12 20V5M19 20v-9"/></svg>분석</a><a class="tb on" href="buy.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>시장</a><a class="tb" href="map.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6Z"/><path d="M9 4v14M15 6v14"/></svg>지도</a><a class="tb" href="index.html#t=menu"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>메뉴</a></div></nav><script>
 let D=null;
 const $=s=>document.querySelector(s), SDN=['서울','경기','인천'];
 const sg=v=>v==null?'-':(v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(1)+'%';
 const sg2=v=>v==null?'-':(v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(Math.abs(v)<1?2:1)+'%';
 const eok=m=>(m/10000).toFixed(m>=100000?1:2)+'억', man=v=>Math.round(v).toLocaleString()+'만 원';
-fetch('buy_data.json').then(r=>r.json()).then(j=>{D=j;$('#ld').remove();summary();list();const h=decodeURIComponent(location.hash.slice(3));if(location.hash.startsWith('#g=')&&h){const i=D.G.findIndex(x=>x.k===h);if(i>=0)gu(i);}}).catch(()=>{$('#ld').textContent='자료를 불러오지 못했어요';});
-function tab(i){[0,1,2].forEach(k=>{$('#v'+k).hidden=k!==i;$('#seg').children[k].classList.toggle('on',k===i);});if(i===1&&D)valid();if(i===2&&D)tiers('수도권');window.scrollTo(0,0);}
+fetch('buy_data.json').then(r=>r.json()).then(j=>{D=j;$('#ld').remove();summary();const tm=/t=(\d)/.exec(location.hash);if(tm&&+tm[1]>0){tab(+tm[1]);return;}const h=decodeURIComponent(location.hash.slice(3));if(location.hash.startsWith('#g=')&&h){const i=D.G.findIndex(x=>x.k===h);if(i>=0)gu(i);}}).catch(()=>{$('#ld').textContent='자료를 불러오지 못했어요';});
+let SR=(/r=([^&]+)/.exec(location.hash)||[])[1];SR=SR?decodeURIComponent(SR):'서울';if(!['서울','경기','인천'].includes(SR))SR='서울';
+function go2(k){location.href='market.html#'+k+'&r='+encodeURIComponent(SR);}
+function tab(i){[0,1,2].forEach(k=>{$('#v'+k).hidden=k!==i;});[...$('#seg').children].forEach(b=>b.classList.toggle('on',b.dataset.t===String(i)));if(i===1&&D)valid();if(i===2&&D)tiers('수도권');window.scrollTo(0,0);}
 const pill=on=>`<span class="mini pill ${on?'hold':'buy'}">${on?'관망':'매수'}</span>`;
 const conds=v=>[];
-function summary(){const H=D.G.filter(x=>x.on),j=D.G[0].j||{},dm=(j.mort||0)-(j.mort12||0);
- $('#sum').innerHTML=`<div class="card"><div class="rk" style="margin:0"><div><div class="h">관망</div><div class="n" style="color:${H.length?'var(--amber)':'var(--green)'}">${H.length}곳</div><div class="s">${D.G.length}곳 중</div></div>
- <div><div class="h">주담대 금리 1년</div><div class="n">${dm>=0?'+':'−'}${Math.abs(dm).toFixed(2)}%p</div><div class="s">${(j.mort||0).toFixed(2)}%</div></div></div>
- ${H.length?`<p class="sub" style="margin:8px 0 0">${H.map(x=>x.g).join('·')}</p>`:''}</div>`;}
-function list(){$('#list').innerHTML=[0,1,2].map(s=>{const L=D.G.map((x,i)=>[x,i]).filter(([x])=>x.s===s),h=L.filter(([x])=>x.on).length;
- return `<details class="grp2"><summary>${SDN[s]} <span class="sub">${L.length}곳${h?' · 관망 '+h:''}</span></summary><div class="lstw" style="margin:0 0 12px">`+L.map(([x,i])=>`<button class="res" onclick="gu(${i})"><span><b>${x.g}</b></span>${pill(x.on)}</button>`).join('')+'</div></details>';}).join('');}
+function summary(){const S=SR,si=['서울','경기','인천'].indexOf(S),L=D.G.map((x,i)=>[x,i]).filter(([x])=>x.s===si),H=L.filter(([x])=>x.on),j=D.G[0].j||{},dm=(j.mort||0)-(j.mort12||0);
+ const vrs=L.map(([x])=>x.j&&x.j.vr).filter(v=>v!=null).sort((a,b)=>a-b),vm=vrs.length?vrs[Math.floor(vrs.length/2)]:null;
+ $('#sum').innerHTML=`<div class="rch">${['서울','경기','인천'].map(r=>`<button class="${r===S?'on':''}" onclick="SR='${r}';history.replaceState(null,'','#r='+encodeURIComponent(SR));$('#one').innerHTML='';summary()">${r}</button>`).join('')}</div>
+ <div class="card"><div style="font-size:1.5rem;font-weight:800;letter-spacing:-.02em">${H.length?`관망 ${H.length}곳`:'모두 매수'}<span style="font-size:.95rem;color:var(--ink3);font-weight:600"> / ${L.length}곳</span></div>
+ <div class="chg">${L.map(([x,i])=>`<button class="${x.on?'h':'b'}" id="c${i}" onclick="gu(${i})">${x.g.replace(/^(\S+시) /,'')}</button>`).join('')}</div>
+ <div class="lg" style="margin:6px 0 0"><span><i style="background:var(--green-bg);border:1px solid var(--green)"></i>매수</span><span><i style="background:var(--amber-bg);border:1px solid var(--amber)"></i>관망</span></div>
+ <div class="rk" style="margin:14px 0 0"><div><div class="h">주담대 금리 1년</div><div class="n" style="font-size:1.4rem">${dm>=0?'+':'−'}${Math.abs(dm).toFixed(2)}%p</div><div class="s">${(j.mort||0).toFixed(2)}%</div></div>
+ <div><div class="h">${S} 거래</div><div class="n" style="font-size:1.4rem">${vm!=null?vm.toFixed(2)+'배':'-'}</div><div class="s">평소 대비</div></div></div></div>`;}
+function list(){}
 function find(){const q=$('#q').value.trim().replace(/\s/g,'');if(!D||q.length<2){$('#res').innerHTML='';return;}
  const G=D.G.map((x,i)=>[x,i]).filter(([x])=>x.g.replace(/\s/g,'').includes(q)).slice(0,8);
  const L=[];D.C.forEach((c,i)=>{if((c[0]+c[2]).replace(/\s/g,'').includes(q))L.push(i);});
- $('#res').innerHTML=(G.length||L.length)?'<div class="lstw">'+G.map(([x,i])=>`<button class="res" onclick="gu(${i})"><span><b>${x.g}</b><span class="m">${SDN[x.s]}</span></span>${pill(x.on)}</button>`).join('')
-  +L.slice(0,20).map(i=>{const c=D.C[i],x=D.G[c[1]];return `<button class="res" onclick="gu(${c[1]},${i})"><span><b>${c[0]}</b><span class="m">${SDN[x.s]} ${x.g} ${c[2]}</span></span>${pill(x.on)}</button>`;}).join('')+'</div>':'<p class="sub" style="margin:10px 2px">찾는 곳이 없어요</p>';}
+ $('#res').innerHTML=(G.length||L.length)?'<div class="lstw">'+G.map(([x,i])=>`<button class="res" onclick="SR=SDN[x.s];summary();gu(${i})"><span><b>${x.g}</b><span class="m">${SDN[x.s]}</span></span>${pill(x.on)}</button>`).join('')
+  +L.slice(0,20).map(i=>{const c=D.C[i],x=D.G[c[1]];return `<button class="res" onclick="SR=SDN[x.s];summary();gu(${c[1]},${i})"><span><b>${c[0]}</b><span class="m">${SDN[x.s]} ${x.g} ${c[2]}</span></span>${pill(x.on)}</button>`;}).join('')+'</div>':'<p class="sub" style="margin:10px 2px">찾는 곳이 없어요</p>';}
 const on=b=>`<span class="tag ${b?'amber':'gray'}">${b?'켜짐':'아님'}</span>`;
-function gu(i,ci){const x=D.G[i],j=x.j||{},Ds=D.JV.dist[x.on?'on_cap':'off_cap'],dm=(j.mort||0)-(j.mort12||0);
+function gu(i,ci){document.querySelectorAll('.chg button').forEach(b=>b.classList.remove('sel'));const cb=$('#c'+i);if(cb)cb.classList.add('sel');const x=D.G[i],j=x.j||{},Ds=D.JV.dist[x.on?'on_cap':'off_cap'],dm=(j.mort||0)-(j.mort12||0);
  location.hash='g='+encodeURIComponent(x.k);$('#res').innerHTML='';
  const sec=(t,b)=>`<details><summary>${t}</summary><div style="padding:0 0 12px">${b}</div></details>`;
  $('#one').innerHTML=`<div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">${x.g}</h2><span class="pill ${x.on?'hold':'buy'}" style="font-size:1.1rem;font-weight:800;padding:6px 14px;border-radius:12px">${x.on?'관망':'매수'}</span></div>
@@ -455,7 +466,7 @@ function valid(){const J=D.JV,el=$('#v1'),P=J.per,yrs=Object.keys(P).filter(y=>P
   `<text x="${x0+bw*0.3}" y="${y(a[1])-3}" text-anchor="middle" font-size="9.5" fill="var(--ink)">${a[1]}</text><text x="${x0+bw/2}" y="${H-6}" text-anchor="middle" font-size="9.5" fill="var(--ink3)">${String(k).slice(2)}~${String(+k+1).slice(2)}</text>`;});
  const on=Ds.on_cap.y12,off=Ds.off_cap.y12,mx=Math.max(Math.abs(on.p50),Math.abs(off.p50))*1.3,X=v=>215+v/mx*110;
  const bar=(yy,v,c,l)=>`<text x="0" y="${yy+13}" font-size="11.5" fill="var(--ink2)">${l}</text><rect x="${Math.min(X(0),X(v))}" y="${yy}" width="${Math.abs(X(v)-X(0))}" height="18" rx="3" fill="${c}"/><text x="${v<0?X(v)-4:X(v)+4}" y="${yy+13}" text-anchor="${v<0?'end':'start'}" font-size="11.5" font-weight="700" fill="var(--ink)">${sg(v)}</text>`;
- el.innerHTML=`<h1>과거 검증</h1>
+ el.innerHTML=`
  <div class="card"><div class="sec" style="margin-top:0">관망 적중</div><div class="rk" style="margin:4px 0 0;grid-template-columns:1fr 1fr">${['서울','경기','인천','지방'].map(k=>kpi(k,J.sd[k])).join('')}</div></div>
  <div class="card"><div class="lg" style="margin:0 0 6px"><span><i style="background:var(--blue)"></i>관망 적중</span><span><i style="background:var(--line)"></i>평균</span></div>
  <svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">${b}</svg></div>
@@ -471,7 +482,7 @@ function tiers(nm){const T=D.TIER[nm],el=$('#v2'),col=['var(--blue)','var(--ambe
  const S=T.series,n=S['0'].length,all=[].concat(S['0'],S['1'],S['2']),lo=Math.min(...all)*0.95,hi=Math.max(...all)*1.03,W=340,H=200,x=i=>30+i/(n-1)*(W-40),y=v=>H-22-(v-lo)/(hi-lo)*(H-34);
  let yrs='';for(let yy=2010;yy<=2026;yy+=4){const i=yy*12-D.tstart;yrs+=`<text x="${x(i)}" y="${H-6}" text-anchor="middle" font-size="10" fill="var(--ink3)">${yy}</text>`;}
  const mv=T.moves, lg=T.lag;
- el.innerHTML=`<h1>급지 흐름</h1>
+ el.innerHTML=`
  <div class="seg">${Object.keys(D.TIER).map(k=>`<button class="${k===nm?'on':''}" onclick="tiers('${k}')">${k}</button>`).join('')}</div>
  <div class="card"><svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">${[0,1,2].map(t=>`<path d="${S[t].map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join('')}" fill="none" stroke="${col[t]}" stroke-width="2"/>`).join('')}${yrs}</svg>
  <div class="lg">${[0,1,2].map(t=>`<span><i style="background:${col[t]}"></i>${lab[t]} ${Math.round(S[t][n-1])}</span>`).join('')}</div></div>
