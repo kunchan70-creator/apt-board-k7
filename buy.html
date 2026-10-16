@@ -396,13 +396,13 @@ const sg2=v=>v==null?'-':(v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(Math.abs(v)<
 const eok=m=>(m/10000).toFixed(m>=100000?1:2)+'억', man=v=>Math.round(v).toLocaleString()+'만 원';
 fetch('buy_data.json').then(r=>r.json()).then(j=>{D=j;$('#ld').remove();summary();list();const h=decodeURIComponent(location.hash.slice(3));if(location.hash.startsWith('#g=')&&h){const i=D.G.findIndex(x=>x.k===h);if(i>=0)gu(i);}}).catch(()=>{$('#ld').textContent='자료를 불러오지 못했어요';});
 function tab(i){[0,1,2].forEach(k=>{$('#v'+k).hidden=k!==i;$('#seg').children[k].classList.toggle('on',k===i);});if(i===1&&D)valid();if(i===2&&D)tiers('수도권');window.scrollTo(0,0);}
-const pill=on=>`<span class="mini pill ${on?'hold':'buy'}">${on?'보류':'매수'}</span>`;
+const pill=(on,x)=>on?`<span class="mini pill hold">보류</span>`:(x&&x.j&&x.j.raw)?`<span class="mini pill" style="background:var(--amber-bg);color:var(--amber);opacity:.75">주의 ${x.j.run}개월</span>`:`<span class="mini pill buy">매수</span>`;
 const conds=v=>[v.ktb>=0.5, v.vth!=null&&v.vr<=v.vth, v.seth!=null&&v.se!=null&&v.se<=v.seth, v.lnyth!=null&&v.lny!=null&&v.lny<=v.lnyth];
-function summary(){const n=D.G.filter(x=>x.on).length,j=D.G[0].j||{},dm=(j.mort||0)-(j.mort12||0);
+function summary(){const n=D.G.filter(x=>x.on).length,w=D.G.filter(x=>!x.on&&x.j&&x.j.raw),j=D.G[0].j||{},dm=(j.mort||0)-(j.mort12||0);
  $('#sum').innerHTML=`<div class="card"><div class="rk" style="margin:0"><div><div class="h">보류 켜진 곳</div><div class="n" style="color:${n?'var(--amber)':'var(--green)'}">${n}곳</div><div class="s">${D.G.length}개 시·군·구 중</div></div>
  <div><div class="h">주담대 금리 1년 변화</div><div class="n" style="color:${dm>0?'var(--amber)':'var(--ink)'}">${dm>=0?'+':'−'}${Math.abs(dm).toFixed(2)}%p</div><div class="s">${dm>0?'금리 조건 켜짐 — 거래가 줄면 보류':'금리 조건 아님'}</div></div></div>
- ${n?`<p class="sub" style="margin:8px 0 0">보류: ${D.G.filter(x=>x.on).map(x=>x.g).join('·')}</p>`:''}</div>`;}
-function list(){$('#list').innerHTML=[0,1,2].map(s=>`<div class="grp">${SDN[s]}</div><div class="lstw">`+D.G.map((x,i)=>[x,i]).filter(([x])=>x.s===s).map(([x,i])=>`<button class="res" onclick="gu(${i})"><span><b>${x.g}</b><span class="m">${x.j&&x.j.vr!=null?`거래 평소의 ${x.j.vr.toFixed(2)}배`:''}${x.an?` · 닮은 때 ${x.an.sum.top_year}년`:''}</span></span>${pill(x.on)}</button>`).join('')+'</div>').join('');}
+ ${n?`<p class="sub" style="margin:8px 0 0">보류: ${D.G.filter(x=>x.on).map(x=>x.g).join('·')}</p>`:''}${w.length?`<p class="sub" style="margin:6px 0 0">주의(조건이 켜진 지 3개월 미만) ${w.length}곳: ${w.map(x=>x.g+' '+x.j.run+'개월').join('·')} — 3개월 이어지면 보류</p>`:''}</div>`;}
+function list(){$('#list').innerHTML=[0,1,2].map(s=>`<div class="grp">${SDN[s]}</div><div class="lstw">`+D.G.map((x,i)=>[x,i]).filter(([x])=>x.s===s).map(([x,i])=>`<button class="res" onclick="gu(${i})"><span><b>${x.g}</b><span class="m">${x.j&&x.j.vr!=null?`거래 평소의 ${x.j.vr.toFixed(2)}배`:''}${x.an?` · 닮은 때 ${x.an.sum.top_year}년`:''}</span></span>${pill(x.on,x)}</button>`).join('')+'</div>').join('');}
 function find(){const q=$('#q').value.trim().replace(/\s/g,'');if(!D||q.length<2){$('#res').innerHTML='';return;}
  const G=D.G.map((x,i)=>[x,i]).filter(([x])=>x.g.replace(/\s/g,'').includes(q)).slice(0,8);
  const L=[];D.C.forEach((c,i)=>{if((c[0]+c[2]).replace(/\s/g,'').includes(q))L.push(i);});
@@ -412,15 +412,15 @@ const on=b=>`<span class="tag ${b?'amber':'gray'}">${b?'켜짐':'아님'}</span>
 function gu(i,ci){const x=D.G[i],j=x.j||{},Ds=D.JV.dist[x.on?'on_cap':'off_cap'],dm=(j.mort||0)-(j.mort12||0);
  location.hash='g='+encodeURIComponent(x.k);$('#res').innerHTML='';
  $('#one').innerHTML=`<div class="card" style="margin-top:12px"><h2 style="margin:0">${x.g}</h2><p class="sub" style="margin:2px 0 0">${SDN[x.s]} · 시·군·구 단위 판단</p>
- <div class="vd"><span class="pill ${x.on?'hold':'buy'}">${x.on?'매수 보류':'매수'}</span></div>
- <p class="sub" style="margin:2px 0 0">${x.on?(j.c2?'금리가 오르는 중에 이 지역 거래가 평소의 0.8배 아래로 줄었어요':'금리가 오르는 중에 시장 전체 거래가 바닥권이에요'):(j.c1?'금리는 오르고 있지만 거래가 줄지 않았어요':'금리 상승기가 아니에요')}</p>
+ <div class="vd"><span class="pill ${x.on?'hold':'buy'}">${x.on?'매수 보류':'매수'}</span>${!x.on&&j.raw?`<span class="tag amber">주의 · 조건 ${j.run}개월째</span>`:''}</div>
+ <p class="sub" style="margin:2px 0 0">${x.on?(j.c2?`금리가 오르는 중에 이 지역 거래 감소가 ${j.run}개월째 이어지고 있어요`:`금리가 오르는 중에 시장 전체 거래 바닥이 ${j.run}개월째예요`):j.raw?`보류 조건이 ${j.run}개월째 켜져 있어요 — 3개월 이어지면 보류(한두 달 깜빡임은 헛경보가 많았어요)`:(j.c1?'금리는 오르고 있지만 거래가 줄지 않았어요':'금리 상승기가 아니에요')}</p>
  <div class="sec">${x.on?'보류가 켜졌던 때':'보류가 꺼져 있던 때'} · 과거 실제 결과(2012년~ 수도권 ${Ds.y12.n.toLocaleString()}건)</div>
  <div class="rk" style="margin-top:6px"><div><div class="h">6개월 뒤 하락</div><div class="n">${Ds.y6.drop}%</div><div class="s">가운데 ${sg(Ds.y6.p50)} · ${sg(Ds.y6.p10)} ~ ${sg(Ds.y6.p90)}</div></div>
  <div><div class="h">12개월 뒤 하락</div><div class="n">${Ds.y12.drop}%</div><div class="s">가운데 ${sg(Ds.y12.p50)} · ${sg(Ds.y12.p10)} ~ ${sg(Ds.y12.p90)}</div></div></div>
  <p class="sub" style="margin:4px 0 0">범위는 10번 중 8번이 들어간 구간이에요</p>
- <div class="sec">보류 조건 · 금리 상승 + (가 또는 나)</div><div class="why">
+ <div class="sec">보류 조건 · 금리 상승 + (가 또는 나)이 3개월 연속</div><div class="why">
   <div class="w"><div><b>주담대 금리 1년 상승</b><span class="fx">${j.mort!=null?j.mort.toFixed(2):'-'}% · 1년 ${dm>=0?'+':'−'}${Math.abs(dm).toFixed(2)}%p</span></div>${on(j.c1)}</div>
-  <div class="w"><div><b>가. 이 지역 거래 감소</b><span class="fx">최근 3개월 거래 평소의 ${j.vr!=null?j.vr.toFixed(2):'-'}배 · 문턱 0.8배 미만</span></div>${on(j.c2)}</div>
+  <div class="w"><div><b>가. 이 지역 거래 감소</b><span class="fx">최근 3개월 거래가 평소(직전 3년)의 ${j.vr!=null?j.vr.toFixed(2):'-'}배 · 전년 같은 때의 ${j.vry!=null?j.vry.toFixed(2):'-'}배 · 문턱 0.8배·0.7배 미만 둘 다</span></div>${on(j.c2)}</div>
   <div class="w"><div><b>나. 시장 전체 거래 바닥권</b><span class="fx">KB 거래 활발도 ${j.sk||''} ${j.act!=null?Math.round(j.act):'-'} (문턱 ${j.act_th!=null?Math.round(j.act_th):'-'} 이하) · 같은 시·도 거래 저조 구 ${j.low_share!=null?j.low_share:'-'}% (문턱 50%)</span></div>${on(j.c3&&j.c4)}</div></div>
  ${x.on&&j.c2?'<p class="sub" style="margin:4px 0 0">서울 전역·경기 일부는 2025년 10월부터 토지거래허가구역이라, 거래 감소가 수요가 식어서가 아니라 규제 때문일 수도 있어요.</p>':''}
  ${x.an?analog(x):''}
@@ -456,14 +456,14 @@ function valid(){const J=D.JV,el=$('#v1'),P=J.per,yrs=Object.keys(P);
  const t3=a=>a?`<span class="num">${sg2(a[0])} · 적중 ${a[1]!=null?a[1]+'%':'-'} <span class="sub">기본 ${a[3]}% · 보류 ${a[2]}%</span></span>`:'-';
  el.innerHTML=`<h1>과거 검증</h1><p class="lead">수도권 82곳 + 부산·대구·대전·울산·경남 57곳 실거래로 셈했어요. 시세 추세와 학습 모델은 쓰지 않았어요</p>
  <div class="card"><div class="sec" style="margin-top:0">정답 · 보류가 나았던 달</div><p class="sub" style="margin-top:4px">1년 뒤 실거래 시세 변화가 전세 대비 손익분기(전세가율·주담대 금리로 셈)보다 낮았던 달이에요.</p>
- <div class="sec">판단 규칙</div><p style="margin:2px 0;font-weight:700">주담대 금리가 1년 전보다 오르고, (가) 그 지역 거래가 평소의 0.8배 미만이거나 (나) 시장 전체 거래가 바닥권일 때 보류</p></div>
+ <div class="sec">판단 규칙</div><p style="margin:2px 0;font-weight:700">주담대 금리가 1년 전보다 오르고, (가) 그 지역 거래가 평소(직전 3년)의 0.8배·전년 같은 때의 0.7배 미만이거나 (나) 시장 전체 거래가 바닥권인 상태가 3개월 이어지면 보류</p></div>
  <div class="card"><div class="sec" style="margin-top:0">금고 시험 · 고를 때 전혀 쓰지 않은 자료</div>
  <div class="rk" style="margin-top:6px"><div><div class="h">대전·울산 실거래</div><div class="n">${J.vault_region[1]}%</div><div class="s">보류 적중 · 기본 ${J.vault_region[3]}% · ${sg2(J.vault_region[0])}</div></div><div><div class="h">2024~25년 전 지역</div><div class="n">${J.vault_time[1]}%</div><div class="s">보류 적중 · 보류 ${J.vault_time[2]}%만 켜짐</div></div></div>
- <p class="sub">탐색은 수도권·부산·대구·경남의 2010~2023년으로만 했고, 대전·울산 전체와 2024년 이후는 마지막에 한 번 열었어요. 기간을 하나씩 빼고 다시 고른 시험도 무조건 매수보다 판단 1번당 ${sg2(J.cv)}였어요.</p></div>
+ <p class="sub">탐색은 수도권·부산·대구·경남의 2010~2023년으로만 했고, 대전·울산 전체와 2024년 이후는 따로 두었어요. 처음 규칙(전년 대비·3개월 조건 없음)으로 한 번 열어 적중 ${J.v1_vault[1]}%를 확인했고, 수도권 헛경보를 줄인 지금 규칙은 두 번째 열람이에요. 2024년 이후는 보류가 거의 켜지지 않아 시험이 되지 않았어요.</p></div>
  <div class="card"><div class="sec" style="margin-top:0">기간별 · 무조건 매수 대비 판단 1번당 · 보류 적중</div>
- ${yrs.map(y=>`<div class="gl"><span>${y==='2024~'?'2024~25':y+'~'+String(+y+1).slice(2)}</span>${t3(P[y])}</div>`).join('')}
+ ${yrs.map(y=>`<div class="gl"><span>${y+'~'+String(+y+1).slice(2)}</span>${t3(P[y])}</div>`).join('')}
  <div class="gl"><span>수도권</span>${t3(J.cap)}</div><div class="gl"><span>지방 5곳</span>${t3(J.loc)}</div>
- <p class="sub">수도권 적중은 ${J.cap[1]}%로 지방(${J.loc[1]}%)보다 낮아요. 2016~17년 금리가 오르고 거래가 줄었는데도 시세가 오른 헛경보 때문이에요. 2012~13년 침체기는 일부만 잡았어요.</p></div>
+ <p class="sub">수도권 적중 ${J.cap[1]}%, 지방 ${J.loc[1]}%. 처음 규칙은 수도권 ${J.v1_cap[1]}%였어요 — 2015~16년 거래 호황이 '평소'를 부풀려 2017년 봄에 헛경보가 몰렸고, 전년 같은 때 비교와 3개월 지속 조건으로 줄였어요(변형 15개를 비교해 고름). 대신 보류가 덜 켜져 2018~19년 수도권 적중은 ${(J.per_cap['2018']||[])[1]}%에 그쳐요.</p></div>
  <div class="card"><div class="sec" style="margin-top:0">버린 방식</div>
  <div class="gl"><span>과거 패턴 학습 모델</span><span class="num sub">2022년 하락을 못 맞힘</span></div>
  <div class="gl"><span>수도권 자료만으로 고른 규칙</span><span class="num sub">처음 보는 기간에서 −0.2%</span></div>
