@@ -110,7 +110,18 @@ ul.plain{padding-left:18px}
 .bz .lstw{border-radius:14px;overflow:hidden;border:1px solid var(--line);margin-top:8px}
 .vd{display:flex;align-items:center;gap:12px;margin:6px 0 4px}
 .vd .pill{font-size:1.45rem;font-weight:800;padding:8px 16px;border-radius:14px;letter-spacing:-.02em}
-.pill.buy{background:var(--surface2);color:var(--ink2)}.pill.hold{background:var(--amber-bg);color:var(--amber)}
+.pill.buy{background:var(--surface2);color:var(--ink2)}.pill.pre{background:color-mix(in srgb,var(--amber-bg) 60%,var(--surface2));color:var(--amber);display:inline-flex;align-items:center;gap:5px}.pill.big{font-size:1rem;font-weight:800;padding:6px 14px;border-radius:12px}
+.dt{display:inline-flex;gap:2px;vertical-align:middle}.dt span{display:block;width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.22}.dt span.dtf{opacity:1}
+.chg button .dt{display:flex;justify-content:center;margin-top:3px}.chg button.p{background:color-mix(in srgb,var(--amber-bg) 60%,var(--surface2));color:var(--amber)}
+.rise{opacity:0;transform:translateY(14px);animation:rise .55s cubic-bezier(.2,.7,.2,1) forwards}@keyframes rise{to{opacity:1;transform:none}}
+.mp{opacity:0;animation:fin .5s ease forwards}@keyframes fin{to{opacity:1}}
+.ln{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.5s ease forwards}@keyframes draw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.rise,.mp,.ln{animation:none;opacity:1;transform:none;stroke-dashoffset:0}}
+.ih{display:flex;justify-content:space-between;align-items:baseline}.ih b{font-size:1rem}.ih span{font-size:.74rem;color:var(--ink3)}
+.tch{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}.tch div{background:var(--surface2);border-radius:12px;padding:8px 10px;font-size:.76rem;color:var(--ink3)}.tch i{display:inline-block;width:10px;height:3px;border-radius:2px;margin-right:5px;vertical-align:3px}.tch b{display:block;font-size:1.05rem;color:var(--ink);margin-top:2px}
+.cd{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}.cd span{font-size:.78rem;font-weight:700;padding:5px 10px;border-radius:999px;background:var(--surface2);color:var(--ink3)}.cd span.on{background:var(--amber-bg);color:var(--amber)}
+.vk{margin:14px 0 4px}.vb{display:grid;grid-template-columns:62px 1fr 40px;align-items:center;gap:8px;font-size:.78rem;color:var(--ink3);margin:5px 0}.vb div{height:10px;border-radius:5px;background:var(--surface2);overflow:hidden}.vb b{display:block;height:100%;border-radius:5px}.vb em{font-style:normal;font-weight:800;color:var(--ink);text-align:right}
+#vdt{margin-top:8px}#vdt>summary{padding:10px 0;color:var(--ink3);font-size:.84rem}.pill.hold{background:var(--amber-bg);color:var(--amber)}
 .mini{font-size:.78rem;font-weight:800;padding:3px 9px;border-radius:8px}
 .rk{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 4px}
 .rk>div{background:var(--surface2);border-radius:14px;padding:12px 14px}
@@ -379,11 +390,10 @@ body.intro{overflow:hidden}body.intro .tabbar,body.intro .disc{display:none}
 <main><div class="bz">
 <div class="card" style="padding-bottom:4px"><div class="mhd"><h1>시장</h1><button class="ibi" onclick="var m=document.getElementById('minfo');m.hidden=!m.hidden"><span style="font-size:.78rem;font-weight:600;white-space:nowrap">셈하는 법</span></button></div>
 <div id="minfo" hidden style="margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--surface2);font-size:.84rem;line-height:1.65;color:var(--ink2)">주담대 금리가 1년 전보다 오르고 거래가 줄어든 상태가 3개월 이어지면 관망이에요. 참고용이며 투자 권유가 아닙니다.</div>
-<div class="seg" id="rtab"></div><div class="mtab" id="seg"><button class="on" data-t="0" onclick="tab(0)">지금</button><button onclick="go2('flow')">거래</button><button onclick="go2('ind')">지표</button><button data-t="2" onclick="tab(2)">급지 흐름</button><button data-t="1" onclick="tab(1)">검증</button></div></div>
+<div class="seg" id="rtab"></div><div class="mtab" id="seg"><button class="on" data-t="0" onclick="tab(0)">지금</button><button onclick="go2('flow')">거래</button><button onclick="go2('ind')">지표</button></div></div>
 <div id="v0">
-<div id="sum"></div><div id="one"></div>
+<div id="mkt0"></div><div id="sum"></div><div id="one"></div>
 <input class="q" id="q" placeholder="구·시 이름이나 단지 이름" autocomplete="off" oninput="find()" style="margin-top:12px"><div id="res"></div></div>
-<div id="v1" hidden></div><div id="v2" hidden></div>
 <p class="note" id="ld">자료를 불러오는 중입니다…</p></div></main>
 <div class="disc" role="contentinfo">참고용 산출치이며 투자 권유가 아니에요 · 투자 판단과 결과의 책임은 본인에게 있어요</div>
 </div><script>
@@ -407,36 +417,51 @@ const sg=v=>v==null?'-':(v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(1)+'%';
 const sg2=v=>v==null?'-':(v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(Math.abs(v)<1?2:1)+'%';
 const eok=m=>(m/10000).toFixed(m>=100000?1:2)+'억', man=v=>Math.round(v).toLocaleString()+'만 원';
 setTimeout(rtab,0);   /* 머리(지역 고르기)는 자료 오기 전에 바로 — 시장 화면과 같은 자리에 같은 때 */
-fetch('buy_data.json').then(r=>r.json()).then(j=>{D=j;$('#ld').remove();summary();const tm=/t=(\d)/.exec(location.hash);if(tm&&+tm[1]>0){tab(+tm[1]);return;}const h=decodeURIComponent(location.hash.slice(3));if(location.hash.startsWith('#g=')&&h){const i=D.G.findIndex(x=>x.k===h);if(i>=0)gu(i);}}).catch(()=>{$('#ld').textContent='자료를 불러오지 못했어요';});
+fetch('buy_data.json').then(r=>r.json()).then(j=>{D=j;$('#ld').remove();intro();summary();const tm=/t=(\d)/.exec(location.hash);if(tm&&+tm[1]===1){const v=$('#vdt');v.open=true;setTimeout(()=>v.scrollIntoView({block:'start'}),400);return;}if(tm&&+tm[1]===2){setTimeout(()=>$('#tier').scrollIntoView({block:'center'}),300);return;}const h=decodeURIComponent(location.hash.slice(3));if(location.hash.startsWith('#g=')&&h){const i=D.G.findIndex(x=>x.k===h);if(i>=0)gu(i);}}).catch(()=>{$('#ld').textContent='자료를 불러오지 못했어요';});
 let SR=(/r=([^&]+)/.exec(location.hash)||[])[1];SR=SR?decodeURIComponent(SR):'서울';if(!['서울','경기','인천'].includes(SR))SR='서울';
 function go2(k){location.href='market.html#'+k+'&r='+encodeURIComponent(SR);}
 let TB=0;
-function rtab(){$('#rtab').innerHTML=['서울','경기','인천'].map(r=>`<button class="${r===SR?'on':''}" onclick="SR='${r}';history.replaceState(null,'','#r='+encodeURIComponent(SR));$('#one').innerHTML='';rtab();if(TB===2)tiers(SR);else{if(TB!==0)tab(0);summary();}">${r}</button>`).join('');}
-function tab(i){TB=i;[0,1,2].forEach(k=>{$('#v'+k).hidden=k!==i;});[...$('#seg').children].forEach(b=>b.classList.toggle('on',b.dataset.t===String(i)));if(i===1&&D)valid();if(i===2&&D)tiers(SR);window.scrollTo(0,0);}
-const pill=on=>`<span class="mini pill ${on?'hold':'buy'}">${on?'관망':'신호 없음'}</span>`;   /* 10-16 사용자: '매수'는 권유처럼 읽힘 */
+function rtab(){$('#rtab').innerHTML=['서울','경기','인천'].map(r=>`<button class="${r===SR?'on':''}" onclick="SR='${r}';history.replaceState(null,'','#r='+encodeURIComponent(SR));$('#one').innerHTML='';rtab();if(D){intro();summary();}">${r}</button>`).join('');}
+function tab(i){window.scrollTo(0,0);}
+/* 10-16 사용자: 시장 첫 화면 = 지도 + 시세 지수(급지 흐름을 여기로), 로딩하듯 살짝 떠오르며 */
+function intro(){const M=D.MAP,si=SDN.indexOf(SR),T=D.TIER[SR],S=T.series,n=S['0'].length,lab=['상급지','중급지','하급지'],col=['var(--blue)','var(--amber)','var(--ink3)'];
+ const sx=M.lab.find(l=>l[0]==='서울'),op=v=>v<=0?.14:Math.min(.92,.16+v/22*.76);
+ const map=`<svg viewBox="0 0 ${M.W} ${M.H}" style="display:block;width:100%;max-height:270px;margin:6px auto 0">${M.r.map(([nm,d,v,h,s,cx,cy])=>`<path class="mp" style="animation-delay:${(250+Math.hypot(cx-sx[1],cy-sx[2])/M.W*900).toFixed(0)}ms" d="${d}" fill="${h?'var(--amber)':v<=0?'var(--ink3)':'var(--blue)'}" fill-opacity="${((h?.9:op(v))*(s===si?1:.3)).toFixed(2)}" stroke="var(--surface)" stroke-width=".7" stroke-linejoin="round"/>`).join('')}
+  ${M.lab.map(([t,x,y])=>`<text x="${x}" y="${y}" text-anchor="middle" font-size="12" font-weight="800" fill="${t===SR?'var(--ink)':'var(--ink3)'}" stroke="var(--surface)" stroke-width="3" paint-order="stroke">${t}</text>`).join('')}</svg>
+  <div class="lg" style="align-items:center"><span><i style="background:color-mix(in srgb,var(--ink3) 14%,var(--surface))"></i>하락</span><span style="display:flex;align-items:center;gap:4px">0<b style="display:inline-block;width:70px;height:8px;border-radius:4px;background:linear-gradient(90deg,color-mix(in srgb,var(--blue) 16%,var(--surface)),var(--blue))"></b>+20%</span>${M.r.some(r=>r[3])?'<span><i style="background:var(--amber)"></i>관망</span>':''}</div>`;
+ const a=Math.max(0,n-73),W=340,H=170,m=n-a,x=i=>8+i/(m-1)*(W-16),L=[0,1,2].map(t=>S[t].slice(a).map(v=>v/S[t][a]*100)),all=[].concat(...L),lo=Math.min(...all)*.97,hi=Math.max(...all)*1.02,y=v=>H-20-(v-lo)/(hi-lo)*(H-30);
+ const c1=[0,1,2].map(t=>(S[t][n-1]/S[t][n-13]-1)*100);let yrs='';for(let k=0;k<m;k++){const ym=D.tstart+a+k;if(ym%12===0&&(ym/12)%2===0)yrs+=`<text x="${x(k)}" y="${H-4}" text-anchor="middle" font-size="10" fill="var(--ink3)">${ym/12}</text>`;}
+ const chart=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;margin-top:6px">${[2,1,0].map(t=>`<path class="ln" pathLength="1" style="animation-delay:${450+t*180}ms" d="${L[t].map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join('')}" fill="none" stroke="${col[t]}" stroke-width="${t?1.8:2.4}" stroke-linejoin="round"/>`).join('')}${yrs}</svg>
+  <div class="tch">${[0,1,2].map(t=>`<div><i style="background:${col[t]}"></i><span>${lab[t]}</span><b>${sg(c1[t])}</b></div>`).join('')}</div>`;
+ $('#mkt0').innerHTML=`<div class="card rise"><div class="ih"><b>1년 실거래 시세</b><span>${M.d}</span></div>${map}</div>
+ <div class="card rise" id="tier" style="animation-delay:160ms"><div class="ih"><b>${SR} 시세 지수</b><span>최근 6년 · 1년 변화</span></div>${chart}</div>`;}
+const dots=r=>`<span class="dt">${[0,1,2].map(k=>`<span class="${k<r?'dtf':''}"></span>`).join('')}</span>`;
+const pill=(on,r)=>on?`<span class="mini pill hold">관망</span>`:r>0?`<span class="mini pill pre">관망까지 ${dots(r)}</span>`:`<span class="mini pill buy">신호 없음</span>`;   /* 10-16 사용자: '매수'는 권유처럼 읽힘 · 관망 전 단계는 점으로(1~2개월 — 수도권 시험 적중 62%, 평균 37%) */
 const conds=v=>[];
-function summary(){const S=SR,si=['서울','경기','인천'].indexOf(S),L=D.G.map((x,i)=>[x,i]).filter(([x])=>x.s===si),H=L.filter(([x])=>x.on),j=D.G[0].j||{},dm=(j.mort||0)-(j.mort12||0);
- const vrs=L.map(([x])=>x.j&&x.j.vr).filter(v=>v!=null).sort((a,b)=>a-b),vm=vrs.length?vrs[Math.floor(vrs.length/2)]:null;
- $('#sum').innerHTML=`<div class="card"><div style="font-size:1.5rem;font-weight:800;letter-spacing:-.02em">${H.length?`관망 ${H.length}곳`:'관망 신호 없음'}<span style="font-size:.95rem;color:var(--ink3);font-weight:600"> / ${L.length}곳</span></div>
- <div class="chg">${L.map(([x,i])=>`<button class="${x.on?'h':'b'}" id="c${i}" onclick="gu(${i})">${x.g.replace(/^(\S+시) /,'')}</button>`).join('')}</div>
- <div class="lg" style="margin:6px 0 0"><span><i style="background:var(--surface2);border:1px solid var(--line)"></i>신호 없음</span><span><i style="background:var(--amber-bg);border:1px solid var(--amber)"></i>관망</span></div>
- <div class="rk" style="margin:14px 0 0"><div><div class="h">주담대 금리 1년</div><div class="n" style="font-size:1.4rem">${dm>=0?'+':'−'}${Math.abs(dm).toFixed(2)}%p</div><div class="s">${(j.mort||0).toFixed(2)}%</div></div>
- <div><div class="h">${S} 거래</div><div class="n" style="font-size:1.4rem">${vm!=null?vm.toFixed(2)+'배':'-'}</div><div class="s">평소 대비</div></div></div></div>`;}
-function list(){}
+function summary(){const S=SR,si=SDN.indexOf(S),L=D.G.map((x,i)=>[x,i]).filter(([x])=>x.s===si),H=L.filter(([x])=>x.on),j=D.G[0].j||{},dm=(j.mort||0)-(j.mort12||0),K=D.JV.sd[S];
+ const run=x=>(x.j&&!x.on&&x.j.raw)?x.j.run:0, dn=L.filter(([x])=>x.j&&x.j.c2).length, nc=L.filter(([x])=>x.j&&x.j.toh&&x.j.vr==null).length, np=L.filter(([x])=>run(x)>0).length;
+ const vb=(l,v,c)=>`<div class="vb"><span>${l}</span><div><b style="width:${v}%;background:${c}"></b></div><em>${v}%</em></div>`;
+ $('#sum').innerHTML=`<div class="card rise" style="animation-delay:320ms"><div style="font-size:1.5rem;font-weight:800;letter-spacing:-.02em">${H.length?`관망 ${H.length}곳`:'관망 신호 없음'}<span style="font-size:.95rem;color:var(--ink3);font-weight:600"> / ${L.length}곳</span></div>
+ <div class="cd"><span class="${dm>0?'on':''}">금리 1년 ${dm>=0?'+':'−'}${Math.abs(dm).toFixed(2)}%p</span><span class="${dn?'on':''}">거래 감소 ${dn}곳</span>${nc?`<span>거래 비교 전 ${nc}곳</span>`:''}</div>
+ <div class="chg">${L.map(([x,i])=>`<button class="${x.on?'h':run(x)?'p':'b'}" id="c${i}" onclick="gu(${i})">${x.g.replace(/^(\S+시) /,'')}${run(x)?dots(run(x)):''}</button>`).join('')}</div>
+ <div class="lg" style="margin:6px 0 0"><span><i style="background:var(--amber-bg);border:1px solid var(--amber)"></i>관망</span>${np?`<span style="display:flex;align-items:center;gap:4px;color:var(--amber)">관망까지 ${dots(1)}</span>`:''}<span><i style="background:var(--surface2);border:1px solid var(--line)"></i>신호 없음</span></div>
+ <div class="vk">${vb('관망 적중',K[1],'var(--blue)')}${vb('평균',K[3],'var(--line)')}</div>
+ <details id="vdt" ontoggle="if(this.open)valid()"><summary>검증 자세히</summary><div id="vdb"></div></details></div>`;}
 function find(){const q=$('#q').value.trim().replace(/\s/g,'');if(!D||q.length<2){$('#res').innerHTML='';return;}
  const G=D.G.map((x,i)=>[x,i]).filter(([x])=>x.g.replace(/\s/g,'').includes(q)).slice(0,8);
  const L=[];D.C.forEach((c,i)=>{if((c[0]+c[2]).replace(/\s/g,'').includes(q))L.push(i);});
- $('#res').innerHTML=(G.length||L.length)?'<div class="lstw">'+G.map(([x,i])=>`<button class="res" onclick="SR=SDN[x.s];rtab();summary();gu(${i})"><span><b>${x.g}</b><span class="m">${SDN[x.s]}</span></span>${pill(x.on)}</button>`).join('')
-  +L.slice(0,20).map(i=>{const c=D.C[i],x=D.G[c[1]];return `<button class="res" onclick="SR=SDN[x.s];rtab();summary();gu(${c[1]},${i})"><span><b>${c[0]}</b><span class="m">${SDN[x.s]} ${x.g} ${c[2]}</span></span>${pill(x.on)}</button>`;}).join('')+'</div>':'<p class="sub" style="margin:10px 2px">찾는 곳이 없어요</p>';}
+ $('#res').innerHTML=(G.length||L.length)?'<div class="lstw">'+G.map(([x,i])=>`<button class="res" onclick="SR=SDN[x.s];rtab();intro();summary();gu(${i})"><span><b>${x.g}</b><span class="m">${SDN[x.s]}</span></span>${pill(x.on,x.j&&x.j.raw?x.j.run:0)}</button>`).join('')
+  +L.slice(0,20).map(i=>{const c=D.C[i],x=D.G[c[1]];return `<button class="res" onclick="SR=SDN[x.s];rtab();intro();summary();gu(${c[1]},${i})"><span><b>${c[0]}</b><span class="m">${SDN[x.s]} ${x.g} ${c[2]}</span></span>${pill(x.on,x.j&&x.j.raw?x.j.run:0)}</button>`;}).join('')+'</div>':'<p class="sub" style="margin:10px 2px">찾는 곳이 없어요</p>';}
 const on=b=>`<span class="tag ${b?'amber':'gray'}">${b?'켜짐':'아님'}</span>`;
 function gu(i,ci){document.querySelectorAll('.chg button').forEach(b=>b.classList.remove('sel'));const cb=$('#c'+i);if(cb)cb.classList.add('sel');const x=D.G[i],j=x.j||{},Ds=D.JV.dist[x.on?'on_cap':'off_cap'],dm=(j.mort||0)-(j.mort12||0);
  location.hash='g='+encodeURIComponent(x.k);$('#res').innerHTML='';
  const sec=(t,b)=>`<details><summary>${t}</summary><div style="padding:0 0 12px">${b}</div></details>`;
- $('#one').innerHTML=`<div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">${x.g}</h2><span class="pill ${x.on?'hold':'buy'}" style="font-size:1.1rem;font-weight:800;padding:6px 14px;border-radius:12px">${x.on?'관망':'신호 없음'}</span></div>
+ $('#one').innerHTML=`<div class="card" style="margin-top:12px"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">${x.g}</h2><span style="font-size:1.1rem">${pill(x.on,x.j&&x.j.raw?x.j.run:0).replace('mini pill','pill big')}</span></div>
  ${sec('1년 뒤 시세 · 과거 같은 신호',`<div class="rk" style="margin-top:4px"><div><div class="h">6개월 뒤 하락</div><div class="n">${Ds.y6.drop}%</div><div class="s">${sg(Ds.y6.p10)} ~ ${sg(Ds.y6.p90)}</div></div><div><div class="h">12개월 뒤 하락</div><div class="n">${Ds.y12.drop}%</div><div class="s">${sg(Ds.y12.p10)} ~ ${sg(Ds.y12.p90)}</div></div></div>`)}
  ${sec('조건',`<div class="why">
   <div class="w"><div><b>주담대 금리 1년</b><span class="fx">${dm>=0?'+':'−'}${Math.abs(dm).toFixed(2)}%p</span></div>${on(j.c1)}</div>
   <div class="w"><div><b>이 지역 거래</b><span class="fx">${j.vr!=null?`평소의 ${j.vr.toFixed(2)}배`:''}${j.vr!=null&&j.vry!=null?' · ':''}${j.vry!=null?`전년의 ${j.vry.toFixed(2)}배`:''}${j.toh?`${j.vr!=null?' · ':''}토지거래허가 ${j.toh}~`:''}</span></div>${j.toh&&(j.vr==null||j.vry==null)?'<span class="tag gray">비교 전</span>':on(j.c2)}</div>
+  ${x.ls!=null?`<div class="w"><div><b>매물</b><span class="fx">1년 ${sg(x.ls)}</span></div><span class="tag gray">참고</span></div>`:''}
   <div class="w"><div><b>시장 전체 거래</b><span class="fx">KB 활발도 ${j.act!=null?Math.round(j.act):'-'} · 저조 구 ${j.low_share!=null?j.low_share:'-'}%</span></div>${on(j.c3&&j.c4)}</div></div>`)}
  ${x.an?sec('비슷했던 과거',analog(x)):''}
  ${ci!=null?sec('전세 대비 손익분기',hurdle(ci)):''}
@@ -465,7 +490,7 @@ function hist(x){const I=x.idx;if(!I)return '';const S={};(x.jh||[]).forEach(t=>
  <text x="2" y="${Y(I[0])+4}" font-size="10" fill="var(--ink3)">100</text><text x="2" y="${Y(I[n-1])+4}" font-size="10" fill="var(--ink3)">${Math.round(I[n-1])}</text></svg>
  <div class="lg"><span><i style="background:var(--blue)"></i>실거래 시세</span><span><i style="background:var(--amber);opacity:.5"></i>관망</span></div>`;}
 // ---------- 과거 검증 ----------
-function valid(){const J=D.JV,el=$('#v1'),P=J.per,yrs=Object.keys(P).filter(y=>P[y]&&P[y][1]!=null),Ds=J.dist;
+function valid(){const J=D.JV,el=$('#vdb'),P=J.per,yrs=Object.keys(P).filter(y=>P[y]&&P[y][1]!=null),Ds=J.dist;
  const kpi=(t,a)=>`<div><div class="h">${t}</div><div class="n">${a[1]}%</div><div class="s">평균 ${a[3]}%</div></div>`;
  const W=340,H=170,bw=(W-30)/yrs.length,y=v=>H-22-v/100*(H-34);
  let b='';[0,50,100].forEach(v=>b+=`<line x1="24" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line2)"/><text x="0" y="${y(v)+4}" font-size="10" fill="var(--ink3)">${v}%</text>`);
@@ -474,27 +499,14 @@ function valid(){const J=D.JV,el=$('#v1'),P=J.per,yrs=Object.keys(P).filter(y=>P
  const on=Ds.on_cap.y12,off=Ds.off_cap.y12,mx=Math.max(Math.abs(on.p50),Math.abs(off.p50))*1.3,X=v=>215+v/mx*110;
  const bar=(yy,v,c,l)=>`<text x="0" y="${yy+13}" font-size="11.5" fill="var(--ink2)">${l}</text><rect x="${Math.min(X(0),X(v))}" y="${yy}" width="${Math.abs(X(v)-X(0))}" height="18" rx="3" fill="${c}"/><text x="${v<0?X(v)-4:X(v)+4}" y="${yy+13}" text-anchor="${v<0?'end':'start'}" font-size="11.5" font-weight="700" fill="var(--ink)">${sg(v)}</text>`;
  el.innerHTML=`
- <div class="card"><div class="sec" style="margin-top:0">관망 적중</div><div class="rk" style="margin:4px 0 0;grid-template-columns:1fr 1fr">${['서울','경기','인천','지방'].map(k=>kpi(k,J.sd[k])).join('')}</div></div>
- <div class="card"><div class="lg" style="margin:0 0 6px"><span><i style="background:var(--blue)"></i>관망 적중</span><span><i style="background:var(--line)"></i>평균</span></div>
+ <div class="rk" style="margin:4px 0 0;grid-template-columns:1fr 1fr">${['서울','경기','인천','지방'].map(k=>kpi(k,J.sd[k])).join('')}</div>
+ <div class="sec">기간별</div><div><div class="lg" style="margin:0 0 6px"><span><i style="background:var(--blue)"></i>관망 적중</span><span><i style="background:var(--line)"></i>평균</span></div>
  <svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">${b}</svg></div>
- <div class="card"><div class="sec" style="margin-top:0">1년 뒤 시세</div>
+ <div class="sec">1년 뒤 시세</div><div>
  <svg viewBox="0 0 340 64" width="100%" style="display:block"><line x1="${X(0)}" x2="${X(0)}" y1="0" y2="60" stroke="var(--ink3)" stroke-dasharray="2 2"/>${bar(6,on.p50,'var(--red)','관망 뒤')}${bar(36,off.p50,'var(--ink3)','신호 없을 때')}</svg></div>
- <details class="grp2"><summary>판단 규칙</summary><p style="margin:0 0 12px">주담대 금리 상승 + 거래 감소 3개월</p></details>`;}
+ <p class="sub" style="margin:10px 0 12px">주담대 금리 상승 + 거래 감소 3개월 = 관망</p>`;}
 function yearBars(Y){const W=340,H=150,n=Y.length,bw=(W-30)/n,mx=Math.max(...Y.map(v=>Math.abs(v[1])))||1,z=H/2,y=v=>z-v/mx*(H/2-22);
  let s=`<line x1="22" x2="${W}" y1="${z}" y2="${z}" stroke="var(--line)"/>`;Y.forEach(([yy,g],i)=>{const x0=24+i*bw;s+=`<rect x="${x0+bw*0.2}" y="${Math.min(z,y(g))}" width="${bw*0.6}" height="${Math.max(1,Math.abs(y(g)-z))}" rx="2" fill="${g>=0?'var(--green)':'var(--red)'}"/>`+
   `<text x="${x0+bw/2}" y="${H-3}" text-anchor="middle" font-size="9.5" fill="var(--ink3)">${yy.slice(2)}</text>`+(Math.abs(g)>=0.05?`<text x="${x0+bw/2}" y="${g>=0?y(g)-4:y(g)+11}" text-anchor="middle" font-size="8.5" fill="var(--ink3)">${g.toFixed(1)}</text>`:'');});
  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">${s}</svg>`;}
-// ---------- 급지 흐름 ----------
-function tiers(nm){const T=D.TIER[nm],el=$('#v2'),col=['var(--blue)','var(--amber)','var(--ink3)'],lab=['상급지','중급지','하급지'],lab2=['상급','중급','하급'];
- const S=T.series,n=S['0'].length,all=[].concat(S['0'],S['1'],S['2']),lo=Math.min(...all)*0.95,hi=Math.max(...all)*1.03,W=340,H=200,x=i=>30+i/(n-1)*(W-40),y=v=>H-22-(v-lo)/(hi-lo)*(H-34);
- let yrs='';for(let yy=2010;yy<=2026;yy+=4){const i=yy*12-D.tstart;yrs+=`<text x="${x(i)}" y="${H-6}" text-anchor="middle" font-size="10" fill="var(--ink3)">${yy}</text>`;}
- const mv=T.moves, lg=T.lag;
- el.innerHTML=`
- <div class="card"><svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">${[0,1,2].map(t=>`<path d="${S[t].map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join('')}" fill="none" stroke="${col[t]}" stroke-width="2"/>`).join('')}${yrs}</svg>
- <div class="lg">${[0,1,2].map(t=>`<span><i style="background:${col[t]}"></i>${lab[t]} ${Math.round(S[t][n-1])}</span>`).join('')}</div></div>
- <details class="grp2"><summary>고점·저점</summary>
- <div class="tw"><table class="tt"><thead><tr><th>구간</th>${lab2.map(l=>`<th>${l}</th>`).join('')}</tr></thead><tbody>
- ${mv.map(m=>`<tr><td>${m.from.replace(/년 (고점|저점)/,'')} → ${m.to.replace(/년 (고점|저점)/,'')}</td>${[0,1,2].map(t=>`<td class="${m.pct[t]>=0?'pos':'neg'}">${sg(m.pct[t])}${m.months?`<br><span class="sub">${m.months[t]}개월</span>`:''}</td>`).join('')}</tr>`).join('')}
- ${T.ep.map(e=>`<tr><td>${e.name}</td>${[0,1,2].map(t=>`<td>${e.t[t]}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
-</details>`;}
 </script></body></html>
