@@ -452,24 +452,23 @@ function hist(x){const I=x.idx;if(!I)return '';const S={};(x.jh||[]).forEach(t=>
  <text x="2" y="${Y(I[0])+4}" font-size="10" fill="var(--ink3)">100</text><text x="2" y="${Y(I[n-1])+4}" font-size="10" fill="var(--ink3)">${Math.round(I[n-1])}</text></svg>
  <div class="lg"><span><i style="background:var(--blue)"></i>구 실거래 시세(2012.01=100)</span><span><i style="background:var(--amber);opacity:.5"></i>보류가 켜진 달</span></div>`;}
 // ---------- 과거 검증 ----------
-function valid(){const J=D.JV,el=$('#v1'),P=J.per,yrs=Object.keys(P);
- const t3=a=>a?`<span class="num">${sg2(a[0])} · 적중 ${a[1]!=null?a[1]+'%':'-'} <span class="sub">기본 ${a[3]}% · 보류 ${a[2]}%</span></span>`:'-';
- el.innerHTML=`<h1>과거 검증</h1><p class="lead">수도권 82곳 + 부산·대구·대전·울산·경남 57곳 실거래로 셈했어요. 시세 추세와 학습 모델은 쓰지 않았어요</p>
- <div class="card"><div class="sec" style="margin-top:0">정답 · 보류가 나았던 달</div><p class="sub" style="margin-top:4px">1년 뒤 실거래 시세 변화가 전세 대비 손익분기(전세가율·주담대 금리로 셈)보다 낮았던 달이에요.</p>
- <div class="sec">판단 규칙</div><p style="margin:2px 0;font-weight:700">주담대 금리가 1년 전보다 오르고, (가) 그 지역 거래가 평소(직전 3년)의 0.8배·전년 같은 때의 0.7배 미만이거나 (나) 시장 전체 거래가 바닥권인 상태가 3개월 이어지면 보류</p></div>
- <div class="card"><div class="sec" style="margin-top:0">금고 시험 · 고를 때 전혀 쓰지 않은 자료</div>
- <div class="rk" style="margin-top:6px"><div><div class="h">대전·울산 실거래</div><div class="n">${J.vault_region[1]}%</div><div class="s">보류 적중 · 기본 ${J.vault_region[3]}% · ${sg2(J.vault_region[0])}</div></div><div><div class="h">2024~25년 전 지역</div><div class="n">${J.vault_time[1]}%</div><div class="s">보류 적중 · 보류 ${J.vault_time[2]}%만 켜짐</div></div></div>
- <p class="sub">탐색은 수도권·부산·대구·경남의 2010~2023년으로만 했고, 대전·울산 전체와 2024년 이후는 따로 두었어요. 처음 규칙(전년 대비·3개월 조건 없음)으로 한 번 열어 적중 ${J.v1_vault[1]}%를 확인했고, 수도권 헛경보를 줄인 지금 규칙은 두 번째 열람이에요. 2024년 이후는 보류가 거의 켜지지 않아 시험이 되지 않았어요.</p></div>
- <div class="card"><div class="sec" style="margin-top:0">기간별 · 무조건 매수 대비 판단 1번당 · 보류 적중</div>
- ${yrs.map(y=>`<div class="gl"><span>${y+'~'+String(+y+1).slice(2)}</span>${t3(P[y])}</div>`).join('')}
- <div class="gl"><span>수도권</span>${t3(J.cap)}</div><div class="gl"><span>지방 5곳</span>${t3(J.loc)}</div>
- <p class="sub">수도권 적중 ${J.cap[1]}%, 지방 ${J.loc[1]}%. 처음 규칙은 수도권 ${J.v1_cap[1]}%였어요 — 2015~16년 거래 호황이 '평소'를 부풀려 2017년 봄에 헛경보가 몰렸고, 전년 같은 때 비교와 3개월 지속 조건으로 줄였어요(변형 15개를 비교해 고름). 대신 보류가 덜 켜져 2018~19년 수도권 적중은 ${(J.per_cap['2018']||[])[1]}%에 그쳐요.</p></div>
- <div class="card"><div class="sec" style="margin-top:0">버린 방식</div>
- <div class="gl"><span>과거 패턴 학습 모델</span><span class="num sub">2022년 하락을 못 맞힘</span></div>
- <div class="gl"><span>수도권 자료만으로 고른 규칙</span><span class="num sub">처음 보는 기간에서 −0.2%</span></div>
- <div class="gl"><span>KB 지수로 채점</span><span class="num sub">실거래로 다시 매기면 +0.65 → +0.17%</span></div>
- <div class="gl"><span>가격 인하 거래 비율 추가</span><span class="num sub">금고 적중 ${J.price_vault[1]}%로 하락</span></div>
- <div class="gl"><span>과열(1년 +20% + 금리 급등)</span><span class="num sub">4번 중 2번만 하락</span></div></div>`;}
+function valid(){const J=D.JV,el=$('#v1'),P=J.per,yrs=Object.keys(P).filter(y=>P[y]&&P[y][1]!=null),Ds=J.dist;
+ const kpi=(t,a)=>`<div><div class="h">${t}</div><div class="n">${a[1]}%</div><div class="s">찍기 ${a[3]}%</div></div>`;
+ const W=340,H=170,bw=(W-30)/yrs.length,y=v=>H-22-v/100*(H-34);
+ let b='';[0,50,100].forEach(v=>b+=`<line x1="24" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line2)"/><text x="0" y="${y(v)+4}" font-size="10" fill="var(--ink3)">${v}%</text>`);
+ yrs.forEach((k,i)=>{const x0=26+i*bw,a=P[k];b+=`<rect x="${x0+bw*0.12}" y="${y(a[1])}" width="${bw*0.36}" height="${y(0)-y(a[1])}" rx="3" fill="var(--blue)"/><rect x="${x0+bw*0.52}" y="${y(a[3])}" width="${bw*0.36}" height="${y(0)-y(a[3])}" rx="3" fill="var(--line)"/>`+
+  `<text x="${x0+bw*0.3}" y="${y(a[1])-3}" text-anchor="middle" font-size="9.5" fill="var(--ink)">${a[1]}</text><text x="${x0+bw/2}" y="${H-6}" text-anchor="middle" font-size="9.5" fill="var(--ink3)">${String(k).slice(2)}~${String(+k+1).slice(2)}</text>`;});
+ const on=Ds.on_cap.y12,off=Ds.off_cap.y12,mx=Math.max(Math.abs(on.p50),Math.abs(off.p50))*1.3,X=v=>215+v/mx*110;
+ const bar=(yy,v,c,l)=>`<text x="0" y="${yy+13}" font-size="11.5" fill="var(--ink2)">${l}</text><rect x="${Math.min(X(0),X(v))}" y="${yy}" width="${Math.abs(X(v)-X(0))}" height="18" rx="3" fill="${c}"/><text x="${v<0?X(v)-4:X(v)+4}" y="${yy+13}" text-anchor="${v<0?'end':'start'}" font-size="11.5" font-weight="700" fill="var(--ink)">${sg(v)}</text>`;
+ el.innerHTML=`<h1>과거 검증</h1><p class="lead">보류 신호가 켜졌을 때, 1년 뒤 실제로 보류가 나았던 비율</p>
+ <div class="card"><div class="rk" style="margin:0;grid-template-columns:1fr 1fr 1fr">${kpi('수도권',J.cap)}${kpi('지방',J.loc)}${kpi('처음 보는 지역',J.vault_region)}</div></div>
+ <div class="card"><div class="lg" style="margin:0 0 6px"><span><i style="background:var(--blue)"></i>보류 신호 적중</span><span><i style="background:var(--line)"></i>찍기</span></div>
+ <svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">${b}</svg></div>
+ <div class="card"><div class="sec" style="margin-top:0">신호 뒤 1년 실제 시세 · 수도권 가운데 값</div>
+ <svg viewBox="0 0 340 64" width="100%" style="display:block"><line x1="${X(0)}" x2="${X(0)}" y1="0" y2="60" stroke="var(--ink3)" stroke-dasharray="2 2"/>${bar(6,on.p50,'var(--red)','보류 신호 뒤')}${bar(36,off.p50,'var(--green)','매수 신호 뒤')}</svg>
+ <div class="lg"><span>보류 뒤 하락 ${on.drop}%</span><span>매수 뒤 하락 ${off.drop}%</span></div></div>
+ <div class="card"><div class="sec" style="margin-top:0">판단 규칙</div><p style="margin:2px 0">금리 상승 + 거래 감소가 3개월 이어지면 보류</p>
+ <p class="sub" style="margin:6px 0 0">수도권 82곳 + 지방 57곳 실거래 · 처음 보는 지역 = 고를 때 안 쓴 대전·울산</p></div>`;}
 function yearBars(Y){const W=340,H=150,n=Y.length,bw=(W-30)/n,mx=Math.max(...Y.map(v=>Math.abs(v[1])))||1,z=H/2,y=v=>z-v/mx*(H/2-22);
  let s=`<line x1="22" x2="${W}" y1="${z}" y2="${z}" stroke="var(--line)"/>`;Y.forEach(([yy,g],i)=>{const x0=24+i*bw;s+=`<rect x="${x0+bw*0.2}" y="${Math.min(z,y(g))}" width="${bw*0.6}" height="${Math.max(1,Math.abs(y(g)-z))}" rx="2" fill="${g>=0?'var(--green)':'var(--red)'}"/>`+
   `<text x="${x0+bw/2}" y="${H-3}" text-anchor="middle" font-size="9.5" fill="var(--ink3)">${yy.slice(2)}</text>`+(Math.abs(g)>=0.05?`<text x="${x0+bw/2}" y="${g>=0?y(g)-4:y(g)+11}" text-anchor="middle" font-size="8.5" fill="var(--ink3)">${g.toFixed(1)}</text>`:'');});
