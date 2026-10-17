@@ -157,6 +157,7 @@ svg.gz-on{cursor:grab;outline:1.5px solid var(--blue);outline-offset:2px;border-
 .mks .pq{font-size:.9rem;font-weight:600;color:var(--ink3);margin-bottom:4px}.mks .pb{font-size:clamp(1.4rem,6vw,1.7rem)}.mks .ps{font-size:.92rem;font-weight:600}
 .mks .pv{min-height:0;margin:14px 0 8px}
 .kig{margin:18px 0 4px;font-size:.8rem;font-weight:800;color:var(--ink3)}.kig:first-child{margin-top:4px}
+.kcat{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -2px;padding:2px}.kcat::-webkit-scrollbar{display:none}.kcat button{flex:0 0 auto;padding:8px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font:inherit;font-size:.84rem;font-weight:700;color:var(--ink2);cursor:pointer;white-space:nowrap}.kcat button.on{background:var(--ink);border-color:var(--ink);color:var(--surface)}
 .kir{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line2);cursor:pointer}.kin{flex:1;min-width:0;font-size:.92rem;font-weight:600}
 .kiv{text-align:right;min-width:6.4em}.kiv b{display:block;font-size:.95rem}.kiv small{font-size:.72rem;color:var(--ink3)}
 .kid{padding:4px 0 14px;border-bottom:1px solid var(--line2)}.kid p{margin:8px 0 0;font-size:.84rem;line-height:1.6;color:var(--ink2)}.kid .rec{font-size:.8rem;color:var(--ink2);margin-top:8px;padding:10px 12px;border-radius:12px;background:var(--surface2);line-height:1.6}
@@ -610,11 +611,32 @@ function gzOn(sv){if(sv.__gz||sv.closest('button,.ic,svg svg'))return;if(sv.data
  sv.addEventListener('dblclick',reset);}
 function gzTip(){const d=document.createElement('div');d.className='gz-tip';d.textContent='두 손가락으로 벌리면 기간 확대 · 두 번 누르면 원래대로';document.body.appendChild(d);setTimeout(()=>d.remove(),2600);}
 (()=>{const run=()=>document.querySelectorAll('svg[viewBox]').forEach(gzOn);new MutationObserver(()=>{clearTimeout(GZ.t);GZ.t=setTimeout(run,60);}).observe(document.body,{childList:true,subtree:true});setTimeout(run,300);})();
+/* 10-17 사용자: 매물·매수자 연령도 지표 → 지표를 종류별 탭으로(중요한 순서 = 왼쪽부터, 탭 안에서도 중요한 것이 맨 위) · 시세와 겹쳐 보기 */
+const KCAT=[['거래·매물','lst',['거래량 추세','경매 매각률 변화','경매 낙찰가율']],
+ ['금리·대출','',['주택담보대출 금리 1년 변화','금리 변화로 늘어난 월 상환액','기준금리 1년 변화','시장 금리 전망','가계대출 증가율','가계 이자 부담']],
+ ['매수자·심리','who',['주택가격전망 심리','외지인 매입 비중','인구 순유입']],
+ ['가격 부담','',['전세 대신 매수할 때 월 추가 비용','소득 대비 구입 부담','전세가율','1인당 GDP 대비 시세','주택 시가총액 대비 GDP']],
+ ['공급','',['입주 물량','주택 인허가']],
+ ['시세 흐름','',['최근 6개월 시세 변화','신고가 거래 비중','오르는 지역 비율']],
+ ['물가·해외','',[]]];
+function kcGo(i){IC=i;const y=window.scrollY;tGo();try{history.replaceState(null,'','#ind&c='+i+'&r='+encodeURIComponent(RG));}catch(e){}const c=document.querySelector('.kcat');if(c&&c.getBoundingClientRect().top<0)c.scrollIntoView();else window.scrollTo(0,y);}
 function kiScreen(){const K=KI();if(!K)return null;
- /* 10-16 사용자: 지표 성적 문구·고른 지표·위아래 묶음 전부 삭제, 색 통일 — 지표는 참고용, 분류별 목록만 */
- const row=(it,gi,ii)=>{const id=`ki${gi}_${ii}`;return `<div role="button" tabindex="0" class="kir" onclick="kiOpen('${id}',${gi},${ii})"><span class="kin">${it.nm}</span>${kspark(it)}<span class="kiv"><b>${kval(it,it.now)}</b><small>${kpos(it.pct)}</small></span></div><div id="${id}" class="kid" hidden></div>`;};
- const html=K.groups.map((g,gi)=>`<div class="kig">${g.nm}</div>`+g.items.map((it,ii)=>row(it,gi,ii)).join('')).join('');
- return {q:'',big:`지표 ${K.n}개`,c:'var(--ink)',v:html,line:'출처: 국토부, 한국은행, 한국부동산원, 통계청, 대법원 법원경매정보, 미 연준'};}
+ const pos={};K.groups.forEach((g,gi)=>g.items.forEach((it,ii)=>pos[it.nm]=[gi,ii,it]));
+ const used=new Set(KCAT.slice(0,-1).flatMap(c=>c[2]));KCAT[KCAT.length-1][2]=Object.keys(pos).filter(n=>!used.has(n));
+ const C=KCAT[Math.min(IC,KCAT.length-1)],its=C[2].filter(n=>pos[n]);
+ const row=(gi,ii,it)=>{const id=`ki${gi}_${ii}`;return `<div role="button" tabindex="0" class="kir" onclick="kiOpen('${id}',${gi},${ii})"><span class="kin">${it.nm}</span>${kspark(it)}<span class="kiv"><b>${kval(it,it.now)}</b><small>${kpos(it.pct)}</small></span></div><div id="${id}" class="kid" hidden></div>`;};
+ const chips=`<div class="kcat">${KCAT.map((c,i)=>`<button class="${i===IC?'on':''}" onclick="kcGo(${i})">${c[0]}</button>`).join('')}</div>`;
+ let top='',bot='';
+ if(C[1]==='lst'){const S=(((MD.fc||{}).sd||{})[RG])||{};top=lstChart(S.lst_ts,RG);const F=flowSec(RG);if(F)bot=`<div class="kig" style="margin-top:22px">구별 · ${F.big}</div>${F.v}`;}
+ if(C[1]==='who'){const W=whoSec(RG);if(W)top=`<div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:.95rem">${RG} 매수자 연령</b><span style="font-size:.8rem;font-weight:800;color:#2272EB">${W.big}</span></div>${W.v}`;}
+ const first=!top&&its.length?pos[its[0]]:null;
+ if(first)setTimeout(()=>{const el=document.getElementById(`ki${first[0]}_${first[1]}`);if(el&&el.hidden)kiOpen(`ki${first[0]}_${first[1]}`,first[0],first[1]);},0);
+ return {q:'',big:'',c:'var(--ink)',v:chips+(top?`<div style="margin-top:14px">${top}</div>`:'')+`<div style="margin-top:${top?18:6}px">${its.map(n=>row(...pos[n])).join('')}</div>`+bot,
+  line:'출처: 국토부, 한국은행, 한국부동산원, 통계청, 대법원 법원경매정보, 미 연준'};}
+/* 시세(같은 시·도 실거래 지수)를 옅은 회색 선으로 겹침 — 키는 'YYYYMM' */
+function pxOver(keys,x,y0,y1){const lm=new Map((KI()||{}).lv||[]),v=keys.map(k=>lm.get(k.slice(0,4)+'.'+k.slice(4,6)));const ok=v.filter(u=>u!=null);if(ok.length<2)return '';
+ const lo=Math.min(...ok),hi=Math.max(...ok),Y=u=>y1-(u-lo)/((hi-lo)||1)*(y1-y0);let d='',p=0;v.forEach((u,i)=>{if(u==null)return;d+=(p?'L':'M')+x(i).toFixed(1)+' '+Y(u).toFixed(1);p=1;});
+ return `<path d="${d}" fill="none" stroke="var(--ink3)" stroke-width="1.5" opacity=".6" stroke-linejoin="round"/>`;}
 function lvF(v){return v>=70?'강함':v<=30?'약함':'보통';}function lvB(v){return v>=70?'높음':v<=30?'낮음':'보통';}
 /* 09-30 사용자: 방향이 안 보인다 — 어디서 어떻게 왔는지, 고점·저점 때 어떻게 움직였는지. 4분면 어디에 있다로 끝이 아니다
    → 경로에 화살표·6개월마다 날짜, 지난 사이클(2020~2023) 경로도 화살표로. 기록은 '같은 칸 + 같은 방향(최근 6개월 흐름이 올라가는 중/꺾이는 중)'
@@ -799,8 +821,8 @@ function sumScreen(T){const K=KI();if(!K)return null;const cur=K.path[K.path.len
    → 탭 요약·신호·거래·기록·지표, 탭마다 큰 답 하나 + 그림 하나 + 회색 한 줄.
      신호 = '주의 신호 11개 중 N개' + 많이 켜졌던 달의 실제 1년 뒤(오름·횡보·내림)를 바로 옆에(켜져도 내린 달은 소수), 같은 줄기(금리·물가)는 묶음.
      거래 = 'N곳 중 M곳' 칩 지도(쌓인 곳은 매물 %까지), 나이대는 판단 없이 구성비만. 지도 = 점이 지나온 길을 따라 움직임 */
-let MT=/ind/.test(location.hash)?'ind':/who/.test(location.hash)?'who':'flow';
-const MTS=[['flow','매물'],['who','매수자'],['ind','지표']];   /* 10-17 사용자: 거래 탭을 매물 쌓임·매수자 연령 둘로, 둘 다 시기별 그래프 */
+let MT='ind',IC=(()=>{const h=location.hash||'',m=/[#&]c=(\d)/.exec(h);return m?+m[1]:/who/.test(h)?2:0;})();
+const MTS=[['ind','지표']];   /* 10-17 사용자: 거래 탭을 매물 쌓임·매수자 연령 둘로, 둘 다 시기별 그래프 */
    /* 10-16 사용자: 시장 화면은 거래·지표만 되살림(요약·신호·기록 국면 판은 시장 타이밍 삭제 결정 유지) */
 const PCQ={1:['#2B5BD7','rgba(43,107,243,.13)'],2:['#B86E00','rgba(230,150,40,.16)'],3:['#7A45C9','rgba(140,80,220,.13)'],4:['#5A6678','rgba(120,135,160,.15)']};
 const cellN=p=>+Object.keys(STG).find(k=>STG[k][1]===QK(p));
@@ -901,7 +923,7 @@ function flowSec(sd,un){const F=MD.fc;if(!F||!F.sd||!F.sd[sd])return null;const 
    ${w.s60!=null?`<div class="frr" style="margin-top:8px"><span>판 사람 중 60대 이상</span><b>${w.s60}%</b></div>`:''}${w.gift!=null?`<div class="frr"><span>사고팔기 대신 증여 (6개월)</span><b>${w.gift}%</b></div>`:''}</div>`;}
  const big=mine?`${fcNm(mine[0])} · ${(FK[mine[1]]||FK.fall)[0]}`:`매물 쌓이는 곳 ${dn}곳`;
  return {q:'사고파는 흐름',big,c:(mine?mine[1]==='dn_up':dn>0)?'#C77700':'',sub:mine?`${(FK[mine[1]]||FK.fall)[1]} · ${sd}에선 ${nUp}곳 중 ${dn}곳이 매물 쌓임`:`가격 오르는 ${nUp}곳 중 · 거래는 줄고 팔려는 집은 늘어난 곳`,
-  v:lstChart(S.lst_ts,sd)+icN+`<div class="fcg" style="margin-top:14px">${chips}</div><div class="fcx">이름을 누르면 숫자가 나와요</div><div style="margin-top:10px">${leg}</div>${rb}`,
+  v:icN+`<div class="fcg" style="margin-top:10px">${chips}</div><div class="fcx">이름을 누르면 숫자가 나와요</div><div style="margin-top:10px">${leg}</div>${rb}`,
   line:`${S.ym} 기준 · 거래 = 최근 6개월 vs 1년 전 · 매물 = 1년 변화`};}
 /* 10-17 시기별 그래프: 매물(2020.01=100, 1년 +20% 넘게 늘던 달은 주황) · 매수자 연령(3개월 합 비중) */
 function tsAxis(ks,x,H){return ks.map((k,i)=>k.endsWith('01')?`<text x="${x(i).toFixed(1)}" y="${H-3}" text-anchor="middle" font-size="9.5" fill="var(--ink3)">'${k.slice(2,4)}</text>`:'').join('');}
@@ -909,18 +931,19 @@ function lstChart(T,sd){if(!T||T.length<14)return '';const W=340,H=150,n=T.lengt
  const yy=i=>i>=12?v[i]/v[i-12]-1:null;let seg='';for(let i=1;i<n;i++){const g=yy(i);seg+=`<line x1="${x(i-1).toFixed(1)}" y1="${y(v[i-1]).toFixed(1)}" x2="${x(i).toFixed(1)}" y2="${y(v[i]).toFixed(1)}" stroke="${g!=null&&g>.2?'var(--amber)':'var(--blue)'}" stroke-width="2.2" stroke-linecap="round"/>`;}
  const g=yy(n-1);
  return `<div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:.95rem">${sd} 매물</b><span style="font-size:.8rem;font-weight:800;color:${g>.2?'var(--amber)':'var(--blue)'}">1년 ${g>=0?'+':'−'}${Math.abs(g*100).toFixed(0)}%</span></div>
- <svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;margin-top:6px"><line x1="6" x2="${W-6}" y1="${y(100).toFixed(1)}" y2="${y(100).toFixed(1)}" stroke="var(--line)" stroke-dasharray="3 3"/>${seg}<circle cx="${x(n-1).toFixed(1)}" cy="${y(v[n-1]).toFixed(1)}" r="3.5" fill="${g>.2?'var(--amber)':'var(--blue)'}"/>${tsAxis(T.map(t=>t[0]),x,H)}</svg>
- <div class="lg" style="display:flex;gap:12px;font-size:.74rem;color:var(--ink3)"><span><b style="color:var(--amber)">━</b> 1년 +20% 넘게 쌓이던 때</span><span>점선 = 2020.01</span></div>`;}
+ <svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;margin-top:6px"><line x1="6" x2="${W-6}" y1="${y(100).toFixed(1)}" y2="${y(100).toFixed(1)}" stroke="var(--line)" stroke-dasharray="3 3"/>${pxOver(T.map(t=>t[0]),x,12,H-18)}${seg}<circle cx="${x(n-1).toFixed(1)}" cy="${y(v[n-1]).toFixed(1)}" r="3.5" fill="${g>.2?'var(--amber)':'var(--blue)'}"/>${tsAxis(T.map(t=>t[0]),x,H)}</svg>
+ <div class="lg" style="display:flex;gap:12px;font-size:.74rem;color:var(--ink3)"><span><b style="color:var(--blue)">━</b> 매물</span><span><b style="color:var(--amber)">━</b> 1년 +20% 넘게 쌓이던 때</span><span><b style="color:var(--ink3)">━</b> 시세</span></div>`;}
 function whoSec(sd){const S=(((MD.fc||{}).sd||{})[sd])||{},T=S.who_ts,w=S.who;if(!T||T.length<6||!w)return null;
- const W=340,H=170,n=T.length,C=[['#2272EB','20·30대',1],['#8DB8F7','40대',2],['#9AA3AD','50대 이상',3]],all=T.flatMap(t=>[t[1],t[2],t[3]]).filter(v=>v!=null),lo=Math.floor(Math.min(...all)/5)*5,hi=Math.ceil(Math.max(...all)/5)*5,x=i=>6+i/(n-1)*(W-12),y=u=>H-18-(u-lo)/(hi-lo)*(H-30);
+ const W=340,H=170,n=T.length,C=[['#2272EB','20·30대',1],['#8DB8F7','40대',2],['#8B7CF6','50대 이상',3]],all=T.flatMap(t=>[t[1],t[2],t[3]]).filter(v=>v!=null),lo=Math.floor(Math.min(...all)/5)*5,hi=Math.ceil(Math.max(...all)/5)*5,x=i=>6+i/(n-1)*(W-12),y=u=>H-18-(u-lo)/(hi-lo)*(H-30);
  const ln=C.map(([c,l,k])=>`<path class="ln2" d="${T.map((t,i)=>t[k]==null?'':(i?'L':'M')+x(i).toFixed(1)+' '+y(t[k]).toFixed(1)).join('')}" fill="none" stroke="${c}" stroke-width="${k===1?2.4:1.8}" stroke-linejoin="round"/>`).join('');
  const grid=[lo,(lo+hi)/2,hi].map(g=>`<line x1="6" x2="${W-6}" y1="${y(g).toFixed(1)}" y2="${y(g).toFixed(1)}" stroke="var(--line2)"/><text x="${W-6}" y="${(y(g)-3).toFixed(1)}" text-anchor="end" font-size="9" fill="var(--ink3)">${g}%</text>`).join('');
  const L=T[n-1],ym=x_=>`${x_.slice(0,4)}.${x_.slice(4,6)}`;
  return {q:'매수자 연령',big:`20·30대 ${L[1]}%`,c:'',sub:w.pk?`2019년 이후 최고 ${w.pk[1]}%(${ym(w.pk[0])}) · 최근 3개월 · ${ym(L[0])}까지`:`최근 3개월 · ${ym(L[0])}까지`,
-  v:`<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;margin-top:6px">${grid}${ln}${tsAxis(T.map(t=>t[0]),x,H)}</svg>
+  v:`<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;margin-top:6px">${grid}${pxOver(T.map(t=>t[0]),x,12,H-18)}${ln}${tsAxis(T.map(t=>t[0]),x,H)}</svg><div style="font-size:.74rem;color:var(--ink3)"><b style="color:var(--ink3)">━</b> 시세</div>
   ${C.map(([c,l,k])=>`<div class="frr"><span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${c};margin-right:8px"></i>${l}</span><b>${L[k]}%</b></div>`).join('')}
   ${w.s60!=null?`<div class="frr" style="margin-top:8px"><span>판 사람 중 60대 이상</span><b>${w.s60}%</b></div>`:''}${w.gift!=null?`<div class="frr"><span>사고팔기 대신 증여 (6개월)</span><b>${w.gift}%</b></div>`:''}`,
   line:'한국부동산원 매입자 연령(신고일 기준) · 3개월 합 비중 · 나머지는 법인 등'};}
+ /* kcat 스타일은 CSS 쪽 */
 /* 지금 국면 + 탭별 내용(시·도 탭·우리 동네 탭 공용) */
 function nowParts(o){const P0=o.path;if(!P0||!P0.length)return null;const kp=P0[P0.length-1],ck=QK(kp),num=cellN(kp),mv=mvOf(P0),D=dwell(o.seq,num),AS=o.astats||{},pcN=PCQ[num][0],rec=AS[ck],up=num<=2,sgOn=mv===(up?'-':'+'),re=o.fcu?'a':'t';
  /* 요약: 2×2 + 최근 1년 길을 따라 움직이는 점 */
@@ -972,7 +995,7 @@ function nowScreen(){const K=KI();if(!K||!K.path)return null;const T=MD.t[RG]||{
   lag:P&&P.lagm!=null&&RG==='서울'?['서울 → '+P.o,P.lagm>0?'시차 약 '+P.lagm+'개월':'거의 동시']:null});}
 function tScreens(){const a=tScreens0().filter(x=>x&&!['과거 유사 시점','시장 신호','요약','입주 물량','매물 추이'].includes(x.q)&&!/^서울·/.test(x.q)),N=nowScreen();
  if(!N)return [a[0],kiScreen()].filter(Boolean);
- const L=(({sum:[N.sum,a[0]],sig:[N.sig],flow:[N.flow],who:[N.who],past:N.past,ind:[kiScreen()]})[MT]||[N.sum,a[0]]).filter(Boolean);
+ const L=(({sum:[N.sum,a[0]],sig:[N.sig],flow:[kiScreen()],who:[kiScreen()],past:N.past,ind:[kiScreen()]})[MT]||[N.sum,a[0]]).filter(Boolean);
  return L.length?L:[{q:'',big:'아직 자료가 없어요',c:'var(--ink3)',sub:'주의 신호 판정은 서울·경기 기록으로 만들고 검증해서 이 지역엔 아직 쓰지 않아요 — 이 지역의 지표별 과거 기록은 지표 탭에서 볼 수 있어요'}];}   /* 10-06 사용자: 탭으로 나눔(요약·신호·거래·기록·지표) */   /* 10-05: 요약(국면 반복)·국면(네 칸 순환+궤적 지도)은 nowScreen 하나로 합침 */   /* 09-30 사용자: 비슷했던 과거는 전부 안 비슷하고 방향도 갈려 의미 없음 → 뺌 */
 function tScreens0(){const T=MD.t[RG],o=T.o26||{n:0},P=MD.p[RG==='인천'?'인천':'경기'],L=T.lst,S=T.sup,V=MD.val,col=LC(T.lab);
  const up=T.ind.filter(x=>x.dir>0).length,dn=T.ind.filter(x=>x.dir<0).length,mae=!!(L&&L.dir<0),sup=!!(S&&S.nx>=150),mood=T.s<=-1,BT=T.bt,b4=!!(BT&&BT.n>=4),nOn=[mae,sup,mood].filter(Boolean).length;
